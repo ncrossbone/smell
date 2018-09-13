@@ -1,0 +1,181 @@
+@CHARSET "UTF-8";
+#legend {
+	cursor: pointer;
+	position: absolute;
+    border: 1px solid #4f5b5a!important;
+    z-index: 100;
+}
+
+/* #legend ul {
+	display: none;
+	position: absolute;
+	left: -1px;
+	Pop-Up
+	bottom: 0;
+	margin: 0;
+	margin-bottom: 1.55em;
+} */
+.f_right{
+	z-index:100;
+	top:5px !important;
+}
+.fstLabel> li, .f_list_wrap> li {
+	padding: 0px !important;
+}
+
+.f_list_wrap {
+	border-color: #4f5b5a !important;
+	overflow-x:hidden;
+}
+
+.f_list_wrap .ui-state-active{
+	border-color: #4f5b5a !important;
+	overflow-x:hidden;
+	border-color: transparent !important;
+}
+
+.ui-layout-north ul ul {
+	bottom: auto;
+	margin: 0;
+	margin-top: 10px;
+}
+.ui-layout-north{
+	height: 45px !important;
+}
+
+#legend li:hover ul {
+	display: block;
+}
+
+#legend .ui-state-active{
+	border-color: #4f5b5a;
+}
+
+.zoomPart div{
+	position: absolute;
+    width: 6px;
+    height: 10px;
+    margin-top: -10px;
+    cursor: pointer;
+    border-bottom: 1px solid darkgray;
+}
+
+.zoomText {
+	margin: 20px 0px 0px -30px;
+	background-size: 515px 26px;
+	width: 30px;
+	height: 126px;
+}
+
+.zoomText div {
+	position: absolute;
+	width: 29px;
+	left: 0px;
+	height: 15px;
+	margin: -6px 0px 0px;
+
+}
+
+.left_co{
+	z-index:1000;
+}
+
+.leftClose{
+	left: 0px !important;
+}
+
+.mapBtn {
+	/* background-color:#f4f4f4 !important; */
+}
+.mapBtn.on{
+	background-color:#9ca3bc !important;
+}
+
+.fstLabel_1 { background:url(/map/resources/images/ui/fstlabel_1.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_1_1 { background:url(/map/resources/images/ui/fstlabel_1_1.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_1_2 { background:url(/map/resources/images/ui/fstlabel_1_2.png) no-repeat center 12px !important; padding-top: 38px; }
+
+.fstLabel_2 { background:url(/map/resources/images/ui/fstlabel_2.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_2_1 { background:url(/map/resources/images/ui/fstlabel_2_1.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_2_2 { background:url(/map/resources/images/ui/fstlabel_2_2.png) no-repeat center 12px !important; padding-top: 38px; }
+
+.fstLabel_3 { background:url(/map/resources/images/ui/fstlabel_3.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_3_1 { background:url(/map/resources/images/ui/fstlabel_3_3.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_3_2 { background:url(/map/resources/images/ui/fstlabel_3_4.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_3_3 { background:url(/map/resources/images/ui/fstlabel_3_5.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_3_4 { background:url(/map/resources/images/ui/fstlabel_3_6.png) no-repeat center 12px !important; padding-top: 38px; }
+
+.fstLabel_4 { background:url(/map/resources/images/ui/fstlabel_4.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_4_1 { background:#f4f4f4 !important; padding-top: 10px;}
+.fstLabel_4_2 { background:#f4f4f4 !important; padding-top: 10px;}
+.fstLabel_4_3 { background:#f4f4f4 !important; padding-top: 10px;}
+.fstLabel_4_4 { background:#f4f4f4 !important; padding-top: 10px;}
+.fstLabel_4_5 { background:#f4f4f4 !important; padding-top: 10px;}
+.fstLabel_4_6 { background:#f4f4f4 !important; padding-top: 15px;}
+.fstLabel_4_7 { background:#f4f4f4 !important; padding-top: 10px;}
+.fstLabel_4_8 { background:url(/map/resources/images/ui/fstlabel_4_2.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_4_9 { background:url(/map/resources/images/ui/fstlabel_4_3.png) no-repeat center 12px !important; padding-top: 38px; }
+
+.fstLabel_5 { background:url(/map/resources/images/ui/fstlabel_5.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_5_1 { background:url(/map/resources/images/ui/fstlabel_5.png) no-repeat center 12px !important; padding-top: 38px; }
+
+.fstLabel_6 { background:url(/map/resources/images/ui/fstlabel_6.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_6_1 { background:url(/map/resources/images/ui/fstlabel_6_1.png) no-repeat center 12px !important; padding-top: 38px; }
+.fstLabel_6_2 { background:url(/map/resources/images/ui/fstlabel_6_2.png) no-repeat center 12px !important; padding-top: 38px; }
+
+.ui-menu .ui-menu-item{
+	list-style-image:none !important;
+}
+
+.gisLegend1{
+	background: url(/map/resources/images/obs/p_3_1.png) no-repeat 63px 1px;
+	background-size: 11px;
+}
+
+.gisLegend2{
+	background: url(/map/resources/images/obs/p_4_1.png) no-repeat 63px 1px;
+	background-size: 15px;
+}
+
+.gisLegend3{
+	background: url(/map/resources/images/obs/p_2_1.png) no-repeat 63px 1px;
+	background-size: 11px;
+}
+
+.gisLegend4{
+	background: url(/map/resources/images/obs/p_1_1.png) no-repeat 63px 1px;
+	background-size: 12px;
+}
+
+table.map_info_table{ border-top:2px solid #595959; color:#353535; background:#fff; width: 530px; margin-left: 15px; margin-top: 15px;}
+table.map_info_table th{ background:#fafbfd; text-align:center; font-size:14px; color:#000; line-height:42px; border-right:1px solid #c8cfd4; font-size: 13px; font-family: notokr-bold; letter-spacing: -1px;}
+table.map_info_table td{ font-size:12px; text-align:center;border-right:1px solid #c8cfd4}
+table.map_info_table td.b_none{ border-right:none;}
+table.map_info_table td.search{ text-align:left; padding-left:10px;}
+table.map_info_table td.search a{ padding-right:16px; color:#204360; background:url(../images/2016/main/icon_mapSearch.png) no-repeat right center;}
+table.map_info_table th,
+table.map_info_table td{ border-bottom:1px solid #c8cfd4; letter-spacing:0 !important; }
+
+.legendAreaSpan{
+	width: 67px;
+    height: 30px;
+    font-size: 11px;
+    font-family: Dotum, 돋움;
+    cursor: pointer;
+    display: inline-table;
+    float: left;
+    margin-right: 3px;
+    padding: 0px 20px 0px 5px;
+    margin-bottom: 3px;
+    background: url(/map/resources/images/on_close.png) right 5px center no-repeat;
+    background-color: #3b3d4a;
+    opacity: 0.8;
+}
+
+.z_name{
+	line-height: 12px;
+    vertical-align: middle;
+    display: table-cell;
+    width: 80%;
+    color: white;
+}

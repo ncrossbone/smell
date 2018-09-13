@@ -1,0 +1,49 @@
+@charset "utf-8";
+/* CSS Document */
+
+.main_quick:after, .stats_tab:after, .stats_top:after, .stats_tab_cont:after { content:""; display:block; clear:both; }
+
+.main_quick> li { min-height:249px; float:left; width:248px; background:#960; border:1px solid #dddddd; text-align:center;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #f4f4f4));
+	background: -moz-linear-gradient(top, #ffffff 0%, #f4f4f4 100%);
+	background: -webkit-linear-gradient(top,  #ffffff 0%, #f4f4f4 100%);
+	background: -o-linear-gradient(top,  #ffffff 0%, #f4f4f4 100%);
+	background: -ms-linear-gradient(top,  #ffffff 0%, #f4f4f4 100%);
+	background: linear-gradient(top,  #ffffff 0%, #f4f4f4 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f4f4f4', gradientType=0);
+	}
+
+#main { padding:30px 0px; }	
+.ast { display:block; padding:30px 0px; }
+.mq_tit { display:block; font-size: 18px; font-weight:800; color:#373946; letter-spacing:-1px; padding-bottom:85px; }
+
+.mq1 { background:url(../images/mq1_icon.png) no-repeat center 47px; }
+.mq2 { background:url(../images/mq2_icon.png) no-repeat center 43px; }
+.mq3 { background:url(../images/mq3_icon.png) no-repeat center 40px; letter-spacing:0px !important;  }
+.mq4 { background:url(../images/mq4_icon.png) no-repeat center 42px; width:248px !important; }
+
+.today { padding-top:40px; position:relative; }
+.today> dt { font-size: 18px; font-weight: 500; letter-spacing:-1px; padding-bottom:15px; }
+.today> dt:before { content:""; position:absolute; left:114px; top:21px; width:20px; height:2px; background:#005fcd;  }
+/*170221 추가 변경*/
+.today> dd { display:inline-block;  font-family: notokr-bold; }
+.num_bg {display:inline-block; background:url(../images/mq_bg.png) no-repeat left center; width:78px; height:33px; text-align:right;  }
+.num { margin-right:10px; line-height:30px; color:#fff799; font-weight:bold;  }	
+/**/  
+
+#stats {}
+.stats_tit { float:left; color:#1a498f; font-weight:500; font-size:16px; background:url(../images/stats_bg.png) no-repeat left center; letter-spacing:-1px; padding-left:10px; }
+
+.stats_tab li {float: left; text-align:center; cursor: pointer; border: 1px solid #dddddd; padding:5px 20px; color:#888888;  font-family: notokr-regular; font-size:13px; letter-spacing:-1px; }
+.stats_tab li.active {  background:#1a498f;  color:#fff; }
+.stats_tabbox { border: 1px solid #eee; clear: both; margin-top:5px; }
+.stats_tab_cont { padding: 20px; font-size: 12px; display: none; }
+
+
+
+
+table { width: 300px; border-top: 1px solid #000 !important; float:right;  }
+table> caption { visibility: hidden; display:none; }
+table> thead> tr> th { border-bottom: 1px solid #cfcfcf; font-family:"돋움"; font-size:13px; letter-spacing:-1px; font-weight:bold; color:#444444; padding:10px; }
+table> tbody> tr> td { border-bottom: 1px solid #f5f5f5; font-family:"돋움"; font-size:13px; color:#444444;  padding:10px; }
+.tab_select { background:#f2f8fb; color:#0659b9; }
