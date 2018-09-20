@@ -268,7 +268,7 @@ select::-ms-expand {
                 <ul class="fstLabel f_right" id="dustLyrBtn" style="cursor:pointer; display: none;">
                 
 				</ul>
-				<div id="legendArea" style="width: 950px; height: 63px; position: absolute; bottom: 5px; left: 5px; z-index: 100; padding: 10px;"></div>
+				<div id="legendArea" style="width: 950px; height: 30px; position: absolute; bottom: 5px; left: 5px; z-index: 100; padding: 10px; display: inline-table;"></div>
             </div>
         </div><!--map-->
         <div id="stationInfoWindow" style="border: 1px solid #595959; overflow: hidden; display:none; background-color: #ffffff; position: absolute; width: 570px; height: 422px; z-index: 1000; right: 10px; bottom: 10px;">
