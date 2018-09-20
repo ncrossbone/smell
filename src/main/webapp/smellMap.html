@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>청주시 악취 관리 시스템</title>
+    <script type="text/javascript" src="/map/resources/js/lib/jquery-1.11.2.min.js" ></script>
+    <script type="text/javascript" src="/map/resources/js/lib/mapEventBus.js" ></script>
+    <script type="text/javascript" src="/map/resources/js/lib/ol.js"></script>
+    <script type="text/javascript" src="/map/resources/js/mapService.js"></script>
+    <script type="text/javascript" src="/map/resources/js/lib/vworldLayer.js"></script>
+    <script type="text/javascript" src="/map/resources/js/lib/coreMap.js"></script>
+    <script type="text/javascript" src="/map/resources/js/ui.js"></script>
+    <script type="text/javascript" src="/map/resources/js/lib/jquery-ui.js"></script>
+    <script type="text/javascript" src="/map/resources/js/lib/zoomSlider.js"></script>
+    <style>
+        html,
+        body,
+        dl,
+        dt,
+        dd,
+        ul,
+        ol,
+        li,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        hr,
+        pre,
+        code,
+        form,
+        fieldset,
+        legetns,
+        input,
+        textarea,
+        buttonm p,
+        blockquote,
+        th,
+        td,
+        label,
+        select,
+        p,
+        i {
+            margin: 0px;
+            padding: 0px;
+            font-family: "돋움";
+            font-size: 13px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        #mapid {
+            height: 800px;
+            left: 342px;
+            width: 1500px;
+            top: 30px;
+        }
+
+        .left {
+            background: #fafafa;
+            width: 341px;
+            float: left;
+            height: 925px;
+            border-right: 1px solid #000;
+        }
+
+        .left_tit {
+            background: #3b3d4a;
+            padding: 10px 15px;
+            color: #fff;
+            font-size: 14px;
+            letter-spacing: -1px;
+            font-family: 'notokr-bold';
+            display: block;
+            position: relative;
+        }
+
+        #smellMenu>a {
+            writing-mode: tb;
+            background: #fff;
+            padding: 15px 10px;
+            cursor: pointer;
+        }
+
+        #smellMenu>a.on {
+            writing-mode: tb;
+            background: #1388e6;
+            color: #fff;
+            padding: 15px 10px;
+            cursor: pointer;
+        }
+
+        #mapMenu>a {
+            background: #fff;
+            color: #000;
+            padding: 10px 10px;
+            cursor: pointer;
+        }
+
+        #mapMenu>a.on {
+            background: #1388e6;
+            color: #fff;
+            padding: 10px 10px;
+            cursor: pointer;
+        }
+
+        .zoomPart div {
+            position: absolute;
+            width: 6px;
+            height: 10px;
+            margin-top: -10px;
+            cursor: pointer;
+            border-bottom: 1px solid darkgray;
+        }
+
+        .zoomText {
+            margin: 20px 0px 0px -30px;
+            background-size: 515px 26px;
+            width: 30px;
+            height: 126px;
+        }
+
+        .zoomText div {
+            position: absolute;
+            width: 29px;
+            left: 0px;
+            height: 15px;
+            margin: -6px 0px 0px;
+
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+        	_CoreMap.init('mapDiv');
+        	_ui.init();
+        	$(window).on('resize', function(){
+    			var ww = $(window).width();
+    			var wh = $(window).height();
+    			
+    			var map = _CoreMap.getMap();
+    			
+   				$('#mapDiv').width(ww-340);
+   				$('#mapDiv').height(wh-92);
+   				$('#westContainer').height(wh-50); 
+   				if(map){
+   					map.setSize([ww-340, wh-92]);
+   				}
+    		});
+    		$(window).trigger('resize');
+
+        });
+    </script>
+</head>
+
+<body>
+    <div>
+
+        <div id="westContainer" class="left" style="position: absolute; z-index: 1;">
+            <div class="cont" id="smellMap">
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">민원현황</a>
+                    <div>
+                    	<select id="complaintStatusCityDistrict">
+	                    	<option>1</option>
+    	                	<option>2</option>
+                    	</select>
+                    	<select id="complaintStatusTown">
+	                    	<option>1</option>
+    	                	<option>2</option>
+                    	</select>
+                    	<input type="text" id="complaintStatusBranchName" />
+                    	<select id="complaintStatusStartDate">
+	                    	<option>1</option>
+    	                	<option>2</option>
+                    	</select>
+                    	<select id="complaintStatusEndDate">
+	                    	<option>1</option>
+    	                	<option>2</option>
+                    	</select>
+                    	<input type="button" id="complaintStatusViews" value="조회"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">관능평가데이터</a>
+                    <div style="display: none;">
+						<select id="sensoryEvaluationCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="sensoryEvaluationTown">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<input type="text" id="sensoryEvaluationBranchName" /> 
+						<select id="sensoryEvaluationStartOU">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="sensoryEvaluationEndOU">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<input type="button" id="sensoryEvaluationViews" value="조회"/>
+					</div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">이동식측정데이터</a>
+                    <div style="display: none;">
+                    	<input type="radio" name="portableMeasurementRadio" value="1" checked="checked" />
+                    	<input type="radio" name="portableMeasurementRadio" value="2" />
+                    	<select id="portableMeasurementItem">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="portableMeasurementStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="portableMeasurementEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="portableMeasurementCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="portableMeasurementTown">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<input type="text" id="portableMeasurementBranchName" />
+						<input type="button" id="portableMeasurementViews" value="조회"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">고정식측정데이터</a>
+                    <div style="display: none;">
+                    	<select id="fixedMeasurementItem">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="fixedMeasurementStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="fixedMeasurementEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="fixedMeasurementCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="fixedMeasurementTown">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<input type="text" id="fixedMeasurementBranchName" />
+						<input type="button" id="fixedMeasurementViews" value="조회"/>
+                    </div>
+                </div>
+            </div>
+            <div class="cont" id="smellInfo" style="display: none;">
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">IOT 센서 정보</a>
+                    <div>
+                    	<input type="radio" name="sensorInformationRadio" value="1" checked="checked"/>
+                    	<input type="radio" name="sensorInformationRadio" value="2" />
+                    	<input type="radio" name="sensorInformationRadio" value="3" />
+                    	<select id="sensorInformationItem">
+                    		<option>1</option>
+							<option>2</option>
+                    	</select> 
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">악취저감설비 관리</a>
+                    <div style="display: none;">
+                    	<select id="odorReductionCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="odorReductionTown">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<input type="text" id="odorReductionBranchName" />
+						<input type="button" id="odorReductionViews" value="조회"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">악취원점 관리</a>
+                    <div style="display: none;">
+                    	<select id="odorOriginCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="odorOriginTown">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<input type="text" id="odorOriginBranchName" />
+						<input type="button" id="odorOriginViews" value="조회"/>
+                    </div>
+                </div>
+            </div>
+            <div class="cont" id="smellMeasure" style="display: none;">
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">기상청측정망</a>
+                    <div>
+                    	<select id="observatoryItem">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="observatoryStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="observatoryEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+                    	<select id="observatoryCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="observatoryTown">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<input type="button" id="observatoryViews" value="조회"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">환경공단 측정망</a>
+                    <div style="display: none;">
+                    	<select id="environmentCorporationItem">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="environmentCorporationStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="environmentCorporationEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+                    	<select id="environmentCorporationCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="environmentCorporationTown">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<input type="text" id="environmentCorporationBranchName" />
+						<input type="button" id="environmentCorporationViews" value="조회"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">청주시 무인악취 측정망</a>
+                    <div style="display: none;">
+                    	<select id="unmannedOdorItem">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="unmannedOdorStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="unmannedOdorEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+                    	<select id="unmannedOdorCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="unmannedOdorTown">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<input type="text" id="unmannedOdorBranchName" />
+						<input type="button" id="unmannedOdorViews" value="조회"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">KT 에어맵 코리아 측정망</a>
+                    <div style="display: none;">
+                    	<select id="airMapItem">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="airMapStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="airMapEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+                    	<select id="airMapCityDistrict">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="airMapTown">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<input type="text" id="airMapBranchName" />
+						<input type="button" id="airMapViews" value="조회"/>
+                    </div>
+                </div>
+            </div>
+            <div class="cont" id="smellReport" style="display: none;">
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">기상장 분석</a>
+                    <div>
+                    	<select id="weatherAnalysisItem">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="weatherAnalysisStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="weatherAnalysisStartTime">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="weatherAnalysisEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="weatherAnalysisEndTime">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+                    	<select id="weatherAnalysisDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<input type="button" id="weatherAnalysisPrevious" value="이전"/> 
+						<input type="button" id="weatherAnalysisPlay" value="재생"/>
+						<input type="button" id="weatherAnalysisNext" value="다음"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">악취확산 분석</a>
+                    <div style="display: none;">
+                    	<select id="odorSpreadItem">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="odorSpreadStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="odorSpreadStartTime">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="odorSpreadEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="odorSpreadEndTime">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+                    	<select id="odorSpreadDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<input type="button" id="odorSpreadPrevious" value="이전"/> 
+						<input type="button" id="odorSpreadPlay" value="재생"/>
+						<input type="button" id="odorSpreadNext" value="다음"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="javascript:void(0)" class="left_tit accordion">악취 이동경로</a>
+                    <div style="display: none;">
+                    	<select id="odorMovementItem">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="odorMovementStartDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="odorMovementStartTime">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="odorMovementEndDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<select id="odorMovementEndTime">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+                    	<select id="odorMovementDate">
+							<option>1</option>
+							<option>2</option>
+						</select>
+						<input type="button" id="odorMovementPrevious" value="이전"/> 
+						<input type="button" id="odorMovementPlay" value="재생"/>
+						<input type="button" id="odorMovementNext" value="다음"/>
+						<input type="button" id="odorMovementViews" value="조회"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="toolbar" style="left: 350px; position: relative; z-index: 1;"></div>
+        <div id="smellMenu" style="position: absolute; top: 30px; left: 351px; z-index: 401; writing-mode: tb;">
+            <a href="javascript:void(0)" class="on" value="smellMap">악취지도</a>
+            <a href="javascript:void(0)" style="margin-top: -4px;" value="smellInfo">악취정보</a>
+            <a href="javascript:void(0)" style="margin-top: -5px;" value="smellMeasure">측정소</a>
+            <a href="javascript:void(0)" style="margin-top: -4px;" value="smellReport">악취분석</a>
+        </div>
+        <div id="mapDiv" style="position: absolute; left: 340px; top: 0; right: 0; min-width:1040px;">
+            <div id="mapNavBar"></div>
+            <div id="mapMenu" style="z-index: 401; right: 50px; top:15px; position: absolute;">
+                <a id="baseMap" class="on">기본지도</a>
+                <a id="satelliteMap" style="margin-left: -4px;">위성지도</a>
+                <a id="grayMap" style="margin-left: -4px;">백지도</a>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

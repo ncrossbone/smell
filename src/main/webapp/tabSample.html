@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Tabs - Simple manipulation</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <style>
+  #dialog label, #dialog input { display:block; }
+  #dialog label { margin-top: 0.5em; }
+  #dialog input, #dialog textarea { width: 95%; }
+  #tabs { margin-top: 1em; }
+  #tabs li .ui-icon-close { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+  #add_tab { cursor: pointer; }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+ 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+  <script>
+  $( function() {
+    var tabTitle = $( "#tab_title" );
+    var tabContent = $( "#tab_content" );
+    var tabTemplate = "<li><a id=#{id} href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
+    var tabCounter = 0;
+ 
+    var tabs = $( "#tabs" ).tabs();
+    s
+  	var labelObj = ['민원현황','관능성평가데이터','이동식측정데이터','고정식측정데이터'];
+    // Actual addTab function: adds new tab using the input from the form above
+    function addTab() {
+      var label = labelObj[tabCounter]?labelObj[tabCounter]:labelObj[0];
+      var id = "tabs-" + tabCounter + 1;
+      var li = $( tabTemplate.replace( /#\{id\}/g, "tabs-" + tabCounter ).replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label  + '(' + parseInt(Math.random() * 100) + ')') );
+      var tabContentHtml = tabContent.val() || "Tab " + tabCounter + " content.";
+ 
+      tabs.find( ".ui-tabs-nav" ).append( li );
+      tabs.append( "<div id='" + id + "'><p>" + tabContentHtml + "</p></div>" );
+      tabs.tabs( "refresh" );
+      
+      $('#tabs-' + tabCounter).trigger('click');
+      
+    var clients = [];
+    
+    for(var i = tabCounter; i<100; i++){
+        
+    	clients.push({Name:i,Age:i,Country:i,Address:i,Married:true});
+    }
+ 
+    var countries = [
+        { Name: "", Id: 0 },
+        { Name: "United States", Id: 1 },
+        { Name: "Canada", Id: 2 },
+        { Name: "United Kingdom", Id: 3 }
+    ];
+ 
+    $("#"+id).jsGrid({
+        width: "800px",
+        height: "400px",
+ 
+        inserting: false,
+        editing: false,
+        sorting: true,
+        paging: true,	
+ 
+        data: clients,
+ 
+        fields: [
+            { name: "Name", title:"이름", type: "text", width: 150, validate: "required" },
+            { name: "Age", type: "number", width: 50 },
+            { name: "Address", type: "text", width: 200 },
+            { name: "Country", type: "select", items: countries, valueField: "Id", textField: "Name" },
+            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+            { type: "control" }
+        ]
+    });
+      tabCounter++;
+    }
+ 
+    // AddTab button: just opens the dialog
+    $( "#add_tab" ).button().on( "click", function() {
+    	if($('#tabs').find('[role=tabpanel]').length > 5){
+        	return;
+        }
+        addTab();
+      });
+ 
+    // Close icon: removing the tab on click
+    tabs.on( "click", "span.ui-icon-close", function() {
+      var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+      $( "#" + panelId ).remove();
+      tabs.tabs( "refresh" );
+    });
+ 
+    tabs.on( "keyup", function( event ) {
+      if ( event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE ) {
+        var panelId = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
+        $( "#" + panelId ).remove();
+        tabs.tabs( "refresh" );
+      }
+    });
+  } );
+  </script>
+</head>
+<body>
+
+ 
+<button id="add_tab">조회</button>
+ 
+<div id="tabs">
+  <ul></ul>
+</div>
+ 
+ 
+</body>
+</html>

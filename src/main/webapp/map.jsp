@@ -316,11 +316,10 @@ select::-ms-expand {
 			    </div>
                 <ul class="fstLabel f_right" id="dustLyrBtn" style="cursor:pointer; display: none;">
 				</ul>
-				<div id="legendArea" style="width: 950px; height: 63px; position: absolute; bottom: 5px; left: 5px; z-index: 100; padding: 10px;"></div>
-				
+				<div id="legendArea" style="width: 950px; height: 30px; position: absolute; bottom: 5px; left: 5px; z-index: 100; padding: 10px; display: inline-table;"></div>
             </div>
         </div><!--map-->
-        <div id="stationInfoWindow" style="border: 1px solid #595959; overflow: hidden; display:none; background-color: #ffffff; position: absolute; width: 570px; height: 422px; z-index: 1000; right: 10px; bottom: 10px;">
+        <div id="stationInfoWindow" style="border: 1 px solid #595959; overflow: hidden; display:none; background-color: #ffffff; position: absolute; width: 570px; height: 422px; z-index: 1000; right: 10px; bottom: 10px;">
 				<div style="position: absolute; top:10px; right:10px; z-index: 1001; cursor:pointer;"><img src="/map/resources/images/close2.png"  style="width:20px; height:20px;" onclick="$('#stationInfoWindow').hide();"/></div>
 				<span style='position: absolute; width:100%; height:10%; background:transparent; z-index:1000;'></span>
 				<iframe id="stationInfoIframe" style="border: none; width:100%; height:100%; overflow:hidden; position: absolute; display: none;" src=""></iframe>
