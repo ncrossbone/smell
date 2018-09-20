@@ -1,5 +1,4 @@
 <%@page contentType="text/html; charset=utf-8" %>
-<!doctype html>
 <html lang="ko">
 <head>
 
@@ -28,6 +27,9 @@
 <script type="text/javascript" src="/map/resources/js/lib/jquery-ui-multiselect.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/ol.js"></script>
+
+<script type="text/javascript" src="https://cdn.rawgit.com/bjornharrtell/jsts/gh-pages/1.2.0/jsts.min.js"></script>
+
 <!-- <script type="text/javascript" src="/map/resources/js/lib/airKoreaLayer.js"></script> -->
 <script type="text/javascript" src="/map/resources/js/mapService.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/vworldLayer.js"></script>
@@ -40,7 +42,7 @@
 <script type="text/javascript" src="/map/resources/js/lib/jquery-ui.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/zoomSlider.js"></script>
 <script type="text/javascript" src="/map/resources/js/jusoPopup.js"></script>
-<script type="text/javascript" src="/map/resources/js/mapBiz.js"></script>
+<script type="text/javascript" src="/map/resources/js/smellMapBiz.js"></script>
 
 <style type="text/css">
 
@@ -49,6 +51,53 @@ select::-ms-expand {
 }
 
 </style>
+
+<style type="text/css">
+      .ol-popup {
+        display: none;
+        position: absolute;
+        background-color: white;
+        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+      }
+      .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+      .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+      }
+      .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+      }
+      .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+      }
+      .ol-popup-closer:after {
+        content: "✖";
+      }
+    </style>
+    
 <script>
 
 </script>
@@ -263,12 +312,12 @@ select::-ms-expand {
             	<div id="mapNavBar"></div>
             	<div id="popupOverlay" class="ol-popup">
 			      <a href="javascript:;" id="popup-closer" class="ol-popup-closer"></a>
-			      <div id="popup-content"></div>
+			      <div id="popup-content"><input type="button" value="격자 해체" id="cellRemeveBtn" style="height:40px;"></div>
 			    </div>
                 <ul class="fstLabel f_right" id="dustLyrBtn" style="cursor:pointer; display: none;">
-                
 				</ul>
 				<div id="legendArea" style="width: 950px; height: 63px; position: absolute; bottom: 5px; left: 5px; z-index: 100; padding: 10px;"></div>
+				
             </div>
         </div><!--map-->
         <div id="stationInfoWindow" style="border: 1px solid #595959; overflow: hidden; display:none; background-color: #ffffff; position: absolute; width: 570px; height: 422px; z-index: 1000; right: 10px; bottom: 10px;">
@@ -337,7 +386,7 @@ select::-ms-expand {
 		_ToolBar.init();
 		_ThemathicLayer.init();
 		
-		_MapBiz.init();
+		_SmellMapBiz.init();
 		
 		//도로명 클릭 이벤트
 		$('.juso').click(function(){

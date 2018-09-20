@@ -25,7 +25,7 @@ var _CoreMap = function() {
 	var mapDiv;
 	
 	var format = 'image/png';
-	var wmsBaseUrl = '/geoserver/airkorea/wms?';
+	var wmsBaseUrl = '/geoserver/CE-TECH/wms?';
 	
 	var highlightFeature;
 
@@ -149,10 +149,10 @@ var _CoreMap = function() {
 		}); 
 
 		// 행정구역
-		layerInfos.push({layerNm:'GIS_SDO',isVisible:false,isTiled:true,cql:null,opacity:1});
-		layerInfos.push({layerNm:'GIS_SGG',isVisible:false,isTiled:true,cql:null,opacity:1});
-		layerInfos.push({layerNm:'GIS_BDONG',isVisible:false,isTiled:true,cql:null,opacity:0.2});
-		
+//		layerInfos.push({layerNm:'GIS_SDO',isVisible:false,isTiled:true,cql:null,opacity:1});
+//		layerInfos.push({layerNm:'GIS_SGG',isVisible:false,isTiled:true,cql:null,opacity:1});
+//		layerInfos.push({layerNm:'GIS_BDONG',isVisible:false,isTiled:true,cql:null,opacity:0.2});
+//		
 		
 		var admnsDstrcLayers = createTileLayer(layerInfos);
 		
@@ -381,7 +381,7 @@ var _CoreMap = function() {
       				params: {'FORMAT': format, 
 	      				'VERSION': '1.1.0',
 	      				tiled: layerInfos[i].isTiled,
-	      				LAYERS: 'airkorea:'+layerInfos[i].layerNm,
+	      				LAYERS: layerInfos[i].layerNm,
 	      				STYLES: layerInfos[i].style,
 	      				CQL_FILTER:layerInfos[i].cql,
 	      				urlType: 'geoServer'

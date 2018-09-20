@@ -1,11 +1,11 @@
 var _MapServiceInfo = {
-	params    : "/geoserver/airkorea/ows?&service=WFS&version=1.0.0&request=GetFeature&outputFormat=application%2Fjson",
-	type : "&typeName=airkorea:",
+	params    : "/geoserver/CE-TECH/ows?&service=WFS&version=1.0.0&request=GetFeature&outputFormat=application%2Fjson",
+	type : "&typeName=CE-TECH",
 	property : "&PROPERTYNAME=",
 	sort : "&SORTBY="
 }
 
-var _proxyUrl = '/proxy?';
+var _proxyUrl = 'http://112.218.1.243:44002';
 
 var _MapService = function () {
 	

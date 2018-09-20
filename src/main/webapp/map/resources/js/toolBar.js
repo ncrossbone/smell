@@ -26,12 +26,12 @@ var _ToolBar = function () {
 		sggSelect = $("#sggSelect")[0];
 		dongSelect = $("#dongSelect")[0];
 		
-		getSido();
-		getDong();
-    	getSgg();
-    	
-    	
-    	setMapMoveEvent();
+//		getSido();
+//		getDong();
+//    	getSgg();
+//    	
+//    	
+//    	setMapMoveEvent();
 	}
 	
 	var setMapMoveEvent = function(){
