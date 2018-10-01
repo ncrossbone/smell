@@ -17,6 +17,7 @@
     <script type="text/javascript" src="/map/resources/js/lib/vworldLayer.js"></script>
     <script type="text/javascript" src="/map/resources/js/lib/coreMap.js"></script>
     <script type="text/javascript" src="/map/resources/js/ui.js"></script>
+    <script type="text/javascript" src="/map/resources/js/westCondition.js"></script>
     <script type="text/javascript" src="/map/resources/js/lib/jquery-ui.js"></script>
     <script type="text/javascript" src="/map/resources/js/lib/zoomSlider.js"></script>
     
@@ -200,12 +201,15 @@
       .ol-popup-closer:after {
         content: "✖";
       }
+      .contents{
+    	margin: 10px 300px 10px 10px;
+      }
     </style>
     <script>
         $(document).ready(function () {
         	_CoreMap.init('mapDiv');
         	_ui.init();
-        	
+        	_WestCondition.init();
         	_SmellMapBiz.init();
         	
         	$(window).on('resize', function(){
@@ -235,24 +239,18 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">민원현황</a>
                     <div>
-                    	<select id="complaintStatusCityDistrict">
+                    	<select id="complaintStatusCityDistrict" class="contents">
 	                    	<option>1</option>
     	                	<option>2</option>
                     	</select>
-                    	<select id="complaintStatusTown">
+                    	<select id="complaintStatusTown" class="contents">
 	                    	<option>1</option>
     	                	<option>2</option>
                     	</select>
-                    	<input type="text" id="complaintStatusBranchName" />
-                    	<select id="complaintStatusStartDate">
-	                    	<option>1</option>
-    	                	<option>2</option>
-                    	</select>
-                    	<select id="complaintStatusEndDate">
-	                    	<option>1</option>
-    	                	<option>2</option>
-                    	</select>
-                    	<input type="button" id="complaintStatusViews" value="조회"/>
+                    	<input type="text" id="complaintStatusBranchName" class="contents" />
+                    	<input type="text" id="complaintStatusStartDate" class="contents" />
+                    	<input type="text" id="complaintStatusEndDate" class="contents" />
+                    	<input type="button" id="complaintStatusViews" value="조회" class="contents"/>
                     </div>
                 </div>
                 <div>
