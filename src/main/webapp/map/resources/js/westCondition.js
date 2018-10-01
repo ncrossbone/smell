@@ -33,13 +33,15 @@ var _WestCondition = function () {
 //                writeCity(data, cityArr[i]);
 //            }
 //        });
-    	var toDay = new Date();
-    	$('#complaintStatusStartDate').datepicker($.extend(datePickerDefine,{
-			  yearSuffix: '년'
-		}));
+    	
         var cityDistrictData = [{name:'남구'},{name:'동구'},{name:'서구'}];
         var townData = [{name:'논현동'},{name:'검암동'},{name:'구월동'}];
         
+        var toDay = new Date();
+    	$('#complaintStatusStartDate').datepicker($.extend(datePickerDefine,{
+			  yearSuffix: '년'
+		}));
+    	
         var cityArr = getCityArr();
         for (var i = 0; i < cityArr.length; i++) {
             var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityDistrictData : townData;
