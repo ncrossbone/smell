@@ -17,6 +17,7 @@ var _SmellMapBiz = function () {
 	var bizUrl = window.location.protocol+'//'+window.location.host;
 	
 	var bizLayers = {'CELL9KM' : 'CELL_AIR_9KM',
+					 'ALL9KM' : 'ALL_CMAQ_9KM',
 			         'LINE' : 'line_test_wgs84',
 			         'POINT' : 'CELL_AIR_9KM_PT'};
 	
@@ -28,19 +29,41 @@ var _SmellMapBiz = function () {
 	var popupOverlay;
 	
 	var bufferVectorLayer;
+	var bufferFeatureLayer;
+	
+	var noCacheCount = 0;
+	
+	var pointTestFeatures;
+	var selectFeatureLayer;
 	
 	var init = function(){
 		
 		setEvent();
 		
-		drawCell();
+//		drawCell();
 		
 		setPopupOverlay();
-		drawBufferLayer();
+//		drawBufferLayer();
+		
+		getPoints();
+	}
+	
+	var getPoints = function(){
+		_MapService.getWfs();
+		_MapService.getWfs(':'+bizLayers.POINT, '*','RESULT_DT=\'2018062501\'', '').then(function(result){
+			if(result == null || result.features.length <= 0){
+				return;
+			}
+			pointTestFeatures = [];
+			
+			for(var i=0; i<result.features.length; i++){
+				pointTestFeatures.push(new ol.Feature({geometry:new ol.geom.Point(result.features[i].geometry.coordinates), properties:{idx:i+1}}));
+			}
+		});
 	}
 	
 	var drawCell = function(){
-		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'RESULT_DT=\'2018062501\'', zIndex:10}];
+		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'RESULT_DT=\'2018062501\' AND FLAG=0', zIndex:10}];
 		wmsSelectTestLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, wmsSelectTestLayer);
@@ -74,23 +97,23 @@ var _SmellMapBiz = function () {
 				id:'highlightVectorLayer'
 			});
 			
-			var source = new ol.source.Vector();
-			var format = new ol.format.GeoJSON();
-			var parser = new jsts.io.OL3Parser();
-			for (var i = 0; i < bufferFeatures.length; i++) {
-				var feature = bufferFeatures[i];
-				var jstsGeom = parser.read(feature.getGeometry());
-				var buffered = jstsGeom.buffer(1000);
-				feature.setGeometry(parser.write(buffered));
-			}
-			source.addFeatures(bufferFeatures);
-			var vectorLayer = new ol.layer.Vector({
-				source: source,
-				zIndex:1000
-			});
+//			var source = new ol.source.Vector();
+//			var format = new ol.format.GeoJSON();
+//			var parser = new jsts.io.OL3Parser();
+//			for (var i = 0; i < bufferFeatures.length; i++) {
+//				var feature = bufferFeatures[i];
+//				var jstsGeom = parser.read(feature.getGeometry());
+//				var buffered = jstsGeom.buffer(1000);
+//				feature.setGeometry(parser.write(buffered));
+//			}
+//			source.addFeatures(bufferFeatures);
+//			var vectorLayer = new ol.layer.Vector({
+//				source: source,
+//				zIndex:1000
+//			});
 		        
 			_MapEventBus.trigger(_MapEvents.map_addLayer, bufferVectorLayer);
-			_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
+//			_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
 				
 		});
 	}
@@ -103,53 +126,56 @@ var _SmellMapBiz = function () {
 	}
 	
 	var setEvent = function(){
+		
+		$('#testBtn1').on('click', function(){
+			if(!wmsSelectTestLayer){
+				drawCell();
+				$(this).addClass('on');
+			}else{
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, wmsSelectTestLayer);
+				wmsSelectTestLayer = null;
+				$(this).removeClass('on');
+				$('#popup-closer').trigger('click');
+				if(highlightVectorLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, highlightVectorLayer);
+				}
+			}
+		});
+		
+		$('#testBtn2').on('click', function(){
+			if(!bufferVectorLayer){
+				drawBufferLayer();
+				$(this).addClass('on');
+			}else{
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferVectorLayer);
+				bufferVectorLayer = null;
+				$(this).removeClass('on');
+				if(bufferFeatureLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferFeatureLayer);
+					
+				}
+				if(selectFeatureLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, selectFeatureLayer);
+				}
+			}
+		});
+		
 		$('#cellRemeveBtn').on('click', function(){
-			alert('격자해제');	
 			if(highlightVectorLayer){
-				
-				console.log(highlightVectorLayer);
-				debugger;
-				
-				var formatWFS = new ol.format.WFS();
-	
-				var formatGML = new ol.format.GML({
-				    featureNS: 'http://112.218.1.243:44002/geoserver',
-				    featureType: 'wfs_geom',
-				    srsName: 'EPSG:3857'
-				});
-	
-				var source = highlightVectorLayer.getSource();
-				var feature = source.getFeatures()[0];
-				
-				var prop = feature.getProperties();
-				
-				var xs = new XMLSerializer();
-				
-				var dirty = {};
-			    var node = formatWFS.writeTransaction(null, [feature], null, formatGML);
-		    
-//		    switch (mode) {
-//		        case 'insert':
-//		            node = formatWFS.writeTransaction([f], null, null, formatGML);
-//		            break;
-//		        case 'update':
-//		        	node = formatWFS.writeTransaction(null, [f], null, formatGML);
-//		            break;
-//		        case 'delete':
-//		            node = formatWFS.writeTransaction(null, null, [f], formatGML);
-//		            break;
-//		    }
-			    var payload = xs.serializeToString(node);
-			    $.ajax('http://112.218.1.243:44002/geoserver/ows', {
-			        type: 'POST',
-			        dataType: 'xml',
-			        processData: false,
-			        contentType: 'text/xml',
-			        data: payload
-			    }).done(function() {
-			    	console.log(arguments);
-			   
-			    });
+				var flag = $(this).attr('flag');
+				var indexId = $(this).attr('indexId');
+				$.ajax({
+		            url : bizUrl+'/putFlag.do?flag='+(flag == 0 ? 1:0)+'&indexId='+indexId,
+		            type : 'GET',
+		            contentType : 'application/json'
+		    	}).done(function(result){
+		    		noCacheCount++;
+		    		
+		    		var wmsSource = wmsSelectTestLayer.getSource();
+		    		wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
+		    		
+		    		$('#popup-closer').trigger('click');
+		    	});
 			}
 		});
 		
@@ -163,46 +189,145 @@ var _SmellMapBiz = function () {
 		});
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
-			var wmsSource = wmsSelectTestLayer.getSource();
-			var view = _CoreMap.getMap().getView();
 			
-			  var viewResolution = /** @type {number} */ (view.getResolution());
-			  var viewProjection = view.getProjection();
-			  
-			  var url = wmsSource.getGetFeatureInfoUrl( data.result.coordinate, viewResolution, viewProjection, {'INFO_FORMAT': 'application/json'});
-			  if (url) {
-				  $.getJSON(url, function(result){
-					  if(highlightVectorLayer){
-						  _MapEventBus.trigger(_MapEvents.map_removeLayer, highlightVectorLayer);
-						  highlightVectorLayer = null;
-					  }
-					  var feature = new ol.Feature({id:result.features[0].id,geometry:new ol.geom.Polygon(result.features[0].geometry.coordinates), properties:{}});
-					  feature.setProperties(result.features[0].properties);
-					  feature.setId(result.features[0].id);
-					  
-					  highlightVectorLayer = new ol.layer.Vector({
-							source : new ol.source.Vector({
-								features : [feature]
-							}),
-							style : highlightVectorStyle,
-							visible: true,
-							zIndex: 100,
-							id:'highlightVectorLayer'
-						});
+			if(wmsSelectTestLayer){
+				wmsSelectTestLayer.setOpacity(0.0);
+				
+				var wmsSource = wmsSelectTestLayer.getSource();
+				wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND "+noCacheCount+"="+noCacheCount});
+				
+				var view = _CoreMap.getMap().getView();
+				var viewResolution = /** @type {number} */ (view.getResolution());
+				var viewProjection = view.getProjection();
+				  
+				var url = wmsSource.getGetFeatureInfoUrl( data.result.coordinate, viewResolution, viewProjection, {'INFO_FORMAT': 'application/json'});
+				if (url) {
+					$.getJSON(url, function(result){
 						
-					  _MapEventBus.trigger(_MapEvents.map_addLayer, highlightVectorLayer);
-					var geometry = feature.getGeometry();
-					var featureExtent = geometry.getExtent();
-					var featureCenter = ol.extent.getCenter(featureExtent);
+						wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
+						
+						setTimeout(function(){wmsSelectTestLayer.setOpacity(0.7);}, 10);
+						
+						if(highlightVectorLayer){
+							_MapEventBus.trigger(_MapEvents.map_removeLayer, highlightVectorLayer);
+							highlightVectorLayer = null;
+						}
+						
+						if(result.features == null || result.features.length <= 0){
+							return;
+						}
+						  
+						var feature = new ol.Feature({id:result.features[0].id,geometry:new ol.geom.Polygon(result.features[0].geometry.coordinates), properties:{}});
+						feature.setProperties(result.features[0].properties);
+						feature.setId(result.features[0].id);
+						  
+						highlightVectorLayer = new ol.layer.Vector({
+								source : new ol.source.Vector({
+									features : [feature]
+								}),
+								style : highlightVectorStyle,
+								visible: true,
+								zIndex: 100,
+								id:'highlightVectorLayer'
+						});
+							
+						_MapEventBus.trigger(_MapEvents.map_addLayer, highlightVectorLayer);
+						var geometry = feature.getGeometry();
+						var featureExtent = geometry.getExtent();
+						var featureCenter = ol.extent.getCenter(featureExtent);
+						
+						if(popupOverlay){
+							$('#popupOverlay').show();
+							$('#popup-content').show();
+							popupOverlay.setPosition(featureCenter);
+							
+							$('#cellRemeveBtn').attr('flag', result.features[0].properties.FLAG);
+							$('#cellRemeveBtn').attr('indexId', result.features[0].properties.IDX);
+							
+							if(result.features[0].properties.FLAG == 0){
+								$('#cellRemeveBtn').val('격자해제');
+							}else{
+								$('#cellRemeveBtn').val('격자추가');
+							}
+						}
+					});
+				}
+			}
+			
+			if(bufferVectorLayer){
+				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,
+			        function (feature) {
+			            return feature;
+		        });
+			        
+			    if (feature) {
+//			    	if(feature.getProperties().properties.isBuffered ){
+//			    		return;
+//			    	}
+			    	
+					var parser = new jsts.io.OL3Parser();
 					
-					  if(popupOverlay){
-						  $('#popupOverlay').show();
-						  $('#popup-content').show();
-						  popupOverlay.setPosition(featureCenter);  
-					  }
-				  });
-			  }
+					var bufferFeature = feature.clone();
+					var jstsGeom = parser.read(bufferFeature.getGeometry());
+					var buffered = jstsGeom.buffer(2000);
+					bufferFeature.setGeometry(parser.write(buffered));
+//					bufferFeature.getProperties().properties.isBuffered = true;
+					
+					
+					if(bufferFeatureLayer){
+						source = bufferFeatureLayer.getSource();
+						source.addFeatures([bufferFeature]);
+					}else{
+						var source = new ol.source.Vector();
+						source.addFeatures([bufferFeature]);
+						bufferFeatureLayer = new ol.layer.Vector({
+							source: source,
+							zIndex:1000,
+							name:'bufferedVectorLayer',
+							style: bufferVectorStyle
+						});
+						_MapEventBus.trigger(_MapEvents.map_addLayer, bufferFeatureLayer);
+					}
+					
+					var selectedFeatures = [];
+
+					var bufferPolygon = bufferFeature.getGeometry();
+					for(var i=0; i<pointTestFeatures.length; i++){
+						var pointCoord = pointTestFeatures[i].getGeometry().getCoordinates();
+						
+						if(bufferPolygon.intersectsCoordinate(pointCoord)){
+							selectedFeatures.push(pointTestFeatures[i]);
+						}
+					}
+					if(selectFeatureLayer){
+						var selectFeatureSource = selectFeatureLayer.getSource();
+						selectFeatureSource.addFeatures(selectedFeatures);
+					}else{
+						var selectFeatureSource = new ol.source.Vector();
+						selectFeatureSource.addFeatures(selectedFeatures);
+						
+						selectFeatureLayer = new ol.layer.Vector({
+							source: selectFeatureSource,
+							zIndex:1005,
+							name:'selectPointVectorLayer',
+							style:pointStyle
+						});
+						_MapEventBus.trigger(_MapEvents.map_addLayer, selectFeatureLayer);
+					}
+			    }
+			}
 		});
+	};
+	var bufferVectorStyle = function(){
+		return new ol.style.Style({
+	          stroke: new ol.style.Stroke({
+	            color: 'blue',
+	            width: 2
+	          }),
+	          fill: new ol.style.Fill({
+	            color: 'rgba(255, 255, 0, 0.5)'
+	          })
+	        })
 	};
 	var highlightVectorStyle = function(){
 		return new ol.style.Style({
@@ -211,20 +336,16 @@ var _SmellMapBiz = function () {
 	            width: 2
 	          }),
 	          fill: new ol.style.Fill({
-	            color: 'rgba(255, 255, 0, 0.8)'
+	            color: 'rgba(255, 255, 0, 0.0)'
 	          })
 	        })
-	}
-	var highlightVectorStyle = function(){
+	};
+	var pointStyle = function(){
 		return new ol.style.Style({
-	          stroke: new ol.style.Stroke({
-	            color: 'red',
-	            width: 2
-	          }),
-	          fill: new ol.style.Fill({
-	            color: 'rgba(255, 255, 0, 0.8)'
-	          })
-	        })
+	        image: new ol.style.Icon(/** @type {module:ol/style/Icon~Options} */ ({
+	            src: '/map/resources/images/icon/c1.png'
+	        }))
+		});
 	}
     // public functions
     return {

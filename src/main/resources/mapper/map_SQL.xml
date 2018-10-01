@@ -11,4 +11,7 @@
 		  FROM CMAQ_9KM_WGS84_2
 	</select>
 
+	<update id="putFlag" parameterType="java.util.HashMap">
+		UPDATE CMAQ_9KM_WGS84_2 SET FLAG = #{flag} WHERE INDEXID = #{indexId}
+	</update>
 </mapper>
