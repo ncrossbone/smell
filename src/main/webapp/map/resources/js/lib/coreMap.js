@@ -125,26 +125,26 @@ var _CoreMap = function() {
 		mapLayers = [];
 		//layerInfos.push({layerNm:'ri_shp',isVisible:false,isTiled:true,cql:null,opacity:0.7});
 		
-		mapLayers[0] = new ol.layer.Tile({
-        	source: new ol.source.OSM({
-    			url:'http://tile.openstreetmap.org/{z}/{x}/{y}.png'}),        	
-        	projection: "EPSG:4626",
-            displayProjection: "EPSG:3857",
-            name:'osm'});
+//		mapLayers[0] = new ol.layer.Tile({
+//        	source: new ol.source.OSM({
+//    			url:'http://tile.openstreetmap.org/{z}/{x}/{y}.png'}),        	
+//        	projection: "EPSG:4626",
+//            displayProjection: "EPSG:3857",
+//            name:'osm'});
 		 
 		//기본지도 1
-		mapLayers[1] = (_VWorldLayer.createVWorldBaseMapLayer({
+		mapLayers[0] = (_VWorldLayer.createVWorldBaseMapLayer({
 			isVisible : true
 		}));
 		//위성맵 2 3
-		mapLayers[2] = _VWorldLayer.createVWorldSatelliteMapLayer({
+		mapLayers[1] = _VWorldLayer.createVWorldSatelliteMapLayer({
 			isVisible : false
 		});
-		mapLayers[3] = _VWorldLayer.createVWorldHybridMapLayer({
+		mapLayers[2] = _VWorldLayer.createVWorldHybridMapLayer({
 			isVisible : false
 		});
 		//백지도
-		mapLayers[4] = _VWorldLayer.createVWorldGrayMapLayer({
+		mapLayers[3] = _VWorldLayer.createVWorldGrayMapLayer({
 			isVisible : false
 		}); 
 
@@ -379,7 +379,7 @@ var _CoreMap = function() {
       				//url: _Common.geoServerUrl+wmsBaseUrl,
       				url: _proxyUrl+wmsBaseUrl,
       				params: {'FORMAT': format, 
-	      				'VERSION': '1.1.0',
+	      				'VERSION': '1.3.0',
 	      				tiled: layerInfos[i].isTiled,
 	      				LAYERS: layerInfos[i].layerNm,
 	      				STYLES: layerInfos[i].style,
