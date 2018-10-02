@@ -88,19 +88,19 @@ var _WestCondition = function () {
 			var searchPlaceId = $(searchPlace[i]).attr('id');
 			var searchPlaceName = $(searchPlace[i]).attr('name');
 			
-			if(searchPlaceId){
-				if(searchPlaceId.indexOf('Views') == -1){
+			if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
+				if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
 					if($(searchPlace[i]).val()){
 						paramObj[splitId] = $(searchPlace[i]).val(); 
 					}else{
 						return alert(requireAlertObj[splitId]);
 					}
-    			}
-			}else if(searchPlaceName){
-				var splitName = searchPlaceName.split(placeId)[1];
-				if(!paramObj[splitName]){
-					paramObj[splitName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+				}else if(searchPlaceName){
+					var splitName = searchPlaceName.split(placeId)[1];
+					if(!paramObj[splitName]){
+						paramObj[splitName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+					}
 				}
 			}
 		}
@@ -109,27 +109,25 @@ var _WestCondition = function () {
     var setCommonCombo = function(options){
     	var arr = [];
         var parnetObj = $(options.type + '[id$="' + options.parentTypeId + '"]');
-        var childObj = $(options.type + '[id$="' + options.childTypeId + '"]');
         
         for (var i = 0; i < parnetObj.length; i++) {
         	var parentId = $(parnetObj[i]).attr('id');
         	var splitId = parentId.split(options.parentTypeId)[0];
         	
         	if($('#' + splitId + options.childTypeId).length > 0){
+        		var childId = splitId + options.childTypeId;
         		if(options.flag=='city'){
-        			setEventCityDistrict(parentId,options.flag);
-        			cityMappingObj[parentId] = splitId + options.childTypeId;
+        			setEventCityDistrict(parentId);
+        			cityMappingObj[parentId] = childId;
         		}else{
         			setEventDate(parentId);
-        			dateMappingObj[parentId] = splitId + options.childTypeId;
+        			dateMappingObj[parentId] = childId;
         		}
+        		
+        		arr.push(childId);
         	}
         	
         	arr.push(parentId);
-        }
-
-        for (var i = 0; i < childObj.length; i++) {
-        	arr.push($(childObj[i]).attr('id'));
         }
         
         return arr;
