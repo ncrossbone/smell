@@ -68,8 +68,43 @@ var _WestCondition = function () {
     
     var setEvent = function(){
     	$('input[id$="Views"]').off('click').on('click',function(){
+    		checkSearchCondition($(this).attr('id').split('Views')[0]);
     	});
     };
+    
+    var checkSearchCondition = function(placeId){
+    	var searchPlace = $('#' + placeId).find('*');
+    	var paramObj = {};
+		var requireAlertObj = {
+	    		'BranchName':'지점명을 입력하세요.',
+	    		'StartDate':'시작날짜를 선택하세요.',
+	    		'EndDate':'끝날짜를 선택하세요.',
+	    		'StartOU':'OU 시작범위를 선택하세요.',
+	    		'EndOU':'OU 끝범위를 선택하세요.',
+	    		'Item':'측정항목을 선택하세요.'
+	    };
+		
+		for(var i = 0; i < searchPlace.length; i++){
+			var searchPlaceId = $(searchPlace[i]).attr('id');
+			var searchPlaceName = $(searchPlace[i]).attr('name');
+			
+			if(searchPlaceId){
+				if(searchPlaceId.indexOf('Views') == -1){
+					var splitId = searchPlaceId.split(placeId)[1];
+					if($(searchPlace[i]).val()){
+						paramObj[splitId] = $(searchPlace[i]).val(); 
+					}else{
+						return alert(requireAlertObj[splitId]);
+					}
+    			}
+			}else if(searchPlaceName){
+				var splitName = searchPlaceName.split(placeId)[1];
+				if(!paramObj[splitName]){
+					paramObj[splitName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+				}
+			}
+		}
+    }
     
     var setCommonCombo = function(options){
     	var arr = [];
