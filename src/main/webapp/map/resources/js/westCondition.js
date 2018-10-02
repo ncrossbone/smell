@@ -47,7 +47,15 @@ var _WestCondition = function () {
         
         for(var i = 0; i < dateArr.length; i++){
         	$('#' + dateArr[i]).datepicker($.extend(datePickerDefine,{
-        		yearSuffix: '년'
+        		yearSuffix: '년',
+        		onSelect: function( selectedDate ) {
+        				instance = $( this ).data( "datepicker" ),
+        				date = $.datepicker.parseDate(
+        						instance.settings.dateFormat ||
+        						$.datepicker._defaults.dateFormat,
+        						selectedDate, instance.settings );
+        				$('#'+dateMappingObj[$( this ).attr('id')]).datepicker( "option", "minDate", date );
+        		}
         	}));
         }
     	
