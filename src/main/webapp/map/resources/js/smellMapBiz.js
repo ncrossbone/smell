@@ -59,7 +59,9 @@ var _SmellMapBiz = function () {
 			pointTestFeatures = [];
 			
 			for(var i=0; i<result.features.length; i++){
-				pointTestFeatures.push(new ol.Feature({geometry:new ol.geom.Point(result.features[i].geometry.coordinates), properties:{idx:i+1}}));
+				var feature = new ol.Feature({geometry:new ol.geom.Point(result.features[i].geometry.coordinates), properties:{idx:i+1}});
+				feature.setId(result.features[i].properties.INDEXID);
+				pointTestFeatures.push(feature);
 			}
 		});
 	}
@@ -208,6 +210,69 @@ var _SmellMapBiz = function () {
 				}
 			}
 		});
+		$('#testBtn4').on('click', function(){
+			if(!pointBufferVectorLayer){
+				drawPointBufferLayer();
+				$(this).addClass('on');
+				
+				var idx = 2600;
+				
+				bufferInterval = setInterval(function(){
+					var feature = pointBufferVectorLayer.getSource().getFeatureById(idx);
+					if(idx == 2600){
+						var centerCoord = feature.getGeometry().getCoordinates();
+						_CoreMap.centerMap(centerCoord[0], centerCoord[1], 9);
+					}
+					idx++;
+					if(feature == null){
+						clearInterval(bufferInterval);
+						return;
+					}
+					
+					var parser = new jsts.io.OL3Parser();
+					
+					var bufferFeature = feature.clone();
+					var jstsGeom = parser.read(bufferFeature.getGeometry());
+					var buffered = jstsGeom.buffer(8500);
+					bufferFeature.setGeometry(parser.write(buffered));
+//					bufferFeature.getProperties().properties.isBuffered = true;
+					
+					
+					if(pointBufferFeatureLayer){
+						source = pointBufferFeatureLayer.getSource();
+						var bufferFeature = source.getFeatures();
+						if(bufferFeature.length > 0){
+							var bufferJSTSGeom = parser.read(bufferFeature[0].getGeometry());
+							var bufferGeom = bufferJSTSGeom.union(buffered);
+							bufferFeature[0].setGeometry(parser.write(bufferGeom));
+						}
+					}else{
+						var source = new ol.source.Vector();
+						source.addFeatures([bufferFeature]);
+						pointBufferFeatureLayer = new ol.layer.Vector({
+							source: source,
+							zIndex:1000,
+							name:'pointBufferFeatureLayer',
+							style: bufferVectorStyle
+						});
+						_MapEventBus.trigger(_MapEvents.map_addLayer, pointBufferFeatureLayer);
+					}
+					
+				}, 100);
+			}else{
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, pointBufferVectorLayer);
+				pointBufferVectorLayer = null;
+				$(this).removeClass('on');
+				if(pointBufferFeatureLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, pointBufferFeatureLayer);
+					pointBufferFeatureLayer = null;
+				}
+				if(bufferInterval){
+					clearInterval(bufferInterval);
+				}
+			}
+		});
+		
 		
 		$('#cellRemeveBtn').on('click', function(){
 			if(highlightVectorLayer){
@@ -375,7 +440,7 @@ var _SmellMapBiz = function () {
 				
 				var bufferFeature = feature.clone();
 				var jstsGeom = parser.read(bufferFeature.getGeometry());
-				var buffered = jstsGeom.buffer(8000);
+				var buffered = jstsGeom.buffer(8500);
 				bufferFeature.setGeometry(parser.write(buffered));
 //				bufferFeature.getProperties().properties.isBuffered = true;
 				
