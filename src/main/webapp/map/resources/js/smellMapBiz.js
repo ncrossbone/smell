@@ -35,6 +35,8 @@ var _SmellMapBiz = function () {
 	
 	var pointTestFeatures;
 	var selectFeatureLayer;
+	var pointBufferVectorLayer;
+	var pointBufferFeatureLayer;
 	
 	var init = function(){
 		
@@ -118,6 +120,18 @@ var _SmellMapBiz = function () {
 		});
 	}
 	
+	var drawPointBufferLayer = function(){
+		pointBufferVectorLayer = new ol.layer.Vector({
+				source : new ol.source.Vector({
+					features : pointTestFeatures
+				}),
+				style : pointBufferStyle,
+				visible: true,
+				zIndex: 1001,
+				id:'pointBufferLayer'});
+		_MapEventBus.trigger(_MapEvents.map_addLayer, pointBufferVectorLayer);
+	}
+	
 	var setPopupOverlay = function(){
 		popupOverlay = new ol.Overlay({
 	    	element: document.getElementById('popupOverlay')
@@ -146,6 +160,17 @@ var _SmellMapBiz = function () {
 			if(!bufferVectorLayer){
 				drawBufferLayer();
 				$(this).addClass('on');
+				_MapEventBus.on(_MapEvents.map_pointermove, function(event, data){
+				    var hit = _CoreMap.getMap().forEachFeatureAtPixel([data.result.offsetX, data.result.offsetY], function (feature, layer) {
+				        return feature;
+				    });
+				    
+				    if (hit) {
+				        $('.ol-viewport').css("cursor", 'pointer');
+				    } else {
+				    	$('.ol-viewport').css("cursor", "");
+				    }
+				});
 			}else{
 				_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferVectorLayer);
 				bufferVectorLayer = null;
@@ -156,6 +181,30 @@ var _SmellMapBiz = function () {
 				}
 				if(selectFeatureLayer){
 					_MapEventBus.trigger(_MapEvents.map_removeLayer, selectFeatureLayer);
+				}
+			}
+		});
+		$('#testBtn3').on('click', function(){
+			if(!pointBufferVectorLayer){
+				drawPointBufferLayer();
+				$(this).addClass('on');
+				_MapEventBus.on(_MapEvents.map_pointermove, function(event, data){
+				    var hit = _CoreMap.getMap().forEachFeatureAtPixel([data.result.offsetX, data.result.offsetY], function (feature, layer) {
+				        return feature;
+				    });
+				    if (hit) {
+				        $('.ol-viewport').css("cursor", 'pointer');
+				    } else {
+				    	$('.ol-viewport').css("cursor", "");
+				    }
+				});
+			}else{
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, pointBufferVectorLayer);
+				pointBufferVectorLayer = null;
+				$(this).removeClass('on');pointBufferVectorLayer
+				if(pointBufferFeatureLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, pointBufferFeatureLayer);
+					pointBufferFeatureLayer = null;
 				}
 			}
 		});
@@ -316,6 +365,41 @@ var _SmellMapBiz = function () {
 					}
 			    }
 			}
+			if(pointBufferVectorLayer){
+				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,
+				        function (feature) {
+				            return feature;
+			        });
+				
+				var parser = new jsts.io.OL3Parser();
+				
+				var bufferFeature = feature.clone();
+				var jstsGeom = parser.read(bufferFeature.getGeometry());
+				var buffered = jstsGeom.buffer(8000);
+				bufferFeature.setGeometry(parser.write(buffered));
+//				bufferFeature.getProperties().properties.isBuffered = true;
+				
+				
+				if(pointBufferFeatureLayer){
+					source = pointBufferFeatureLayer.getSource();
+					var bufferFeature = source.getFeatures();
+					if(bufferFeature.length > 0){
+						var bufferJSTSGeom = parser.read(bufferFeature[0].getGeometry());
+						var bufferGeom = bufferJSTSGeom.union(buffered);
+						bufferFeature[0].setGeometry(parser.write(bufferGeom));
+					}
+				}else{
+					var source = new ol.source.Vector();
+					source.addFeatures([bufferFeature]);
+					pointBufferFeatureLayer = new ol.layer.Vector({
+						source: source,
+						zIndex:1000,
+						name:'pointBufferFeatureLayer',
+						style: bufferVectorStyle
+					});
+					_MapEventBus.trigger(_MapEvents.map_addLayer, pointBufferFeatureLayer);
+				}
+			}
 		});
 	};
 	var bufferVectorStyle = function(){
@@ -344,6 +428,13 @@ var _SmellMapBiz = function () {
 		return new ol.style.Style({
 	        image: new ol.style.Icon(/** @type {module:ol/style/Icon~Options} */ ({
 	            src: '/map/resources/images/icon/c1.png'
+	        }))
+		});
+	}
+	var pointBufferStyle = function(){
+		return new ol.style.Style({
+	        image: new ol.style.Icon(/** @type {module:ol/style/Icon~Options} */ ({
+	            src: '/map/resources/images/icon/c2.png'
 	        }))
 		});
 	}
