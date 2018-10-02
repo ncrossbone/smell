@@ -1,6 +1,7 @@
 var _WestCondition = function () {
     var initTownCode = '';
-    var cityTownMappingObj = {};
+    var dateMappingObj = {};
+    var cityMappingObj = {};
     
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
@@ -37,31 +38,70 @@ var _WestCondition = function () {
         var cityDistrictData = [{name:'남구'},{name:'동구'},{name:'서구'}];
         var townData = [{name:'논현동'},{name:'검암동'},{name:'구월동'}];
         
-        var toDay = new Date();
-    	$('#complaintStatusStartDate').datepicker($.extend(datePickerDefine,{
-			  yearSuffix: '년'
-		}));
+        var dateArr = setCommonCombo({
+        	type:'input',
+        	parentTypeId:'StartDate',
+        	childTypeId:'EndDate',
+        	flag:'date',
+        });
+        
+        for(var i = 0; i < dateArr.length; i++){
+        	$('#' + dateArr[i]).datepicker($.extend(datePickerDefine,{
+        		yearSuffix: '년'
+        	}));
+        }
     	
-        var cityArr = getCityArr();
+        var cityArr = setCommonCombo({
+        	type:'select',
+        	parentTypeId:'CityDistrict',
+        	childTypeId:'Town',
+        	flag:'city',
+        });
+        
         for (var i = 0; i < cityArr.length; i++) {
             var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityDistrictData : townData;
             writeCity(data, cityArr[i]);
         }
+        
+        setEvent();
     };
     
-    var getCityArr = function () {
-        var arr = [];
-        for (var i = 0; i < $('select[id$="CityDistrict"]').length; i++) {
-        	var cityDistrictId = $($('select[id$="CityDistrict"]')[i]).attr('id'); 
-            arr.push(cityDistrictId);
-            setCityTownMappingObj(cityDistrictId);
-            setEventCityDistrict(cityDistrictId);
+    var setEvent = function(){
+    	$('input[id$="Views"]').off('click').on('click',function(){
+    	});
+    };
+    
+    var setCommonCombo = function(options){
+    	var arr = [];
+        var parnetObj = $(options.type + '[id$="' + options.parentTypeId + '"]');
+        var childObj = $(options.type + '[id$="' + options.childTypeId + '"]');
+        
+        for (var i = 0; i < parnetObj.length; i++) {
+        	var parentId = $(parnetObj[i]).attr('id');
+        	var splitId = parentId.split(options.parentTypeId)[0];
+        	
+        	if($('#' + splitId + options.childTypeId).length > 0){
+        		if(options.flag=='city'){
+        			setEventCityDistrict(parentId,options.flag);
+        			cityMappingObj[parentId] = splitId + options.childTypeId;
+        		}else{
+        			setEventDate(parentId);
+        			dateMappingObj[parentId] = splitId + options.childTypeId;
+        		}
+        	}
+        	
+        	arr.push(parentId);
         }
 
-        for (var i = 0; i < $('select[id$="Town"]').length; i++) {
-            arr.push($($('select[id$="Town"]')[i]).attr('id'));
+        for (var i = 0; i < childObj.length; i++) {
+        	arr.push($(childObj[i]).attr('id'));
         }
+        
         return arr;
+    };
+    
+    var setEventDate = function(id){
+    	
     };
     
     var setEventCityDistrict = function(id){
@@ -75,14 +115,8 @@ var _WestCondition = function () {
 //    			writeCity(data,comboId)
 //    		});
     		var data = [{name:'1동'},{name:'2동'},{name:'3동'}];
-    		writeCity(data,cityTownMappingObj[comboId]);
+    		writeCity(data,cityMappingObj[comboId]);
     	});
-    };
-    
-    var setCityTownMappingObj = function(id){
-    	if($('#' + id.split('CityDistrict')[0] + 'Town').length > 0){
-        	cityTownMappingObj[id] = id.split('CityDistrict')[0] + 'Town';
-        }
     };
 
     var writeCity = function (data, comboId) {

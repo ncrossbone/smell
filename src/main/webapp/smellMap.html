@@ -256,80 +256,68 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">관능평가데이터</a>
                     <div style="display: none;">
-						<select id="sensoryEvaluationCityDistrict">
+						<select id="sensoryEvaluationCityDistrict" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="sensoryEvaluationTown">
+						<select id="sensoryEvaluationTown" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<input type="text" id="sensoryEvaluationBranchName" /> 
-						<select id="sensoryEvaluationStartOU">
+						<input type="text" id="sensoryEvaluationBranchName" class="contents"/> 
+						<select id="sensoryEvaluationStartOU" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="sensoryEvaluationEndOU">
+						<select id="sensoryEvaluationEndOU" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select>
-						<input type="button" id="sensoryEvaluationViews" value="조회"/>
+						<input type="button" id="sensoryEvaluationViews" value="조회" class="contents"/>
 					</div>
                 </div>
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">이동식측정데이터</a>
                     <div style="display: none;">
-                    	<input type="radio" name="portableMeasurementRadio" value="1" checked="checked" />
-                    	<input type="radio" name="portableMeasurementRadio" value="2" />
-                    	<select id="portableMeasurementItem">
+                    	<input type="radio" name="portableMeasurementRadio" value="1" checked="checked" class="contents"/>
+                    	<input type="radio" name="portableMeasurementRadio" value="2" class="contents"/>
+                    	<select id="portableMeasurementItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select>
-						<select id="portableMeasurementStartDate">
+						<input type="text" id="portableMeasurementStartDate" class="contents" />
+						<input type="text" id="portableMeasurementEndDate" class="contents" />
+						<select id="portableMeasurementCityDistrict" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="portableMeasurementEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="portableMeasurementCityDistrict">
+						<select id="portableMeasurementTown" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="portableMeasurementTown">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<input type="text" id="portableMeasurementBranchName" />
-						<input type="button" id="portableMeasurementViews" value="조회"/>
+						<input type="text" id="portableMeasurementBranchName" class="contents"/>
+						<input type="button" id="portableMeasurementViews" value="조회" class="contents"/>
                     </div>
                 </div>
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">고정식측정데이터</a>
                     <div style="display: none;">
-                    	<select id="fixedMeasurementItem">
+                    	<select id="fixedMeasurementItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select>
-						<select id="fixedMeasurementStartDate">
+						<input type="text" id="fixedMeasurementStartDate" class="contents">
+						<input type="text" id="fixedMeasurementEndDate" class="contents">
+						<select id="fixedMeasurementCityDistrict" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="fixedMeasurementEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="fixedMeasurementCityDistrict">
+						<select id="fixedMeasurementTown" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="fixedMeasurementTown">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<input type="text" id="fixedMeasurementBranchName" />
-						<input type="button" id="fixedMeasurementViews" value="조회"/>
+						<input type="text" id="fixedMeasurementBranchName" class="contents"/>
+						<input type="button" id="fixedMeasurementViews" value="조회" class="contents"/>
                     </div>
                 </div>
             </div>
@@ -337,10 +325,10 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">IOT 센서 정보</a>
                     <div>
-                    	<input type="radio" name="sensorInformationRadio" value="1" checked="checked"/>
-                    	<input type="radio" name="sensorInformationRadio" value="2" />
-                    	<input type="radio" name="sensorInformationRadio" value="3" />
-                    	<select id="sensorInformationItem">
+                    	<input type="radio" name="sensorInformationRadio" value="1" checked="checked" class="contents"/>
+                    	<input type="radio" name="sensorInformationRadio" value="2" class="contents"/>
+                    	<input type="radio" name="sensorInformationRadio" value="3" class="contents"/>
+                    	<select id="sensorInformationItem" class="contents">
                     		<option>1</option>
 							<option>2</option>
                     	</select> 
@@ -349,31 +337,19 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">악취저감설비 관리</a>
                     <div style="display: none;">
-                    	<select id="odorReductionCityDistrict">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<select id="odorReductionTown">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<input type="text" id="odorReductionBranchName" />
-						<input type="button" id="odorReductionViews" value="조회"/>
+                    	<select id="odorReductionCityDistrict" class="contents"></select> 
+						<select id="odorReductionTown" class="contents"></select> 
+						<input type="text" id="odorReductionBranchName" class="contents"/>
+						<input type="button" id="odorReductionViews" value="조회" class="contents"/>
                     </div>
                 </div>
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">악취원점 관리</a>
                     <div style="display: none;">
-                    	<select id="odorOriginCityDistrict">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<select id="odorOriginTown">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<input type="text" id="odorOriginBranchName" />
-						<input type="button" id="odorOriginViews" value="조회"/>
+                    	<select id="odorOriginCityDistrict" class="contents"></select> 
+						<select id="odorOriginTown" class="contents"></select> 
+						<input type="text" id="odorOriginBranchName" class="contents"/>
+						<input type="button" id="odorOriginViews" value="조회" class="contents"/>
                     </div>
                 </div>
             </div>
@@ -381,108 +357,66 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">기상청측정망</a>
                     <div>
-                    	<select id="observatoryItem">
+                    	<select id="observatoryItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="observatoryStartDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="observatoryEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-                    	<select id="observatoryCityDistrict">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<select id="observatoryTown">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<input type="button" id="observatoryViews" value="조회"/>
+						<input type="text" id="observatoryStartDate" class="contents" />
+						<input type="text" id="observatoryEndDate" class="contents" />
+                    	<select id="observatoryCityDistrict" class="contents"></select> 
+						<select id="observatoryTown" class="contents"></select> 
+						<input type="button" id="observatoryViews" value="조회" class="contents"/>
                     </div>
                 </div>
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">환경공단 측정망</a>
                     <div style="display: none;">
-                    	<select id="environmentCorporationItem">
+                    	<select id="environmentCorporationItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="environmentCorporationStartDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="environmentCorporationEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-                    	<select id="environmentCorporationCityDistrict">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<select id="environmentCorporationTown">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<input type="text" id="environmentCorporationBranchName" />
-						<input type="button" id="environmentCorporationViews" value="조회"/>
+						<input type="text" id="environmentCorporationStartDate" class="contents"/>
+						<input type="text" id="environmentCorporationEndDate" class="contents"/>
+                    	<select id="environmentCorporationCityDistrict" class="contents"></select> 
+						<select id="environmentCorporationTown" class="contents"></select>
+						<input type="text" id="environmentCorporationBranchName" class="contents"/>
+						<input type="button" id="environmentCorporationViews" value="조회" class="contents"/>
                     </div>
                 </div>
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">청주시 무인악취 측정망</a>
                     <div style="display: none;">
-                    	<select id="unmannedOdorItem">
+                    	<select id="unmannedOdorItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="unmannedOdorStartDate">
+						<input type="text" id="unmannedOdorStartDate" class="contents" />
+						<input type="text" id="unmannedOdorEndDate" class="contents" />
+                    	<select id="unmannedOdorCityDistrict" class="contents">
+							<option>1</option>
+							<option>2</option>
+						</select> 
+						<select id="unmannedOdorTown" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select>
-						<select id="unmannedOdorEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-                    	<select id="unmannedOdorCityDistrict">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<select id="unmannedOdorTown">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<input type="text" id="unmannedOdorBranchName" />
-						<input type="button" id="unmannedOdorViews" value="조회"/>
+						<input type="text" id="unmannedOdorBranchName" class="contents"/>
+						<input type="button" id="unmannedOdorViews" value="조회" class="contents"/>
                     </div>
                 </div>
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">KT 에어맵 코리아 측정망</a>
                     <div style="display: none;">
-                    	<select id="airMapItem">
+                    	<select id="airMapItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="airMapStartDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="airMapEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-                    	<select id="airMapCityDistrict">
-							<option>1</option>
-							<option>2</option>
-						</select> 
-						<select id="airMapTown">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<input type="text" id="airMapBranchName" />
-						<input type="button" id="airMapViews" value="조회"/>
+						<input type="text" id="airMapStartDate" class="contents" / >
+						<input type="text" id="airMapEndDate" class="contents" />
+                    	<select id="airMapCityDistrict" class="contents"></select> 
+						<select id="airMapTown" class="contents"></select>
+						<input type="text" id="airMapBranchName" class="contents"/>
+						<input type="button" id="airMapViews" value="조회" class="contents"/>
                     </div>
                 </div>
             </div>
@@ -490,30 +424,21 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">기상장 분석</a>
                     <div>
-                    	<select id="weatherAnalysisItem">
+                    	<select id="weatherAnalysisItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="weatherAnalysisStartDate">
+						<input type="text" id="weatherAnalysisStartDate" class="contents" />
+						<select id="weatherAnalysisStartTime" class="contents">
 							<option>1</option>
-							<option>2</option>
+							<option>2</option>	
 						</select>
-						<select id="weatherAnalysisStartTime">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="weatherAnalysisEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="weatherAnalysisEndTime">
+						<input type="text" id="weatherAnalysisEndDate" class="contents"/>
+						<select id="weatherAnalysisEndTime" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-                    	<select id="weatherAnalysisDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
+                    	<input type="text" id="weatherAnalysisDate" class="contents" />
 						<input type="button" id="weatherAnalysisPrevious" value="이전"/> 
 						<input type="button" id="weatherAnalysisPlay" value="재생"/>
 						<input type="button" id="weatherAnalysisNext" value="다음"/>
@@ -522,30 +447,21 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">악취확산 분석</a>
                     <div style="display: none;">
-                    	<select id="odorSpreadItem">
+                    	<select id="odorSpreadItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="odorSpreadStartDate">
+						<input type="text" id="odorSpreadStartDate" class="contents" />
+						<select id="odorSpreadStartTime" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select>
-						<select id="odorSpreadStartTime">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="odorSpreadEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="odorSpreadEndTime">
+						<input type="text" id="odorSpreadEndDate" class="contents" />
+						<select id="odorSpreadEndTime" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-                    	<select id="odorSpreadDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
+                    	<input type="text" id="odorSpreadDate" class="contents" />
 						<input type="button" id="odorSpreadPrevious" value="이전"/> 
 						<input type="button" id="odorSpreadPlay" value="재생"/>
 						<input type="button" id="odorSpreadNext" value="다음"/>
@@ -554,30 +470,21 @@
                 <div>
                     <a href="javascript:void(0)" class="left_tit accordion">악취 이동경로</a>
                     <div style="display: none;">
-                    	<select id="odorMovementItem">
+                    	<select id="odorMovementItem" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-						<select id="odorMovementStartDate">
+						<input type="text" id="odorMovementStartDate" class="contents" />
+						<select id="odorMovementStartTime" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select>
-						<select id="odorMovementStartTime">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="odorMovementEndDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
-						<select id="odorMovementEndTime">
+						<input type="text" id="odorMovementEndDate" class="contents" />
+						<select id="odorMovementEndTime" class="contents">
 							<option>1</option>
 							<option>2</option>
 						</select> 
-                    	<select id="odorMovementDate">
-							<option>1</option>
-							<option>2</option>
-						</select>
+                    	<input type="text" id="odorMovementDate" class="contents" />
 						<input type="button" id="odorMovementPrevious" value="이전"/> 
 						<input type="button" id="odorMovementPlay" value="재생"/>
 						<input type="button" id="odorMovementNext" value="다음"/>
