@@ -9,7 +9,13 @@ var _ui = (function () {
             var isDisplay = 'block';
             for (var i = 0; i < $('.accordion').length; i++) {
                 if ($($('#tab').find('.on')[0]).attr('tabType') == $($('.accordion')[i]).parent().parent()[0].id) {
-                	$($('.accordion')[i]).text() == $(me).text() ? isDisplay = 'block' : isDisplay = 'none';
+                	if($($('.accordion')[i]).text() == $(me).text()){
+                		isDisplay = 'block';
+                		$($('.accordion')[i]).addClass('ov');
+                	}else{
+                		isDisplay = 'none';
+                		$($('.accordion')[i]).removeClass('ov');
+                	}
                     $($('.accordion')[i].nextElementSibling).css('display', isDisplay);
                 }
 
