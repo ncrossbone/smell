@@ -25,6 +25,8 @@ var _SmellMapBiz = function () {
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
 	var wmsSelectTestLayer;
+	var wmsWindLayer;
+	
 	var highlightVectorLayer;
 	var popupOverlay;
 	
@@ -37,6 +39,8 @@ var _SmellMapBiz = function () {
 	var selectFeatureLayer;
 	var pointBufferVectorLayer;
 	var pointBufferFeatureLayer;
+	
+	var clusterVectorLayer;
 	
 	var init = function(){
 		
@@ -71,6 +75,12 @@ var _SmellMapBiz = function () {
 		wmsSelectTestLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, wmsSelectTestLayer);
+	}
+	var drawWindLayer = function(){
+		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.POINT,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'RESULT_DT=\'2018062501\'', zIndex:10}];
+		wmsWindLayer = _CoreMap.createTileLayer(layerInfos)[0];
+		
+		_MapEventBus.trigger(_MapEvents.map_addLayer, wmsWindLayer);
 	}
 	var drawBufferLayer = function(){
 		_MapService.getWfs(':'+bizLayers.LINE, '*','1=1', '').then(function(result){
@@ -143,6 +153,17 @@ var _SmellMapBiz = function () {
 	
 	var setEvent = function(){
 		
+		
+		$('#testBtn0').on('click', function(){
+			if(!wmsWindLayer){
+				drawWindLayer();
+				$(this).addClass('on');
+			}else{
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, wmsWindLayer);
+				wmsWindLayer = null;
+				$(this).removeClass('on');
+			}
+		});
 		$('#testBtn1').on('click', function(){
 			if(!wmsSelectTestLayer){
 				drawCell();
@@ -273,6 +294,54 @@ var _SmellMapBiz = function () {
 			}
 		});
 		
+		$('#testBtn5').on('click', function(){
+			if(!clusterVectorLayer){
+				var source = new ol.source.Vector({
+					features: pointTestFeatures
+				});
+
+				var clusterSource = new ol.source.Cluster({
+					distance: parseInt(15, 10),
+					source: source
+				});
+
+				var styleCache = {};
+				clusterVectorLayer = new ol.layer.Vector({
+			        source: clusterSource,
+			        style: function(feature) {
+			        	var size = feature.get('features').length;
+			        	var style = styleCache[size];
+			        	if (!style) {
+			        		style = new ol.style.Style({
+			        			image: new ol.style.Circle({
+			        				radius: 10,
+			        				stroke: new ol.style.Stroke({
+			        					color: '#fff'
+			        				}),
+			        				fill: new ol.style.Fill({
+			        					color: '#3399CC'
+			        				})
+			        			}),
+			        			text: new ol.style.Text({
+			        				text: size.toString(),
+			        				fill: new ol.style.Fill({
+			        					color: '#fff'
+			        				})
+			        			})
+			        		});
+			        		styleCache[size] = style;
+			        	}
+			        	return style;
+			        	}
+				});
+				_MapEventBus.trigger(_MapEvents.map_addLayer, clusterVectorLayer);
+				$(this).addClass('on');
+			}else{
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, clusterVectorLayer);
+				clusterVectorLayer = null;
+				$(this).removeClass('on');
+			}
+		});
 		
 		$('#cellRemeveBtn').on('click', function(){
 			if(highlightVectorLayer){
