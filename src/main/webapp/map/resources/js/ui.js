@@ -8,8 +8,8 @@ var _ui = (function () {
             var me = this;
             var isDisplay = 'block';
             for (var i = 0; i < $('.accordion').length; i++) {
-                if ($($('#smellMenu').find('.on')[0]).attr('value') == $($('.accordion')[i]).parent().parent()[0].id) {
-                    $('.accordion')[i].text == me.text ? isDisplay = 'block' : isDisplay = 'none';
+                if ($($('#tab').find('.on')[0]).attr('tabType') == $($('.accordion')[i]).parent().parent()[0].id) {
+                	$($('.accordion')[i]).text() == $(me).text() ? isDisplay = 'block' : isDisplay = 'none';
                     $($('.accordion')[i].nextElementSibling).css('display', isDisplay);
                 }
 

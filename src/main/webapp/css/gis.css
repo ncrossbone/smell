@@ -1,0 +1,39 @@
+@CHARSET "UTF-8";
+
+#testMenu>a {
+	background: #fff;
+	color: #000;
+	padding: 10px 10px;
+	cursor: pointer;
+}
+
+#testMenu>a.on {
+	background: #1388e6;
+	color: #fff;
+	padding: 10px 10px;
+	cursor: pointer;
+}
+
+.zoomPart div {
+	position: absolute;
+	width: 6px;
+	height: 10px;
+	margin-top: -10px;
+	cursor: pointer;
+	border-bottom: 1px solid darkgray;
+}
+
+.zoomText {
+	margin: 20px 0px 0px -30px;
+	background-size: 515px 26px;
+	width: 30px;
+	height: 126px;
+}
+
+.zoomText div {
+	position: absolute;
+	width: 29px;
+	left: 0px;
+	height: 15px;
+	margin: -6px 0px 0px;
+}
