@@ -338,62 +338,15 @@
 				<h3>IOT 센서 정보<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
-                        <dl>
-                            <dt>지역 선택</dt>
-                            <dd>
-                                <div class="box">
-                                    <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
-                                            <option value="청원구">청원구</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
-                                            <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
-                                        </select>
-                                    </p>
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지점명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
-                            </dd>
-                        </dl>
-                        <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
-                        </p>
+                        
                     </li>
-                    
-                    
                 </ul>
             </div>
 		</li>
 
         <li>
-            <h2 class="accordion" id="sensoryEvaluation"><em></em>악취저감설비 관리<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <h2 class="accordion"><em></em>악취저감설비 관리<span></span></h2>
+            <div class="lnb_conts" style="display: none;" id="odorReduction">
 				<h3>악취저감설비 관리<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
@@ -402,21 +355,15 @@
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="odorReductionCityDistrict">시·군·구</label>
+                                        <select name="" id="odorReductionCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="odorReductionTown">읍·면·동</label>
+                                        <select name="" id="odorReductionTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -426,33 +373,20 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <input type="text" class="W95p" name="" value="" id="odorReductionBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="odorReductionViews">조회</a>
                         </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
         </li>
         
         <li>
             <h2 class="accordion"><em></em>악취원점 관리<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <div class="lnb_conts" style="display: none;" id="odorOrigin">
 				<h3>악취원점 관리<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
@@ -461,21 +395,15 @@
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="odorOriginCityDistrict">시·군·구</label>
+                                        <select name="" id="odorOriginCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="odorOriginTown">읍·면·동</label>
+                                        <select name="" id="odorOriginTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -485,26 +413,13 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <input type="text" class="W95p" name="" value="" id="odorOriginBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="odorOriginViews">조회</a>
                         </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
         </li>
@@ -512,89 +427,89 @@
 	<ul class="lnb" id="smellMeasure" style="display: none;">
 		<li>
 			<h2 class="ov accordion"><em></em>기상청측정망<span></span></h2>
-			<div class="lnb_conts">
+			<div class="lnb_conts" id="observatory">
 				<h3>기상청측정망<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
+                        <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="observatoryItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="observatoryStartDate" class="W105" style="width: 90px !important"/>
+                                ~
+                                <input type="text" id="observatoryEndDate" class="W105" style="width: 90px !important"/>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="observatoryCityDistrict">시·군·구</label>
+                                        <select name="" id="observatoryCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="observatoryTown">읍·면·동</label>
+                                        <select name="" id="observatoryTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
                             </dd>
                         </dl>
-                        <dl>
-                            <dt>지점명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
-                            </dd>
-                        </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="observatoryViews">조회</a>
                         </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
 		</li>
 
         <li>
-            <h2 class="accordion" id="sensoryEvaluation"><em></em>환경공단 측정망<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <h2 class="accordion"><em></em>환경공단 측정망<span></span></h2>
+            <div class="lnb_conts" style="display: none;" id="environmentCorporation">
 				<h3>환경공단 측정망<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
+                        <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="environmentCorporationItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="environmentCorporationStartDate" class="W105" style="width: 90px !important"/>
+                                ~
+                                <input type="text" id="environmentCorporationEndDate" class="W105" style="width: 90px !important"/>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="environmentCorporationCityDistrict">시·군·구</label>
+                                        <select name="" id="environmentCorporationCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="environmentCorporationTown">읍·면·동</label>
+                                        <select name="" id="environmentCorporationTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -604,56 +519,53 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <input type="text" class="W95p" name="" value="" id="environmentCorporationBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="environmentCorporationViews">조회</a>
                         </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
         </li>
         
         <li>
             <h2 class="accordion"><em></em>청주시 무인악취 측정망<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <div class="lnb_conts" style="display: none;" id="unmannedOdor">
 				<h3>청주시 무인악취 측정망<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
+                        <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="unmannedOdorItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="unmannedOdorStartDate" class="W105" style="width: 90px !important"/>
+                                ~
+                                <input type="text" id="unmannedOdorEndDate" class="W105" style="width: 90px !important"/>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="unmannedOdorCityDistrict">시·군·구</label>
+                                        <select name="" id="unmannedOdorCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="unmannedOdorTown">읍·면·동</label>
+                                        <select name="" id="unmannedOdorTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -663,55 +575,52 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <input type="text" class="W95p" name="" value="" id="unmannedOdorBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="unmannedOdorViews">조회</a>
                         </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
         </li>
         <li>
             <h2 class="accordion"><em></em>KT 에어맵 코리아 측정망<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <div class="lnb_conts" style="display: none;" id="airMap">
 				<h3>KT 에어맵 코리아 측정망<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
+                        <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="airMapItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="airMapStartDate" class="W105" style="width: 90px !important"/>
+                                ~
+                                <input type="text" id="airMapEndDate" class="W105" style="width: 90px !important"/>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="airMapCityDistrict">시·군·구</label>
+                                        <select name="" id="airMapCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="airMapTown">읍·면·동</label>
+                                        <select name="" id="airMapTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -721,26 +630,13 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <input type="text" class="W95p" name="" value="" id="airMapBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="airMapViews">조회</a>
                         </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
         </li>
@@ -752,114 +648,18 @@
 				<h3>기상장 분석<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
-                        <dl>
-                            <dt>지역 선택</dt>
-                            <dd>
-                                <div class="box">
-                                    <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
-                                            <option value="청원구">청원구</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
-                                            <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
-                                        </select>
-                                    </p>
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지점명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
-                            </dd>
-                        </dl>
-                        <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
-                        </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
 		</li>
 
         <li>
-            <h2 class="accordion" id="sensoryEvaluation"><em></em>악취확산 분석<span></span></h2>
+            <h2 class="accordion"><em></em>악취확산 분석<span></span></h2>
             <div class="lnb_conts" style="display: none;">
 				<h3>악취확산 분석<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
-                        <dl>
-                            <dt>지역 선택</dt>
-                            <dd>
-                                <div class="box">
-                                    <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
-                                            <option value="청원구">청원구</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
-                                            <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
-                                        </select>
-                                    </p>
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지점명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
-                            </dd>
-                        </dl>
-                        <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
-                        </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
         </li>
@@ -870,55 +670,7 @@
 				<h3>악취 이동경로<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
-                        <dl>
-                            <dt>지역 선택</dt>
-                            <dd>
-                                <div class="box">
-                                    <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
-                                            <option value="청원구">청원구</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
-                                            <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
-                                        </select>
-                                    </p>
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지점명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
-                            </dd>
-                        </dl>
-                        <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
-                        </p>
                     </li>
-                    
-                    
                 </ul>
             </div>
         </li>
