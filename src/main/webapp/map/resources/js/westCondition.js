@@ -75,7 +75,7 @@ var _WestCondition = function () {
     };
     
     var setEvent = function(){
-    	$('input[id$="Views"]').off('click').on('click',function(){
+    	$('a[id$="Views"]').off('click').on('click',function(){
     		checkSearchCondition($(this).attr('id').split('Views')[0]);
     	});
     };
@@ -112,6 +112,8 @@ var _WestCondition = function () {
 				}
 			}
 		}
+		
+		console.log(paramObj);
     }
     
     var setCommonCombo = function(options){

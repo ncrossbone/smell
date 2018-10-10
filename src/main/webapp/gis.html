@@ -57,8 +57,8 @@
     <div id="top">
         <h1></h1>
         <ul id="map_sel">
-        	<li><a class="map1 on" href="#"></a></li>
-            <li><a class="map2" href="#"></a></li>
+        	<li><a class="map1 on" href="javascript:void(0)"></a></li>
+            <li><a class="map2" href="javascript:void(0)"></a></li>
         </ul>
     </div>
     	
@@ -90,7 +90,7 @@
                 </select>
             </span>
         </div>
-        <a class="btn02 fl" href="#">도로명 주소</a>
+        <a class="btn02 fl" href="javascript:void(0)">도로명 주소</a>
         
         <div class="fr">오른쪽 항목 공간 비워놓기</div>
         
@@ -112,8 +112,8 @@
     	
 	<ul class="lnb" id="smellMap">
 		<li>
-			<h2 class="ov accordion" id="complaintStatus"><em></em>민원현황<span></span></h2>
-			<div class="lnb_conts">
+			<h2 class="ov accordion"><em></em>민원현황<span></span></h2>
+			<div class="lnb_conts"  id="complaintStatus">
 				<h3>민원현황<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
@@ -122,21 +122,15 @@
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="complaintStatusCityDistrict">시·군·구</label>
+                                        <select name="" id="complaintStatusCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="complaintStatusTown">읍·면·동</label>
+                                        <select name="" id="complaintStatusTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -146,22 +140,26 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
+                                <input type="text" class="W95p" name="" value="" id="complaintStatusBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <dl>
                             <dt>조회기간</dt>
                             <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <div class="box">
+                                    <p>
+                                        <label class="W60 dis_ib" for="complaintStatusStartDate">시작날짜</label>
+                                        <input type="text" id="complaintStatusStartDate" class="W130" style="width: 120px !important;"/>
+                                    </p>
+                                    <p>
+                                        <label class="W60 dis_ib" for="complaintStatusEndDate">끝날짜</label>
+                                         <input type="text" id="complaintStatusEndDate" class="W130" style="width: 120px !important;"/>
+                                    </p>
+                                </div>
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="complaintStatusViews">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -220,7 +218,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -279,7 +277,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -338,7 +336,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -398,7 +396,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -457,7 +455,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -516,7 +514,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -576,7 +574,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -635,7 +633,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -694,7 +692,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -752,7 +750,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -812,7 +810,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -871,7 +869,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -930,7 +928,7 @@
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="#">조회</a>
+                           <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
                     <li></li>
@@ -941,9 +939,9 @@
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
      	<ul id="map_type">
-        	<li class="on"><a href="#" class="">기본</a></li>
-            <li><a href="#" class="">위성</a></li>
-            <li><a href="#" class="">흑백</a></li>
+        	<li class="on"><a href="javascript:void(0)" class="">기본</a></li>
+            <li><a href="javascript:void(0)" class="">위성</a></li>
+            <li><a href="javascript:void(0)" class="">흑백</a></li>
         </ul>
         <div id="mapNavBar"></div>
         <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute;">
@@ -956,18 +954,18 @@
             </div>
         
         <!-- <div id="popup" style="left: 500px; top: 200px;">
-        	<p class="pop_tit">API 제공 레이어<a href="#" class="btn03 pop_close"></a></p>
+        	<p class="pop_tit">API 제공 레이어<a href="javascript:void(0)" class="btn03 pop_close"></a></p>
             <div class="pop_conts">
             	팝업 내용
             </div>
             <div class="pop_bot">
-            	<a href="#" class="btn04">확인</a>
-                <a href="#" class="btn05">취소</a>
+            	<a href="javascript:void(0)" class="btn04">확인</a>
+                <a href="javascript:void(0)" class="btn05">취소</a>
             </div>
         </div>        
         
         <div class="tooltip" style="left: 1000px; top: 200px;">
-        	<p class="tt_tit"><span></span>민원 현황 지점정보<a href="#" class="btn06 pop_close"></a></p>
+        	<p class="tt_tit"><span></span>민원 현황 지점정보<a href="javascript:void(0)" class="btn06 pop_close"></a></p>
             <div class="pop_conts2">
             	정보 내용
             </div>
