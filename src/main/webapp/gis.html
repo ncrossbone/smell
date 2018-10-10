@@ -145,32 +145,23 @@
                         </dl>
                         <dl>
                             <dt>조회기간</dt>
-                            <dd>
-                                <div class="box">
-                                    <p>
-                                        <label class="W60 dis_ib" for="complaintStatusStartDate">시작날짜</label>
-                                        <input type="text" id="complaintStatusStartDate" class="W130" style="width: 120px !important;"/>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="complaintStatusEndDate">끝날짜</label>
-                                         <input type="text" id="complaintStatusEndDate" class="W130" style="width: 120px !important;"/>
-                                    </p>
-                                </div>
+                             <dd>
+                                <input type="text" id="complaintStatusStartDate" class="W105" style="width: 90px !important"/>
+                                ~
+                                <input type="text" id="complaintStatusEndDate" class="W105" style="width: 90px !important"/>
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
                            <a class="btn01" href="javascript:void(0)" id="complaintStatusViews">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
                 </ul>
             </div>
 		</li>
 
         <li>
-            <h2 class="accordion" id="sensoryEvaluation"><em></em>관능 평가 데이터<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <h2 class="accordion"><em></em>관능 평가 데이터<span></span></h2>
+            <div class="lnb_conts" style="display: none;" id="sensoryEvaluation">
 				<h3>관능 평가 데이터<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
@@ -179,21 +170,15 @@
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="sensoryEvaluationCityDistrict">시·군·구</label>
+                                        <select name="" id="sensoryEvaluationCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="sensoryEvaluationTown">읍·면·동</label>
+                                        <select name="" id="sensoryEvaluationTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -203,56 +188,73 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
+                                <input type="text" class="W95p" name="" value="" id="sensoryEvaluationBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <dl>
-                            <dt>조회기간</dt>
+                            <dt>OU 범위</dt>
                             <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
+                                <select name="" id="sensoryEvaluationStartOU" title="" class="W105" style="width: 90px !important;">
+                                	<option>1</option>
                                 </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
+                                ~
+                                <select name="" id="sensoryEvaluationEndOU" title="" class="W105" style="width: 90px !important;">
+                                	<option>10</option>
                                 </select>
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="sensoryEvaluationViews">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
                 </ul>
             </div>
         </li>
         
         <li>
             <h2 class="accordion"><em></em>이동식 측정 데이터<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <div class="lnb_conts" style="display: none;" id="portableMeasurement">
 				<h3>이동식 측정 데이터<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
+                    	<dl>
+                            <dd>
+                                <input style="margin-left: 83px;margin-right: 20px;" id="portableMeasurementRadio1" type="radio" name="portableMeasurementRadio" value="1" checked="checked" class="contents"/>
+                                <label class="W60 dis_ib" for="portableMeasurementRadio1" style="width: 100px !important; margin-bottom: 8px;">이동형 측정기 1호</label>
+                    			<input style="margin-left: 83px;margin-right: 20px;" id="portableMeasurementRadio2" type="radio" name="portableMeasurementRadio" value="2" class="contents"/>
+                    			<label class="W60 dis_ib" for="portableMeasurementRadio2" style="width: 100px !important; margin-bottom: 8px;">이동형 측정기 2호</label>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="portableMeasurementItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="portableMeasurementStartDate" class="W105" style="width: 90px !important"/>
+                                ~
+                                <input type="text" id="portableMeasurementEndDate" class="W105" style="width: 90px !important"/>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="portableMeasurementCityDistrict">시·군·구</label>
+                                        <select name="" id="portableMeasurementCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="portableMeasurementTown">읍·면·동</label>
+                                        <select name="" id="portableMeasurementTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -262,56 +264,53 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <input type="text" class="W95p" name="" value="" id="portableMeasurementBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="portableMeasurementViews">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
                 </ul>
             </div>
         </li>
         
         <li>
             <h2 class="accordion"><em></em>고정식 측정 데이터<span></span></h2>
-            <div class="lnb_conts" style="display: none;">
+            <div class="lnb_conts" style="display: none;" id="fixedMeasurement">
 				<h3>고정식 측정 데이터<span>[<strong>45</strong>개]</span></h3>
                 <ul>
                     <li>
+                        <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="fixedMeasurementItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="fixedMeasurementStartDate" class="W105" style="width: 90px !important"/>
+                                ~
+                                <input type="text" id="fixedMeasurementEndDate" class="W105" style="width: 90px !important"/>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
                                     <p>
-                                        <label class="W60 dis_ib" for="a01">시·군·구</label>
-                                        <select name="" id="a01" title="" class="W130">
+                                        <label class="W60 dis_ib" for="fixedMeasurementCityDistrict">시·군·구</label>
+                                        <select name="" id="fixedMeasurementCityDistrict" title="" class="W130">
                                             <option value="청원구">청원구</option>
                                         </select>
                                     </p>
                                     <p>
-                                        <label class="W60 dis_ib" for="a02">읍·면·동</label>
-                                        <select name="" id="a02" title="" class="W130">
+                                        <label class="W60 dis_ib" for="fixedMeasurementTown">읍·면·동</label>
+                                        <select name="" id="fixedMeasurementTown" title="" class="W130">
                                             <option value="오창읍">오창읍</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="a02">리</label>
-                                        <select name="" id="a03" title="" class="W130">
-                                            <option value="성재리">성재리</option>
                                         </select>
                                     </p>
                                 </div>
@@ -321,33 +320,20 @@
                             <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                            <dd>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="2018">2018</option>
-                                </select>
-                                <select name="" id="" title="" class="W105">
-                                    <option value="01">01</option>
-                                </select>
+                                <input type="text" class="W95p" name="" value="" id="fixedMeasurementBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)">조회</a>
+                           <a class="btn01" href="javascript:void(0)" id="fixedMeasurementViews">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
                 </ul>
             </div>
         </li>
 	</ul>         
     <ul class="lnb" id="smellInfo" style="display: none;">
 		<li>
-			<h2 class="ov accordion" id="complaintStatus"><em></em>IOT 센서 정보<span></span></h2>
+			<h2 class="ov accordion"><em></em>IOT 센서 정보<span></span></h2>
 			<div class="lnb_conts">
 				<h3>IOT 센서 정보<span>[<strong>45</strong>개]</span></h3>
                 <ul>
@@ -399,8 +385,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
 		</li>
@@ -458,8 +444,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
         </li>
@@ -517,15 +503,15 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
         </li>
 	</ul>
 	<ul class="lnb" id="smellMeasure" style="display: none;">
 		<li>
-			<h2 class="ov accordion" id="complaintStatus"><em></em>기상청측정망<span></span></h2>
+			<h2 class="ov accordion"><em></em>기상청측정망<span></span></h2>
 			<div class="lnb_conts">
 				<h3>기상청측정망<span>[<strong>45</strong>개]</span></h3>
                 <ul>
@@ -577,8 +563,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
 		</li>
@@ -636,8 +622,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
         </li>
@@ -695,8 +681,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
         </li>
@@ -753,15 +739,15 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
         </li>
 	</ul>
 	<ul class="lnb" id="smellReport" style="display: none;">
 		<li>
-			<h2 class="ov accordion" id="complaintStatus"><em></em>기상장 분석<span></span></h2>
+			<h2 class="ov accordion"><em></em>기상장 분석<span></span></h2>
 			<div class="lnb_conts">
 				<h3>기상장 분석<span>[<strong>45</strong>개]</span></h3>
                 <ul>
@@ -813,8 +799,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
 		</li>
@@ -872,8 +858,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
         </li>
@@ -931,8 +917,8 @@
                            <a class="btn01" href="javascript:void(0)">조회</a>
                         </p>
                     </li>
-                    <li></li>
-                    <li></li>
+                    
+                    
                 </ul>
             </div>
         </li>

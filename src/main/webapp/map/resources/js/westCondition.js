@@ -35,8 +35,8 @@ var _WestCondition = function () {
 //            }
 //        });
     	
-        var cityDistrictData = [{name:'남구'},{name:'동구'},{name:'서구'}];
-        var townData = [{name:'논현동'},{name:'검암동'},{name:'구월동'}];
+        var cityDistrictData = [{name:'서원구'},{name:'청원구'},{name:'흥덕구'},{name:'상당구'}];
+        var townData = [{name:'1동'},{name:'2동'},{name:'3동'}];
         
         var dateArr = setCommonCombo({
         	type:'input',
@@ -97,17 +97,17 @@ var _WestCondition = function () {
 			var searchPlaceName = $(searchPlace[i]).attr('name');
 			
 			if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
-				if(searchPlaceId){
+				if(searchPlaceName){
+					var splitName = searchPlaceName.split(placeId)[1];
+					if(!paramObj[splitName]){
+						paramObj[splitName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+					}
+				}else if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
 					if($(searchPlace[i]).val()){
 						paramObj[splitId] = $(searchPlace[i]).val(); 
 					}else{
 						return alert(requireAlertObj[splitId]);
-					}
-				}else if(searchPlaceName){
-					var splitName = searchPlaceName.split(placeId)[1];
-					if(!paramObj[splitName]){
-						paramObj[splitName] = $('input[name="' + searchPlaceName + '"]:checked').val();
 					}
 				}
 			}
