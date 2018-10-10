@@ -22,16 +22,16 @@ var _ui = (function () {
             }
         });
 
-        $('#smellMenu').find('a').on('click', function () {
+        $('#tab').find('li').on('click', function () {
             var me = $(this);
-            var value = me.attr('value');
-            for (var i = 0; i < me.parent().find('a').length; i++) {
-                if ($(me.parent().find('a')[i]).attr('value') == value) {
-                    $('#' + $(me.parent().find('a')[i]).attr('value')).show();
-                    $($(me.parent()).find('a')[i]).addClass('on');
+            var value = me.attr('tabType');
+            for (var i = 0; i < me.parent().find('li').length; i++) {
+                if ($(me.parent().find('li')[i]).attr('tabType') == value) {
+                    $('#' + $(me.parent().find('li')[i]).attr('tabType')).show();
+                    $($(me.parent()).find('li')[i]).addClass('on');
                 } else {
-                    $('#' + $(me.parent().find('a')[i]).attr('value')).hide();
-                    $($(me.parent()).find('a')[i]).removeClass('on');
+                    $('#' + $(me.parent().find('li')[i]).attr('tabType')).hide();
+                    $($(me.parent()).find('li')[i]).removeClass('on');
                 }
             }
         });
