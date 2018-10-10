@@ -2,6 +2,7 @@ var _WestCondition = function () {
     var initTownCode = '';
     var dateMappingObj = {};
     var cityMappingObj = {};
+    var tabCounter = 0;
     
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
@@ -22,11 +23,11 @@ var _WestCondition = function () {
 //        $.when(getData({
 //            url: '',
 //            contentType: 'application/json',
-//            params: 'code=1111&flag=CityDistrict'
+//            params: {code:'1111',flag='CityDistrict'}
 //        }), getData({
 //            url: '',
 //            contentType: 'application/json',
-//            params: 'code=' + initTownCode + '&flag=town'
+//            params: {code:initTownCode,flag='town'}
 //        })).then(function (cityDistrictData, townData) {
 //            var cityArr = getCityArr();
 //            for (var i = 0; i < cityArr.length; i++) {
@@ -113,8 +114,85 @@ var _WestCondition = function () {
 			}
 		}
 		
-		console.log(paramObj);
-    }
+		/*getData({
+			url: '',
+			contentType: 'application/json',
+			params: paramObj
+		}).done(function(data){
+			writeGrid(data);
+		});*/
+		
+		writeGrid();
+    };
+    
+    var writeGrid = function(){
+    	$('#gridArea').show();
+    	var tabTitle = $('#tab_title');
+    	var tabContent = $('#tab_content');
+    	var tabTemplate = '<li><a id=#{id} href="#{href}">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>';
+    	var tabs = $('#tabs').tabs();
+    	
+    	tabs.on('click','span.ui-icon-close', function() {
+    		var panelId = $( this ).closest('li').remove().attr('aria-controls');
+    		$('#' + panelId ).remove();
+    		tabs.tabs('refresh');
+    	});
+
+    	tabs.on('keyup', function( event ) {
+    		if ( event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE ) {
+    			var panelId = tabs.find('.ui-tabs-active').remove().attr('aria-controls');
+    			$('#' + panelId ).remove();
+    			tabs.tabs('refresh');
+    		}
+    	});
+    	var labelObj = ['민원현황','관능성평가데이터','이동식측정데이터','고정식측정데이터'];
+    	var label = labelObj[tabCounter]?labelObj[tabCounter]:labelObj[0];
+    	var id = 'tabs-' + tabCounter + 1;
+    	var randomNum = parseInt(Math.random() * 100);
+    	var li = $( tabTemplate.replace( /#\{id\}/g, 'tabs-' + tabCounter ).replace( /#\{href\}/g, '#' + id ).replace( /#\{label\}/g, label  + '(' + randomNum + ')') );
+    	var tabContentHtml = tabContent.val() || 'Tab ' + tabCounter + ' content.';
+
+    	tabs.find('.ui-tabs-nav').append( li );
+    	tabs.append('<div id="' + id + '"><p>' + tabContentHtml + '</p></div>');
+    	tabs.tabs('refresh');
+
+    	$('#tabs-' + tabCounter).trigger('click');
+
+    	var clients = [];
+
+    	for(var i = 1; i <= randomNum; i++){
+    		clients.push({Name:i,Age:i,Country:i,Address:i,Married:true});
+    	}
+
+    	var countries = [
+    	                 { Name: '', Id: 0 },
+    	                 { Name: 'United States', Id: 1 },
+    	                 { Name: 'Canada', Id: 2 },
+    	                 { Name: 'United Kingdom', Id: 3 }
+    	                 ];
+
+    	$('#'+id).jsGrid({
+    		width: '1000px',
+    		height: '170px',
+
+    		inserting: false,
+    		editing: false,
+    		sorting: true,
+    		paging: false,	
+    		noDataContent: '데이터가 없습니다.',
+    		data: clients,
+
+    		fields: [
+    		         { name: 'Name', title:'이름', type: 'text', validate: 'required' },
+    		         { name: 'Age', type: 'number'},
+    		         { name: 'Address', type: 'text'},
+    		         { name: 'Country', type: 'select', items: countries, valueField: 'Id', textField: 'Name' },
+    		         { name: 'Married', type: 'checkbox', title: 'Is Married', sorting: false },
+    		         { type: 'control' }
+    		         ]
+    	});
+    	tabCounter++;
+    };
     
     var setCommonCombo = function(options){
     	var arr = [];
@@ -130,7 +208,6 @@ var _WestCondition = function () {
         			setEventCityDistrict(parentId);
         			cityMappingObj[parentId] = childId;
         		}else{
-        			setEventDate(parentId);
         			dateMappingObj[parentId] = childId;
         		}
         		
@@ -143,17 +220,13 @@ var _WestCondition = function () {
         return arr;
     };
     
-    var setEventDate = function(id){
-    	
-    };
-    
     var setEventCityDistrict = function(id){
     	$('#' + id).off('change').on('change',function(){
     		var comboId = $(this).attr('id');
 //    		getData({
 //    			url: '',
 //    			contentType: 'application/json',
-//    			params: 'code=' + comboId + '&flag=town'
+//    			params: {code:comboId,flag:'town'}
 //    		}).done(function(data){
 //    			writeCity(data,comboId)
 //    		});
@@ -172,7 +245,7 @@ var _WestCondition = function () {
 
     var getData = function (options) {
         return $.ajax({
-            url: options.url + '?' + params,
+            url: options.url + '?' + $.param(options.params),
             type: 'GET',
             contentType: options.contentType
         })
