@@ -2,7 +2,6 @@ var _WestCondition = function () {
     var initTownCode = '';
     var dateMappingObj = {};
     var cityMappingObj = {};
-    var tabCounter = 0;
     
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
@@ -122,56 +121,70 @@ var _WestCondition = function () {
 			writeGrid(data);
 		});*/
 		
-		writeGrid();
+		writeGrid(placeId, {});
     };
     
-    var writeGrid = function(){
+    var writeGrid = function(id, data){
     	$('#gridArea').show();
     	var tabTitle = $('#tab_title');
     	var tabContent = $('#tab_content');
     	var tabTemplate = '<li><a id=#{id} href="#{href}">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
     	
-    	tabs.on('click','span.ui-icon-close', function() {
+    	tabs.off('click').on('click','span.ui-icon-close', function() {
     		var panelId = $( this ).closest('li').remove().attr('aria-controls');
     		$('#' + panelId ).remove();
     		tabs.tabs('refresh');
     	});
-
-    	tabs.on('keyup', function( event ) {
-    		if ( event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE ) {
-    			var panelId = tabs.find('.ui-tabs-active').remove().attr('aria-controls');
-    			$('#' + panelId ).remove();
-    			tabs.tabs('refresh');
-    		}
-    	});
-    	var labelObj = ['민원현황','관능성평가데이터','이동식측정데이터','고정식측정데이터'];
-    	var label = labelObj[tabCounter]?labelObj[tabCounter]:labelObj[0];
-    	var id = 'tabs-' + tabCounter + 1;
-    	var randomNum = parseInt(Math.random() * 100);
-    	var li = $( tabTemplate.replace( /#\{id\}/g, 'tabs-' + tabCounter ).replace( /#\{href\}/g, '#' + id ).replace( /#\{label\}/g, label  + '(' + randomNum + ')') );
-    	var tabContentHtml = tabContent.val() || 'Tab ' + tabCounter + ' content.';
-
-    	tabs.find('.ui-tabs-nav').append( li );
-    	tabs.append('<div id="' + id + '"><p>' + tabContentHtml + '</p></div>');
+    	
+    	var tabConfigObj = {
+    			'complaintStatus':{title:'민원현황',columnArr:[{name:'CVPL_NO',title:'민원 번호'},
+    			                                           {name:'CVPL_DT',title:'민원 일시'},
+    			                                           {name:'CPTTR',title:'민원인'},
+    			                                           {name:'CPTTR_CTTPC',title:'민원인 연락처'},
+    			                                           {name:'CVPL_LC',title:'민원 위치'},
+    			                                           {name:'CVPL_CN',title:'민원 내용'},
+    			                                           {name:'REGIST_DT',title:'등록 일시'},
+    			                                           {name:'REGISTER_ID',title:'등록자 ID'},
+    			                                           {name:'CHANGE_DT',title:'변경 일시'},
+    			                                           {name:'CHANGER_ID',title:'변경자 ID'}]},
+    			'sensoryEvaluation':{title:'관능 평가 데이터',columnArr:[{name:'SENSE_EVL_NO',title:'관능 평가 번호'},
+    	    			                                           {name:'MESURE_DATE',title:'측정 날짜'},
+    	    			                                           {name:'MESURE_TIME',title:'측정 시간'},
+    	    			                                           {name:'SENSE_BSML_DGREE',title:'관능 악취 도'},
+    	    			                                           {name:'CMPND_BSML',title:'복합 악취'}]},
+    			'portableMeasurement':'이동식 측정 데이터',
+    			'fixedMeasurement':'고정식 측정 데이터',
+    			'odorReduction':'악취저감설비 관리',
+    			'odorOrigin':'악취원점 관리',
+    			'observatory':'기상청측정망',
+    			'environmentCorporation':'환경공단 측정망',
+    			'unmannedOdor':'청주시 무인악취 측정망',
+    			'airMap':'KT 에어맵 코리아 측정망',
+    			'odorMovement':'악취 원점'
+    	};
+    	
+    	var tabTitle = tabConfigObj[id].title;
+    	var tabId = 'tabs-' + id;
+    	var li = $(tabTemplate.replace(/#\{id\}/g,tabId).replace(/#\{href\}/g, '#grid'+id).replace(/#\{label\}/g,tabTitle));
+    	
+    	if($('#'+tabId).length == 0){
+    		tabs.find('.ui-tabs-nav').append( li );
+        	tabs.append('<div id="grid' + id + '"></div>');
+    	}
+    	
     	tabs.tabs('refresh');
 
-    	$('#tabs-' + tabCounter).trigger('click');
+    	$('#' + tabId).trigger('click');
 
     	var clients = [];
-
+    	var randomNum = parseInt(Math.random() * 100);
+    	
     	for(var i = 1; i <= randomNum; i++){
-    		clients.push({Name:i,Age:i,Country:i,Address:i,Married:true});
+    		clients.push({CVPL_NO:i,CVPL_DT:i,CPTTR:i,CPTTR_CTTPC:i,CVPL_LC:i,CVPL_LC:i,CVPL_CN:i,REGIST_DT:i,REGISTER_ID:i,CHANGE_DT:i,CHANGER_ID:i});
     	}
-
-    	var countries = [
-    	                 { Name: '', Id: 0 },
-    	                 { Name: 'United States', Id: 1 },
-    	                 { Name: 'Canada', Id: 2 },
-    	                 { Name: 'United Kingdom', Id: 3 }
-    	                 ];
-
-    	$('#'+id).jsGrid({
+    	
+    	$('#grid' + id).jsGrid({
     		width: '1000px',
     		height: '170px',
 
@@ -182,16 +195,8 @@ var _WestCondition = function () {
     		noDataContent: '데이터가 없습니다.',
     		data: clients,
 
-    		fields: [
-    		         { name: 'Name', title:'이름', type: 'text', validate: 'required' },
-    		         { name: 'Age', type: 'number'},
-    		         { name: 'Address', type: 'text'},
-    		         { name: 'Country', type: 'select', items: countries, valueField: 'Id', textField: 'Name' },
-    		         { name: 'Married', type: 'checkbox', title: 'Is Married', sorting: false },
-    		         { type: 'control' }
-    		         ]
+    		fields: tabConfigObj[id].columnArr
     	});
-    	tabCounter++;
     };
     
     var setCommonCombo = function(options){
