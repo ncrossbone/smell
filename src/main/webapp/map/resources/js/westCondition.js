@@ -135,6 +135,10 @@ var _WestCondition = function () {
     		var panelId = $( this ).closest('li').remove().attr('aria-controls');
     		$('#' + panelId ).remove();
     		tabs.tabs('refresh');
+    		
+    		if($('ul[role="tablist"]').find('li').length==0){
+    			$('#gridArea').hide();
+    		}
     	});
     	
     	var tabConfigObj = {
@@ -175,7 +179,10 @@ var _WestCondition = function () {
     	
     	tabs.tabs('refresh');
 
-    	$('#' + tabId).trigger('click');
+    	tabs.tabs({
+    		active:$('ul[role="tablist"]').find('li').index($('#' + tabId).parent())
+    	});
+    	
 
     	var clients = [];
     	var randomNum = parseInt(Math.random() * 100);
