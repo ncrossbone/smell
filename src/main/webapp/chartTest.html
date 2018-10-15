@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>청주시 지능형 도농복합도시 악취관리시스템</title>
+<link href="/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/css/basic.css" rel="stylesheet" type="text/css" />
+<script src="/js/jquery.min-1.8.3.js"></script>
+<script type="text/javascript" src="/js/jquery.jqtransform.js"></script>
+<script type="text/javascript" src="/js/ui.js"></script>
+
+
+<link href="/css/gis.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/map/resources/js/lib/mapEventBus.js" ></script>
+<script type="text/javascript" src="/map/resources/js/lib/ol/ol.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/jsts/jsts.min.js"></script>
+<script type="text/javascript" src="/map/resources/js/mapService.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/vworldLayer.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/coreMap.js"></script>
+<script type="text/javascript" src="/map/resources/js/ui.js"></script>
+<script type="text/javascript" src="/map/resources/js/westCondition.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/jquery-ui.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/zoomSlider.js"></script>
+<script type="text/javascript" src="/map/resources/js/smellMapBiz.js"></script>
+<link rel="stylesheet" href="/css/jquery-ui-1.12.1.css"></link>
+<link type="text/css" rel="stylesheet" href="/css/jsgrid.min-1.5.3.css" />
+<link type="text/css" rel="stylesheet" href="/css/jsgrid-theme.min-1.5.3.css" />
+<script type="text/javascript" src="/js/jsgrid.min-1.5.3.js"></script>
+
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		// selectbox design
+		_CoreMap.init('map');
+		$(window).on('resize', function() {
+			var ww = $(window).width();
+			var wh = $(window).height();
+
+			var map = _CoreMap.getMap();
+
+			//$('#map').width(ww - 340);
+			$('#map').height(wh - 92);
+			$('#chartArea').height(wh - 92);
+			//$('#westContainer').height(wh-50); 
+			if (map) {
+				map.setSize([ ww, wh - 92 ]);
+			}
+		});
+		$(window).trigger('resize');
+		
+		var chartObj = {
+				 chart: {
+				        backgroundColor: '#00ff0000'
+				    },
+			    title: {
+			        text: ''
+			    },
+			    subtitle: {
+			        text: ''
+			    },
+			    yAxis: {
+			        title: {
+			            text: ''
+			        },
+			        labels: {
+			            style: {
+			                color: '#fff'
+			            }
+			        }
+			    },
+			    xAxis:{
+			    	labels: {
+			            style: {
+			                color: '#fff'
+			            }
+			        }
+			    },
+			    legend: false,
+			    credits:false,
+			    plotOptions: {
+			        series: {
+			            label: {
+			                connectorAllowed: false
+			            },
+			            pointStart: 2010
+			        }
+			    },
+			    series: [{
+			        name: 'Installation',
+			        data: [],
+			        color:'#01e0e6'
+			    }],
+			    responsive: {
+			        rules: [{
+			            condition: {
+			                maxWidth: 500
+			            },
+			            chartOptions: {
+			                legend: {
+			                    layout: 'horizontal',
+			                    align: 'center',
+			                    verticalAlign: 'bottom'
+			                }
+			            }
+			        }]
+			    }
+			};
+		chartObj.series[0].data = randomSeriesValue();
+		Highcharts.chart('chartDiv',chartObj);
+		chartObj.series[0].data = randomSeriesValue();
+		Highcharts.chart('chartDiv2',chartObj);
+		chartObj.series[0].data = randomSeriesValue();
+		Highcharts.chart('chartDiv3',chartObj);
+		chartObj.series[0].data = randomSeriesValue();
+		Highcharts.chart('chartDiv4',chartObj);
+	});
+	
+	function randomSeriesValue(){
+		var arr = [];
+		for(var i = 0; i < 11; i++){
+			arr.push(parseInt(Math.random()*10));
+		}
+		return arr
+	}
+</script>
+<style>
+#chartArea{
+	position: absolute; 
+	width: 450px;
+    z-index: 3;
+    border-right: 1px solid #fff;
+    height: 877px;
+    background: #0c2641;
+    opacity:0.7;
+}
+
+
+</style>
+
+</head>
+
+<body>
+<div id="warp">
+    <div id="top">
+    </div>
+    	
+    <div id="nav"></div>
+    <div id="container">
+    <div id="chartArea">
+    	<div id="chartDiv" style="height: 200px;"></div>
+    	<div id="chartDiv2" style="height: 200px;"></div>
+    	<div id="chartDiv3" style="height: 200px;"></div>
+    	<div id="chartDiv4" style="height: 200px;"></div>
+    </div>	
+     <div id="map" style="position: absolute; width: 100%;"></div>
+     
+    </div>
+</div>
+
+</body>
+</html>

@@ -204,6 +204,35 @@ var _WestCondition = function () {
 
     		fields: tabConfigObj[id].columnArr
     	});
+    	
+    	
+    	//dynamicSvgTest();
+    };
+    
+    var dynamicSvgTest = function(point){
+    	var features = new ol.Feature({geometry:new ol.geom.Point(point), properties:{}});
+    	
+    	var vectorLayer = new ol.layer.Vector({
+			source : new ol.source.Vector({
+				features : features
+			}),
+			style : new ol.style.Style({
+    			image: new ol.style.Circle({
+    				radius: 10,
+    				stroke: new ol.style.Stroke({
+    					color: '#fff'
+    				}),
+    				fill: new ol.style.Fill({
+    					color: '#3399CC'
+    				})
+    			})
+    		}),
+			visible: true,
+			zIndex: 1001,
+			id:'dynamicSvgTest'
+		});
+    	
+    	_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     };
     
     var setCommonCombo = function(options){
