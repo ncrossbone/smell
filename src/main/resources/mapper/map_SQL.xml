@@ -14,4 +14,9 @@
 	<update id="putFlag" parameterType="java.util.HashMap">
 		UPDATE CMAQ_9KM_WGS84_2 SET FLAG = #{flag} WHERE INDEXID = #{indexId}
 	</update>
+	
+	<select id="getGrid" parameterType="com.ce.smell.model.MapVO" resultType="java.util.HashMap">
+		SELECT * 
+  		  FROM CVPL_MANAGE
+	</select>
 </mapper>

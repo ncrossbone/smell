@@ -63,3 +63,34 @@
     border: none !important;
     background: none !important;
 }
+
+.jsgrid-grid-header{
+	border-top: 2px solid #0a0c0b !important;
+	border-color: #d5d5d5;
+}
+
+.jsgrid-header-cell{
+	color: #000 !important;
+	font-size: 12px;
+	font-family: 'Datum';
+	text-align: center;
+    font-weight: bold;
+}
+
+.jsgrid-selected-row>.jsgrid-cell {
+    background: #eef3f7 !important;
+    border-color: #d5d5d5 !important;
+}
+
+.jsgrid-row>td, .jsgrid-alt-row>td{
+	padding: 10px 0px !important;
+    text-align: center;
+    font-family: 'Datum';
+    border-color: #d5d5d5;
+    color: #363636;
+    font-size: 12px;
+}
+
+.jsgrid-cell {
+    background: #fff !important;
+}

@@ -84,12 +84,12 @@ var _WestCondition = function () {
     	var searchPlace = $('#' + placeId).find('*');
     	var paramObj = {};
 		var requireAlertObj = {
-	    		'BranchName':'지점명을 입력하세요.',
-	    		'StartDate':'시작날짜를 선택하세요.',
-	    		'EndDate':'끝날짜를 선택하세요.',
-	    		'StartOU':'OU 시작범위를 선택하세요.',
-	    		'EndOU':'OU 끝범위를 선택하세요.',
-	    		'Item':'측정항목을 선택하세요.'
+	    		'branchName':'지점명을 입력하세요.',
+	    		'startDate':'시작날짜를 선택하세요.',
+	    		'endDate':'끝날짜를 선택하세요.',
+	    		'startOU':'OU 시작범위를 선택하세요.',
+	    		'endOU':'OU 끝범위를 선택하세요.',
+	    		'item':'측정항목을 선택하세요.'
 	    };
 		
 		for(var i = 0; i < searchPlace.length; i++){
@@ -99,29 +99,31 @@ var _WestCondition = function () {
 			if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
 				if(searchPlaceName){
 					var splitName = searchPlaceName.split(placeId)[1];
-					if(!paramObj[splitName]){
-						paramObj[splitName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+					var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
+					
+					if(!paramObj[replaceName]){
+						paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
 					}
 				}else if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
+					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
+					
 					if($(searchPlace[i]).val()){
-						paramObj[splitId] = $(searchPlace[i]).val(); 
+						paramObj[replaceId] = $(searchPlace[i]).val(); 
 					}else{
-						return alert(requireAlertObj[splitId]);
+						return alert(requireAlertObj[replaceId]);
 					}
 				}
 			}
 		}
 		
-		/*getData({
-			url: '',
+		getData({
+			url: '/getGrid.do',
 			contentType: 'application/json',
 			params: paramObj
 		}).done(function(data){
-			writeGrid(data);
-		});*/
-		
-		writeGrid(placeId, {});
+			writeGrid(placeId,data);
+		});
     };
     
     var writeGrid = function(id, data){
@@ -174,7 +176,7 @@ var _WestCondition = function () {
     	
     	if($('#'+tabId).length == 0){
     		tabs.find('.ui-tabs-nav').append( li );
-        	tabs.append('<div id="grid' + id + '"></div>');
+        	tabs.append('<div id="grid' + id + '" style="padding: 10px 3px !important;"></div>');
     	}
     	
     	tabs.tabs('refresh');
@@ -185,14 +187,13 @@ var _WestCondition = function () {
     	
 
     	var clients = [];
-    	var randomNum = parseInt(Math.random() * 100);
     	
-    	for(var i = 1; i <= randomNum; i++){
-    		clients.push({CVPL_NO:i,CVPL_DT:i,CPTTR:i,CPTTR_CTTPC:i,CVPL_LC:i,CVPL_LC:i,CVPL_CN:i,REGIST_DT:i,REGISTER_ID:i,CHANGE_DT:i,CHANGER_ID:i});
+    	for(var i = 0; i < data.length; i++){
+    		clients.push(data[i]);
     	}
     	
     	$('#grid' + id).jsGrid({
-    		width: '1000px',
+    		width: '1300px',
     		height: '170px',
 
     		inserting: false,
