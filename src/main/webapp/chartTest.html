@@ -75,7 +75,8 @@
 			            style: {
 			                color: '#fff'
 			            }
-			        }
+			        },
+			        gridLineWidth: 1
 			    },
 			    legend: false,
 			    credits:false,
@@ -115,6 +116,20 @@
 		Highcharts.chart('chartDiv3',chartObj);
 		chartObj.series[0].data = randomSeriesValue();
 		Highcharts.chart('chartDiv4',chartObj);
+		
+		setInterval(function(){
+			chartObj.series[0].data = randomSeriesValue();
+			Highcharts.chart('chartDiv',chartObj);
+			chartObj.series[0].data = randomSeriesValue();
+			Highcharts.chart('chartDiv2',chartObj);
+			chartObj.series[0].data = randomSeriesValue();
+			Highcharts.chart('chartDiv3',chartObj);
+			chartObj.series[0].data = randomSeriesValue();
+			Highcharts.chart('chartDiv4',chartObj);	
+		},5000)
+		
+		_CoreMap.getMap().getLayers().array_[0].setVisible(false);
+		_CoreMap.getMap().getLayers().array_[1].setVisible(true);
 	});
 	
 	function randomSeriesValue(){
@@ -122,7 +137,7 @@
 		for(var i = 0; i < 11; i++){
 			arr.push(parseInt(Math.random()*10));
 		}
-		return arr
+		return arr;
 	}
 </script>
 <style>

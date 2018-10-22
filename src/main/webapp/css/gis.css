@@ -37,3 +37,29 @@
 	height: 15px;
 	margin: -6px 0px 0px;
 }
+
+.ui-tabs-tab.ui-tabs-active{
+	background: #1fc700 !important;
+    font-family: 'Dotum';
+    font-size: 14px;
+    font-weight: bold !important;
+    letter-spacing: -1px;
+    color: #fff !important;
+    border: 1px solid #19a600 !important;	
+}
+
+.ui-tabs-tab{
+	background: #f6f6f6 !important;
+	border: 1px solid #dedede !important;
+	font-family: 'Dotum';
+	font-size: 14px;
+	font-weight: bold !important;
+	letter-spacing: -1px;
+	color: #494949 !important;
+	border-radius: initial !important;
+}
+
+.ui-widget-header {
+    border: none !important;
+    background: none !important;
+}
