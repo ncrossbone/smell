@@ -45,6 +45,12 @@ var _ui = (function () {
 //                layer.setUrl(_map.getTileMapUrl(me.attr('id')));
 //            })
         });
+
+		$('#defaultMaps, #airMaps, #grayMaps').on('click',function(){
+			$('#map_type').find('li').removeClass('on');
+			$(this).addClass('on');
+			_CoreMap.changeBaseMap($(this).attr('id'));
+		});
     };
 
     return {

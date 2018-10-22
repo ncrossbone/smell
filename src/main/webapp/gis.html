@@ -7,8 +7,6 @@
 <link href="/css/basic.css" rel="stylesheet" type="text/css" />
 <script src="/js/jquery.min-1.8.3.js"></script>
 <script type="text/javascript" src="/js/jquery.jqtransform.js"></script>
-<script type="text/javascript" src="/js/ui.js"></script>
-
 
 <link href="/css/gis.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="/map/resources/js/lib/mapEventBus.js" ></script>
@@ -50,6 +48,7 @@
 				map.setSize([ ww - 340, wh - 92 ]);
 			}
 		});
+		
 		$(window).trigger('resize');
 	});
 </script>
@@ -680,9 +679,9 @@
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
      	<ul id="map_type">
-        	<li class="on"><a href="javascript:void(0)" class="">기본</a></li>
-            <li><a href="javascript:void(0)" class="">위성</a></li>
-            <li><a href="javascript:void(0)" class="">흑백</a></li>
+        	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li>
+            <li id="airMaps"><a href="javascript:void(0)">위성</a></li>
+            <li id="grayMaps"><a href="javascript:void(0)">흑백</a></li>
         </ul>
         <div id="mapNavBar"></div>
         <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute;">
