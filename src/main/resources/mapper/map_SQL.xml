@@ -16,7 +16,18 @@
 	</update>
 	
 	<select id="getGrid" parameterType="com.ce.smell.model.MapVO" resultType="java.util.HashMap">
-		SELECT * 
+		SELECT CVPL_NO,
+	           DATE_FORMAT(CVPL_DT,'%Y년 %m월 %d일 %h시') AS CVPL_DT,
+			   CPTTR,
+			   CPTTR_CTTPC,
+			   CVPL_LC,
+			   CVPL_CN,
+			   DATE_FORMAT(REGIST_DT,'%Y년 %m월 %d일 %h시') AS REGIST_DT,
+			   REGISTER_ID,
+			   CHANGE_DT,
+			   CHANGER_ID 
   		  FROM CVPL_MANAGE
+  		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
+     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate} 
 	</select>
 </mapper>

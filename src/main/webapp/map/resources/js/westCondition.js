@@ -109,7 +109,11 @@ var _WestCondition = function () {
 					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
 					
 					if($(searchPlace[i]).val()){
-						paramObj[replaceId] = $(searchPlace[i]).val(); 
+						if(replaceId=='startDate' || replaceId=='endDate'){
+							paramObj[replaceId] = $(searchPlace[i]).val().replace('.','').replace('.','');
+						}else{
+							paramObj[replaceId] = $(searchPlace[i]).val();
+						}
 					}else{
 						return alert(requireAlertObj[replaceId]);
 					}
