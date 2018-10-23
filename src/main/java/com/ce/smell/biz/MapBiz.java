@@ -1,7 +1,9 @@
 package com.ce.smell.biz;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +30,11 @@ public class MapBiz {
 	@SuppressWarnings("unchecked")
 	public int putFlag(HashMap param) {
 		return mapMapper.putFlag(param);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getGrid(MapVO param){
+		return mapMapper.getGrid(param);
 	}
 	
 }

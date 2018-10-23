@@ -2,6 +2,7 @@ var _WestCondition = function () {
     var initTownCode = '';
     var dateMappingObj = {};
     var cityMappingObj = {};
+    var noDataContent = '데이터가 없습니다.';
     
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
@@ -84,12 +85,12 @@ var _WestCondition = function () {
     	var searchPlace = $('#' + placeId).find('*');
     	var paramObj = {};
 		var requireAlertObj = {
-	    		'BranchName':'지점명을 입력하세요.',
-	    		'StartDate':'시작날짜를 선택하세요.',
-	    		'EndDate':'끝날짜를 선택하세요.',
-	    		'StartOU':'OU 시작범위를 선택하세요.',
-	    		'EndOU':'OU 끝범위를 선택하세요.',
-	    		'Item':'측정항목을 선택하세요.'
+	    		'branchName':'지점명을 입력하세요.',
+	    		'startDate':'시작날짜를 선택하세요.',
+	    		'endDate':'끝날짜를 선택하세요.',
+	    		'startOU':'OU 시작범위를 선택하세요.',
+	    		'endOU':'OU 끝범위를 선택하세요.',
+	    		'item':'측정항목을 선택하세요.'
 	    };
 		
 		for(var i = 0; i < searchPlace.length; i++){
@@ -99,29 +100,102 @@ var _WestCondition = function () {
 			if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
 				if(searchPlaceName){
 					var splitName = searchPlaceName.split(placeId)[1];
-					if(!paramObj[splitName]){
-						paramObj[splitName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+					var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
+					
+					if(!paramObj[replaceName]){
+						paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
 					}
 				}else if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
+					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
+					
 					if($(searchPlace[i]).val()){
-						paramObj[splitId] = $(searchPlace[i]).val(); 
+						if(replaceId=='startDate' || replaceId=='endDate'){
+							paramObj[replaceId] = $(searchPlace[i]).val().replace('.','').replace('.','');
+						}else{
+							paramObj[replaceId] = $(searchPlace[i]).val();
+						}
 					}else{
-						return alert(requireAlertObj[splitId]);
+						return alert(requireAlertObj[replaceId]);
 					}
 				}
 			}
 		}
 		
-		/*getData({
-			url: '',
+		getData({
+			url: '/getGrid.do',
 			contentType: 'application/json',
 			params: paramObj
 		}).done(function(data){
-			writeGrid(data);
-		});*/
-		
-		writeGrid(placeId, {});
+			writeGrid(placeId,data);
+			
+			_MapService.getWfs(':SHP_CVPL', '*',undefined, '').then(function(result){
+				if(result == null || result.features.length <= 0){
+					return;
+				}
+				
+				var pointArray = [];
+				
+				for(var i=0; i<result.features.length; i++){
+					var feature = new ol.Feature(new ol.geom.Point(ol.proj.transform(result.features[i].geometry.coordinates,'EPSG:4326','EPSG:3857')));
+					pointArray.push(feature);
+				}
+				
+				var source = new ol.source.Vector({
+					features: pointArray
+				});
+				
+				var clusterSource = new ol.source.Cluster({
+					distance: parseInt(100, 10),
+					source: source
+				});
+				
+				var styleCache = {};
+				var clusterVectorLayer = new ol.layer.Vector({
+			        source: clusterSource,
+			        style: function(feature) {
+			        	var size = feature.get('features').length;
+			        	var style = styleCache[size];
+			        	if (!style) {
+			        		style = new ol.style.Style({
+			        			image: new ol.style.Circle({
+			        				radius: 20,
+			        				stroke: new ol.style.Stroke({
+			        					color: '#fff'
+			        				}),
+			        				fill: new ol.style.Fill({
+			        					color: '#3399CC'
+			        				})
+			        			}),
+			        			text: new ol.style.Text({
+			        				text: size.toString(),
+			        				fill: new ol.style.Fill({
+			        					color: '#fff'
+			        				}),
+			        				font: '18px bold, Verdana'
+			        			})
+			        		});
+			        		styleCache[size] = style;
+			        	}
+			        	return style;
+			        	}
+				});
+				_MapEventBus.trigger(_MapEvents.map_addLayer, clusterVectorLayer);
+			});
+			
+			/*var layer = new ol.layer.Tile({
+      			visible: true,
+      			source: new ol.source.TileWMS({
+      				url: 'http://112.218.1.243:44002/geoserver/CE-TECH/wms?',
+      				params: { 
+          				'VERSION': '1.3.0',
+          				LAYERS: 'CE-TECH:SHP_CVPL',
+          				urlType: 'geoServer'
+          				},
+      				serverType:'geoserver'
+      			})
+    		});*/
+		});
     };
     
     var writeGrid = function(id, data){
@@ -174,7 +248,7 @@ var _WestCondition = function () {
     	
     	if($('#'+tabId).length == 0){
     		tabs.find('.ui-tabs-nav').append( li );
-        	tabs.append('<div id="grid' + id + '"></div>');
+        	tabs.append('<div id="grid' + id + '" style="padding: 10px 3px !important;"></div>');
     	}
     	
     	tabs.tabs('refresh');
@@ -185,26 +259,41 @@ var _WestCondition = function () {
     	
 
     	var clients = [];
-    	var randomNum = parseInt(Math.random() * 100);
     	
-    	for(var i = 1; i <= randomNum; i++){
-    		clients.push({CVPL_NO:i,CVPL_DT:i,CPTTR:i,CPTTR_CTTPC:i,CVPL_LC:i,CVPL_LC:i,CVPL_CN:i,REGIST_DT:i,REGISTER_ID:i,CHANGE_DT:i,CHANGER_ID:i});
+    	for(var i = 0; i < data.length; i++){
+    		clients.push(data[i]);
     	}
     	
     	$('#grid' + id).jsGrid({
-    		width: '1000px',
+    		width: '1300px',
     		height: '170px',
 
     		inserting: false,
     		editing: false,
     		sorting: true,
     		paging: false,	
-    		noDataContent: '데이터가 없습니다.',
+    		noDataContent: noDataContent,
     		data: clients,
 
     		fields: tabConfigObj[id].columnArr
     	});
     	
+    	$('#grid' + id).find('td').off('click').on('click',function(){
+    		var rowCode = $($(this).parent().children()[0]).text();
+    		
+    		if(rowCode==noDataContent){
+    			return;
+    		}
+    		
+    		_MapService.getWfs(':SHP_CVPL', '*','CVPL_NO=\'' + rowCode + '\'', '').then(function(result){
+    			if(result.features.length == 0){
+    				return;
+    			}
+    			
+    			_CoreMap.centerMap(result.features[0].geometry.coordinates[0],result.features[0].geometry.coordinates[1],20);
+    			
+    		});
+    	});
     	
     	//dynamicSvgTest();
     };
