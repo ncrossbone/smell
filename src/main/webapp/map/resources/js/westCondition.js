@@ -129,7 +129,7 @@ var _WestCondition = function () {
 		}).done(function(data){
 			writeGrid(placeId,data);
 			
-			_MapService.getWfs(':SHP_CVPL', '*',undefined, '').then(function(result){
+			_MapService.getWfs(':cvpl_pt', '*',undefined, '').then(function(result){
 				if(result == null || result.features.length <= 0){
 					return;
 				}
@@ -137,7 +137,7 @@ var _WestCondition = function () {
 				var pointArray = [];
 				
 				for(var i=0; i<result.features.length; i++){
-					var feature = new ol.Feature(new ol.geom.Point(ol.proj.transform(result.features[i].geometry.coordinates,'EPSG:4326','EPSG:3857')));
+					var feature = new ol.Feature(new ol.geom.Point(result.features[i].geometry.coordinates));
 					pointArray.push(feature);
 				}
 				
@@ -285,7 +285,7 @@ var _WestCondition = function () {
     			return;
     		}
     		
-    		_MapService.getWfs(':SHP_CVPL', '*','CVPL_NO=\'' + rowCode + '\'', '').then(function(result){
+    		_MapService.getWfs(':cvpl_pt', '*','CVPL_NO=\'' + rowCode + '\'', '').then(function(result){
     			if(result.features.length == 0){
     				return;
     			}
