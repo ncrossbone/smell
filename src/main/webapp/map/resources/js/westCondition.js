@@ -4,6 +4,46 @@ var _WestCondition = function () {
     var cityMappingObj = {};
     var noDataContent = '데이터가 없습니다.';
     
+    var contentsConfig = {
+    	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',columnArr:[{name:'CVPL_NO',title:'민원 번호'},
+    	                                                                                   	{name:'CVPL_DT',title:'민원 일시'},
+    	                                                                                   	{name:'CPTTR',title:'민원인'},
+    	                                                                                   	{name:'CPTTR_CTTPC',title:'민원인 연락처'},
+												                                            {name:'CVPL_LC',title:'민원 위치'},
+												                                            {name:'CVPL_CN',title:'민원 내용'},
+												                                            {name:'REGIST_DT',title:'등록 일시'},
+												                                            {name:'REGISTER_ID',title:'등록자 ID'},
+												                                            {name:'CHANGE_DT',title:'변경 일시'},
+												                                            {name:'CHANGER_ID',title:'변경자 ID'}]}
+    };
+    
+    /*var tabConfigObj = {
+	'complaintStatus':{title:'민원현황',columnArr:[{name:'CVPL_NO',title:'민원 번호'},
+	                                           {name:'CVPL_DT',title:'민원 일시'},
+	                                           {name:'CPTTR',title:'민원인'},
+	                                           {name:'CPTTR_CTTPC',title:'민원인 연락처'},
+	                                           {name:'CVPL_LC',title:'민원 위치'},
+	                                           {name:'CVPL_CN',title:'민원 내용'},
+	                                           {name:'REGIST_DT',title:'등록 일시'},
+	                                           {name:'REGISTER_ID',title:'등록자 ID'},
+	                                           {name:'CHANGE_DT',title:'변경 일시'},
+	                                           {name:'CHANGER_ID',title:'변경자 ID'}]},
+	'sensoryEvaluation':{title:'관능 평가 데이터',columnArr:[{name:'SENSE_EVL_NO',title:'관능 평가 번호'},
+			                                           {name:'MESURE_DATE',title:'측정 날짜'},
+			                                           {name:'MESURE_TIME',title:'측정 시간'},
+			                                           {name:'SENSE_BSML_DGREE',title:'관능 악취 도'},
+			                                           {name:'CMPND_BSML',title:'복합 악취'}]},
+	'portableMeasurement':'이동식 측정 데이터',
+	'fixedMeasurement':'고정식 측정 데이터',
+	'odorReduction':'악취저감설비 관리',
+	'odorOrigin':'악취원점 관리',
+	'observatory':'기상청측정망',
+	'environmentCorporation':'환경공단 측정망',
+	'unmannedOdor':'청주시 무인악취 측정망',
+	'airMap':'KT 에어맵 코리아 측정망',
+	'odorMovement':'악취 원점'
+};*/
+    
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
 		    prevText: '이전 달',
@@ -83,7 +123,7 @@ var _WestCondition = function () {
     
     var checkSearchCondition = function(placeId){
     	var searchPlace = $('#' + placeId).find('*');
-    	var paramObj = {};
+    	var paramObj = {contentsId:placeId};
 		var requireAlertObj = {
 	    		'branchName':'지점명을 입력하세요.',
 	    		'startDate':'시작날짜를 선택하세요.',
@@ -122,80 +162,72 @@ var _WestCondition = function () {
 			}
 		}
 		
-		getData({
-			url: '/getGrid.do',
-			contentType: 'application/json',
-			params: paramObj
-		}).done(function(data){
-			writeGrid(placeId,data);
-			
-			_MapService.getWfs(':cvpl_pt', '*',undefined, '').then(function(result){
-				if(result == null || result.features.length <= 0){
-					return;
-				}
-				
-				var pointArray = [];
-				
-				for(var i=0; i<result.features.length; i++){
-					var feature = new ol.Feature(new ol.geom.Point(result.features[i].geometry.coordinates));
-					pointArray.push(feature);
-				}
-				
-				var source = new ol.source.Vector({
+		$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
+				_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',undefined, '')).then(function (gridData, pointData) {
+					writeGrid(placeId,gridData[0]);
+					writeLayer(placeId,pointData[0]);
+				});
+    };
+    
+    var writeLayer = function(id, data){
+    	if(data == null || data.features.length <= 0){
+			return;
+		}
+    	
+    	var pointArray = [];
+		var source;
+		
+		for(var i=0; i<data.features.length; i++){
+			var feature = new ol.Feature(new ol.geom.Point(data.features[i].geometry.coordinates));
+			pointArray.push(feature);
+		}
+		
+		if(contentsConfig[id].layerType=='cluster'){
+			source = new ol.source.Cluster({
+				distance: parseInt(100, 10),
+				source: new ol.source.Vector({
 					features: pointArray
-				});
-				
-				var clusterSource = new ol.source.Cluster({
-					distance: parseInt(100, 10),
-					source: source
-				});
-				
-				var styleCache = {};
-				var clusterVectorLayer = new ol.layer.Vector({
-			        source: clusterSource,
-			        style: function(feature) {
-			        	var size = feature.get('features').length;
-			        	var style = styleCache[size];
-			        	if (!style) {
-			        		style = new ol.style.Style({
-			        			image: new ol.style.Circle({
-			        				radius: 20,
-			        				stroke: new ol.style.Stroke({
-			        					color: '#fff'
-			        				}),
-			        				fill: new ol.style.Fill({
-			        					color: '#3399CC'
-			        				})
-			        			}),
-			        			text: new ol.style.Text({
-			        				text: size.toString(),
-			        				fill: new ol.style.Fill({
-			        					color: '#fff'
-			        				}),
-			        				font: '18px bold, Verdana'
-			        			})
-			        		});
-			        		styleCache[size] = style;
-			        	}
-			        	return style;
-			        	}
-				});
-				_MapEventBus.trigger(_MapEvents.map_addLayer, clusterVectorLayer);
+				})
 			});
-			
-			/*var layer = new ol.layer.Tile({
-      			visible: true,
-      			source: new ol.source.TileWMS({
-      				url: 'http://112.218.1.243:44002/geoserver/CE-TECH/wms?',
-      				params: { 
-          				'VERSION': '1.3.0',
-          				LAYERS: 'CE-TECH:SHP_CVPL',
-          				urlType: 'geoServer'
-          				},
-      				serverType:'geoserver'
-      			})
-    		});*/
+		}else{
+			source = new ol.source.Vector({
+				features: pointArray
+			});
+		}
+		
+		var styleCache = {};
+		
+		var vectorLayer = new ol.layer.Vector({
+	        source: source,
+	        style: function(feature) {
+	        	var size = feature.get('features').length;
+	        	var style = styleCache[size];
+	        	if (!style) {
+	        		style = new ol.style.Style({
+	        			image: new ol.style.Circle({
+	        				radius: 20,
+	        				stroke: new ol.style.Stroke({
+	        					color: '#fff'
+	        				}),
+	        				fill: new ol.style.Fill({
+	        					color: '#3399CC'
+	        				})
+	        			}),
+	        			text: new ol.style.Text({
+	        				text: size.toString(),
+	        				fill: new ol.style.Fill({
+	        					color: '#fff'
+	        				}),
+	        				font: '18px bold, Verdana'
+	        			})
+	        		});
+	        		styleCache[size] = style;
+	        	}
+	        	return style;
+	        }
 		});
+		
+		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     };
     
     var writeGrid = function(id, data){
@@ -215,34 +247,7 @@ var _WestCondition = function () {
     		}
     	});
     	
-    	var tabConfigObj = {
-    			'complaintStatus':{title:'민원현황',columnArr:[{name:'CVPL_NO',title:'민원 번호'},
-    			                                           {name:'CVPL_DT',title:'민원 일시'},
-    			                                           {name:'CPTTR',title:'민원인'},
-    			                                           {name:'CPTTR_CTTPC',title:'민원인 연락처'},
-    			                                           {name:'CVPL_LC',title:'민원 위치'},
-    			                                           {name:'CVPL_CN',title:'민원 내용'},
-    			                                           {name:'REGIST_DT',title:'등록 일시'},
-    			                                           {name:'REGISTER_ID',title:'등록자 ID'},
-    			                                           {name:'CHANGE_DT',title:'변경 일시'},
-    			                                           {name:'CHANGER_ID',title:'변경자 ID'}]},
-    			'sensoryEvaluation':{title:'관능 평가 데이터',columnArr:[{name:'SENSE_EVL_NO',title:'관능 평가 번호'},
-    	    			                                           {name:'MESURE_DATE',title:'측정 날짜'},
-    	    			                                           {name:'MESURE_TIME',title:'측정 시간'},
-    	    			                                           {name:'SENSE_BSML_DGREE',title:'관능 악취 도'},
-    	    			                                           {name:'CMPND_BSML',title:'복합 악취'}]},
-    			'portableMeasurement':'이동식 측정 데이터',
-    			'fixedMeasurement':'고정식 측정 데이터',
-    			'odorReduction':'악취저감설비 관리',
-    			'odorOrigin':'악취원점 관리',
-    			'observatory':'기상청측정망',
-    			'environmentCorporation':'환경공단 측정망',
-    			'unmannedOdor':'청주시 무인악취 측정망',
-    			'airMap':'KT 에어맵 코리아 측정망',
-    			'odorMovement':'악취 원점'
-    	};
-    	
-    	var tabTitle = tabConfigObj[id].title;
+    	var tabTitle = contentsConfig[id].title;
     	var tabId = 'tabs-' + id;
     	var li = $(tabTemplate.replace(/#\{id\}/g,tabId).replace(/#\{href\}/g, '#grid'+id).replace(/#\{label\}/g,tabTitle));
     	
@@ -275,7 +280,7 @@ var _WestCondition = function () {
     		noDataContent: noDataContent,
     		data: clients,
 
-    		fields: tabConfigObj[id].columnArr
+    		fields: contentsConfig[id].columnArr
     	});
     	
     	$('#grid' + id).find('td').off('click').on('click',function(){
