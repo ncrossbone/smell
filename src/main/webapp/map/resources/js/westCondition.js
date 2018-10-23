@@ -2,6 +2,7 @@ var _WestCondition = function () {
     var initTownCode = '';
     var dateMappingObj = {};
     var cityMappingObj = {};
+    var noDataContent = '데이터가 없습니다.';
     
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
@@ -127,6 +128,73 @@ var _WestCondition = function () {
 			params: paramObj
 		}).done(function(data){
 			writeGrid(placeId,data);
+			
+			_MapService.getWfs(':SHP_CVPL', '*',undefined, '').then(function(result){
+				if(result == null || result.features.length <= 0){
+					return;
+				}
+				
+				var pointArray = [];
+				
+				for(var i=0; i<result.features.length; i++){
+					var feature = new ol.Feature(new ol.geom.Point(ol.proj.transform(result.features[i].geometry.coordinates,'EPSG:4326','EPSG:3857')));
+					pointArray.push(feature);
+				}
+				
+				var source = new ol.source.Vector({
+					features: pointArray
+				});
+				
+				var clusterSource = new ol.source.Cluster({
+					distance: parseInt(100, 10),
+					source: source
+				});
+				
+				var styleCache = {};
+				var clusterVectorLayer = new ol.layer.Vector({
+			        source: clusterSource,
+			        style: function(feature) {
+			        	var size = feature.get('features').length;
+			        	var style = styleCache[size];
+			        	if (!style) {
+			        		style = new ol.style.Style({
+			        			image: new ol.style.Circle({
+			        				radius: 20,
+			        				stroke: new ol.style.Stroke({
+			        					color: '#fff'
+			        				}),
+			        				fill: new ol.style.Fill({
+			        					color: '#3399CC'
+			        				})
+			        			}),
+			        			text: new ol.style.Text({
+			        				text: size.toString(),
+			        				fill: new ol.style.Fill({
+			        					color: '#fff'
+			        				}),
+			        				font: '18px bold, Verdana'
+			        			})
+			        		});
+			        		styleCache[size] = style;
+			        	}
+			        	return style;
+			        	}
+				});
+				_MapEventBus.trigger(_MapEvents.map_addLayer, clusterVectorLayer);
+			});
+			
+			/*var layer = new ol.layer.Tile({
+      			visible: true,
+      			source: new ol.source.TileWMS({
+      				url: 'http://112.218.1.243:44002/geoserver/CE-TECH/wms?',
+      				params: { 
+          				'VERSION': '1.3.0',
+          				LAYERS: 'CE-TECH:SHP_CVPL',
+          				urlType: 'geoServer'
+          				},
+      				serverType:'geoserver'
+      			})
+    		});*/
 		});
     };
     
@@ -204,12 +272,28 @@ var _WestCondition = function () {
     		editing: false,
     		sorting: true,
     		paging: false,	
-    		noDataContent: '데이터가 없습니다.',
+    		noDataContent: noDataContent,
     		data: clients,
 
     		fields: tabConfigObj[id].columnArr
     	});
     	
+    	$('#grid' + id).find('td').off('click').on('click',function(){
+    		var rowCode = $($(this).parent().children()[0]).text();
+    		
+    		if(rowCode==noDataContent){
+    			return;
+    		}
+    		
+    		_MapService.getWfs(':SHP_CVPL', '*','CVPL_NO=\'' + rowCode + '\'', '').then(function(result){
+    			if(result.features.length == 0){
+    				return;
+    			}
+    			
+    			_CoreMap.centerMap(result.features[0].geometry.coordinates[0],result.features[0].geometry.coordinates[1],20);
+    			
+    		});
+    	});
     	
     	//dynamicSvgTest();
     };
