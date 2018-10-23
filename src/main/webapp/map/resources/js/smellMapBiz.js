@@ -16,7 +16,7 @@ var _SmellMapBiz = function () {
 	
 	var bizUrl = window.location.protocol+'//'+window.location.host;
 	
-	var bizLayers = {'CELL9KM' : 'CELL_AIR_9KM',
+	var bizLayers = {'CELL9KM' : 'cell_200m_utmk',
 					 'ALL9KM' : 'ALL_CMAQ_9KM',
 			         'LINE' : 'line_test_wgs84',
 			         'POINT' : 'CELL_AIR_9KM_PT'};
@@ -71,7 +71,8 @@ var _SmellMapBiz = function () {
 	}
 	
 	var drawCell = function(){
-		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'RESULT_DT=\'2018062501\' AND FLAG=0', zIndex:10}];
+//		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'RESULT_DT=\'2018062501\' AND FLAG=0', zIndex:10}];
+		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'1=1', zIndex:10}];
 		wmsSelectTestLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, wmsSelectTestLayer);

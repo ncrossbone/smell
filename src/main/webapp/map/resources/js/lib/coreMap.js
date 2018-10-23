@@ -17,8 +17,6 @@ var _CoreMap = function() {
 
 	var DRAG_MODE_NONE = 'NONE';
 	
-	
-
 	var coreMap;
 	var mapLayers = [];
 
@@ -157,8 +155,6 @@ var _CoreMap = function() {
 		var admnsDstrcLayers = createTileLayer(layerInfos);
 		
 		mapLayers = mapLayers.concat(admnsDstrcLayers);
-		
-		
 		
 		coreMap = new ol.Map({
 			controls : ol.control.defaults({
@@ -370,13 +366,14 @@ var _CoreMap = function() {
 		});
 	}
 	var createTileLayer = function(layerInfos) {
+		
 		var layers = [];
+		
 		for(var i=0; i<layerInfos.length; i++){
 			var layer = new ol.layer.Tile({
       			visible: layerInfos[i].isVisible,
       			opacity : layerInfos[i].opacity,
       			source: new ol.source.TileWMS({
-      				//url: _Common.geoServerUrl+wmsBaseUrl,
       				url: _proxyUrl+wmsBaseUrl,
       				params: {'FORMAT': format, 
 	      				'VERSION': '1.3.0',
