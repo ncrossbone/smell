@@ -81,10 +81,29 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 
 
+.ctrl_btn a {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #005cc1;
+    display: inline-block;
+    background-position: center center;
+}
 
+.ctrl_left {
+    background: url(../images/ctrl_left.png) no-repeat;
+}
 
+.ctrl_play {
+    background: url(../images/ctrl_play.png) no-repeat;
+}
 
+.ctrl_right {
+    background: url(../images/ctrl_right.png) no-repeat;
+}
 
+.ctrl_btn {
+    text-align: center;
+}
 
 
 /*gis*/
