@@ -33,7 +33,7 @@ public class MapBiz {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> getGrid(MapVO param){
+	public List<Map<String, Object>> getGrid(HashMap param){
 		return mapMapper.getGrid(param);
 	}
 	

@@ -1,12 +1,16 @@
 package com.ce.smell.controller;
 
 import java.util.HashMap;
+
 import com.ce.smell.model.MapVO;
+
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +35,8 @@ public class MapController {
 		return mapBiz.putFlag(param);
 	}
 	
-	@RequestMapping("/getGrid")
-	public List<Map<String, Object>> getGrid(MapVO param){
+	@RequestMapping(value = "/getGrid", method = RequestMethod.POST)
+	public List<Map<String, Object>> getGrid(@RequestBody HashMap param){
 		return mapBiz.getGrid(param);
 	}
 }

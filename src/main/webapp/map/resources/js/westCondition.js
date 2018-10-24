@@ -162,6 +162,10 @@ var _WestCondition = function () {
 			}
 		}
 		
+		if(!contentsConfig[placeId]){
+			return alert('레이어 정의 필요');
+		}
+		
 		$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
 				_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',undefined, '')).then(function (gridData, pointData) {
 					writeGrid(placeId,gridData[0]);
@@ -184,7 +188,7 @@ var _WestCondition = function () {
 		
 		if(contentsConfig[id].layerType=='cluster'){
 			source = new ol.source.Cluster({
-				distance: parseInt(100, 10),
+				distance: 100,
 				source: new ol.source.Vector({
 					features: pointArray
 				})
@@ -218,7 +222,7 @@ var _WestCondition = function () {
 	        				fill: new ol.style.Fill({
 	        					color: '#fff'
 	        				}),
-	        				font: '18px bold, Verdana'
+	        				font: '20px bold, Verdana'
 	        			})
 	        		});
 	        		styleCache[size] = style;
@@ -380,8 +384,9 @@ var _WestCondition = function () {
 
     var getData = function (options) {
         return $.ajax({
-            url: options.url + '?' + $.param(options.params),
-            type: 'GET',
+            url: options.url,
+            data:  JSON.stringify(options.params),
+            type: 'POST',
             contentType: options.contentType
         })
     };

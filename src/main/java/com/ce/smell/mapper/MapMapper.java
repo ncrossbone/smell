@@ -15,5 +15,5 @@ public interface MapMapper {
 	
 	public int putFlag(HashMap param);
 	
-	public List<Map<String, Object>> getGrid(MapVO param);
+	public List<Map<String, Object>> getGrid(HashMap param);
 }
