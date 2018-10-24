@@ -374,6 +374,12 @@ var _SmellMapBiz = function () {
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
 			
+			if(_CoreMap.getMap().getLayerForName('complaintStatus')){
+				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature){
+					_WestCondition.clickCluster(feature)
+				});
+			}
+			
 			if(wmsSelectTestLayer){
 				wmsSelectTestLayer.setOpacity(0.0);
 				
@@ -534,6 +540,23 @@ var _SmellMapBiz = function () {
 					});
 					_MapEventBus.trigger(_MapEvents.map_addLayer, pointBufferFeatureLayer);
 				}
+			}
+		});
+		
+		_MapEventBus.on(_MapEvents.map_mousemove, function(event, data){
+			var coreMap = _CoreMap.getMap();
+			var pixel = coreMap.getEventPixel(data.result.originalEvent);
+			var hit = coreMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
+				if(_WestCondition.getContentsConfig()[layer.get('id')]){
+					return true;
+				}else{
+					return false;
+				}
+			});
+			if (hit) {
+				coreMap.getViewport().style.cursor = 'pointer';
+			} else {
+				coreMap.getViewport().style.cursor = '';
 			}
 		});
 	};

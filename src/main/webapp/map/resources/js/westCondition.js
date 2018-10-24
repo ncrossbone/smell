@@ -3,6 +3,8 @@ var _WestCondition = function () {
     var dateMappingObj = {};
     var cityMappingObj = {};
     var noDataContent = '데이터가 없습니다.';
+    var currentResolution;
+    var maxFeatureCount;
     
     var contentsConfig = {
     	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호'},
@@ -173,11 +175,25 @@ var _WestCondition = function () {
 				});
     };
     
+    var clearFocusLayer = function(){
+    	var focusLayer = _CoreMap.getMap().getLayerForName('focus');
+		if(focusLayer){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, focusLayer);
+		}
+    };
+    
     var writeLayer = function(id, data){
     	if(data == null || data.features.length <= 0){
 			return;
 		}
     	
+    	clearFocusLayer();
+    	
+		var getLayerForName = _CoreMap.getMap().getLayerForName(id);
+		if(getLayerForName){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+		}
+		
     	var pointArray = [];
 		var source;
 		
@@ -199,40 +215,104 @@ var _WestCondition = function () {
 			});
 		}
 		
-		var styleCache = {};
-		
 		var vectorLayer = new ol.layer.Vector({
 	        source: source,
-	        style: function(feature) {
-	        	var size = feature.get('features').length;
-	        	var style = styleCache[size];
-	        	if (!style) {
-	        		style = new ol.style.Style({
-	        			image: new ol.style.Circle({
-	        				radius: 20,
-	        				stroke: new ol.style.Stroke({
-	        					color: '#fff'
-	        				}),
-	        				fill: new ol.style.Fill({
-	        					color: '#3399CC'
-	        				})
-	        			}),
-	        			text: new ol.style.Text({
-	        				text: size.toString(),
-	        				fill: new ol.style.Fill({
-	        					color: '#fff'
-	        				}),
-	        				font: '20px bold, Verdana'
-	        			})
-	        		});
-	        		styleCache[size] = style;
-	        	}
-	        	return style;
-	        }
+	        id:id,
+	        name:id,
+	        style:clusterStyleFunction
 		});
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     };
+    
+    var calculateClusterInfo = function(resolution) {
+    	maxFeatureCount = 0;
+    	var features = _CoreMap.getMap().getLayerForName('complaintStatus').getSource().getFeatures();
+    	var feature;
+    	var radius = 0;
+    	for (var i = features.length - 1; i >= 0; --i) {
+    		feature = features[i];
+    		var originalFeatures = feature.get('features');
+    		var extent = new ol.extent.createEmpty();
+    		var j = (void 0), jj = (void 0);
+    		for (j = 0, jj = originalFeatures.length; j < jj; ++j) {
+    			new ol.extent.extend(extent, originalFeatures[j].getGeometry().getExtent());
+    		}
+    		maxFeatureCount = Math.max(maxFeatureCount, jj);
+    		radius = 0.25 * (new ol.extent.getWidth(extent) + new ol.extent.getHeight(extent)) / resolution;
+    		feature.set('radius', radius);
+    	}
+    };
+    
+    var clickCluster = function(feature){
+    	var styles = [new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: feature.get('radius'),
+              fill: new ol.style.Fill({
+                  color: 'rgba(255, 255, 255, 0.01)'
+              })
+            })
+          })];
+    	var originalFeatures = feature.get('features');
+    	var originalFeature;
+    	
+    	if(originalFeatures){
+    		for (var i = originalFeatures.length - 1; i >= 0; --i) {
+        		originalFeature = originalFeatures[i];
+        		styles.push(createLastPoint(originalFeature));
+        	}
+    	}
+    	
+    	feature.setStyle(styles);
+    };
+    
+    var clusterStyleFunction = function(feature, resolution) {
+    	if (resolution != currentResolution) {
+    		calculateClusterInfo(resolution);
+    		currentResolution = resolution;
+    	}
+    	var style;
+    	var size = feature.get('features').length;
+    	if (size > 1) {
+    		style = new ol.style.Style({
+    			image: new ol.style.Circle({
+    				radius: 20,
+    				stroke: new ol.style.Stroke({
+    					color: '#fff'
+    				}),
+    				fill: new ol.style.Fill({
+    					color: '#3399CC'
+    				})
+    			}),
+    			text: new ol.style.Text({
+    				text: size.toString(),
+    				fill: new ol.style.Fill({
+    					color: '#fff'
+    				}),
+    				font: '20px bold, Verdana'
+    			})
+    		});
+    	} else {
+    		var originalFeature = feature.get('features')[0];
+    		style = createLastPoint(originalFeature);
+    	}
+    	return style;
+    };
+    
+    var createLastPoint = function(feature) {
+    	var radius = 5 + 20;
+
+    	return new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 5,
+    			fill: new ol.style.Fill({
+    		        color: '#f00'
+    		    })
+    		})
+    	});
+    };
+    
     
     var writeGrid = function(id, data){
     	$('#gridArea').show();
@@ -299,13 +379,7 @@ var _WestCondition = function () {
     			}
     			_CoreMap.centerMap(result.features[0].geometry.coordinates[0],result.features[0].geometry.coordinates[1],20);
     			
-    			var name = 'focus';
-    			var focusLayer = _CoreMap.getMap().getLayerForName(name);
-    			
-    			if(focusLayer){
-    				_MapEventBus.trigger(_MapEvents.map_removeLayer, focusLayer);
-    			}
-    			
+    			clearFocusLayer();
     			var newFocusLayer = new ol.layer.Vector({
     				source : new ol.source.Vector({
     					features : [new ol.Feature(new ol.geom.Point(result.features[0].geometry.coordinates))]
@@ -321,7 +395,7 @@ var _WestCondition = function () {
     	    		}),
     				visible: true,
     				zIndex:2,
-    				name:name
+    				name:'focus'
     			});
     			
     	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
@@ -388,6 +462,12 @@ var _WestCondition = function () {
     };
 
     return {
-        init: init
+        init: init,
+        getContentsConfig: function(){
+        	return contentsConfig;
+        },
+        clickCluster: function(f){
+        	clickCluster(f);
+        }
     };
 }();
