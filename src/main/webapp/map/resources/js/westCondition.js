@@ -5,16 +5,16 @@ var _WestCondition = function () {
     var noDataContent = '데이터가 없습니다.';
     
     var contentsConfig = {
-    	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',columnArr:[{name:'CVPL_NO',title:'민원 번호'},
-    	                                                                                   	{name:'CVPL_DT',title:'민원 일시'},
-    	                                                                                   	{name:'CPTTR',title:'민원인'},
-    	                                                                                   	{name:'CPTTR_CTTPC',title:'민원인 연락처'},
-												                                            {name:'CVPL_LC',title:'민원 위치'},
-												                                            {name:'CVPL_CN',title:'민원 내용'},
-												                                            {name:'REGIST_DT',title:'등록 일시'},
-												                                            {name:'REGISTER_ID',title:'등록자 ID'},
-												                                            {name:'CHANGE_DT',title:'변경 일시'},
-												                                            {name:'CHANGER_ID',title:'변경자 ID'}]}
+    	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호'},
+						                                                                                                       	{name:'CVPL_DT',title:'민원 일시'},
+									    	                                                                                   	{name:'CPTTR',title:'민원인'},
+									    	                                                                                   	{name:'CPTTR_CTTPC',title:'민원인 연락처'},
+																					                                            {name:'CVPL_LC',title:'민원 위치'},
+																					                                            {name:'CVPL_CN',title:'민원 내용'},
+																					                                            {name:'REGIST_DT',title:'등록 일시'},
+																					                                            {name:'REGISTER_ID',title:'등록자 ID'},
+																					                                            {name:'CHANGE_DT',title:'변경 일시'},
+																					                                            {name:'CHANGER_ID',title:'변경자 ID'}]}
     };
     
     /*var tabConfigObj = {
@@ -288,49 +288,45 @@ var _WestCondition = function () {
     	});
     	
     	$('#grid' + id).find('td').off('click').on('click',function(){
-    		var rowCode = $($(this).parent().children()[0]).text();
-    		
-    		if(rowCode==noDataContent){
+    		var rowCode = $($(this).parent().children()[contentsConfig[id].keyColumnIndex]).text();
+    		if(rowCode == '' || rowCode == noDataContent){
     			return;
     		}
     		
-    		_MapService.getWfs(':cvpl_pt', '*','CVPL_NO=\'' + rowCode + '\'', '').then(function(result){
+    		_MapService.getWfs(':'+contentsConfig[id].layerName, '*',contentsConfig[id].keyColumn+'=\'' + rowCode + '\'', '').then(function(result){
     			if(result.features.length == 0){
     				return;
     			}
-    			
     			_CoreMap.centerMap(result.features[0].geometry.coordinates[0],result.features[0].geometry.coordinates[1],20);
     			
+    			var name = 'focus';
+    			var focusLayer = _CoreMap.getMap().getLayerForName(name);
+    			
+    			if(focusLayer){
+    				_MapEventBus.trigger(_MapEvents.map_removeLayer, focusLayer);
+    			}
+    			
+    			var newFocusLayer = new ol.layer.Vector({
+    				source : new ol.source.Vector({
+    					features : [new ol.Feature(new ol.geom.Point(result.features[0].geometry.coordinates))]
+    				}),
+    				style : new ol.style.Style({
+    	    			image: new ol.style.Circle({
+    	    				radius: 21,
+    	    				stroke: new ol.style.Stroke({
+    	    					color: '#f00',
+    	    					width: 5
+    	    				})
+    	    			})
+    	    		}),
+    				visible: true,
+    				zIndex:2,
+    				name:name
+    			});
+    			
+    	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
     		});
     	});
-    	
-    	//dynamicSvgTest();
-    };
-    
-    var dynamicSvgTest = function(point){
-    	var features = new ol.Feature({geometry:new ol.geom.Point(point), properties:{}});
-    	
-    	var vectorLayer = new ol.layer.Vector({
-			source : new ol.source.Vector({
-				features : features
-			}),
-			style : new ol.style.Style({
-    			image: new ol.style.Circle({
-    				radius: 10,
-    				stroke: new ol.style.Stroke({
-    					color: '#fff'
-    				}),
-    				fill: new ol.style.Fill({
-    					color: '#3399CC'
-    				})
-    			})
-    		}),
-			visible: true,
-			zIndex: 1001,
-			id:'dynamicSvgTest'
-		});
-    	
-    	_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     };
     
     var setCommonCombo = function(options){
