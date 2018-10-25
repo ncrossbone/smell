@@ -225,25 +225,6 @@ var _WestCondition = function () {
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     };
     
-    var calculateClusterInfo = function(resolution) {
-    	maxFeatureCount = 0;
-    	var features = _CoreMap.getMap().getLayerForName('complaintStatus').getSource().getFeatures();
-    	var feature;
-    	var radius = 0;
-    	for (var i = features.length - 1; i >= 0; --i) {
-    		feature = features[i];
-    		var originalFeatures = feature.get('features');
-    		var extent = new ol.extent.createEmpty();
-    		var j = (void 0), jj = (void 0);
-    		for (j = 0, jj = originalFeatures.length; j < jj; ++j) {
-    			new ol.extent.extend(extent, originalFeatures[j].getGeometry().getExtent());
-    		}
-    		maxFeatureCount = Math.max(maxFeatureCount, jj);
-    		radius = 0.25 * (new ol.extent.getWidth(extent) + new ol.extent.getHeight(extent)) / resolution;
-    		feature.set('radius', radius);
-    	}
-    };
-    
     var clickCluster = function(feature){
     	var styles = [new ol.style.Style({
             image: new ol.style.Circle({
@@ -267,23 +248,13 @@ var _WestCondition = function () {
     };
     
     var clusterStyleFunction = function(feature, resolution) {
-    	if (resolution != currentResolution) {
-    		calculateClusterInfo(resolution);
-    		currentResolution = resolution;
-    	}
     	var style;
     	var size = feature.get('features').length;
     	if (size > 1) {
     		style = new ol.style.Style({
-    			image: new ol.style.Circle({
-    				radius: 20,
-    				stroke: new ol.style.Stroke({
-    					color: '#fff'
-    				}),
-    				fill: new ol.style.Fill({
-    					color: '#3399CC'
-    				})
-    			}),
+    			image: new ol.style.Icon(({
+		          src: '/images/maker.png'
+		        })),
     			text: new ol.style.Text({
     				text: size.toString(),
     				fill: new ol.style.Fill({
@@ -300,8 +271,6 @@ var _WestCondition = function () {
     };
     
     var createLastPoint = function(feature) {
-    	var radius = 5 + 20;
-
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
@@ -312,7 +281,6 @@ var _WestCondition = function () {
     		})
     	});
     };
-    
     
     var writeGrid = function(id, data){
     	$('#gridArea').show();

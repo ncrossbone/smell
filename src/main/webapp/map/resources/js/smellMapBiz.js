@@ -41,7 +41,6 @@ var _SmellMapBiz = function () {
 	var pointBufferFeatureLayer;
 	
 	var clusterVectorLayer;
-	
 	var init = function(){
 		
 		setEvent();
@@ -553,6 +552,7 @@ var _SmellMapBiz = function () {
 					return false;
 				}
 			});
+			
 			if (hit) {
 				coreMap.getViewport().style.cursor = 'pointer';
 			} else {
@@ -560,6 +560,7 @@ var _SmellMapBiz = function () {
 			}
 		});
 	};
+	
 	var bufferVectorStyle = function(){
 		return new ol.style.Style({
 	          stroke: new ol.style.Stroke({
