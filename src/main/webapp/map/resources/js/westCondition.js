@@ -8,7 +8,7 @@ var _WestCondition = function () {
     var clusterDistance = 100;
     
     var contentsConfig = {
-    	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호'},
+    	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호',isLabelLayer:false},
 						                                                                                                       	{name:'CVPL_DT',title:'민원 일시'},
 									    	                                                                                   	{name:'CPTTR',title:'민원인'},
 									    	                                                                                   	{name:'CPTTR_CTTPC',title:'민원인 연락처'},
@@ -17,7 +17,19 @@ var _WestCondition = function () {
 																					                                            {name:'REGIST_DT',title:'등록 일시'},
 																					                                            {name:'REGISTER_ID',title:'등록자 ID'},
 																					                                            {name:'CHANGE_DT',title:'변경 일시'},
-																					                                            {name:'CHANGER_ID',title:'변경자 ID'}]}
+																					                                            {name:'CHANGER_ID',title:'변경자 ID'}]
+    	},
+    	'sensoryEvaluation':{layerName:'cvpl_pt',layerType:'base',title:'관능 평가 데이터',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호',isLabelLayer:true},
+	                                                                                                                            	{name:'CVPL_DT',title:'민원 일시'},
+										    	                                                                                   	{name:'CPTTR',title:'민원인'},
+										    	                                                                                   	{name:'CPTTR_CTTPC',title:'민원인 연락처'},
+																						                                            {name:'CVPL_LC',title:'민원 위치'},
+																						                                            {name:'CVPL_CN',title:'민원 내용'},
+																						                                            {name:'REGIST_DT',title:'등록 일시'},
+																						                                            {name:'REGISTER_ID',title:'등록자 ID'},
+																						                                            {name:'CHANGE_DT',title:'변경 일시'},
+																						                                            {name:'CHANGER_ID',title:'변경자 ID'}]
+    	}
     };
     
     /*var tabConfigObj = {
@@ -173,6 +185,11 @@ var _WestCondition = function () {
 				_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',undefined, '')).then(function (gridData, pointData) {
 					writeGrid(placeId,gridData[0]);
 					writeLayer(placeId,pointData[0]);
+					
+					if(contentsConfig[placeId].isLabelLayer){
+						writeLayer('text',pointData[0]);
+					}
+					
 				});
     };
     
@@ -201,32 +218,106 @@ var _WestCondition = function () {
 		var source;
 		
 		for(var i=0; i<data.features.length; i++){
-			var feature = new ol.Feature({geometry:new ol.geom.Point(data.features[i].geometry.coordinates),properties:data.features[i].properties});
+			var feature = new ol.Feature();
+			feature.setGeometry(new ol.geom.Point(data.features[i].geometry.coordinates));
+			feature.setProperties(data.features[i].properties);
 			pointArray.push(feature);
 		}
 		
-		if(contentsConfig[id].layerType=='cluster'){
-			source = new ol.source.Cluster({
-				distance: _CoreMap.getMap().getView().getZoom()==_CoreMap.getMap().getView().getMaxZoom()?1:clusterDistance,
-				source: new ol.source.Vector({
+		if(contentsConfig[id]){
+			if(contentsConfig[id].layerType=='cluster'){
+				source = new ol.source.Cluster({
+					distance: _CoreMap.getMap().getView().getZoom()==_CoreMap.getMap().getView().getMaxZoom()?1:clusterDistance,
+					source: new ol.source.Vector({
+						features: pointArray
+					})
+				});
+			}else{
+				source = new ol.source.Vector({
 					features: pointArray
-				})
-			});
+				});
+			}
 		}else{
 			source = new ol.source.Vector({
 				features: pointArray
 			});
 		}
 		
+		var styleFunction = selectStyleFunction(id);
+		
 		var vectorLayer = new ol.layer.Vector({
 	        source: source,
 	        id:id,
 	        name:id,
-	        style:clusterStyleFunction,
+	        style:styleFunction,
 	        zIndex:2
 		});
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
+    };
+    
+    var selectStyleFunction = function(id){
+    	
+    	var styleFunction;
+    	switch (id) {
+		case 'complaintStatus':
+			styleFunction = clusterStyleFunction;
+			break;
+		case 'sensoryEvaluation':
+			styleFunction = portableMeasurementStyleFunction;
+			break;
+		case 'text':
+			styleFunction = labelStyleFunction;
+			break;
+		default:
+			break;
+		}
+    	
+    	return styleFunction;
+    };
+    
+    var labelStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 0
+    		}),
+			text: new ol.style.Text({
+				text: feature.getProperties().X + feature.getProperties().X + feature.getProperties().X + feature.getProperties().X,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: '13px bold, Verdana'
+			})
+  		});
+    	
+    	return style;
+    };
+    
+    var portableMeasurementStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 20,
+    			fill: new ol.style.Fill({
+    		        color: '#548235'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		}),
+			text: new ol.style.Text({
+				text: parseInt(feature.getProperties().CVPL_NO) / 1000 + '',
+				fill: new ol.style.Fill({
+					color: '#fff'
+				}),
+				font: '11px bold, Verdana'
+			})
+  		});
+    	
+    	return style;
     };
     
     var clickCluster = function(feature,name){
@@ -240,7 +331,7 @@ var _WestCondition = function () {
                 zoom: _CoreMap.getMap().getView().getZoom() + 1
         	});
     	}else{
-    		clickSyncGridNVector(name,feature.get('features')[0].getProperties().properties[contentsConfig[name].keyColumn]);
+    		clickSyncGridNVector(name,feature.get('features')[0].getProperties()[contentsConfig[name].keyColumn]);
     	}
     };
     
@@ -448,8 +539,6 @@ var _WestCondition = function () {
     };
     
     var onClickLayer = function(feature, name){
-    	
-    	//clickSyncGridNVector(name,)
     	switch (name) {
 		case 'complaintStatus':
 			clickCluster(feature,name);
