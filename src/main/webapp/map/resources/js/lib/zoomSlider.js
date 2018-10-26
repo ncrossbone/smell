@@ -5,6 +5,7 @@ var _ZoomSlider = function () {
 			plusMinusButtonSize:20
 	};
 	
+	var preZoomLevel = 0;
 	var init = function(options){
 		zoomOptions.top = options.top;
 		zoomOptions.right = options.right;
@@ -103,7 +104,19 @@ var _ZoomSlider = function () {
 		
 		
 		_MapEventBus.on(_MapEvents.map_moveend, function(mapChangeType){
-			_ZoomSlider.setLevelToGaze(_CoreMap.getMap().getView().getZoom());
+			var getZoom = _CoreMap.getMap().getView().getZoom();
+			_ZoomSlider.setLevelToGaze(getZoom);
+			
+			if(preZoomLevel != getZoom){
+				preZoomLevel = getZoom;
+				_WestCondition.clearFocusLayer();
+			}
+			
+			var clusterLayer = _CoreMap.getMap().getLayerForName('complaintStatus');
+			if(clusterLayer){
+				var distance = _CoreMap.getMap().getView().getZoom() == _CoreMap.getMap().getView().getMaxZoom()?1:_WestCondition.getDefaultClusterDistance();
+				clusterLayer.getSource().setDistance(distance);
+			}
 		});
 	};
 	

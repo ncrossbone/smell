@@ -373,11 +373,15 @@ var _SmellMapBiz = function () {
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
 			
-			if(_CoreMap.getMap().getLayerForName('complaintStatus')){
-				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature){
-					_WestCondition.clickCluster(feature)
-				});
-			}
+			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
+				var lyrNm = layer.get('name');
+				
+				if(_WestCondition.getContentsConfig()[layer.get('name')]){
+					if(_CoreMap.getMap().getLayerForName(lyrNm)){
+						_WestCondition.onClickLayer(feature,lyrNm);
+					}
+				}
+			});
 			
 			if(wmsSelectTestLayer){
 				wmsSelectTestLayer.setOpacity(0.0);
@@ -546,7 +550,7 @@ var _SmellMapBiz = function () {
 			var coreMap = _CoreMap.getMap();
 			var pixel = coreMap.getEventPixel(data.result.originalEvent);
 			var hit = coreMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
-				if(_WestCondition.getContentsConfig()[layer.get('id')]){
+				if(_WestCondition.getContentsConfig()[layer.get('name')]){
 					return true;
 				}else{
 					return false;

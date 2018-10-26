@@ -5,6 +5,7 @@ var _WestCondition = function () {
     var noDataContent = '데이터가 없습니다.';
     var currentResolution;
     var maxFeatureCount;
+    var clusterDistance = 100;
     
     var contentsConfig = {
     	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호'},
@@ -176,10 +177,12 @@ var _WestCondition = function () {
     };
     
     var clearFocusLayer = function(){
-    	var focusLayer = _CoreMap.getMap().getLayerForName('focus');
-		if(focusLayer){
-			_MapEventBus.trigger(_MapEvents.map_removeLayer, focusLayer);
-		}
+    	if(_CoreMap.getMap()){
+    		var focusLayer = _CoreMap.getMap().getLayerForName('focus');
+    		if(focusLayer){
+    			_MapEventBus.trigger(_MapEvents.map_removeLayer, focusLayer);
+    		}
+    	}
     };
     
     var writeLayer = function(id, data){
@@ -198,13 +201,13 @@ var _WestCondition = function () {
 		var source;
 		
 		for(var i=0; i<data.features.length; i++){
-			var feature = new ol.Feature(new ol.geom.Point(data.features[i].geometry.coordinates));
+			var feature = new ol.Feature({geometry:new ol.geom.Point(data.features[i].geometry.coordinates),properties:data.features[i].properties});
 			pointArray.push(feature);
 		}
 		
 		if(contentsConfig[id].layerType=='cluster'){
 			source = new ol.source.Cluster({
-				distance: 100,
+				distance: _CoreMap.getMap().getView().getZoom()==_CoreMap.getMap().getView().getMaxZoom()?1:clusterDistance,
 				source: new ol.source.Vector({
 					features: pointArray
 				})
@@ -219,37 +222,32 @@ var _WestCondition = function () {
 	        source: source,
 	        id:id,
 	        name:id,
-	        style:clusterStyleFunction
+	        style:clusterStyleFunction,
+	        zIndex:2
 		});
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     };
     
-    var clickCluster = function(feature){
-    	var styles = [new ol.style.Style({
-            image: new ol.style.Circle({
-              radius: feature.get('radius'),
-              fill: new ol.style.Fill({
-                  color: 'rgba(255, 255, 255, 0.01)'
-              })
-            })
-          })];
-    	var originalFeatures = feature.get('features');
-    	var originalFeature;
+    var clickCluster = function(feature,name){
+    	var coord = feature.getGeometry().getCoordinates();
+    	var size = feature.get('features').length;
     	
-    	if(originalFeatures){
-    		for (var i = originalFeatures.length - 1; i >= 0; --i) {
-        		originalFeature = originalFeatures[i];
-        		styles.push(createLastPoint(originalFeature));
-        	}
+    	if(size > 1){
+    		_CoreMap.getMap().getView().animate({
+        		center: coord,
+                duration: 500,
+                zoom: _CoreMap.getMap().getView().getZoom() + 1
+        	});
+    	}else{
+    		clickSyncGridNVector(name,feature.get('features')[0].getProperties().properties[contentsConfig[name].keyColumn]);
     	}
-    	
-    	feature.setStyle(styles);
     };
     
     var clusterStyleFunction = function(feature, resolution) {
     	var style;
     	var size = feature.get('features').length;
+    	
     	if (size > 1) {
     		style = new ol.style.Style({
     			image: new ol.style.Icon(({
@@ -341,13 +339,17 @@ var _WestCondition = function () {
     			return;
     		}
     		
-    		_MapService.getWfs(':'+contentsConfig[id].layerName, '*',contentsConfig[id].keyColumn+'=\'' + rowCode + '\'', '').then(function(result){
-    			if(result.features.length == 0){
-    				return;
-    			}
-    			_CoreMap.centerMap(result.features[0].geometry.coordinates[0],result.features[0].geometry.coordinates[1],20);
-    			
-    			clearFocusLayer();
+    		clickSyncGridNVector(id,rowCode);
+    	});
+    };
+    
+    var clickSyncGridNVector = function(id, keyCode){
+    	_MapService.getWfs(':'+contentsConfig[id].layerName, '*',contentsConfig[id].keyColumn+'=\'' + keyCode + '\'', '').then(function(result){
+			if(result.features.length == 0){
+				return;
+			}
+			deferredForSetCenter(result.features[0].geometry.coordinates,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
+				clearFocusLayer();
     			var newFocusLayer = new ol.layer.Vector({
     				source : new ol.source.Vector({
     					features : [new ol.Feature(new ol.geom.Point(result.features[0].geometry.coordinates))]
@@ -362,13 +364,29 @@ var _WestCondition = function () {
     	    			})
     	    		}),
     				visible: true,
-    				zIndex:2,
+    				zIndex:1,
     				name:'focus'
     			});
     			
     	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
-    		});
+			});
+		});
+    };
+    
+    var deferredForSetCenter = function(coord,zoom){
+    	var duration = 500;
+    	var deferred = $.Deferred();
+    	_CoreMap.getMap().getView().animate({
+    		duration: duration,
+    		zoom:_CoreMap.getMap().getView().getMaxZoom(),
+    		center: coord,
     	});
+    	
+    	setTimeout(function() {
+    		deferred.resolve();
+        }, duration + 100);
+    	
+    	return deferred.promise();
     };
     
     var setCommonCombo = function(options){
@@ -428,6 +446,18 @@ var _WestCondition = function () {
             contentType: options.contentType
         })
     };
+    
+    var onClickLayer = function(feature, name){
+    	
+    	//clickSyncGridNVector(name,)
+    	switch (name) {
+		case 'complaintStatus':
+			clickCluster(feature,name);
+			break;
+		default:
+			break;
+		}
+    };
 
     return {
         init: init,
@@ -436,6 +466,15 @@ var _WestCondition = function () {
         },
         clickCluster: function(f){
         	clickCluster(f);
+        },
+        getDefaultClusterDistance: function(){
+        	return clusterDistance;
+        },
+        clearFocusLayer:function(){
+        	clearFocusLayer();
+        },
+        onClickLayer:function(f,nm){
+        	onClickLayer(f,nm);
         }
     };
 }();
