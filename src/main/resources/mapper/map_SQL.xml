@@ -25,9 +25,11 @@
 			   DATE_FORMAT(REGIST_DT,'%Y년 %m월 %d일 %h시') AS REGIST_DT,
 			   REGISTER_ID,
 			   CHANGE_DT,
-			   CHANGER_ID 
+			   CHANGER_ID,
+			   LEGALDONG_CODE
   		  FROM CVPL_MANAGE
   		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
-     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate} 
+     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
+     	   AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
 	</select>
 </mapper>

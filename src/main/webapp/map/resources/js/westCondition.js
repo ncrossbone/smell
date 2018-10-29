@@ -8,16 +8,28 @@ var _WestCondition = function () {
     var clusterDistance = 100;
     
     var contentsConfig = {
-    	'complaintStatus':{layerName:'cvpl_pt',layerType:'cluster',title:'민원현황',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호',isLabelLayer:false},
-						                                                                                                       	{name:'CVPL_DT',title:'민원 일시'},
-									    	                                                                                   	{name:'CPTTR',title:'민원인'},
-									    	                                                                                   	{name:'CPTTR_CTTPC',title:'민원인 연락처'},
-																					                                            {name:'CVPL_LC',title:'민원 위치'},
-																					                                            {name:'CVPL_CN',title:'민원 내용'},
-																					                                            {name:'REGIST_DT',title:'등록 일시'},
-																					                                            {name:'REGISTER_ID',title:'등록자 ID'},
-																					                                            {name:'CHANGE_DT',title:'변경 일시'},
-																					                                            {name:'CHANGER_ID',title:'변경자 ID'}]
+    	'complaintStatus':{cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
+    										'town':'LEGALDONG_CODE',
+    										'startDate':'CVPL_DT',
+    										'endDate':'CVPL_DT',
+    										'branchName':'CVPL_CN'},
+    					  layerName:'CVPL_POINT',
+    					  layerType:'cluster',
+    					  title:'민원현황',
+    					  keyColumn:'CVPL_NO',
+    					  keyColumnIndex:0,
+    					  isLabelLayer:false,
+    					  isVisible:true,
+    					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
+    					             {name:'CVPL_DT',title:'민원 일시'},
+    					             {name:'CPTTR',title:'민원인'},
+    					             {name:'CPTTR_CTTPC',title:'민원인 연락처'},
+    					             {name:'CVPL_LC',title:'민원 위치'},
+    					             {name:'CVPL_CN',title:'민원 내용'},
+    					             {name:'REGIST_DT',title:'등록 일시'},
+    					             {name:'REGISTER_ID',title:'등록자 ID'},
+    					             {name:'CHANGE_DT',title:'변경 일시'},
+    					             {name:'CHANGER_ID',title:'변경자 ID'}]
     	},
     	'sensoryEvaluation':{layerName:'cvpl_pt',layerType:'base',title:'관능 평가 데이터',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호',isLabelLayer:true},
 	                                                                                                                            	{name:'CVPL_DT',title:'민원 일시'},
@@ -134,11 +146,37 @@ var _WestCondition = function () {
     	$('a[id$="Views"]').off('click').on('click',function(){
     		checkSearchCondition($(this).attr('id').split('Views')[0]);
     	});
+    	
+    	$('.lnb').find('em').off('click').on('click',function(){
+    		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
+    		var layerForName = _CoreMap.getMap().getLayerForName(contentsId);
+    		
+    		if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
+    			$(this).css('background','url(../images/btn_off.png)');
+    			contentsConfig[contentsId].isVisible = false;
+	    		if(layerForName){
+	    			layerForName.setVisible(false);
+	    		}
+    		}else{
+    			$(this).css('background','url(../images/btn_on.png)');
+    			contentsConfig[contentsId].isVisible = true;
+    			if(layerForName){
+	    			layerForName.setVisible(true);
+	    		}
+    		}
+    	});
     };
     
     var checkSearchCondition = function(placeId){
+		if(!contentsConfig[placeId]){
+			return alert('레이어 정의 필요');
+		}
+		
     	var searchPlace = $('#' + placeId).find('*');
     	var paramObj = {contentsId:placeId};
+    	
+    	var cqlString = '';
+    	
 		var requireAlertObj = {
 	    		'branchName':'지점명을 입력하세요.',
 	    		'startDate':'시작날짜를 선택하세요.',
@@ -166,9 +204,15 @@ var _WestCondition = function () {
 					
 					if($(searchPlace[i]).val()){
 						if(replaceId=='startDate' || replaceId=='endDate'){
-							paramObj[replaceId] = $(searchPlace[i]).val().replace('.','').replace('.','');
+							var oper = replaceId=='startDate'?'>=':'<=';
+							var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
+							paramObj[replaceId] = dateValue;
+							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
 						}else{
 							paramObj[replaceId] = $(searchPlace[i]).val();
+							if(replaceId != 'cityDistrict' && replaceId != 'town'){
+								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
+							}
 						}
 					}else{
 						return alert(requireAlertObj[replaceId]);
@@ -177,12 +221,8 @@ var _WestCondition = function () {
 			}
 		}
 		
-		if(!contentsConfig[placeId]){
-			return alert('레이어 정의 필요');
-		}
-		
 		$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
-				_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',undefined, '')).then(function (gridData, pointData) {
+				_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
 					writeGrid(placeId,gridData[0]);
 					writeLayer(placeId,pointData[0]);
 					
@@ -250,7 +290,8 @@ var _WestCondition = function () {
 	        id:id,
 	        name:id,
 	        style:styleFunction,
-	        zIndex:2
+	        zIndex:2,
+	        visible:contentsConfig[id].isVisible
 		});
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
