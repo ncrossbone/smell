@@ -1,5 +1,5 @@
 var _WestCondition = function () {
-    var initTownCode = '';
+    var initTownCode = '43111';
     var dateMappingObj = {};
     var cityMappingObj = {};
     var noDataContent = '데이터가 없습니다.';
@@ -16,10 +16,10 @@ var _WestCondition = function () {
     					  layerName:'CVPL_POINT',
     					  layerType:'cluster',
     					  title:'민원현황',
-    					  keyColumn:'CVPL_NO',
-    					  keyColumnIndex:0,
-    					  isLabelLayer:false,
+    					  keyColumn:['CVPL_NO'],
     					  isVisible:true,
+    					  isUseGeoserver:true,
+    					  isLabelLayer:false,
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
     					             {name:'CVPL_DT',title:'민원 일시'},
     					             {name:'CPTTR',title:'민원인'},
@@ -31,16 +31,67 @@ var _WestCondition = function () {
     					             {name:'CHANGE_DT',title:'변경 일시'},
     					             {name:'CHANGER_ID',title:'변경자 ID'}]
     	},
-    	'sensoryEvaluation':{layerName:'cvpl_pt',layerType:'base',title:'관능 평가 데이터',keyColumn:'CVPL_NO',keyColumnIndex:0,columnArr:[{name:'CVPL_NO',title:'민원 번호',isLabelLayer:true},
-	                                                                                                                            	{name:'CVPL_DT',title:'민원 일시'},
-										    	                                                                                   	{name:'CPTTR',title:'민원인'},
-										    	                                                                                   	{name:'CPTTR_CTTPC',title:'민원인 연락처'},
-																						                                            {name:'CVPL_LC',title:'민원 위치'},
-																						                                            {name:'CVPL_CN',title:'민원 내용'},
-																						                                            {name:'REGIST_DT',title:'등록 일시'},
-																						                                            {name:'REGISTER_ID',title:'등록자 ID'},
-																						                                            {name:'CHANGE_DT',title:'변경 일시'},
-																						                                            {name:'CHANGER_ID',title:'변경자 ID'}]
+    	'portableMeasurement':{
+						layerType:'base',
+						title:'이동식 측정 데이터',
+						keyColumn:['CODE','DATE'],
+						isVisible:true,
+						isUseGeoserver:false,
+						isLabelLayer:true,
+						columnArr:[{name:'CODE',title:'센서ID'},
+						     {name:'OPR_STTUS_CODE',title:'센서명'},
+						     {name:'VOCS',title:'휘발성유기물'},
+						     {name:'CCNT',title:'접점센서'},
+						     {name:'NH3',title:'암모니아'},
+						     {name:'ERCRT',title:'전류센서'},
+						     {name:'H2S',title:'황화수소'},
+						     {name:'ARCSR',title:'기압'},
+						     {name:'OU',title:'복합 악취'},
+						     {name:'SOLRAD',title:'일사'},
+						     {name:'HD',title:'습도'},
+						     {name:'TMPRT',title:'기온'},
+						     {name:'WD',title:'풍향'},
+						     {name:'WS',title:'풍속'},
+						     {name:'NO2',title:'이산화질소'},
+						     {name:'SO2',title:'이산화황'},
+						     {name:'PM10',title:'미세먼지10'},
+						     {name:'PM2.5',title:'미세먼지2.5'},
+						     {name:'CFC',title:'염소'},
+						     {name:'CH3SH',title:'메틸메르캅탄'},
+						     {name:'TMA',title:'트리메틸아민'},
+						     {name:'ETHANOL',title:'에탄올'},
+						     {name:'DATE',title:'날짜',visible:false}]
+    	},
+    	'fixedMeasurement':{
+			layerType:'base',
+			title:'고정식 측정 데이터',
+			keyColumn:['CODE','DATE'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			columnArr:[{name:'CODE',title:'센서ID'},
+			     {name:'OPR_STTUS_CODE',title:'센서명'},
+			     {name:'VOCS',title:'휘발성유기물'},
+			     {name:'CCNT',title:'접점센서'},
+			     {name:'NH3',title:'암모니아'},
+			     {name:'ERCRT',title:'전류센서'},
+			     {name:'H2S',title:'황화수소'},
+			     {name:'ARCSR',title:'기압'},
+			     {name:'OU',title:'복합 악취'},
+			     {name:'SOLRAD',title:'일사'},
+			     {name:'HD',title:'습도'},
+			     {name:'TMPRT',title:'기온'},
+			     {name:'WD',title:'풍향'},
+			     {name:'WS',title:'풍속'},
+			     {name:'NO2',title:'이산화질소'},
+			     {name:'SO2',title:'이산화황'},
+			     {name:'PM10',title:'미세먼지10'},
+			     {name:'PM2.5',title:'미세먼지2.5'},
+			     {name:'CFC',title:'염소'},
+			     {name:'CH3SH',title:'메틸메르캅탄'},
+			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'ETHANOL',title:'에탄올'},
+			     {name:'DATE',title:'날짜',visible:false}]
     	}
     };
     
@@ -87,24 +138,29 @@ var _WestCondition = function () {
     };
     
     var init = function () {
-//        $.when(getData({
-//            url: '',
-//            contentType: 'application/json',
-//            params: {code:'1111',flag='CityDistrict'}
-//        }), getData({
-//            url: '',
-//            contentType: 'application/json',
-//            params: {code:initTownCode,flag='town'}
-//        })).then(function (cityDistrictData, townData) {
-//            var cityArr = getCityArr();
-//            for (var i = 0; i < cityArr.length; i++) {
-//                var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityDistrictData : townData;
-//                writeCity(data, cityArr[i]);
-//            }
-//        });
     	
-        var cityDistrictData = [{name:'서원구'},{name:'청원구'},{name:'흥덕구'},{name:'상당구'}];
-        var townData = [{name:'1동'},{name:'2동'},{name:'3동'}];
+    	$.when(getData({
+    		url: '/getCity.do',
+    		contentType: 'application/json'
+    	}),getData({
+    		url: '/getTown.do',
+    		contentType: 'application/json',
+    		params:{
+    			code:initTownCode
+    		}
+    	})).done(function(cityData,townData){
+    		var cityArr = setCommonCombo({
+    			type:'select',
+    			parentTypeId:'CityDistrict',
+    			childTypeId:'Town',
+    			flag:'city',
+    		});
+
+    		for (var i = 0; i < cityArr.length; i++) {
+    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityData[0] : townData[0];
+    			writeCity(data, cityArr[i]);
+    		}
+    	})
         
         var dateArr = setCommonCombo({
         	type:'input',
@@ -126,18 +182,15 @@ var _WestCondition = function () {
         		}
         	}));
         }
-    	
-        var cityArr = setCommonCombo({
-        	type:'select',
-        	parentTypeId:'CityDistrict',
-        	childTypeId:'Town',
-        	flag:'city',
-        });
         
-        for (var i = 0; i < cityArr.length; i++) {
-            var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityDistrictData : townData;
-            writeCity(data, cityArr[i]);
+        var portableMeasurementItemHtml = '';
+        
+        for(var i=2; i<contentsConfig['portableMeasurement'].columnArr.length - 1; i++){
+        	portableMeasurementItemHtml += '<option value=\''+contentsConfig['portableMeasurement'].columnArr[i].name+'\'>'+contentsConfig['portableMeasurement'].columnArr[i].title+'</option>';
         }
+        
+        $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
+        
         
         setEvent();
     };
@@ -154,15 +207,20 @@ var _WestCondition = function () {
     		if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
     			$(this).css('background','url(../images/btn_off.png)');
     			contentsConfig[contentsId].isVisible = false;
-	    		if(layerForName){
-	    			layerForName.setVisible(false);
-	    		}
     		}else{
     			$(this).css('background','url(../images/btn_on.png)');
     			contentsConfig[contentsId].isVisible = true;
-    			if(layerForName){
-	    			layerForName.setVisible(true);
-	    		}
+    		}
+    		
+    		if(layerForName){
+    			layerForName.setVisible(contentsConfig[contentsId].isVisible);
+    		}
+    		
+    		if(contentsConfig[contentsId].isLabelLayer){
+    			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
+    			if(labelLayerForName){
+    				labelLayerForName.setVisible(contentsConfig[contentsId].isVisible);
+        		}
     		}
     	});
     };
@@ -207,11 +265,16 @@ var _WestCondition = function () {
 							var oper = replaceId=='startDate'?'>=':'<=';
 							var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
 							paramObj[replaceId] = dateValue;
-							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
+							
+							if(contentsConfig[placeId].cqlForMappingObj){
+								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
+							}
 						}else{
 							paramObj[replaceId] = $(searchPlace[i]).val();
-							if(replaceId != 'cityDistrict' && replaceId != 'town'){
-								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
+							if(replaceId != 'cityDistrict'){
+								if(contentsConfig[placeId].cqlForMappingObj){
+									cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
+								}
 							}
 						}
 					}else{
@@ -221,16 +284,23 @@ var _WestCondition = function () {
 			}
 		}
 		
-		$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
-				_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
-					writeGrid(placeId,gridData[0]);
-					writeLayer(placeId,pointData[0]);
-					
-					if(contentsConfig[placeId].isLabelLayer){
-						writeLayer('text',pointData[0]);
-					}
-					
-				});
+		if(contentsConfig[placeId].isUseGeoserver){
+			$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
+					_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
+						writeGrid(placeId,gridData[0]);
+						writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
+					});
+		}else{
+			getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(data){
+				writeGrid(placeId,data);
+				writeLayer(placeId,data,contentsConfig[placeId].isUseGeoserver);
+				
+				if(contentsConfig[placeId].isLabelLayer){
+					writeLayer('text',data,contentsConfig[placeId].isUseGeoserver,placeId);
+				}
+			});
+		}
+		
     };
     
     var clearFocusLayer = function(){
@@ -242,25 +312,34 @@ var _WestCondition = function () {
     	}
     };
     
-    var writeLayer = function(id, data){
-    	if(data == null || data.features.length <= 0){
+    var writeLayer = function(id, data, isUseGeoserver, labelParentId){
+    	
+    	var getLayerForName = _CoreMap.getMap().getLayerForName(id);
+		if(getLayerForName){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+		}
+		
+    	if(data < 1){
 			return;
 		}
     	
     	clearFocusLayer();
     	
-		var getLayerForName = _CoreMap.getMap().getLayerForName(id);
-		if(getLayerForName){
-			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
-		}
-		
     	var pointArray = [];
 		var source;
 		
-		for(var i=0; i<data.features.length; i++){
+		for(var i=0; i<data.length; i++){
 			var feature = new ol.Feature();
-			feature.setGeometry(new ol.geom.Point(data.features[i].geometry.coordinates));
-			feature.setProperties(data.features[i].properties);
+			
+			if(isUseGeoserver){
+				feature.setGeometry(new ol.geom.Point(data[i].geometry.coordinates));
+				feature.setProperties(data[i].properties);
+			}else{
+				feature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([data[i].LO,data[i].LA],true)));
+				data[i].itemType = $('#portableMeasurementItem').val();
+				feature.setProperties(data[i]);
+			}
+			
 			pointArray.push(feature);
 		}
 		
@@ -291,7 +370,7 @@ var _WestCondition = function () {
 	        name:id,
 	        style:styleFunction,
 	        zIndex:2,
-	        visible:contentsConfig[id].isVisible
+	        visible:contentsConfig[id]?contentsConfig[id].isVisible:contentsConfig[labelParentId].isVisible
 		});
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
@@ -304,7 +383,8 @@ var _WestCondition = function () {
 		case 'complaintStatus':
 			styleFunction = clusterStyleFunction;
 			break;
-		case 'sensoryEvaluation':
+		case 'portableMeasurement':
+		case 'fixedMeasurement':
 			styleFunction = portableMeasurementStyleFunction;
 			break;
 		case 'text':
@@ -324,7 +404,7 @@ var _WestCondition = function () {
     			radius: 0
     		}),
 			text: new ol.style.Text({
-				text: feature.getProperties().X + feature.getProperties().X + feature.getProperties().X + feature.getProperties().X,
+				text: feature.getProperties().LABEL,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
@@ -350,7 +430,7 @@ var _WestCondition = function () {
     		    })
     		}),
 			text: new ol.style.Text({
-				text: parseInt(feature.getProperties().CVPL_NO) / 1000 + '',
+				text: feature.getProperties()[feature.getProperties().itemType] + '',
 				fill: new ol.style.Fill({
 					color: '#fff'
 				}),
@@ -372,8 +452,20 @@ var _WestCondition = function () {
                 zoom: _CoreMap.getMap().getView().getZoom() + 1
         	});
     	}else{
-    		clickSyncGridNVector(name,feature.get('features')[0].getProperties()[contentsConfig[name].keyColumn]);
+    		var paramObj = {contentsId:name};
+			for(var i = 0; i < contentsConfig[name].keyColumn.length; i++){
+				paramObj[contentsConfig[name].keyColumn[i]] = feature.get('features')[0].getProperties()[contentsConfig[name].keyColumn[i]];
+			}
+    		clickSyncGridNVector(name,paramObj);
     	}
+    };
+    
+    var clickBase = function(feature,name){
+    	var paramObj = {contentsId:name};
+    	for(var i = 0; i < contentsConfig[name].keyColumn.length; i++){
+    		paramObj[contentsConfig[name].keyColumn[i]] = feature.getProperties()[contentsConfig[name].keyColumn[i]];
+    	}
+    	clickSyncGridNVector(name,paramObj);
     };
     
     var clusterStyleFunction = function(feature, resolution) {
@@ -427,6 +519,23 @@ var _WestCondition = function () {
     		if($('ul[role="tablist"]').find('li').length==0){
     			$('#gridArea').hide();
     		}
+    		
+    		var id = $(this).parent().find('a').attr('id').split('tabs-')[1];
+    		var layerForName = _CoreMap.getMap().getLayerForName(id);
+    		
+    		if(layerForName){
+    			if(layerForName){
+        			_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
+        		}
+    		}
+    		clearFocusLayer();
+    		
+    		if(contentsConfig[id].isLabelLayer){
+    			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
+    			if(labelLayerForName){
+        			_MapEventBus.trigger(_MapEvents.map_removeLayer, labelLayerForName);
+        		}
+    		}
     	});
     	
     	var tabTitle = contentsConfig[id].title;
@@ -462,46 +571,78 @@ var _WestCondition = function () {
     		noDataContent: noDataContent,
     		data: clients,
 
-    		fields: contentsConfig[id].columnArr
-    	});
-    	
-    	$('#grid' + id).find('td').off('click').on('click',function(){
-    		var rowCode = $($(this).parent().children()[contentsConfig[id].keyColumnIndex]).text();
-    		if(rowCode == '' || rowCode == noDataContent){
-    			return;
+    		fields: contentsConfig[id].columnArr,
+    		rowClick:function(data){
+    			var paramObj = {contentsId:id};
+    			for(var i = 0; i < contentsConfig[id].keyColumn.length; i++){
+    				paramObj[contentsConfig[id].keyColumn[i]] = data.item[contentsConfig[id].keyColumn[i]];
+    			}
+    			clickSyncGridNVector(id,paramObj);
     		}
-    		
-    		clickSyncGridNVector(id,rowCode);
     	});
     };
     
-    var clickSyncGridNVector = function(id, keyCode){
-    	_MapService.getWfs(':'+contentsConfig[id].layerName, '*',contentsConfig[id].keyColumn+'=\'' + keyCode + '\'', '').then(function(result){
-			if(result.features.length == 0){
-				return;
-			}
-			deferredForSetCenter(result.features[0].geometry.coordinates,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
-				clearFocusLayer();
-    			var newFocusLayer = new ol.layer.Vector({
-    				source : new ol.source.Vector({
-    					features : [new ol.Feature(new ol.geom.Point(result.features[0].geometry.coordinates))]
-    				}),
-    				style : new ol.style.Style({
-    	    			image: new ol.style.Circle({
-    	    				radius: 21,
-    	    				stroke: new ol.style.Stroke({
-    	    					color: '#f00',
-    	    					width: 5
-    	    				})
-    	    			})
-    	    		}),
-    				visible: true,
-    				zIndex:1,
-    				name:'focus'
-    			});
+    var clickSyncGridNVector = function(id, paramObj){
+    	
+    	if(contentsConfig[id].isUseGeoserver){
+    		var cqlString = '';
+    		for(var key in paramObj){
+    			if(key!='contentsId'){
+    				cqlString += key + '=\'' + paramObj[key] + '\' AND ';	
+    			}
+    		}
+    		_MapService.getWfs(':'+contentsConfig[id].layerName, '*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '').then(function(result){
+    			if(result.features.length == 0){
+    				return;
+    			}
     			
-    	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
+    			writeFocusLayer(result.features[0],contentsConfig[id].isUseGeoserver);
+    		});
+    	}else{
+    		getData({
+    			url: '/getClick.do',
+    			contentType: 'application/json',
+    			params: paramObj
+    		}).done(function(data){
+    			if(data.length == 0){
+    				return;
+    			}
+    			writeFocusLayer([data[0].LO,data[0].LA],contentsConfig[id].isUseGeoserver);
+    		});
+    	}
+			
+    };
+    
+    var writeFocusLayer = function(data, isUseGeoserver){
+    	var result;
+    	
+    	if(isUseGeoserver){
+    		result = data.geometry.coordinates;
+    	}else{
+    		result = _CoreMap.convertLonLatCoord(data,true);
+    	}
+    	
+    	deferredForSetCenter(result,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
+			clearFocusLayer();
+			var newFocusLayer = new ol.layer.Vector({
+				source : new ol.source.Vector({
+					features : [new ol.Feature(new ol.geom.Point(result))]
+				}),
+				style : new ol.style.Style({
+	    			image: new ol.style.Circle({
+	    				radius: 21,
+	    				stroke: new ol.style.Stroke({
+	    					color: '#f00',
+	    					width: 5
+	    				})
+	    			})
+	    		}),
+				visible: true,
+				zIndex:1,
+				name:'focus'
 			});
+			
+	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
 		});
     };
     
@@ -550,22 +691,23 @@ var _WestCondition = function () {
     var setEventCityDistrict = function(id){
     	$('#' + id).off('change').on('change',function(){
     		var comboId = $(this).attr('id');
-//    		getData({
-//    			url: '',
-//    			contentType: 'application/json',
-//    			params: {code:comboId,flag:'town'}
-//    		}).done(function(data){
-//    			writeCity(data,comboId)
-//    		});
-    		var data = [{name:'1동'},{name:'2동'},{name:'3동'}];
-    		writeCity(data,cityMappingObj[comboId]);
+    		getData({
+    			url: '/getTown.do',
+    			contentType: 'application/json',
+    			params: {code:$(this).val()}
+    		}).done(function(data){
+    			writeCity(data,cityMappingObj[comboId]);
+    		});
     	});
     };
 
     var writeCity = function (data, comboId) {
         var html = '';
         for (var i = 0; i < data.length; i++) {
-            html += '<option>' + data[i].name + '</option>';
+        	if(comboId.indexOf('Town') > -1){
+        		html += '<option value=\'' + data[i].CODE.substr(0,5) + '\'>전체</option>';
+        	}
+            html += '<option value=\'' + data[i].CODE + '\'>' + data[i].NAME + '</option>';
         }
         $('#' + comboId).html(html);
     };
@@ -580,9 +722,12 @@ var _WestCondition = function () {
     };
     
     var onClickLayer = function(feature, name){
-    	switch (name) {
-		case 'complaintStatus':
+    	switch (contentsConfig[name].layerType) {
+		case 'cluster':
 			clickCluster(feature,name);
+			break;
+		case 'base':
+			clickBase(feature,name);
 			break;
 		default:
 			break;
@@ -593,9 +738,6 @@ var _WestCondition = function () {
         init: init,
         getContentsConfig: function(){
         	return contentsConfig;
-        },
-        clickCluster: function(f){
-        	clickCluster(f);
         },
         getDefaultClusterDistance: function(){
         	return clusterDistance;

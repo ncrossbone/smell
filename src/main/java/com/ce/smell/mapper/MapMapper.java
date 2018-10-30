@@ -15,5 +15,13 @@ public interface MapMapper {
 	
 	public int putFlag(HashMap param);
 	
-	public List<Map<String, Object>> getGrid(HashMap param);
+	public List<Map<String, Object>> complaintStatusGrid(HashMap param);
+	public List<Map<String, Object>> portableMeasurementGrid(HashMap param);
+	public List<Map<String, Object>> fixedMeasurementGrid(HashMap param);
+	
+	public List<Map<String, Object>> portableMeasurementClick(HashMap param);
+	public List<Map<String, Object>> fixedMeasurementClick(HashMap param);
+	
+	public List<Map<String, Object>> getCity();
+	public List<Map<String, Object>> getTown(HashMap param);
 }

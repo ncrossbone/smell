@@ -712,6 +712,9 @@ var _CoreMap = function() {
 		},
 		changeBaseMap: function(mapType){
 			changeBaseMap(mapType);
+		},
+		convertLonLatCoord: function(coord,flag){
+			return convertLonLatCoord(coord,flag);
 		}
 	};
 }();
