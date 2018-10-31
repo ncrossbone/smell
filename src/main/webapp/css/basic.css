@@ -56,11 +56,11 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 /*좌측*/
 .lnb { width: 350px; height: 898px; border-right: 1px solid #000; overflow-y: scroll; background: #fff; position: absolute; left: 0px; top: 0; letter-spacing: -1px; z-index: 3;}
 .lnb h2 { height: 24px; padding: 7px 20px 7px 55px; border-bottom: 1px solid #d9d9d9; font-size: 16px; background: #f7f7f7; position: relative; cursor: pointer;  font-family: 'notokr-regular'; }
-.lnb h2> em { width: 28px; height: 28px; position: absolute; left: 20px; top: 5px; background: url(../images/btn_off.png) no-repeat;}
 .lnb h2> span { width: 10px; height: 6px; position: absolute; right: 20px; top: 15px; background: url(../images/btn_show.png) no-repeat; }
 .lnb h2.ov { background: #7dbe24; color: #fff; }
-.lnb h2.ov em { background: url(../images/btn_on.png) no-repeat; }
 .lnb h2.ov span { background: url(../images/btn_hide.png) no-repeat; }
+
+.lnb h2> em { width: 28px; height: 28px; position: absolute; left: 20px; top: 5px; background: url(../images/btn_on.png) no-repeat;}
 
 .lnb_conts { padding: 15px 10px; border-bottom: 1px solid #d9d9d9; }
 .lnb_conts h3 { border-bottom: 2px solid #464c5a; margin-bottom: 15px; font-family: 'Dotum'; padding-bottom: 5px; font-weight: bold; }

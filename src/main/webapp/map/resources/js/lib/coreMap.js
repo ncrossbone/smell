@@ -695,6 +695,15 @@ var _CoreMap = function() {
 		},
 		admLayerOnOff: function(result){
 			admLayerOnOff(result);
+<<<<<<< HEAD
+=======
+		},
+		changeBaseMap: function(mapType){
+			changeBaseMap(mapType);
+		},
+		convertLonLatCoord: function(coord,flag){
+			return convertLonLatCoord(coord,flag);
+>>>>>>> 2063e82b5845601b071b9231277b3913c4cd270c
 		}
 	};
 }();

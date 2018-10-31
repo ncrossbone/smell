@@ -39,4 +39,19 @@ public class MapController {
 	public List<Map<String, Object>> getGrid(@RequestBody HashMap param){
 		return mapBiz.getGrid(param);
 	}
+	
+	@RequestMapping(value = "/getCity", method = RequestMethod.POST)
+	public List<Map<String, Object>> getCity(){
+		return mapBiz.getCity();
+	}
+	
+	@RequestMapping(value = "/getTown", method = RequestMethod.POST)
+	public List<Map<String, Object>> getTown(@RequestBody HashMap param){
+		return mapBiz.getTown(param);
+	}
+	
+	@RequestMapping(value = "/getClick", method = RequestMethod.POST)
+	public List<Map<String, Object>> getClick(@RequestBody HashMap param){
+		return mapBiz.getClick(param);
+	}
 }

@@ -1,5 +1,6 @@
 package com.ce.smell.biz;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,42 @@ public class MapBiz {
 	
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getGrid(HashMap param){
-		return mapMapper.getGrid(param);
+		List resultList = null;
+		HashMap result = new HashMap();
+		
+		try {
+			Method method = mapMapper.getClass().getDeclaredMethod(param.get("contentsId") + "Grid",param.getClass());
+			resultList = (List) method.invoke(mapMapper, param);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return resultList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getCity(){
+		return mapMapper.getCity();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getTown(HashMap param){
+		return mapMapper.getTown(param);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getClick(HashMap param){
+		List resultList = null;
+		HashMap result = new HashMap();
+		
+		try {
+			Method method = mapMapper.getClass().getDeclaredMethod(param.get("contentsId") + "Click",param.getClass());
+			resultList = (List) method.invoke(mapMapper, param);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return resultList;
 	}
 	
 }
