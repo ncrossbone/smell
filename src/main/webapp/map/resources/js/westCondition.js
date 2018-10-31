@@ -704,7 +704,7 @@ var _WestCondition = function () {
     var writeCity = function (data, comboId) {
         var html = '';
         for (var i = 0; i < data.length; i++) {
-        	if(comboId.indexOf('Town') > -1){
+        	if(comboId.indexOf('Town') > -1 && i==0){
         		html += '<option value=\'' + data[i].CODE.substr(0,5) + '\'>전체</option>';
         	}
             html += '<option value=\'' + data[i].CODE + '\'>' + data[i].NAME + '</option>';
