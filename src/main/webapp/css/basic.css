@@ -47,14 +47,14 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 
 
-#tab { position: absolute; left: 350px; top: 0px; z-index: 2;}
+#tab { position: absolute; left: 360px; top: 0px; z-index: 2;}
 #tab li { width: 22px; height: 102px; padding: 28px 5px 0px 5px; text-align: center; font-size: 16px; background: url(../images/tab_off.png) no-repeat; cursor: pointer; line-height: 18px; color: #000; margin-top: -1px; }
 #tab li.on { background: url(../images/tab_on.png) no-repeat !important; color: #fff !important; }
 
 
 
 /*좌측*/
-.lnb { width: 350px; height: 898px; border-right: 1px solid #000; overflow-y: scroll; background: #fff; position: absolute; left: 0px; top: 0; letter-spacing: -1px; z-index: 3;}
+.lnb { width: 360px; height: 898px; border-right: 1px solid #000; overflow-y: scroll; background: #fff; position: absolute; left: 0px; top: 0; letter-spacing: -1px; z-index: 3;}
 .lnb h2 { height: 24px; padding: 7px 20px 7px 55px; border-bottom: 1px solid #d9d9d9; font-size: 16px; background: #f7f7f7; position: relative; cursor: pointer;  font-family: 'notokr-regular'; }
 .lnb h2> span { width: 10px; height: 6px; position: absolute; right: 20px; top: 15px; background: url(../images/btn_show.png) no-repeat; }
 .lnb h2.ov { background: #7dbe24; color: #fff; }
@@ -62,7 +62,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 .lnb h2> em { width: 28px; height: 28px; position: absolute; left: 20px; top: 5px; background: url(../images/btn_on.png) no-repeat;}
 
-.lnb_conts { padding: 15px 10px; border-bottom: 1px solid #d9d9d9; }
+.lnb_conts { padding: 15px 20px; border-bottom: 1px solid #d9d9d9; }
 .lnb_conts h3 { border-bottom: 2px solid #464c5a; margin-bottom: 15px; font-family: 'Dotum'; padding-bottom: 5px; font-weight: bold; }
 .lnb_conts h3> span { color: #fe0000; font-size: 12px; margin-left: 5px; font-weight: normal; }
 .lnb_conts h3> span> strong { font-family: Verdana; letter-spacing: 0; }

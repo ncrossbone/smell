@@ -200,6 +200,10 @@ var _WestCondition = function () {
     		checkSearchCondition($(this).attr('id').split('Views')[0]);
     	});
     	
+    	$('.pop_close').off('click').on('click',function(){
+    		$('#popup').hide();
+    	});
+    	
     	$('.lnb').find('em').off('click').on('click',function(){
     		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
     		var layerForName = _CoreMap.getMap().getLayerForName(contentsId);
@@ -596,7 +600,7 @@ var _WestCondition = function () {
     				return;
     			}
     			
-    			writeFocusLayer(result.features[0],contentsConfig[id].isUseGeoserver);
+    			writeFocusLayer(result.features[0],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
     		});
     	}else{
     		getData({
@@ -607,19 +611,22 @@ var _WestCondition = function () {
     			if(data.length == 0){
     				return;
     			}
-    			writeFocusLayer([data[0].LO,data[0].LA],contentsConfig[id].isUseGeoserver);
+    			writeFocusLayer([data[0].LO,data[0].LA],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
     		});
     	}
 			
     };
     
-    var writeFocusLayer = function(data, isUseGeoserver){
+    var writeFocusLayer = function(data, isUseGeoserver,title){
     	var result;
+    	var popupHtml = '';
     	
     	if(isUseGeoserver){
     		result = data.geometry.coordinates;
+    		popupHtml += '<div>'+result+'</div>';
     	}else{
     		result = _CoreMap.convertLonLatCoord(data,true);
+    		popupHtml += '<div>'+result+'</div>';
     	}
     	
     	deferredForSetCenter(result,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
@@ -644,6 +651,10 @@ var _WestCondition = function () {
 			
 	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
 		});
+    	
+    	$('#popup').show();
+    	$('.pop_tit_text').text(title);
+    	$('.pop_conts').html(popupHtml);
     };
     
     var deferredForSetCenter = function(coord,zoom){
