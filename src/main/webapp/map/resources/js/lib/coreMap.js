@@ -636,7 +636,21 @@ var _CoreMap = function() {
 	var setZoom = function(event, level){
 		coreMap.getView().setZoom(level);
 	}
+	
+	var changeBaseMap = function(mapType){
+		var mapTypeObj = {
+				'Base':'defaultMaps',
+				'Satellite':'airMaps',
+				'Gray':'grayMaps'
+		};
 
+		for(var i = 0; i<mapLayers.length; i++){
+			var baseMapType = mapTypeObj[mapLayers[i].getProperties().name]; 
+			if(baseMapType){
+				mapLayers[i].setVisible(baseMapType==mapType?true:false);
+			}
+		}
+	};
 	// public functions
 	return {
 
@@ -697,6 +711,9 @@ var _CoreMap = function() {
 		},
 		convertLonLatCoord: function(coord,flag){
 			return convertLonLatCoord(coord,flag);
+		},
+		changeBaseMap:function(mapType){
+			changeBaseMap(mapType);
 		}
 	};
 }();

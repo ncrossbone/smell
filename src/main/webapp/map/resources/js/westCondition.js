@@ -195,21 +195,6 @@ var _WestCondition = function () {
         setEvent();
     };
 
-    var changeBaseMap = function(mapType){
-        var mapTypeObj = {
-            'Base':'defaultMaps',
-            'Satellite':'airMaps',
-            'Gray':'grayMaps'
-        };
-        
-        for(var i = 0; i<mapLayers.length; i++){
-            var baseMapType = mapTypeObj[mapLayers[i].getProperties().name]; 
-            if(baseMapType){
-                mapLayers[i].setVisible(baseMapType==mapType?true:false);
-            }
-        }
-    };
-    
     var setEvent = function(){
     	$('a[id$="Views"]').off('click').on('click',function(){
     		checkSearchCondition($(this).attr('id').split('Views')[0]);
@@ -773,9 +758,6 @@ var _WestCondition = function () {
         },
         onClickLayer:function(f,nm){
         	onClickLayer(f,nm);
-        },
-        changeBaseMap:function(mapType){
-        	changeBaseMap(mapType);
         }
     };
 }();
