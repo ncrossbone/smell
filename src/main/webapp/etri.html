@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ETRI 데모</title>
+<link href="/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/css/basic.css" rel="stylesheet" type="text/css" />
+<script src="/js/jquery.min-1.8.3.js"></script>
+<script type="text/javascript" src="/js/jquery.jqtransform.js"></script>
+
+<link href="/css/gis.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/map/resources/js/lib/mapEventBus.js" ></script>
+<script type="text/javascript" src="/map/resources/js/lib/ol/ol.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/jsts/jsts.min.js"></script>
+
+<script type="text/javascript" src="/map/resources/js/mapService.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/vworldLayer.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/coreMap.js"></script>
+<script type="text/javascript" src="/map/resources/js/ui.js"></script>
+<script type="text/javascript" src="/map/resources/js/westCondition.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/jquery-ui.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/zoomSlider.js"></script>
+<script type="text/javascript" src="/map/resources/js/ETRIMapBiz.js"></script>
+<link rel="stylesheet" href="/css/jquery-ui-1.12.1.css"></link>
+<link type="text/css" rel="stylesheet" href="/css/jsgrid.min-1.5.3.css" />
+<link type="text/css" rel="stylesheet" href="/css/jsgrid-theme.min-1.5.3.css" />
+<script type="text/javascript" src="/js/jsgrid.min-1.5.3.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		_CoreMap.init('map');
+		_ETRI.init();
+
+		$(window).on('resize', function() {
+			var ww = $(window).width();
+			var wh = $(window).height();
+
+			var map = _CoreMap.getMap();
+
+			$('#map').width(ww);
+			$('#map').height(wh);
+			//$('#westContainer').height(wh-50); 
+			if (map) {
+				map.setSize([ ww, wh]);
+			}
+		});
+		
+		$(window).trigger('resize');
+		
+		_CoreMap.centerMap(14193238.26101856, 4351823.49639532, 15);
+	});
+</script>
+</head>
+
+<body>
+	<div id="warp">
+     	<div id="map" style="position: absolute;">
+<!-- 	     	<ul id="map_type"> -->
+<!-- 	        	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li> -->
+<!-- 	            <li id="airMaps"><a href="javascript:void(0)">위성</a></li> -->
+<!-- 				<li id="grayMaps"><a href="javascript:void(0)">흑백</a></li> -->
+<!-- 	        </ul> -->
+			<div id="mapNavBar"></div>
+			<div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute;">
+				<a id="testBtn1" style="margin-left: -4px;">위성</a>
+				<a id="testBtn2" style="margin-left: -4px;">수치</a>
+				<a id="testBtn3" style="margin-left: -4px;">격자</a>
+				<a id="testBtn4" style="margin-left: -4px;">경로</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

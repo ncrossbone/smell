@@ -45,7 +45,7 @@ var _CoreMap = function() {
 		center : {
 			lon : 127.0396037,
 			lat : 37.5010226,
-			zoom : 13
+			zoom : 7
 		}
 	};
 
@@ -112,7 +112,7 @@ var _CoreMap = function() {
 	
 	var createMap = function(mapDivId) {
 		mapDiv = mapDivId;
-		var centerPoint = [14189913.25028815, 4401138.987746553];
+		var centerPoint = [14244193.094999166, 4274358.621707056];
 //		
 //		var centerPoint = ol.proj.transform([ initParam.center.lon,
 //				initParam.center.lat ], initParam.worldProjection,
@@ -637,20 +637,6 @@ var _CoreMap = function() {
 		coreMap.getView().setZoom(level);
 	}
 	
-	var changeBaseMap = function(mapType){
-		var mapTypeObj = {
-			'Base':'defaultMaps',
-			'Satellite':'airMaps',
-			'Gray':'grayMaps'
-		};
-		
-		for(var i = 0; i<mapLayers.length; i++){
-			var baseMapType = mapTypeObj[mapLayers[i].getProperties().name]; 
-			if(baseMapType){
-				mapLayers[i].setVisible(baseMapType==mapType?true:false);
-			}
-		}
-	};
 	
 	// public functions
 	return {
@@ -709,9 +695,6 @@ var _CoreMap = function() {
 		},
 		admLayerOnOff: function(result){
 			admLayerOnOff(result);
-		},
-		changeBaseMap: function(mapType){
-			changeBaseMap(mapType);
 		}
 	};
 }();
