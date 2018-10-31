@@ -636,8 +636,7 @@ var _CoreMap = function() {
 	var setZoom = function(event, level){
 		coreMap.getView().setZoom(level);
 	}
-	
-	
+
 	// public functions
 	return {
 
@@ -695,9 +694,6 @@ var _CoreMap = function() {
 		},
 		admLayerOnOff: function(result){
 			admLayerOnOff(result);
-		},
-		changeBaseMap: function(mapType){
-			changeBaseMap(mapType);
 		},
 		convertLonLatCoord: function(coord,flag){
 			return convertLonLatCoord(coord,flag);

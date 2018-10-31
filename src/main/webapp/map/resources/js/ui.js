@@ -49,7 +49,7 @@ var _ui = (function () {
 		$('#defaultMaps, #airMaps, #grayMaps').on('click',function(){
 			$('#map_type').find('li').removeClass('on');
 			$(this).addClass('on');
-			_CoreMap.changeBaseMap($(this).attr('id'));
+			_WestCondition.changeBaseMap($(this).attr('id'));
 		});
     };
 
