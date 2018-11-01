@@ -29,8 +29,8 @@
 <script type="text/javascript">
 	$(function() {
 		// selectbox design
-		$('.comm_sel').jqTransform();
-
+		//$('.comm_sel').jqTransform();
+		
 		_CoreMap.init('map');
 		_ui.init();
 		_WestCondition.init();
@@ -51,6 +51,7 @@
 		});
 		$('#popup').draggable({ containment: '#map' });
 		$(window).trigger('resize');
+		
 		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
 	});
 </script>
@@ -60,10 +61,10 @@
 <div id="warp">
     <div id="top">
         <h1></h1>
-        <ul id="map_sel">
+        <!-- <ul id="map_sel">
         	<li><a class="map1 on" href="javascript:void(0)"></a></li>
             <li><a class="map2" href="javascript:void(0)"></a></li>
-        </ul>
+        </ul> -->
     </div>
     	
     <div id="nav">
@@ -71,32 +72,18 @@
             <em class="here">청주시</em>
             <span class="arrow"></span>
             <span class="comm_sel">
-                <select>
-                    <option value="">청원구</option>
-                    <option value="">상당구</option>
-                    <option value="">서원구</option>
-                    <option value="">흥덕구</option>
-                </select>
+                <select id="cityDistrictToolbar"></select>
             </span>
             
             <span class="arrow"></span>
             
             <span class="comm_sel">
-                <select>
-                    <option value="">내수읍</option>
-                    <option value="">오창읍</option>
-                    <option value="">북이면</option>
-                    <option value="">우암동</option>
-                    <option value="">내덕1동</option>
-                    <option value="">내덕2동</option>
-                    <option value="">율량 사청동</option>
-                    <option value="">오근장동</option>
-                </select>
+                <select id="townToolbar"></select>
             </span>
         </div>
-        <a class="btn02 fl" href="javascript:void(0)">도로명 주소</a>
+        <!-- <a class="btn02 fl" href="javascript:void(0)">도로명 주소</a> -->
         
-        <div class="fr">오른쪽 항목 공간 비워놓기</div>
+        <!-- <div class="fr">오른쪽 항목 공간 비워놓기</div> -->
         
         <!--
         <ul>
