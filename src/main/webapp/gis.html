@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 <title>청주시 지능형 도농복합도시 악취관리시스템</title>
 <link href="/css/BasicSet.css" rel="stylesheet" type="text/css" />
 <link href="/css/basic.css" rel="stylesheet" type="text/css" />
@@ -81,7 +82,7 @@
                 <select id="townToolbar"></select>
             </span>
         </div>
-        <!-- <a class="btn02 fl" href="javascript:void(0)">도로명 주소</a> -->
+        <a class="btn02 fl" href="javascript:void(0)" id="poiView">POI 보기</a>
         
         <!-- <div class="fr">오른쪽 항목 공간 비워놓기</div> -->
         
@@ -792,7 +793,23 @@
             <div class="pop_bot">
             	<a href="javascript:void(0)" class="btn04">닫기</a>
             </div>
-        </div>        
+        </div>
+        
+         <div id="poiPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 10;">
+        	<p class="pop_tit"><span class="pop_tit_text">POI 정보</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
+            <div class="pop_conts" style="background: #fff;">
+            	<select id="poiSelect01" style="width: 120px;"></select>
+            	<select id="poiSelect02" style="width: 120px;"></select>
+            	<select id="poiSelect03" style="width: 120px;"></select>
+            	<input type="text" id="poiText"/>
+            	<a href="javascript:void(0)" id="poiSearch">검색</a>
+            	
+            	<div id="poiGrid" style="margin-top: 10px;"></div>
+            </div>
+            <div class="pop_bot">
+            	<a href="javascript:void(0)" class="btn04">닫기</a>
+            </div>
+        </div>           
      </div>
      
     </div>

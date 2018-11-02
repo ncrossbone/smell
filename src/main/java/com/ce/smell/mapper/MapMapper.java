@@ -24,4 +24,7 @@ public interface MapMapper {
 	
 	public List<Map<String, Object>> getCity();
 	public List<Map<String, Object>> getTown(HashMap param);
+	
+	public List<Map<String, Object>> getPOISelect();
+	public List<Map<String, Object>> getPOISearch(HashMap param);
 }

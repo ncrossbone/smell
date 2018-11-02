@@ -54,4 +54,14 @@ public class MapController {
 	public List<Map<String, Object>> getClick(@RequestBody HashMap param){
 		return mapBiz.getClick(param);
 	}
+	
+	@RequestMapping(value = "/getPOISelect", method = RequestMethod.POST)
+	public List<Map<String, Object>> getPOISelect(){
+		return mapBiz.getPOISelect();
+	}
+	
+	@RequestMapping(value = "/getPOISearch", method = RequestMethod.POST)
+	public List<Map<String, Object>> getPOISearch(@RequestBody HashMap param){
+		return mapBiz.getPOISearch(param);
+	}
 }
