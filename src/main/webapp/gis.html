@@ -30,8 +30,8 @@
 <script type="text/javascript">
 	$(function() {
 		// selectbox design
-		$('.comm_sel').jqTransform();
-
+		//$('.comm_sel').jqTransform();
+		
 		_CoreMap.init('map');
 		_ui.init();
 		_WestCondition.init();
@@ -50,8 +50,10 @@
 				map.setSize([ ww - 340, wh - 92 ]);
 			}
 		});
-		
+		$('#popup').draggable({ containment: '#map' });
 		$(window).trigger('resize');
+		
+		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
 	});
 </script>
 </head>
@@ -60,10 +62,10 @@
 <div id="warp">
     <div id="top">
         <h1></h1>
-        <ul id="map_sel">
+        <!-- <ul id="map_sel">
         	<li><a class="map1 on" href="javascript:void(0)"></a></li>
             <li><a class="map2" href="javascript:void(0)"></a></li>
-        </ul>
+        </ul> -->
     </div>
     	
     <div id="nav">
@@ -71,32 +73,18 @@
             <em class="here">청주시</em>
             <span class="arrow"></span>
             <span class="comm_sel">
-                <select>
-                    <option value="">청원구</option>
-                    <option value="">상당구</option>
-                    <option value="">서원구</option>
-                    <option value="">흥덕구</option>
-                </select>
+                <select id="cityDistrictToolbar"></select>
             </span>
             
             <span class="arrow"></span>
             
             <span class="comm_sel">
-                <select>
-                    <option value="">내수읍</option>
-                    <option value="">오창읍</option>
-                    <option value="">북이면</option>
-                    <option value="">우암동</option>
-                    <option value="">내덕1동</option>
-                    <option value="">내덕2동</option>
-                    <option value="">율량 사청동</option>
-                    <option value="">오근장동</option>
-                </select>
+                <select id="townToolbar"></select>
             </span>
         </div>
-        <a class="btn02 fl" href="javascript:void(0)">도로명 주소</a>
+        <!-- <a class="btn02 fl" href="javascript:void(0)">도로명 주소</a> -->
         
-        <div class="fr">오른쪽 항목 공간 비워놓기</div>
+        <!-- <div class="fr">오른쪽 항목 공간 비워놓기</div> -->
         
         <!--
         <ul>
@@ -118,7 +106,7 @@
 		<li>
 			<h2 class="ov accordion"><em></em>민원현황<span></span></h2>
 			<div class="lnb_conts"  id="complaintStatus">
-				<h3>민원현황</h3>
+				<h3>민원현황<span></span></h3>
                 <ul>
                     <li>
                         <dl>
@@ -797,38 +785,19 @@
                 <a id="testBtn4" style="margin-left: -4px;">포인트 버퍼 Play</a>
                 <a id="testBtn5" style="margin-left: -4px;">클러스터</a>
             </div>
-        <!-- <div id="popup" style="left: 500px; top: 200px;">
-        	<p class="pop_tit">API 제공 레이어<a href="javascript:void(0)" class="btn03 pop_close"></a></p>
+        <div id="popup" style="right: 150px; top: 250px; display: none;">
+        	<p class="pop_tit"><span class="pop_tit_text">API 제공 레이어</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
             <div class="pop_conts">
             	팝업 내용
             </div>
             <div class="pop_bot">
-            	<a href="javascript:void(0)" class="btn04">확인</a>
-                <a href="javascript:void(0)" class="btn05">취소</a>
+            	<a href="javascript:void(0)" class="btn04">닫기</a>
             </div>
         </div>        
-        
-        <div class="tooltip" style="left: 1000px; top: 200px;">
-        	<p class="tt_tit"><span></span>민원 현황 지점정보<a href="javascript:void(0)" class="btn06 pop_close"></a></p>
-            <div class="pop_conts2">
-            	정보 내용
-            </div>
-        </div> -->
-
-        
-        <!-- <div class="">
-        	<div class="maker" style="left: 500px; top: 800px;">15</div>
-            <div class="maker" style="left: 800px; top: 300px;">87</div>
-            <div class="maker" style="left: 1470px; top: 100px;">23</div>
-            <div class="maker" style="left: 1670px; top: 400px;">41</div>
-            <div class="maker" style="left: 1400px; top: 700px;">41</div>
-            <div class="maker" style="left: 1070px; top: 600px;">30</div>
-            <div class="maker" style="left: 600px; top: 150px;">69</div>
-        </div> -->
      </div>
      
     </div>
-     <div id="gridArea" style="position: absolute; width: 100%; background: white; height: 250px; bottom: 0px; display: none; left:351px;">
+     <div id="gridArea" style="position: absolute; width: 100%; background: white; height: 250px; bottom: 0px; display: none; left:361px;">
      	<div id="tabs">
      		<ul></ul>
      	</div>

@@ -94,3 +94,20 @@
 .jsgrid-cell {
     background: #fff !important;
 }
+
+#cityDistrictToolbar, #townToolbar{
+	-webkit-appearance: none;
+    background: #313942;
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 5px;
+    font-weight: normal;
+    font-style: normal;
+    width: 100px;
+    font-family: 'Dotum';
+}
+
+#cityDistrictToolbar::-ms-expand, #townToolbar::-ms-expand {
+   display: none;
+}

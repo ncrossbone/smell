@@ -6,6 +6,7 @@ var _WestCondition = function () {
     var currentResolution;
     var maxFeatureCount;
     var clusterDistance = 100;
+    var cityTownObj = {};
     
     var contentsConfig = {
     	'complaintStatus':{cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
@@ -138,29 +139,40 @@ var _WestCondition = function () {
     };
     
     var init = function () {
+    	var cityArr = setCommonCombo({
+			type:'select',
+			parentTypeId:'CityDistrict',
+			childTypeId:'Town',
+			flag:'city',
+		});
     	
-    	$.when(getData({
-    		url: '/getCity.do',
-    		contentType: 'application/json'
-    	}),getData({
-    		url: '/getTown.do',
-    		contentType: 'application/json',
-    		params:{
-    			code:initTownCode
+    	_MapService.getWfs(':SHP_BDONG','*',undefined,'cty_nm, dong_nm').done(function(data){
+    		if(data.features.length == 0){
+    			return;
     		}
-    	})).done(function(cityData,townData){
-    		var cityArr = setCommonCombo({
-    			type:'select',
-    			parentTypeId:'CityDistrict',
-    			childTypeId:'Town',
-    			flag:'city',
-    		});
+    		for(var i = 0; i < data.features.length; i++){
+    			var properties = data.features[i].properties;
+    			if(!cityTownObj[properties.adm_cd.substr(0,5)]){
+    				cityTownObj[properties.adm_cd.substr(0,5)] = {};
+    				cityTownObj[properties.adm_cd.substr(0,5)].text = properties.cty_nm;
+    				cityTownObj[properties.adm_cd.substr(0,5)].child = {};
+    			}
+    			
+    			if(!cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd]){
+    				cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd] = {};
+    				cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd].text = properties.dong_nm;
+    			}
+    		}
+    		
+    		for(var i = 0; i < cityArr.length; i++){
+    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityTownObj[initTownCode].child;
+        		writeCity(data, cityArr[i]);
+    		}
+    		
+    		writeCity(cityTownObj,'cityDistrictToolbar');
+    		setToolbarCity({adm_cd:'4311425300'});
+    	});
 
-    		for (var i = 0; i < cityArr.length; i++) {
-    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityData[0] : townData[0];
-    			writeCity(data, cityArr[i]);
-    		}
-    	})
         
         var dateArr = setCommonCombo({
         	type:'input',
@@ -194,10 +206,18 @@ var _WestCondition = function () {
         
         setEvent();
     };
-    
+
     var setEvent = function(){
+    	$('#cityDistrictToolbar').off('change').on('change',function(){
+    		writeCity(cityTownObj[$(this).val()].child,'townToolbar');
+    	});
+    	
     	$('a[id$="Views"]').off('click').on('click',function(){
     		checkSearchCondition($(this).attr('id').split('Views')[0]);
+    	});
+    	
+    	$('.pop_close, .btn04').off('click').on('click',function(){
+    		$('#popup').hide();
     	});
     	
     	$('.lnb').find('em').off('click').on('click',function(){
@@ -236,7 +256,7 @@ var _WestCondition = function () {
     	var cqlString = '';
     	
 		var requireAlertObj = {
-	    		'branchName':'지점명을 입력하세요.',
+	    		'branchName':'검색어를 입력하세요.',
 	    		'startDate':'시작날짜를 선택하세요.',
 	    		'endDate':'끝날짜를 선택하세요.',
 	    		'startOU':'OU 시작범위를 선택하세요.',
@@ -596,7 +616,7 @@ var _WestCondition = function () {
     				return;
     			}
     			
-    			writeFocusLayer(result.features[0],contentsConfig[id].isUseGeoserver);
+    			writeFocusLayer(result.features[0],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
     		});
     	}else{
     		getData({
@@ -607,19 +627,22 @@ var _WestCondition = function () {
     			if(data.length == 0){
     				return;
     			}
-    			writeFocusLayer([data[0].LO,data[0].LA],contentsConfig[id].isUseGeoserver);
+    			writeFocusLayer([data[0].LO,data[0].LA],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
     		});
     	}
 			
     };
     
-    var writeFocusLayer = function(data, isUseGeoserver){
+    var writeFocusLayer = function(data, isUseGeoserver,title){
     	var result;
+    	var popupHtml = '';
     	
     	if(isUseGeoserver){
     		result = data.geometry.coordinates;
+    		popupHtml += '<div>'+result+'</div>';
     	}else{
     		result = _CoreMap.convertLonLatCoord(data,true);
+    		popupHtml += '<div>'+result+'</div>';
     	}
     	
     	deferredForSetCenter(result,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
@@ -644,6 +667,10 @@ var _WestCondition = function () {
 			
 	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
 		});
+    	
+    	$('#popup').show();
+    	$('.pop_tit_text').text(title);
+    	$('.pop_conts').html(popupHtml);
     };
     
     var deferredForSetCenter = function(coord,zoom){
@@ -690,26 +717,21 @@ var _WestCondition = function () {
     
     var setEventCityDistrict = function(id){
     	$('#' + id).off('change').on('change',function(){
-    		var comboId = $(this).attr('id');
-    		getData({
-    			url: '/getTown.do',
-    			contentType: 'application/json',
-    			params: {code:$(this).val()}
-    		}).done(function(data){
-    			writeCity(data,cityMappingObj[comboId]);
-    		});
+    		writeCity(cityTownObj[$(this).val()].child,cityMappingObj[$(this).attr('id')]);
     	});
     };
 
     var writeCity = function (data, comboId) {
         var html = '';
-        for (var i = 0; i < data.length; i++) {
-        	if(comboId.indexOf('Town') > -1 && i==0){
-        		html += '<option value=\'' + data[i].CODE.substr(0,5) + '\'>전체</option>';
+        var allHtml = '';
+        for (var key in data) {
+        	if(comboId.toLowerCase().indexOf('town') > -1){
+        		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
         	}
-            html += '<option value=\'' + data[i].CODE + '\'>' + data[i].NAME + '</option>';
+        	html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
         }
-        $('#' + comboId).html(html);
+        
+        $('#' + comboId).html(allHtml+html);
     };
 
     var getData = function (options) {
@@ -733,6 +755,20 @@ var _WestCondition = function () {
 			break;
 		}
     };
+    
+    var setToolbarCity = function(prop){
+    	
+    	if(cityTownObj[prop.adm_cd.substr(0,5)]){
+    		if($('#cityDistrictToolbar').val() != prop.adm_cd.substr(0,5)){
+            	$('#cityDistrictToolbar').val(prop.adm_cd.substr(0,5));
+    		}
+    		
+    		if($('#townToolbar').val() != prop.adm_cd){
+    			writeCity(cityTownObj[prop.adm_cd.substr(0,5)].child,'townToolbar');
+            	$('#townToolbar').val(prop.adm_cd);
+    		}
+    	}
+    };
 
     return {
         init: init,
@@ -747,6 +783,9 @@ var _WestCondition = function () {
         },
         onClickLayer:function(f,nm){
         	onClickLayer(f,nm);
+        },
+        setToolbarCity:function(p){
+        	setToolbarCity(p);
         }
     };
 }();

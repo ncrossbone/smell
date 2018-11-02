@@ -103,7 +103,7 @@ var _ZoomSlider = function () {
 		});
 		
 		
-		_MapEventBus.on(_MapEvents.map_moveend, function(mapChangeType){
+		_MapEventBus.on(_MapEvents.map_moveend, function(mapChangeType,data){
 			var getZoom = _CoreMap.getMap().getView().getZoom();
 			_ZoomSlider.setLevelToGaze(getZoom);
 			
@@ -117,6 +117,14 @@ var _ZoomSlider = function () {
 				var distance = _CoreMap.getMap().getView().getZoom() == _CoreMap.getMap().getView().getMaxZoom()?1:_WestCondition.getDefaultClusterDistance();
 				clusterLayer.getSource().setDistance(distance);
 			}
+			
+			_MapService.getRealPointWfs(':SHP_BDONG',undefined,data.result.map.getView().getCenter()).done(function(data){
+				if(data.features.length == 0){
+					return;
+				}
+				
+				_WestCondition.setToolbarCity(data.features[0].properties);
+			});
 		});
 	};
 	
