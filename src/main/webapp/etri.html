@@ -28,6 +28,7 @@
 
 <script type="text/javascript">
 	$(function() {
+		_ui.init();
 		_CoreMap.init('map');
 		_ETRI.init();
 
@@ -57,6 +58,12 @@
 	    padding: 10px 10px;
 	    cursor: pointer;
 	}
+	a.on {
+	background: #1388e6;
+	color: #fff;
+	padding: 10px 10px;
+	cursor: pointer;}
+	
 </style>
 </head>
 
@@ -64,9 +71,9 @@
 	<div id="warp">
      	<div id="map" style="position: absolute;">
 	     	<ul id="map_type">
-	        	<li id="defaultMap" class="on"><a href="javascript:_CoreMap.showDefautMap();">기본</a></li>
-	            <li id="airMap"><a href="javascript:_CoreMap.showAirMap();">위성</a></li>
-				<li id="grayMap"><a href="javascript:_CoreMap.showGrayMap();">흑백</a></li>
+	        	<li id="defaultMaps" class="on"><a href="javascript:void(0);">기본</a></li>
+	            <li id="airMaps"><a href="javascript:void(0);">위성</a></li>
+				<li id="grayMaps"><a href="javascript:void(0);">흑백</a></li>
 	        </ul>
 			<div id="mapNavBar"></div>
 			<div id="testMenu" style="z-index: 402; left: 30px; top:30px; position: absolute;">

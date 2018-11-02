@@ -21,7 +21,8 @@ var _SmellMapBiz = function () {
 			         'LINE' : 'line_test_wgs84',
 			         'POINT' : 'CELL_AIR_9KM_PT',
 			         'WIND_FILD':'shp_windfild',
-			         'ANALS_AREA':'shp_anals_area'};
+			         'ANALS_AREA':'shp_anals_area',
+			         'COURS':'COURS'};
 	
 	// 특수문자 제거 정규표현식
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -59,6 +60,9 @@ var _SmellMapBiz = function () {
 	var odorSpreadTimeSeries = [];
 	var odorSpreadIndex = 0;
 	var odorSpreadInterval = null;
+	
+	// 악취 이동경로
+	var odorMovementLayer = null;
 	
 	var init = function(){
 	
@@ -141,7 +145,6 @@ var _SmellMapBiz = function () {
 	}
 	
 	var getPoints = function(){
-		_MapService.getWfs();
 		_MapService.getWfs(':'+bizLayers.POINT, '*','RESULT_DT=\'2018062501\'', '').then(function(result){
 			if(result == null || result.features.length <= 0){
 				return;
@@ -693,7 +696,7 @@ var _SmellMapBiz = function () {
 			
 		});
 		
-		
+		// 악취 확산 분석
 		$('#odorSpreadPlay').on('click', function(){
 			var odorSpreadStartDate = $('#odorSpreadStartDate').val().replace(regExp, '');
 			var odorSpreadStartTime = parseInt($('#odorSpreadStartTime').val());
@@ -733,6 +736,33 @@ var _SmellMapBiz = function () {
 			
 		});
 		
+		// 악취 이동경로
+		$('#odorMovementPlay').on('click', function(){
+			_MapService.getWfs(':'+bizLayers.COURS, '*','ANALS_AREA_ID=\'C05\' AND DTA=\'2018110211\'', 'SN').then(function(result){
+				if(result == null || result.features.length <= 0){
+					alert('해당 시점에 악취 이동경로가 없습니다.');
+					return;
+				}
+				var features = [];
+				for(var i=0; i<result.features.length; i++){
+					var coord = ol.proj.transform([parseInt(result.features[i].properties.UTMX), parseInt(result.features[i].properties.UTMY)], 'EPSG:32652', 'EPSG:3857');
+					var feature = new ol.Feature({geometry:new ol.geom.Point(coord), properties:result.features[i].properties});
+					feature.setId(result.features[i].id);
+					features.push(feature);
+				}
+				odorMovementLayer = new ol.layer.Vector({
+					source : new ol.source.Vector({
+						features : features
+					}),
+					style : pointStyle,
+					visible: true,
+					zIndex: 1001,
+					id:'odorMovementLayer'
+				});
+			        
+				_MapEventBus.trigger(_MapEvents.map_addLayer, odorMovementLayer);
+			});
+		});
 	};
 	var playWeatherAnalysisLayer = function(){
 		weatherAnalysisInterval = setInterval(function(){
