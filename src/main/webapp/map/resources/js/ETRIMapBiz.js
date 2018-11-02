@@ -58,7 +58,7 @@ var _ETRI = function () {
 	
 	
 	var drawGridLayer = function(){
-		var layerInfos = [{layerNm:'CE-TECH:CEO_cell_wgs84',style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'1=1', zIndex:10}];
+		var layerInfos = [{layerNm:'CE-TECH:cell_wgs84_ceo',style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'1=1', zIndex:10}];
 		wmsGridLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, wmsGridLayer);
