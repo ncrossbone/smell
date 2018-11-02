@@ -58,7 +58,7 @@ var _ETRI = function () {
 	
 	
 	var drawGridLayer = function(){
-		var layerInfos = [{layerNm:'CE-TECH:CEO_cell_wgs84',style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'1=1', zIndex:10}];
+		var layerInfos = [{layerNm:'CE-TECH:ceo',style:'',isVisible:true,isTiled:true,opacity:0.5, cql:'1=1', zIndex:10}];
 		wmsGridLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, wmsGridLayer);
@@ -351,8 +351,8 @@ var _ETRI = function () {
 	var trackingText = function(feature, resolution){
 		var date = feature.getProperties().properties.date;
 		var value = feature.getProperties().properties.value;
-		
-		var text = date.substring(0,4) +'.'+date.substring(4,6)+'.'+date.substring(6,8);
+//		/date.substring(0,4) +'.'+
+		var text = date.substring(4,6)+'.'+date.substring(6,8);
 		text += '('+parseInt(value)+')';
 		
 		if(text == null){

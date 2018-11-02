@@ -28,6 +28,7 @@
 
 <script type="text/javascript">
 	$(function() {
+		_ui.init();
 		_CoreMap.init('map');
 		_ETRI.init();
 
@@ -50,22 +51,46 @@
 		_CoreMap.centerMap(14193238.26101856, 4351823.49639532, 15);
 	});
 </script>
+<style>
+	a{
+		background: #fff;
+	    color: #000;
+	    padding: 10px 10px;
+	    cursor: pointer;
+	}
+	a.on {
+	background: #1388e6;
+	color: #fff;
+	padding: 10px 10px;
+	cursor: pointer;}
+	
+</style>
 </head>
 
 <body>
 	<div id="warp">
      	<div id="map" style="position: absolute;">
-<!-- 	     	<ul id="map_type"> -->
-<!-- 	        	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li> -->
-<!-- 	            <li id="airMaps"><a href="javascript:void(0)">위성</a></li> -->
-<!-- 				<li id="grayMaps"><a href="javascript:void(0)">흑백</a></li> -->
-<!-- 	        </ul> -->
+	     	<ul id="map_type">
+	        	<li id="defaultMaps" class="on"><a href="javascript:void(0);">기본</a></li>
+	            <li id="airMaps"><a href="javascript:void(0);">위성</a></li>
+				<li id="grayMaps"><a href="javascript:void(0);">흑백</a></li>
+	        </ul>
 			<div id="mapNavBar"></div>
-			<div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute;">
-				<a id="testBtn1" style="margin-left: -4px;">위성</a>
-				<a id="testBtn2" style="margin-left: -4px;">수치</a>
-				<a id="testBtn3" style="margin-left: -4px;">격자</a>
-				<a id="testBtn4" style="margin-left: -4px;">경로</a>
+			<div id="testMenu" style="z-index: 402; left: 30px; top:30px; position: absolute;">
+				<ul>
+					<li style="height:42px;">
+						<a id="testBtn1" style="margin-left: -4px;">위성</a>
+					</li>
+					<li style="height:42px;">
+						<a id="testBtn2" style="margin-left: -4px;">수치</a>
+					</li>
+					<li style="height:42px;">
+						<a id="testBtn3" style="margin-left: -4px;">격자</a>
+					</li>
+					<li style="height:42px;">
+						<a id="testBtn4" style="margin-left: -4px;">경로</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

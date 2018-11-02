@@ -19,7 +19,10 @@ var _SmellMapBiz = function () {
 	var bizLayers = {'CELL9KM' : 'cell_200m_utmk',
 					 'ALL9KM' : 'ALL_CMAQ_9KM',
 			         'LINE' : 'line_test_wgs84',
-			         'POINT' : 'CELL_AIR_9KM_PT'};
+			         'POINT' : 'CELL_AIR_9KM_PT',
+			         'WIND_FILD':'shp_windfild',
+			         'ANALS_AREA':'shp_anals_area',
+			         'COURS':'COURS'};
 	
 	// 특수문자 제거 정규표현식
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -41,9 +44,46 @@ var _SmellMapBiz = function () {
 	var pointBufferFeatureLayer;
 	
 	var clusterVectorLayer;
+	
+	
+	
+	// 기상장 분석 부분
+	var weatherAnalysisLayer;
+	var weatherAnalysisStartDates;
+	var weatherAnalysisTimeSeries = [];
+	var weatherAnalysisIndex = 0;
+	var weatherAnalysisInterval = null;
+	
+	// 악취확산분석
+	var odorSpreadStartDates;
+	var odorSpreadLayer;
+	var odorSpreadTimeSeries = [];
+	var odorSpreadIndex = 0;
+	var odorSpreadInterval = null;
+	
+	// 악취 이동경로
+	var odorMovementLayer = null;
+	
 	var init = function(){
+	
+//		proj4.defs('EPSG:2096','+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
+//		proj4.defs('EPSG:2097','+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
+//		proj4.defs('EPSG:2098','+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
+//		
+		
+		
+
+		
+//		proj4.defs('EPSG:5178','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
+		
+		proj4.defs('EPSG:32652','+proj=utm +zone=52 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
+		proj4.defs('EPSG:5179','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
+		
+		ol.proj.proj4.register(proj4);
 		
 		setEvent();
+		
+		setComponents();
 		
 //		drawCell();
 		
@@ -52,9 +92,59 @@ var _SmellMapBiz = function () {
 		
 		getPoints();
 	}
+	var setComponents = function(){
+		var toDay = new Date();
+		var hour = toDay.getHours()+1;
+		var timeOptions = '';
+		for(var i=1; i<25; i++){
+			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
+		}
+		
+		//기상장
+		$('#weatherAnalysisStartTime').html(timeOptions);
+		$('#weatherAnalysisEndTime').html(timeOptions);
+		
+		weatherAnalysisStartDates = $( "#weatherAnalysisStartDate, #weatherAnalysisEndDate" ).datepicker($.extend(datePickerDefine,{
+			  yearSuffix: '년',
+			  onSelect: function( selectedDate ) {
+				  if(this.id == "distributionChartStartDate"){
+				      instance = $( this ).data( "datepicker" ),
+				      date = $.datepicker.parseDate(
+				        instance.settings.dateFormat ||
+				        $.datepicker._defaults.dateFormat,
+				        selectedDate, instance.settings );
+					  distributionChartDates.not( this ).datepicker( "option", "minDate", date );
+				  }
+			  }
+		}));
+		
+		$('#weatherAnalysisStartDate').datepicker('setDate', toDay);
+		$('#weatherAnalysisEndDate').datepicker('setDate', toDay);
+		
+		//악취 확산 분석
+		$('#odorSpreadStartTime').html(timeOptions);
+		$('#odorSpreadEndTime').html(timeOptions);
+		
+		odorSpreadStartDates = $( "#odorSpreadStartDate, #odorSpreadEndDate" ).datepicker($.extend(datePickerDefine,{
+			  yearSuffix: '년',
+			  onSelect: function( selectedDate ) {
+				  if(this.id == "distributionChartStartDate"){
+				      instance = $( this ).data( "datepicker" ),
+				      date = $.datepicker.parseDate(
+				        instance.settings.dateFormat ||
+				        $.datepicker._defaults.dateFormat,
+				        selectedDate, instance.settings );
+				      odorSpreadStartDates.not( this ).datepicker( "option", "minDate", date );
+				  }
+			  }
+		}));
+		
+		$('#odorSpreadStartDate').datepicker('setDate', toDay);
+		$('#odorSpreadEndDate').datepicker('setDate', toDay);
+		
+	}
 	
 	var getPoints = function(){
-		_MapService.getWfs();
 		_MapService.getWfs(':'+bizLayers.POINT, '*','RESULT_DT=\'2018062501\'', '').then(function(result){
 			if(result == null || result.features.length <= 0){
 				return;
@@ -563,8 +653,191 @@ var _SmellMapBiz = function () {
 				coreMap.getViewport().style.cursor = '';
 			}
 		});
+		
+		
+		
+		// 기상장 분석
+		$('#weatherAnalysisPlay').on('click', function(){
+			var weatherAnalysisStartDate = $('#weatherAnalysisStartDate').val().replace(regExp, '');
+			var weatherAnalysisStartTime = parseInt($('#weatherAnalysisStartTime').val());
+			if(weatherAnalysisStartTime < 10){
+				weatherAnalysisStartTime = '0'+weatherAnalysisStartTime;
+			}
+			var weatherAnalysisEndDate= $('#weatherAnalysisEndDate').val().replace(regExp, '');
+			var weatherAnalysisEndTime = $('#weatherAnalysisEndTime').val();	
+			if(weatherAnalysisEndTime < 10){
+				weatherAnalysisEndTime = '0'+weatherAnalysisEndTime;
+			}
+			
+			if(weatherAnalysisStartDate == weatherAnalysisEndDate){
+				if(parseInt(weatherAnalysisStartTime) > parseInt(weatherAnalysisEndTime)){
+					alert('같은 날짜일때 두번째 시간이 더 빠를 수 없습니다.');
+					return;
+				}	
+			}
+			
+			if(weatherAnalysisLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, weatherAnalysisLayer);
+				weatherAnalysisLayer = null;
+				
+				clearInterval(weatherAnalysisInterval);
+				weatherAnalysisInterval = null;
+			}
+			
+			weatherAnalysisTimeSeries = setTimeSeries(weatherAnalysisStartDate, weatherAnalysisEndDate, weatherAnalysisStartTime, weatherAnalysisEndTime);
+			weatherAnalysisIndex = 0;
+			
+			var layerInfos = [{layerNm:bizLayers.WIND_FILD,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+weatherAnalysisStartDate+weatherAnalysisStartTime+'\'', zIndex:4}];
+			weatherAnalysisLayer = _CoreMap.createTileLayer(layerInfos)[0];
+			_MapEventBus.trigger(_MapEvents.map_addLayer, weatherAnalysisLayer);
+			
+			setCurrentDate(weatherAnalysisStartDate, weatherAnalysisStartTime, 'weatherAnalysisDate');
+			playWeatherAnalysisLayer();
+			
+		});
+		
+		// 악취 확산 분석
+		$('#odorSpreadPlay').on('click', function(){
+			var odorSpreadStartDate = $('#odorSpreadStartDate').val().replace(regExp, '');
+			var odorSpreadStartTime = parseInt($('#odorSpreadStartTime').val());
+			if(odorSpreadStartTime < 10){
+				odorSpreadStartTime = '0'+odorSpreadStartTime;
+			}
+			var odorSpreadEndDate= $('#odorSpreadEndDate').val().replace(regExp, '');
+			var odorSpreadEndTime = $('#odorSpreadEndTime').val();	
+			if(odorSpreadEndTime < 10){
+				odorSpreadEndTime = '0'+odorSpreadEndTime;
+			}
+			
+			if(odorSpreadStartDate == odorSpreadEndDate){
+				if(parseInt(odorSpreadStartTime) > parseInt(odorSpreadEndTime)){
+					alert('같은 날짜일때 두번째 시간이 더 빠를 수 없습니다.');
+					return;
+				}	
+			}
+			
+			if(odorSpreadLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadLayer);
+				odorSpreadLayer = null;
+				
+				clearInterval(odorSpreadInterval);
+				odorSpreadInterval = null;
+			}
+			
+			odorSpreadTimeSeries = setTimeSeries(odorSpreadStartDate, odorSpreadEndDate, odorSpreadStartTime, odorSpreadEndTime);
+			odorSpreadIndex = 0;
+			
+			var layerInfos = [{layerNm:bizLayers.ANALS_AREA,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+odorSpreadStartDate+odorSpreadStartTime+'\'', zIndex:4}];
+			odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
+			_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
+			
+			setCurrentDate(odorSpreadStartDate, odorSpreadStartTime, 'odorSpreadDate');
+			playOdorSpreadLayer();
+			
+		});
+		
+		// 악취 이동경로
+		$('#odorMovementPlay').on('click', function(){
+			_MapService.getWfs(':'+bizLayers.COURS, '*','ANALS_AREA_ID=\'C05\' AND DTA=\'2018110211\'', 'SN').then(function(result){
+				if(result == null || result.features.length <= 0){
+					alert('해당 시점에 악취 이동경로가 없습니다.');
+					return;
+				}
+				var features = [];
+				for(var i=0; i<result.features.length; i++){
+					var coord = ol.proj.transform([parseInt(result.features[i].properties.UTMX), parseInt(result.features[i].properties.UTMY)], 'EPSG:32652', 'EPSG:3857');
+					var feature = new ol.Feature({geometry:new ol.geom.Point(coord), properties:result.features[i].properties});
+					feature.setId(result.features[i].id);
+					features.push(feature);
+				}
+				odorMovementLayer = new ol.layer.Vector({
+					source : new ol.source.Vector({
+						features : features
+					}),
+					style : pointStyle,
+					visible: true,
+					zIndex: 1001,
+					id:'odorMovementLayer'
+				});
+			        
+				_MapEventBus.trigger(_MapEvents.map_addLayer, odorMovementLayer);
+			});
+		});
+	};
+	var playWeatherAnalysisLayer = function(){
+		weatherAnalysisInterval = setInterval(function(){
+			weatherAnalysisIndex++;
+			
+			if(weatherAnalysisTimeSeries[weatherAnalysisIndex]){
+				updateLayer(weatherAnalysisLayer, {sdate:weatherAnalysisTimeSeries[weatherAnalysisIndex].date, stime:weatherAnalysisTimeSeries[weatherAnalysisIndex].time, style:null});
+				setCurrentDate(weatherAnalysisTimeSeries[weatherAnalysisIndex].date, weatherAnalysisTimeSeries[weatherAnalysisIndex].time, 'weatherAnalysisDate');	
+			}else{
+				clearInterval(weatherAnalysisInterval);
+				return;
+			}
+		}, 1000 * 3);
 	};
 	
+	var playOdorSpreadLayer = function(){
+		odorSpreadInterval = setInterval(function(){
+			odorSpreadIndex++;
+			
+			if(odorSpreadTimeSeries[odorSpreadIndex]){
+				updateLayer(odorSpreadLayer, {sdate:odorSpreadTimeSeries[odorSpreadIndex].date, stime:odorSpreadTimeSeries[odorSpreadIndex].time, style:null});
+				setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex].date, odorSpreadTimeSeries[odorSpreadIndex].time, 'odorSpreadDate');	
+			}else{
+				clearInterval(odorSpreadInterval);
+				return;
+			}
+		}, 1000 * 3);
+	};
+	var updateLayer = function(layer, param){
+		var source = layer.getSource();
+		source.updateParams({'FORMAT': 'image/png', 
+				'VERSION': '1.1.0',
+				tiled: true,
+				STYLES:param.style,
+				CQL_FILTER:'DTA_DT=\''+param.sdate+param.stime+'\''
+		});
+	} 
+	
+	var setTimeSeries = function(sdate, edate, stime, etime){
+		var timeSeriesArr = [];
+		var syear = sdate.substring(0,4);
+		var smonth = sdate.substring(4,6);
+		var sday = sdate.substring(6,8);
+		
+		var eyear = parseInt(edate.substring(0,4));
+		var emonth = parseInt(edate.substring(4,6));
+		var eday = parseInt(edate.substring(6,8));
+		
+		var tdate = new Date(syear, parseInt(smonth)-1, sday);
+		
+		var stime = parseInt(stime);
+		var etime = parseInt(etime);
+		while(true){
+			var y = tdate.getFullYear();
+			var m = tdate.getMonth()+1;
+			var d = tdate.getDate();
+			
+			if(y == eyear && m == emonth && d == eday && stime > etime){
+				break;
+			}
+			var timeSeries = {date : y+''+(m<10?'0'+m:m)+''+(d<10?'0'+d:d), time:(stime<10?'0'+stime:stime+'')};
+			if(stime > 23){
+				stime = 0;
+				tdate.setDate(d + 1);
+				continue;
+			}else{
+				stime++;
+			}
+			timeSeriesArr.push(timeSeries);
+		}
+		return timeSeriesArr;
+	}
+	var setCurrentDate = function(cdate, ctime, targetId){
+		$('#'+targetId).val(cdate.substring(0,4)+'.'+cdate.substring(4,6)+'.'+cdate.substring(6,8)+'일  '+ctime+'시');
+	}
 	var bufferVectorStyle = function(){
 		return new ol.style.Style({
 	          stroke: new ol.style.Stroke({
@@ -611,3 +884,4 @@ var _SmellMapBiz = function () {
         }
     };
 }();
+
