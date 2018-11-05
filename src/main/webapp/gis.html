@@ -225,9 +225,12 @@
                         <dl>
                             <dt>조회기간</dt>
                              <dd>
-                                <input type="text" id="portableMeasurementStartDate" class="W105" style="width: 90px !important"/>
-                                ~
-                                <input type="text" id="portableMeasurementEndDate" class="W105" style="width: 90px !important"/>
+                                <input type="text" id="portableMeasurementStartDate" class="W105" style="width: 145px !important"/>
+                                <select id="portableMeasurementStartTime">
+                                </select>
+                                <input type="text" id="portableMeasurementEndDate" class="W105" style="margin-top:7px; width: 145px !important"/>
+                                <select id="portableMeasurementEndTime">
+                                </select>
                             </dd>
                         </dl>
                         <dl>
@@ -279,9 +282,11 @@
                         <dl>
                             <dt>조회기간</dt>
                              <dd>
-                                <input type="text" id="fixedMeasurementStartDate" class="W105" style="width: 90px !important"/>
-                                ~
-                                <input type="text" id="fixedMeasurementEndDate" class="W105" style="width: 90px !important"/>
+                                <input type="text" id="fixedMeasurementStartDate" class="W105" style="width: 80px !important"/>
+                                <select id="fixedMeasurementStartTime">
+                                </select>
+                                <select id="fixedMeasurementStartMinute">
+                                </select>
                             </dd>
                         </dl>
                         <dl>
@@ -796,7 +801,7 @@
             </div>
         </div>
         
-         <div id="poiPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 10;">
+         <div id="poiPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;">
         	<p class="pop_tit"><span class="pop_tit_text">POI 정보</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
             <div class="pop_conts" style="background: #fff;">
             	<select id="poiSelect01" style="width: 120px;"></select>

@@ -57,7 +57,7 @@ var _WestCondition = function () {
 						     {name:'NO2',title:'이산화질소'},
 						     {name:'SO2',title:'이산화황'},
 						     {name:'PM10',title:'미세먼지10'},
-						     {name:'PM2.5',title:'미세먼지2.5'},
+						     {name:'PM2_5',title:'미세먼지2.5'},
 						     {name:'CFC',title:'염소'},
 						     {name:'CH3SH',title:'메틸메르캅탄'},
 						     {name:'TMA',title:'트리메틸아민'},
@@ -88,7 +88,7 @@ var _WestCondition = function () {
 			     {name:'NO2',title:'이산화질소'},
 			     {name:'SO2',title:'이산화황'},
 			     {name:'PM10',title:'미세먼지10'},
-			     {name:'PM2.5',title:'미세먼지2.5'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
 			     {name:'CFC',title:'염소'},
 			     {name:'CH3SH',title:'메틸메르캅탄'},
 			     {name:'TMA',title:'트리메틸아민'},
@@ -182,6 +182,22 @@ var _WestCondition = function () {
         	flag:'date',
         });
         
+        var toDay = new Date();
+		var hour = toDay.getHours()+1;
+		var timeOptions = '';
+		for(var i=1; i<25; i++){
+			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
+		}
+		
+		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime').html(timeOptions);
+		
+		var timeOptionMinute = '';
+		
+		for(var i=0; i<60; i++){
+			timeOptionMinute += '<option value="'+(i<10 ? ('0'+i): i)+'">'+i+'분</option>';
+		}
+		$('#fixedMeasurementStartMinute').html(timeOptionMinute);
+		
         for(var i = 0; i < dateArr.length; i++){
         	$('#' + dateArr[i]).datepicker($.extend(datePickerDefine,{
         		yearSuffix: '년',
@@ -194,6 +210,8 @@ var _WestCondition = function () {
         				$('#'+dateMappingObj[$( this ).attr('id')]).datepicker( "option", "minDate", date );
         		}
         	}));
+        	
+        	$('#' + dateArr[i]).datepicker('setDate', toDay);
         }
         
         var portableMeasurementItemHtml = '';
@@ -304,14 +322,8 @@ var _WestCondition = function () {
             	});
             	
             	$('#poiSearch').off('click').on('click',function(){
-            		var poiText = $('#poiText').val();
-            		if(!poiText){
-            			return alert('검색어를 입력하세요.');
-            		}
-            		
             		var poiSearchArr = ['poiSelect01','poiSelect02','poiSelect03'];
-            		
-            		var paramObj = {poiText:poiText};
+            		var paramObj = {poiText:$('#poiText').val()};
             		for(var i = 0; i < poiSearchArr.length; i++){
             			paramObj[poiSearchArr[i]] = $('#'+poiSearchArr[i]).find('option:selected').text();
             		}
@@ -399,25 +411,29 @@ var _WestCondition = function () {
     	$('.lnb').find('em').off('click').on('click',function(){
     		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
     		var layerForName = _CoreMap.getMap().getLayerForName(contentsId);
-    		
-    		if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
-    			$(this).css('background','url(../images/btn_off.png)');
-    			contentsConfig[contentsId].isVisible = false;
-    		}else{
-    			$(this).css('background','url(../images/btn_on.png)');
-    			contentsConfig[contentsId].isVisible = true;
-    		}
-    		
-    		if(layerForName){
-    			layerForName.setVisible(contentsConfig[contentsId].isVisible);
-    		}
-    		
-    		if(contentsConfig[contentsId].isLabelLayer){
-    			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
-    			if(labelLayerForName){
-    				labelLayerForName.setVisible(contentsConfig[contentsId].isVisible);
+    		if(contentsConfig[contentsId]){
+    			if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
+        			$(this).css('background','url(../images/btn_off.png)');
+        			contentsConfig[contentsId].isVisible = false;
+        		}else{
+        			$(this).css('background','url(../images/btn_on.png)');
+        			contentsConfig[contentsId].isVisible = true;
         		}
+        		
+        		if(layerForName){
+        			layerForName.setVisible(contentsConfig[contentsId].isVisible);
+        		}
+        		
+        		if(contentsConfig[contentsId].isLabelLayer){
+        			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
+        			if(labelLayerForName){
+        				labelLayerForName.setVisible(contentsConfig[contentsId].isVisible);
+            		}
+        		}
+    		}else{
+    			alert('레이어 정의 필요');
     		}
+    		
     	});
     };
     
@@ -430,15 +446,6 @@ var _WestCondition = function () {
     	var paramObj = {contentsId:placeId};
     	
     	var cqlString = '';
-    	
-		var requireAlertObj = {
-	    		'branchName':'검색어를 입력하세요.',
-	    		'startDate':'시작날짜를 선택하세요.',
-	    		'endDate':'끝날짜를 선택하세요.',
-	    		'startOU':'OU 시작범위를 선택하세요.',
-	    		'endOU':'OU 끝범위를 선택하세요.',
-	    		'item':'측정항목을 선택하세요.'
-	    };
 		
 		for(var i = 0; i < searchPlace.length; i++){
 			var searchPlaceId = $(searchPlace[i]).attr('id');
@@ -455,26 +462,22 @@ var _WestCondition = function () {
 				}else if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
 					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
-					
-					if($(searchPlace[i]).val()){
-						if(replaceId=='startDate' || replaceId=='endDate'){
-							var oper = replaceId=='startDate'?'>=':'<=';
-							var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
-							paramObj[replaceId] = dateValue;
-							
-							if(contentsConfig[placeId].cqlForMappingObj){
-								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
-							}
-						}else{
-							paramObj[replaceId] = $(searchPlace[i]).val();
-							if(replaceId != 'cityDistrict'){
-								if(contentsConfig[placeId].cqlForMappingObj){
-									cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
-								}
-							}
+
+					if(replaceId=='startDate' || replaceId=='endDate'){
+						var oper = replaceId=='startDate'?'>=':'<=';
+						var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
+						paramObj[replaceId] = dateValue;
+
+						if(contentsConfig[placeId].cqlForMappingObj){
+							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
 						}
 					}else{
-						return alert(requireAlertObj[replaceId]);
+						paramObj[replaceId] = $(searchPlace[i]).val();
+						if(replaceId != 'cityDistrict'){
+							if(contentsConfig[placeId].cqlForMappingObj){
+								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
+							}
+						}
 					}
 				}
 			}
@@ -532,7 +535,7 @@ var _WestCondition = function () {
 				feature.setProperties(data[i].properties);
 			}else{
 				feature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([data[i].LO,data[i].LA],true)));
-				data[i].itemType = $('#portableMeasurementItem').val();
+				data[i].itemType = $('#' + id + 'Item').val();
 				feature.setProperties(data[i]);
 			}
 			
@@ -704,7 +707,7 @@ var _WestCondition = function () {
     	$('#gridArea').show();
     	var tabTitle = $('#tab_title');
     	var tabContent = $('#tab_content');
-    	var tabTemplate = '<li><a id=#{id} href="#{href}">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>';
+    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(../images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
     	
     	tabs.off('click').on('click','span.ui-icon-close', function() {

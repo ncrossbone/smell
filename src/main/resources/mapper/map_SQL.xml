@@ -30,7 +30,9 @@
   		  FROM CVPL_MANAGE
   		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
      	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
-     	   AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
+     	   <if test="branchName != null">
+    			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
+  			</if>	
      	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
 	</select>
 	
@@ -55,7 +57,7 @@
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='13' THEN MESURE_DNSTY END),3) AS 'NO2',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='14' THEN MESURE_DNSTY END),3) AS 'SO2',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='15' THEN MESURE_DNSTY END),3) AS 'PM10',
-			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='16' THEN MESURE_DNSTY END),3) AS 'PM2.5',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='16' THEN MESURE_DNSTY END),3) AS 'PM2_5',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='17' THEN MESURE_DNSTY END),3) AS 'CFC',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='18' THEN MESURE_DNSTY END),3) AS 'CH3SH',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='19' THEN MESURE_DNSTY END),3) AS 'TMA',
@@ -68,9 +70,11 @@
    		   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE,A.SENSOR_SPCS_NO) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE,B.SENSOR_SPCS_NO)
    		   AND C.IEM_CODE = B.IEM_CODE
    		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
-   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
-     	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
-     	   AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
+   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
+     	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
+     	   <if test="branchName != null">
+    			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
+  			</if>
 	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, LA,LO
 	</select>
 	
@@ -95,7 +99,7 @@
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='13' THEN MESURE_DNSTY END),3) AS 'NO2',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='14' THEN MESURE_DNSTY END),3) AS 'SO2',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='15' THEN MESURE_DNSTY END),3) AS 'PM10',
-			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='16' THEN MESURE_DNSTY END),3) AS 'PM2.5',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='16' THEN MESURE_DNSTY END),3) AS 'PM2_5',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='17' THEN MESURE_DNSTY END),3) AS 'CFC',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='18' THEN MESURE_DNSTY END),3) AS 'CH3SH',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='19' THEN MESURE_DNSTY END),3) AS 'TMA',
@@ -110,9 +114,10 @@
   		   AND CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE) = CONCAT(C.LEGALDONG_CODE,C.SPOT_CODE)
   		   AND D.IEM_CODE = C.IEM_CODE
   		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
-   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
-     	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
-     	   AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
+   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = CONCAT(#{startDate},#{startTime},#{startMinute})
+     	    <if test="branchName != null">
+    			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
+  			</if>
   	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, LA,LO
 	</select>
 	
@@ -172,6 +177,9 @@
    	   WHERE LCLASDC = #{poiSelect01}
      	 AND MLSFCDC = #{poiSelect02}
 	 	 AND SCLASDC = #{poiSelect03}
-	 	 AND FMYNM LIKE CONCAT('%',#{poiText},'%')
+	 	 <if test="poiText != null">
+    			AND FMYNM LIKE CONCAT('%',#{poiText},'%')
+  		</if>
+	 	 
 	</select>
 </mapper>
