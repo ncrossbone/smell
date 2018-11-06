@@ -422,16 +422,22 @@ var _WestCondition = function () {
     	
     	$('.lnb').find('em').off('click').on('click',function(){
     		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
-    		var layerForName = _CoreMap.getMap().getLayerForName(contentsId);
-    		if(contentsConfig[contentsId]){
-    			if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
-        			$(this).css('background','url(../images/btn_off.png)');
-        			contentsConfig[contentsId].isVisible = false;
-        		}else{
-        			$(this).css('background','url(../images/btn_on.png)');
-        			contentsConfig[contentsId].isVisible = true;
-        		}
-        		
+    		
+    		if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
+    			$(this).css('background','url(../images/btn_off.png)');
+    			contentsConfig[contentsId].isVisible = false;
+    		}else{
+    			$(this).css('background','url(../images/btn_on.png)');
+    			contentsConfig[contentsId].isVisible = true;
+    		}
+    		
+    		var reportCheck = $(this).parent().parent().parent().attr('id');
+
+    		// 분석쪽은 별도
+    		if(reportCheck == 'smellReport'){
+    			
+    		}else{
+    			var layerForName = _CoreMap.getMap().getLayerForName(contentsId);
         		if(layerForName){
         			layerForName.setVisible(contentsConfig[contentsId].isVisible);
         		}
@@ -442,10 +448,7 @@ var _WestCondition = function () {
         				labelLayerForName.setVisible(contentsConfig[contentsId].isVisible);
             		}
         		}
-    		}else{
-    			alert('레이어 정의 필요');
     		}
-    		
     	});
     };
     

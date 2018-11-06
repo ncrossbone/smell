@@ -63,19 +63,12 @@ var _SmellMapBiz = function () {
 	
 	// 악취 이동경로
 	var odorMovementLayer = null;
+	var trackingFeatures;
+	var trackingIdx = 0;
+	var trackingInterval = null;
+	var trackingIntervalTime = 1000;
 	
 	var init = function(){
-	
-//		proj4.defs('EPSG:2096','+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
-//		proj4.defs('EPSG:2097','+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
-//		proj4.defs('EPSG:2098','+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
-//		
-		
-		
-
-		
-//		proj4.defs('EPSG:5178','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43');
-		
 		proj4.defs('EPSG:32652','+proj=utm +zone=52 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
 		proj4.defs('EPSG:5179','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
 		
@@ -696,6 +689,25 @@ var _SmellMapBiz = function () {
 			
 		});
 		
+		$('#distributionChartOnBtn').on('click', function(){
+			distributionChartLayerVisible = !distributionChartLayerVisible;
+			
+			if(distributionChartLayerVisible){
+				$(this).prop('src', '/map/resources/images/icon/b1_on.png');
+			}else{
+				$(this).prop('src', '/map/resources/images/icon/b1_off.png');	
+			}
+			
+			if(distributionChartLayer){
+				distributionChartLayer.setVisible(distributionChartLayerVisible);
+				if(!distributionChartLayerVisible && distributionChartInterval){
+					clearInterval(distributionChartInterval);
+					distributionChartInterval = null;	
+				}
+			}
+		});
+		
+		
 		// 악취 확산 분석
 		$('#odorSpreadPlay').on('click', function(){
 			var odorSpreadStartDate = $('#odorSpreadStartDate').val().replace(regExp, '');
@@ -738,32 +750,66 @@ var _SmellMapBiz = function () {
 		
 		// 악취 이동경로
 		$('#odorMovementPlay').on('click', function(){
+			if(trackingInterval){
+				clearInterval(trackingInterval);
+				trackingInterval = null;
+			}
+			if(odorMovementLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorMovementLayer);
+				odorMovementLayer = null;
+			}
+			
 			_MapService.getWfs(':'+bizLayers.COURS, '*','ANALS_AREA_ID=\'C05\' AND DTA=\'2018110211\'', 'SN').then(function(result){
 				if(result == null || result.features.length <= 0){
-					alert('해당 시점에 악취 이동경로가 없습니다.');
+					alert('모델링 데이터가 없습니다.');
 					return;
 				}
-				var features = [];
+				
+				trackingFeatures = [];
+				
 				for(var i=0; i<result.features.length; i++){
 					var coord = ol.proj.transform([parseInt(result.features[i].properties.UTMX), parseInt(result.features[i].properties.UTMY)], 'EPSG:32652', 'EPSG:3857');
 					var feature = new ol.Feature({geometry:new ol.geom.Point(coord), properties:result.features[i].properties});
 					feature.setId(result.features[i].id);
-					features.push(feature);
+					trackingFeatures.push(feature);
 				}
+				
 				odorMovementLayer = new ol.layer.Vector({
 					source : new ol.source.Vector({
-						features : features
+						features : [trackingFeatures[0]]
 					}),
 					style : pointStyle,
-					visible: true,
-					zIndex: 1001,
+					zIndex: 3000,
 					id:'odorMovementLayer'
 				});
-			        
+				
 				_MapEventBus.trigger(_MapEvents.map_addLayer, odorMovementLayer);
+				
+				var centerCoord = trackingFeatures[0].getGeometry().getCoordinates();
+				_CoreMap.centerMap(centerCoord[0], centerCoord[1]);
+				
+				trackingIdx = 0;
+				trackingIntervalTime = 1000;
+				tracking();
 			});
 		});
 	};
+	var tracking = function(){
+		
+		trackingInterval = setInterval(function(){
+			trackingIdx++;
+			if(trackingFeatures[trackingIdx]){
+				odorMovementLayer.getSource().addFeature(trackingFeatures[trackingIdx]);
+				
+				var centerCoord = trackingFeatures[trackingIdx].getGeometry().getCoordinates();
+				_CoreMap.centerMap(centerCoord[0], centerCoord[1]);	
+			}else{
+				clearInterval(trackingInterval);
+				trackingInterval = null;
+			}
+		}, trackingIntervalTime); 
+	}
+
 	var playWeatherAnalysisLayer = function(){
 		weatherAnalysisInterval = setInterval(function(){
 			weatherAnalysisIndex++;
