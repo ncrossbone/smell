@@ -7,6 +7,7 @@ var _WestCondition = function () {
     var maxFeatureCount;
     var clusterDistance = 100;
     var cityTownObj = {};
+    var POIConditionObj = {};
     
     var contentsConfig = {
     	'complaintStatus':{cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
@@ -56,7 +57,7 @@ var _WestCondition = function () {
 						     {name:'NO2',title:'이산화질소'},
 						     {name:'SO2',title:'이산화황'},
 						     {name:'PM10',title:'미세먼지10'},
-						     {name:'PM2.5',title:'미세먼지2.5'},
+						     {name:'PM2_5',title:'미세먼지2.5'},
 						     {name:'CFC',title:'염소'},
 						     {name:'CH3SH',title:'메틸메르캅탄'},
 						     {name:'TMA',title:'트리메틸아민'},
@@ -87,7 +88,7 @@ var _WestCondition = function () {
 			     {name:'NO2',title:'이산화질소'},
 			     {name:'SO2',title:'이산화황'},
 			     {name:'PM10',title:'미세먼지10'},
-			     {name:'PM2.5',title:'미세먼지2.5'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
 			     {name:'CFC',title:'염소'},
 			     {name:'CH3SH',title:'메틸메르캅탄'},
 			     {name:'TMA',title:'트리메틸아민'},
@@ -181,6 +182,22 @@ var _WestCondition = function () {
         	flag:'date',
         });
         
+        var toDay = new Date();
+		var hour = toDay.getHours()+1;
+		var timeOptions = '';
+		for(var i=1; i<25; i++){
+			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
+		}
+		
+		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime').html(timeOptions);
+		
+		var timeOptionMinute = '';
+		
+		for(var i=0; i<60; i++){
+			timeOptionMinute += '<option value="'+(i<10 ? ('0'+i): i)+'">'+i+'분</option>';
+		}
+		$('#fixedMeasurementStartMinute').html(timeOptionMinute);
+		
         for(var i = 0; i < dateArr.length; i++){
         	$('#' + dateArr[i]).datepicker($.extend(datePickerDefine,{
         		yearSuffix: '년',
@@ -193,6 +210,8 @@ var _WestCondition = function () {
         				$('#'+dateMappingObj[$( this ).attr('id')]).datepicker( "option", "minDate", date );
         		}
         	}));
+        	
+        	$('#' + dateArr[i]).datepicker('setDate', toDay);
         }
         
         var portableMeasurementItemHtml = '';
@@ -203,11 +222,173 @@ var _WestCondition = function () {
         
         $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
         
-        
         setEvent();
+    };
+    
+    var initPOI = function(){
+    	$('#poiPopup').draggable({ containment: '#map' });
+    	var poiField = [{name:'POIID',title:'poi id',visible:false},
+   		             {name:'LCLASDC',title:'대분류',width:'80px'},
+		             {name:'MLSFCDC',title:'중분류',width:'80px'},
+		             {name:'SCLASDC',title:'소분류',width:'80px'},
+		             {name:'FMYNM',title:'지점명',width:'80px'},
+		             {name:'ETCADRES',title:'주소'}];
+    	
+    	if(POIConditionObj['0']){
+    		if($('#poiPopup').css('display')=='none'){
+    			$('#poiPopup').show();
+        		$('#poiSelect01').val(0);
+        		writePOI(POIConditionObj[0].child,'poiSelect02');
+        		writePOI(POIConditionObj[0].child[0].child,'poiSelect03');
+        		$('#poiText').val('');
+        		
+        		$('#poiGrid').jsGrid({
+            		width: '565px',
+            		height: '220px',
+            		inserting: false,
+            		editing: false,
+            		sorting: true,
+            		paging: false,	
+            		noDataContent: noDataContent,
+            		data: [],
+            		fields: poiField
+            	});
+    		}
+    	}else{
+    		getData({url:'/getPOISelect.do', contentType: 'application/json', params: {} }).done(function(data){
+            	$('#poiPopup').show();
+            	$('#poiGrid').jsGrid({
+            		width: '565px',
+            		height: '220px',
+            		inserting: false,
+            		editing: false,
+            		sorting: true,
+            		paging: false,	
+            		noDataContent: noDataContent,
+            		data: [],
+            		fields: poiField
+            	});
+            	
+            	if(data.length == 0){
+        			return;
+        		}
+            	var korObj = {};
+            	var countObj = {
+            			x:-1,
+            			y:-1,
+            			z:-1
+            	};
+            	
+            	for(var i = 0; i < data.length; i++){
+            		if(!korObj[data[i].LCLASDC]){
+            			korObj[data[i].LCLASDC] = {};
+            			
+            			countObj.x++;
+            			POIConditionObj[countObj.x] = {};
+            			POIConditionObj[countObj.x].child = {};
+            			POIConditionObj[countObj.x].text = data[i].LCLASDC; 
+            		}
+            		
+            		if(!korObj[data[i].LCLASDC][data[i].MLSFCDC]){
+            			korObj[data[i].LCLASDC][data[i].MLSFCDC] = {};
+            			
+            			countObj.y++;
+            			POIConditionObj[countObj.x].child[countObj.y] = {};
+            			POIConditionObj[countObj.x].child[countObj.y].child = {};
+            			POIConditionObj[countObj.x].child[countObj.y].text = data[i].MLSFCDC;
+            		}
+            		
+            		if(!korObj[data[i].LCLASDC][data[i].MLSFCDC][data[i].SCLASDC]){
+            			korObj[data[i].LCLASDC][data[i].MLSFCDC][data[i].SCLASDC] = '';
+            			
+            			countObj.z++;
+            			POIConditionObj[countObj.x].child[countObj.y].child[countObj.z] = {};
+            			POIConditionObj[countObj.x].child[countObj.y].child[countObj.z].text = data[i].SCLASDC;
+            		}
+            	}
+            	
+            	writePOI(POIConditionObj,'poiSelect01');
+            	writePOI(POIConditionObj[0].child,'poiSelect02');
+            	writePOI(POIConditionObj[0].child[0].child,'poiSelect03');
+            	
+            	$('#poiSelect01, #poiSelect02').off('change').on('change',function(){
+            		var mappingId = '';
+            		if($(this).attr('id')=='poiSelect01'){
+            			writePOI(POIConditionObj[$(this).val()].child,'poiSelect02');
+            			writePOI(POIConditionObj[$(this).val()].child[$('#poiSelect02').val()].child,'poiSelect03');
+            		}else{
+            			writePOI(POIConditionObj[$('#poiSelect01').val()].child[$(this).val()].child,'poiSelect03');
+            		}
+            	});
+            	
+            	$('#poiSearch').off('click').on('click',function(){
+            		var poiSearchArr = ['poiSelect01','poiSelect02','poiSelect03'];
+            		var paramObj = {poiText:$('#poiText').val()};
+            		for(var i = 0; i < poiSearchArr.length; i++){
+            			paramObj[poiSearchArr[i]] = $('#'+poiSearchArr[i]).find('option:selected').text();
+            		}
+            		
+            		getData({url:'/getPOISearch.do', contentType: 'application/json', params: paramObj }).done(function(data){
+            			$('#poiGrid').jsGrid({
+            	    		width: '565px',
+            	    		height: '220px',
+            	    		inserting: false,
+            	    		editing: false,
+            	    		sorting: true,
+            	    		paging: false,	
+            	    		noDataContent: noDataContent,
+            	    		data: data,
+            	    		fields: poiField,
+            	    		rowClick:function(data){
+            	    			
+            	    			_MapService.getWfs(':shp_poi','*','POIID=\'' + data.item.POIID + '\'', '').done(function (data) {
+            	    				if(data.features.length == 0){
+            	    					return;
+            	    				}
+            	    				
+            	    				deferredForSetCenter(data.features[0].geometry.coordinates,_CoreMap.getMap().getView().getMaxZoom());
+            	    				
+            	    				var getPOILayer = _CoreMap.getMap().getLayerForName('poi');
+            	    	    		if(getPOILayer){
+            	    	    			_MapEventBus.trigger(_MapEvents.map_removeLayer, getPOILayer);
+            	    	    		}
+            	    	    		
+            	    				var poiLayer = new ol.layer.Vector({
+            	    					source : new ol.source.Vector({
+            	    						features : [new ol.Feature(new ol.geom.Point(data.features[0].geometry.coordinates))]
+            	    					}),
+            	    					style : new ol.style.Style({
+            	    		    			image: new ol.style.Circle({
+            	    		    				radius: 7,
+            	    		    				stroke: new ol.style.Stroke({
+            	    		    					color: '#595959',
+            	    		    					width: 2
+            	    		    				}),
+            	    		    				fill: new ol.style.Fill({
+            	    		        		        color: '#f56ee9'
+            	    		        		    }),
+            	    		    			})
+            	    		    		}),
+            	    					visible: true,
+            	    					zIndex:1,
+            	    					name:'poi'
+            	    				});
+            	    				
+            	    		    	_MapEventBus.trigger(_MapEvents.map_addLayer, poiLayer);
+            					});
+            	    		}
+            	    	});
+            		})
+            	});
+            });
+    	}
     };
 
     var setEvent = function(){
+    	$('#poiView').off('click').on('click',function(){
+    		initPOI();
+    	});
+    	
     	$('#cityDistrictToolbar').off('change').on('change',function(){
     		writeCity(cityTownObj[$(this).val()].child,'townToolbar');
     	});
@@ -217,7 +398,14 @@ var _WestCondition = function () {
     	});
     	
     	$('.pop_close, .btn04').off('click').on('click',function(){
-    		$('#popup').hide();
+    		$(this).parent().parent().hide();
+    		
+    		if($(this).parent().parent().attr('id')=='poiPopup'){
+    			var getPOILayer = _CoreMap.getMap().getLayerForName('poi');
+        		if(getPOILayer){
+        			_MapEventBus.trigger(_MapEvents.map_removeLayer, getPOILayer);
+        		}
+    		}
     	});
     	
     	$('.lnb').find('em').off('click').on('click',function(){
@@ -261,15 +449,6 @@ var _WestCondition = function () {
     	var paramObj = {contentsId:placeId};
     	
     	var cqlString = '';
-    	
-		var requireAlertObj = {
-	    		'branchName':'검색어를 입력하세요.',
-	    		'startDate':'시작날짜를 선택하세요.',
-	    		'endDate':'끝날짜를 선택하세요.',
-	    		'startOU':'OU 시작범위를 선택하세요.',
-	    		'endOU':'OU 끝범위를 선택하세요.',
-	    		'item':'측정항목을 선택하세요.'
-	    };
 		
 		for(var i = 0; i < searchPlace.length; i++){
 			var searchPlaceId = $(searchPlace[i]).attr('id');
@@ -286,26 +465,22 @@ var _WestCondition = function () {
 				}else if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
 					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
-					
-					if($(searchPlace[i]).val()){
-						if(replaceId=='startDate' || replaceId=='endDate'){
-							var oper = replaceId=='startDate'?'>=':'<=';
-							var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
-							paramObj[replaceId] = dateValue;
-							
-							if(contentsConfig[placeId].cqlForMappingObj){
-								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
-							}
-						}else{
-							paramObj[replaceId] = $(searchPlace[i]).val();
-							if(replaceId != 'cityDistrict'){
-								if(contentsConfig[placeId].cqlForMappingObj){
-									cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
-								}
-							}
+
+					if(replaceId=='startDate' || replaceId=='endDate'){
+						var oper = replaceId=='startDate'?'>=':'<=';
+						var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
+						paramObj[replaceId] = dateValue;
+
+						if(contentsConfig[placeId].cqlForMappingObj){
+							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
 						}
 					}else{
-						return alert(requireAlertObj[replaceId]);
+						paramObj[replaceId] = $(searchPlace[i]).val();
+						if(replaceId != 'cityDistrict'){
+							if(contentsConfig[placeId].cqlForMappingObj){
+								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
+							}
+						}
 					}
 				}
 			}
@@ -363,7 +538,7 @@ var _WestCondition = function () {
 				feature.setProperties(data[i].properties);
 			}else{
 				feature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([data[i].LO,data[i].LA],true)));
-				data[i].itemType = $('#portableMeasurementItem').val();
+				data[i].itemType = $('#' + id + 'Item').val();
 				feature.setProperties(data[i]);
 			}
 			
@@ -535,7 +710,7 @@ var _WestCondition = function () {
     	$('#gridArea').show();
     	var tabTitle = $('#tab_title');
     	var tabContent = $('#tab_content');
-    	var tabTemplate = '<li><a id=#{id} href="#{href}">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>';
+    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(../images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
     	
     	tabs.off('click').on('click','span.ui-icon-close', function() {
@@ -676,8 +851,8 @@ var _WestCondition = function () {
 		});
     	
     	$('#popup').show();
-    	$('.pop_tit_text').text(title);
-    	$('.pop_conts').html(popupHtml);
+    	$('#popup').find('.pop_tit_text').text(title);
+    	$('#popup').find('.pop_conts').html(popupHtml);
     };
     
     var deferredForSetCenter = function(coord,zoom){
@@ -727,7 +902,20 @@ var _WestCondition = function () {
     		writeCity(cityTownObj[$(this).val()].child,cityMappingObj[$(this).attr('id')]);
     	});
     };
-
+    
+    var writePOI = function (data, comboId) {
+        var html = '';
+        //var allHtml = '';
+        for (var key in data) {
+        	/*if(comboId.toLowerCase().indexOf('town') > -1){
+        		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
+        	}*/
+        	html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
+        }
+        
+        $('#' + comboId).html(html);
+    };
+    
     var writeCity = function (data, comboId) {
         var html = '';
         var allHtml = '';

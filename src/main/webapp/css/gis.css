@@ -111,3 +111,30 @@
 #cityDistrictToolbar::-ms-expand, #townToolbar::-ms-expand {
    display: none;
 }
+
+#poiSelect01, #poiSelect02, #poiSelect03{
+	width: 120px;
+    font-size: 12px;
+    padding: 3px 5px;
+    font-weight: normal;
+    font-style: normal;
+    font-family: 'Dotum';
+}
+
+#poiText{
+	font-size: 13px;
+    font-weight: normal;
+    font-style: normal;
+    font-family: 'Dotum';
+    height: 19px;
+    width: 145px;
+}
+
+#poiSearch{
+	background: #595959;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 3px;
+    font-style: normal;
+    font-family: 'Dotum';
+}

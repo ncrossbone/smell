@@ -73,4 +73,14 @@ public class MapBiz {
 		return resultList;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getPOISelect(){
+		return mapMapper.getPOISelect();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getPOISearch(HashMap param){
+		return mapMapper.getPOISearch(param);
+	}
+	
 }
