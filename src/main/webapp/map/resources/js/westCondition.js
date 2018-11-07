@@ -427,20 +427,24 @@ var _WestCondition = function () {
     	
     	$('.lnb').find('em').off('click').on('click',function(){
     		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
+    		var isShow = false;
     		clearFocusLayer();
-    		if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
-    			$(this).css('background','url(../images/btn_off.png)');
-    			contentsConfig[contentsId].isVisible = false;
-    		}else{
-    			$(this).css('background','url(../images/btn_on.png)');
-    			contentsConfig[contentsId].isVisible = true;
-    		}
+    		try{
+    			if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
+        			$(this).css('background','url(../images/btn_off.png)');
+        			contentsConfig[contentsId].isVisible = false;
+        		}else{
+        			isShow = true;
+        			$(this).css('background','url(../images/btn_on.png)');
+        			contentsConfig[contentsId].isVisible = true;
+        		}	
+    		}catch(e){}
     		
     		var reportCheck = $(this).parent().parent().parent().attr('id');
 
     		// 분석쪽은 별도
     		if(reportCheck == 'smellReport'){
-    			
+    			_MapEventBus.trigger(_MapEvents.clickLayerOnOff, {target:contentsId, isShow:isShow});
     		}else{
     			var layerForName = _CoreMap.getMap().getLayerForName(contentsId);
         		if(layerForName){

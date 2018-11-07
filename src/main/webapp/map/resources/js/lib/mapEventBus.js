@@ -21,6 +21,8 @@ _MapEvents.onresizeall_end = 'onresizeall_end';
 
 _MapEvents.setZoom = 'setzoom';
 
+_MapEvents.clickLayerOnOff = 'clickLayerOnOff';
+
 var _MapEventBus = $({});
 
 // sample 
