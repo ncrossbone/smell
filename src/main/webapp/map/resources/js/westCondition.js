@@ -8,14 +8,20 @@ var _WestCondition = function () {
     var clusterDistance = 100;
     var cityTownObj = {};
     var POIConditionObj = {};
-    
+    var westLayerObj = {
+    		CVPL_POINT : ':CVPL_POINT',
+    		SHP_BDONG : ':SHP_BDONG',
+    		SHP_POI : ':shp_poi',
+    		SHP_SGG_PT : ':shp_sgg_pt',
+    		SHP_BDONG_PT:':shp_bdong_pt'
+    };
     var contentsConfig = {
     	'complaintStatus':{cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
     										'town':'LEGALDONG_CODE',
     										'startDate':'CVPL_DT',
     										'endDate':'CVPL_DT',
     										'branchName':'CVPL_CN'},
-    					  layerName:'CVPL_POINT',
+    					  layerName:westLayerObj.CVPL_POINT,
     					  layerType:'cluster',
     					  title:'민원현황',
     					  keyColumn:['CVPL_NO'],
@@ -147,7 +153,7 @@ var _WestCondition = function () {
 			flag:'city',
 		});
     	
-    	_MapService.getWfs(':SHP_BDONG','*',undefined,'cty_nm, dong_nm').done(function(data){
+    	_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined,'cty_nm, dong_nm').done(function(data){
     		if(data.features.length == 0){
     			return;
     		}
@@ -341,7 +347,7 @@ var _WestCondition = function () {
             	    		fields: poiField,
             	    		rowClick:function(data){
             	    			
-            	    			_MapService.getWfs(':shp_poi','*','POIID=\'' + data.item.POIID + '\'', '').done(function (data) {
+            	    			_MapService.getWfs(westLayerObj.SHP_POI,'*','POIID=\'' + data.item.POIID + '\'', '').done(function (data) {
             	    				if(data.features.length == 0){
             	    					return;
             	    				}
@@ -389,8 +395,14 @@ var _WestCondition = function () {
     		initPOI();
     	});
     	
-    	$('#cityDistrictToolbar').off('change').on('change',function(){
-    		writeCity(cityTownObj[$(this).val()].child,'townToolbar');
+    	$('#cityDistrictToolbar, #townToolbar').off('change').on('change',function(){
+    		var shapeName = $(this).attr('id')=='cityDistrictToolbar'?westLayerObj.SHP_SGG_PT:westLayerObj.SHP_BDONG_PT;
+    		_MapService.getWfs(shapeName, '*',encodeURIComponent('ADM_CD LIKE \''+$(this).val()+'%\''), '').then(function(result){
+    			if(result.features.length == 0){
+    				return;
+    			}
+    			_CoreMap.centerMap(result.features[0].geometry.coordinates[0], result.features[0].geometry.coordinates[1],13);
+    		});
     	});
     	
     	$('a[id$="Views"]').off('click').on('click',function(){
@@ -492,7 +504,7 @@ var _WestCondition = function () {
 		
 		if(contentsConfig[placeId].isUseGeoserver){
 			$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
-					_MapService.getWfs(':'+contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
+					_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
 						writeGrid(placeId,gridData[0]);
 						writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
 					});
@@ -797,7 +809,7 @@ var _WestCondition = function () {
     				cqlString += key + '=\'' + paramObj[key] + '\' AND ';	
     			}
     		}
-    		_MapService.getWfs(':'+contentsConfig[id].layerName, '*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '').then(function(result){
+    		_MapService.getWfs(contentsConfig[id].layerName, '*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '').then(function(result){
     			if(result.features.length == 0){
     				return;
     			}
