@@ -28,6 +28,7 @@ var _WestCondition = function () {
     					  isVisible:true,
     					  isUseGeoserver:true,
     					  isLabelLayer:false,
+    					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DTH'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
     					             {name:'CVPL_DT',title:'민원 일시'},
     					             {name:'CPTTR',title:'민원인'},
@@ -46,7 +47,9 @@ var _WestCondition = function () {
 						isVisible:true,
 						isUseGeoserver:false,
 						isLabelLayer:true,
+						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
+						     {name:'MESURE_DT',title:'측정 일시'},
 						     {name:'OPR_STTUS_CODE',title:'센서명'},
 						     {name:'VOCS',title:'휘발성유기물'},
 						     {name:'CCNT',title:'접점센서'},
@@ -77,7 +80,9 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
+			popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
+			     {name:'MESURE_DT',title:'측정 일시'},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
 			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'CCNT',title:'접점센서'},
@@ -222,7 +227,7 @@ var _WestCondition = function () {
         
         var portableMeasurementItemHtml = '';
         
-        for(var i=2; i<contentsConfig['portableMeasurement'].columnArr.length - 1; i++){
+        for(var i=3; i<contentsConfig['portableMeasurement'].columnArr.length - 1; i++){
         	portableMeasurementItemHtml += '<option value=\''+contentsConfig['portableMeasurement'].columnArr[i].name+'\'>'+contentsConfig['portableMeasurement'].columnArr[i].title+'</option>';
         }
         
@@ -422,7 +427,7 @@ var _WestCondition = function () {
     	
     	$('.lnb').find('em').off('click').on('click',function(){
     		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
-    		
+    		clearFocusLayer();
     		if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
     			$(this).css('background','url(../images/btn_off.png)');
     			contentsConfig[contentsId].isVisible = false;
@@ -810,7 +815,7 @@ var _WestCondition = function () {
     				return;
     			}
     			
-    			writeFocusLayer(result.features[0],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
+    			writeFocusLayer(result.features[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}else{
     		getData({
@@ -821,29 +826,41 @@ var _WestCondition = function () {
     			if(data.length == 0){
     				return;
     			}
-    			writeFocusLayer([data[0].LO,data[0].LA],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
+    			writeFocusLayer(data[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}
 			
     };
     
-    var writeFocusLayer = function(data, isUseGeoserver,title){
-    	var result;
-    	var popupHtml = '';
-    	
-    	if(isUseGeoserver){
-    		result = data.geometry.coordinates;
-    		popupHtml += '<div>'+result+'</div>';
+    var writeFocusLayer = function(data, config, title){
+    	var attr;
+    	var geo;
+    	var popupHtml = '<table class="map_info_table"><caption></caption>';
+		popupHtml += '<colgroup><col style="width:100px;"><col></colgroup>';
+		popupHtml += '<tbody>';
+		
+    	if(config.isUseGeoserver){
+    		geo = data.geometry.coordinates;
+    		attr = data.properties;
     	}else{
-    		result = _CoreMap.convertLonLatCoord(data,true);
-    		popupHtml += '<div>'+result+'</div>';
+    		geo = _CoreMap.convertLonLatCoord([data.LO,data.LA],true);
+    		attr = data;
     	}
     	
-    	deferredForSetCenter(result,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
+    	for(var i=0; i < config.popupColumnArr.length; i++){
+			popupHtml +=   '<tr>';
+			popupHtml +=      '<th scope="row">'+config.popupColumnArr[i].text+'</th>';
+			popupHtml += 	  '<td>'+attr[config.popupColumnArr[i].id]+'</td>';
+			popupHtml +=   '</tr>';
+		}
+    	
+    	popupHtml +=	'</tbody></table>';
+    	
+    	deferredForSetCenter(geo,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
 			clearFocusLayer();
 			var newFocusLayer = new ol.layer.Vector({
 				source : new ol.source.Vector({
-					features : [new ol.Feature(new ol.geom.Point(result))]
+					features : [new ol.Feature(new ol.geom.Point(geo))]
 				}),
 				style : new ol.style.Style({
 	    			image: new ol.style.Circle({

@@ -138,3 +138,43 @@
     font-style: normal;
     font-family: 'Dotum';
 }
+
+table.map_info_table {
+    border-top: 2px solid #595959;
+    color: #353535;
+    background: #fff;
+    width: 350px;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+table.map_info_table th, table.map_info_table td {
+    border-bottom: 1px solid #c8cfd4;
+    letter-spacing: 0 !important;
+}
+
+table.map_info_table th {
+    background: #fafbfd;
+    text-align: center;
+    font-size: 14px;
+    color: #000;
+    line-height: 42px;
+    border-right: 1px solid #c8cfd4;
+    font-size: 13px;
+    font-family: notokr-bold;
+    letter-spacing: -1px;
+}
+
+table.map_info_table td {
+    font-size: 12px;
+    text-align: center;
+    border-right: 1px solid #c8cfd4;
+}
+
+#popup{
+	height: 257px !important;
+}
+
+#popup .pop_conts{
+	height: 160px !important; 
+}
