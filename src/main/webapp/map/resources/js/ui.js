@@ -2,7 +2,6 @@ var _ui = (function () {
     var init = function () {
         setEvent();
     };
-
     var setEvent = function () {
         $('.accordion').on('click', function () {
             var me = this;
@@ -10,8 +9,13 @@ var _ui = (function () {
             for (var i = 0; i < $('.accordion').length; i++) {
                 if ($($('#tab').find('.on')[0]).attr('tabType') == $($('.accordion')[i]).parent().parent()[0].id) {
                 	if($($('.accordion')[i]).text() == $(me).text()){
-                		isDisplay = 'block';
-                		$($('.accordion')[i]).addClass('ov');
+                		if($($('.accordion')[i]).attr('class').indexOf('ov') > -1){
+                			isDisplay = 'none';
+                    		$($('.accordion')[i]).removeClass('ov');
+                		}else{
+                			isDisplay = 'block';
+                			$($('.accordion')[i]).addClass('ov');
+                		}
                 	}else{
                 		isDisplay = 'none';
                 		$($('.accordion')[i]).removeClass('ov');

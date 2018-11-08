@@ -69,5 +69,9 @@ public class MapController {
 	public List<Map<String, Object>> getArea(@RequestBody HashMap param){
 		return mapBiz.getArea(param);
 	}
-	//getArea
+
+	@RequestMapping(value = "/getItem", method = RequestMethod.POST)
+	public List<Map<String, Object>> getItem(@RequestBody HashMap param){
+		return mapBiz.getItem(param);
+	}
 }

@@ -28,6 +28,8 @@ var _WestCondition = function () {
     					  isVisible:true,
     					  isUseGeoserver:true,
     					  isLabelLayer:false,
+    					  isWriteGrid:true,
+    					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DTH'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
     					             {name:'CVPL_DT',title:'민원 일시'},
     					             {name:'CPTTR',title:'민원인'},
@@ -46,7 +48,10 @@ var _WestCondition = function () {
 						isVisible:true,
 						isUseGeoserver:false,
 						isLabelLayer:true,
+						isWriteGrid:true,
+						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
+						     {name:'MESURE_DT',title:'측정 일시'},
 						     {name:'OPR_STTUS_CODE',title:'센서명'},
 						     {name:'VOCS',title:'휘발성유기물'},
 						     {name:'CCNT',title:'접점센서'},
@@ -77,7 +82,10 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
+			isWriteGrid:true,
+			popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
+			     {name:'MESURE_DT',title:'측정 일시'},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
 			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'CCNT',title:'접점센서'},
@@ -100,6 +108,68 @@ var _WestCondition = function () {
 			     {name:'TMA',title:'트리메틸아민'},
 			     {name:'ETHANOL',title:'에탄올'},
 			     {name:'DATE',title:'날짜',visible:false}]
+    	},
+    	'sensoryEvaluation':{
+			layerType:'base',
+			title:'관능 평가 데이터',
+			keyColumn:['SENSE_EVL_NO'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:false,
+			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'OU_내용',id:'BSML_FQ'}]
+    	},
+    	'odorOrigin':{
+    		//cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE','town':'LEGALDONG_CODE','branchName':'PT_NM','endOU':'OU','startOU':'OU'},
+			layerType:'base',
+			title:'악취원점 관리',
+			keyColumn:['CODE','DATE'],
+			isVisible:true,
+			isUseGeoserver:true,
+			isLabelLayer:false,
+			isWriteGrid:true,
+			popupColumnArr:[{text:'지점명',id:'PT_NM'},{text:'주소',id:'ATTR'},{text:'OU 내용',id:'OU'}],
+			columnArr:[{name:'BPLC_ID',title:'사업장 ID',visible:false},
+			           {name:'BSML_TRGNPT_SE_CODE',title:'악취 원점 구분'},
+			           {name:'CMPNY_NM',title:'회사 명'},
+			           {name:'LEGALDONG_CODE',title:'주소'},
+			           {name:'TELNO',title:'전화번호'},
+			           {name:'INDUTY',title:'업종'},
+			           {name:'X',title:'x좌표'},
+			           {name:'Y',title:'y좌표'}]
+    	},
+    	'environmentCorporation':{
+    		layerType:'base',
+			title:'환경공단 측정망',
+			keyColumn:['CODE','DATE','NTWK_NM'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:true,
+			popupColumnArr:[{text:'지점명',id:'NAME'},{text:'주소',id:'ADDR'},{text:'측정 날짜',id:'MESURE_DT'}],
+			columnArr:[{name:'NAME',title:'측정소명'},
+		     {name:'MESURE_DT',title:'검측 일시'},
+			 {name:'SO2_DNSTY',title:'아황산가스 농도'},
+			 {name:'CMO_DNSTY',title:'일산화탄소 농도'},
+			 {name:'OZ_DNSTY',title:'오존 농도'},
+			 {name:'NO2_DNSTY',title:'이산화질소 농도'},
+			 {name:'PM10_DNSTY',title:'PM10 농도'},
+			 {name:'PM10_HOUR24_PREDICT_MVMN_DNSTY',title:'PM10_24시간 예측 이동 농도'},
+			 {name:'PM25_DNSTY',title:'PM2.5 농도'},
+			 {name:'PM25_HOUR24_PREDICT_MVMN_DNSTY',title:'PM2.5 24시간 예측 이동 농도'},
+			 {name:'UNITY_AIR_ENVRN_NCL',title:'통합 대기 환경 수치'},
+			 {name:'UNITY_AIR_ENVRN_IDEX',title:'통합 대기 환경 지수'},
+			 {name:'SO2_IDEX',title:'아황산가스 지수'},
+			 {name:'CMO_IDEX',title:'일산화탄소 지수'},
+			 {name:'OZ_IDEX',title:'오존 지수'},
+			 {name:'NO2_IDEX',title:'이산화질소 지수'},
+			 {name:'PM10_HOUR24_GRAD',title:'PM10 24시간 등급'},
+			 {name:'PM25_HOUR24_GRAD',title:'PM2.5 24시간 등급'},
+			 {name:'PM10_HOUR1_GRAD',title:'PM10 1시간 등급'},
+			 {name:'PM25_HOUR1_GRAD',title:'PM2.5 1시간 등급'},
+			 {name:'CODE',title:'코드',visible:false},
+			 {name:'DATE',title:'코드',visible:false},
+			 {name:'NTWK_NM',title:'항목',visible:false}]
     	}
     };
     
@@ -213,8 +283,44 @@ var _WestCondition = function () {
     		
     		writeCity(cityTownObj,'cityDistrictToolbar');
     		setToolbarCity({adm_cd:'4311425300'});
+    		
+    		
+    		//polygonText
+    		/*_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined, '').done(function (data) {
+    			var coord = data.features[0].geometry.coordinates;
+    			var polyArr = [];
+    			var polygonFeature;
+    			for(var i = 0; i<data.features.length; i++){
+    				polyArr.push(new ol.Feature(new ol.geom.Polygon(data.features[i].geometry.coordinates)));
+    			}
+    			
+    			var source = new ol.source.Vector({
+    				features: polyArr
+    			});
+    			var vectorLayer = new ol.layer.Vector({
+    		        source: source,
+    		        style: new ol.style.Style({
+    		        	stroke: new ol.style.Stroke({
+    		        		width: 3,
+    		        		color: '#ffffff'
+    		        	}),
+    		        	fill: new ol.style.Fill({
+    		        		color: '#4472C4'
+    		        	})
+    		        }),
+    		        zIndex:2,
+    		        visible:true
+    			});
+    			_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
+    		});*/
     	});
-
+    	
+    	getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
+    		if(data.length == 0){
+    			return;
+    		}
+    		writeItem('environmentCorporation',data);
+    	});
         
         var dateArr = setCommonCombo({
         	type:'input',
@@ -230,7 +336,7 @@ var _WestCondition = function () {
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
-		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime').html(timeOptions);
+		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime').html(timeOptions);
 		
 		var timeOptionMinute = '';
 		
@@ -257,7 +363,7 @@ var _WestCondition = function () {
         
         var portableMeasurementItemHtml = '';
         
-        for(var i=2; i<contentsConfig['portableMeasurement'].columnArr.length - 1; i++){
+        for(var i=3; i<contentsConfig['portableMeasurement'].columnArr.length - 1; i++){
         	portableMeasurementItemHtml += '<option value=\''+contentsConfig['portableMeasurement'].columnArr[i].name+'\'>'+contentsConfig['portableMeasurement'].columnArr[i].title+'</option>';
         }
         
@@ -269,6 +375,15 @@ var _WestCondition = function () {
 		
 		
 		
+    };
+    
+    var writeItem = function(id, data){
+    	var html = '';
+    	for(var i = 0; i<data.length; i++){
+    		var value = data[i].CODE?data[i].CODE:data[i].NAME;
+    		html += '<option value="'+value+'">'+data[i].NAME+'</option>';
+    	}
+    	$('#'+id+'Item').html(html);
     };
     
     var initPOI = function(){
@@ -462,8 +577,8 @@ var _WestCondition = function () {
     	
     	$('.lnb').find('em').off('click').on('click',function(){
     		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
-    		
     		var isShow = false;
+    		clearFocusLayer();
     		try{
     			if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
         			$(this).css('background','url(../images/btn_off.png)');
@@ -550,7 +665,10 @@ var _WestCondition = function () {
 					});
 		}else{
 			getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(data){
-				writeGrid(placeId,data);
+				if(contentsConfig[placeId].isWriteGrid){
+					writeGrid(placeId,data);
+				}
+				
 				writeLayer(placeId,data,contentsConfig[placeId].isUseGeoserver);
 				
 				if(contentsConfig[placeId].isLabelLayer){
@@ -571,7 +689,6 @@ var _WestCondition = function () {
     };
     
     var writeLayer = function(id, data, isUseGeoserver, labelParentId){
-    	
     	var getLayerForName = _CoreMap.getMap().getLayerForName(id);
 		if(getLayerForName){
 			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
@@ -593,7 +710,12 @@ var _WestCondition = function () {
 				feature.setGeometry(new ol.geom.Point(data[i].geometry.coordinates));
 				feature.setProperties(data[i].properties);
 			}else{
-				feature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([data[i].LO,data[i].LA],true)));
+				if(100 < data[i].POINT_X && data[i].POINT_X < 200){
+					feature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([data[i].POINT_X,data[i].POINT_Y],true)));
+				}else{
+					feature.setGeometry(new ol.geom.Point([data[i].POINT_X,data[i].POINT_Y]));
+				}
+				
 				data[i].itemType = $('#' + id + 'Item').val();
 				feature.setProperties(data[i]);
 			}
@@ -681,11 +803,53 @@ var _WestCondition = function () {
 			break;
 		case 'checkPoint':
 			styleFunction = checkPointStyleFunction;
+			break;
+		case 'sensoryEvaluation':
+			styleFunction = sensoryEvaluationStyleFunction;
+			break;
+		case 'environmentCorporation':
+			styleFunction = environmentCorporationStyleFunction;
 		default:
 			break;
 		}
     	
     	return styleFunction;
+    };
+    
+    var environmentCorporationStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 10,
+    			fill: new ol.style.Fill({
+    		        color: '#ED7D31'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
+  		});
+    	
+    	return style;
+    };
+    
+    var sensoryEvaluationStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 10,
+    			fill: new ol.style.Fill({
+    		        color: '#4472C4'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
+  		});
+    	
+    	return style;
     };
     
     var labelStyleFunction = function(feature){
@@ -897,7 +1061,7 @@ var _WestCondition = function () {
     				return;
     			}
     			
-    			writeFocusLayer(result.features[0],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
+    			writeFocusLayer(result.features[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}else{
     		getData({
@@ -908,29 +1072,45 @@ var _WestCondition = function () {
     			if(data.length == 0){
     				return;
     			}
-    			writeFocusLayer([data[0].LO,data[0].LA],contentsConfig[id].isUseGeoserver,contentsConfig[id].title);
+    			writeFocusLayer(data[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}
 			
     };
     
-    var writeFocusLayer = function(data, isUseGeoserver,title){
-    	var result;
-    	var popupHtml = '';
-    	
-    	if(isUseGeoserver){
-    		result = data.geometry.coordinates;
-    		popupHtml += '<div>'+result+'</div>';
+    var writeFocusLayer = function(data, config, title){
+    	var attr;
+    	var geo;
+    	var popupHtml = '<table class="map_info_table"><caption></caption>';
+		popupHtml += '<colgroup><col style="width:100px;"><col></colgroup>';
+		popupHtml += '<tbody>';
+		
+    	if(config.isUseGeoserver){
+    		geo = data.geometry.coordinates;
+    		attr = data.properties;
     	}else{
-    		result = _CoreMap.convertLonLatCoord(data,true);
-    		popupHtml += '<div>'+result+'</div>';
+    		if(100 < data.POINT_X && data.POINT_X < 200){
+    			geo = _CoreMap.convertLonLatCoord([data.POINT_X,data.POINT_Y],true);
+			}else{
+				geo = [data.POINT_X,data.POINT_Y];
+			}
+    		attr = data;
     	}
     	
-    	deferredForSetCenter(result,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
+    	for(var i=0; i < config.popupColumnArr.length; i++){
+			popupHtml +=   '<tr>';
+			popupHtml +=      '<th scope="row">'+config.popupColumnArr[i].text+'</th>';
+			popupHtml += 	  '<td>'+attr[config.popupColumnArr[i].id]+'</td>';
+			popupHtml +=   '</tr>';
+		}
+    	
+    	popupHtml +=	'</tbody></table>';
+    	
+    	deferredForSetCenter(geo,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
 			clearFocusLayer();
 			var newFocusLayer = new ol.layer.Vector({
 				source : new ol.source.Vector({
-					features : [new ol.Feature(new ol.geom.Point(result))]
+					features : [new ol.Feature(new ol.geom.Point(geo))]
 				}),
 				style : new ol.style.Style({
 	    			image: new ol.style.Circle({

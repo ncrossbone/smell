@@ -88,4 +88,19 @@ public class MapBiz {
 		return mapMapper.getArea(param);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getItem(HashMap param){
+		List resultList = null;
+		HashMap result = new HashMap();
+		
+		try {
+			Method method = mapMapper.getClass().getDeclaredMethod(param.get("contentsId") + "Item",param.getClass());
+			resultList = (List) method.invoke(mapMapper, param);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return resultList;
+	}
+	
 }

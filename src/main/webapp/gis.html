@@ -55,7 +55,6 @@
 		$(window).trigger('resize');
 		
 		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
-		
 	});
 	
 </script>
@@ -186,13 +185,9 @@
                         <dl>
                             <dt>OU 범위</dt>
                             <dd>
-                                <select name="" id="sensoryEvaluationStartOU" title="" class="W105" style="width: 90px !important;">
-                                	<option>1</option>
-                                </select>
+                                <input id="sensoryEvaluationStartOU" class="W105" style="width: 90px !important;" type="text" value="0"/>
                                 ~
-                                <select name="" id="sensoryEvaluationEndOU" title="" class="W105" style="width: 90px !important;">
-                                	<option>10</option>
-                                </select>
+								<input id="sensoryEvaluationEndOU" class="W105" style="width: 90px !important;" type="text" value="100"/>
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
@@ -478,9 +473,12 @@
                         <dl>
                             <dt>조회기간</dt>
                              <dd>
-                                <input type="text" id="environmentCorporationStartDate" class="W105" style="width: 90px !important"/>
-                                ~
-                                <input type="text" id="environmentCorporationEndDate" class="W105" style="width: 90px !important"/>
+                                <input type="text" id="environmentCorporationStartDate" class="W105" style="width: 145px !important"/>
+                                <select id="environmentCorporationStartTime">
+                                </select>
+                                <input type="text" id="environmentCorporationEndDate" class="W105" style="margin-top:7px; width: 145px !important"/>
+                                <select id="environmentCorporationEndTime">
+                                </select>
                             </dd>
                         </dl>
                         <dl>
