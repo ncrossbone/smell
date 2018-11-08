@@ -173,33 +173,6 @@ var _WestCondition = function () {
     	}
     };
     
-    /*var tabConfigObj = {
-	'complaintStatus':{title:'민원현황',columnArr:[{name:'CVPL_NO',title:'민원 번호'},
-	                                           {name:'CVPL_DT',title:'민원 일시'},
-	                                           {name:'CPTTR',title:'민원인'},
-	                                           {name:'CPTTR_CTTPC',title:'민원인 연락처'},
-	                                           {name:'CVPL_LC',title:'민원 위치'},
-	                                           {name:'CVPL_CN',title:'민원 내용'},
-	                                           {name:'REGIST_DT',title:'등록 일시'},
-	                                           {name:'REGISTER_ID',title:'등록자 ID'},
-	                                           {name:'CHANGE_DT',title:'변경 일시'},
-	                                           {name:'CHANGER_ID',title:'변경자 ID'}]},
-	'sensoryEvaluation':{title:'관능 평가 데이터',columnArr:[{name:'SENSE_EVL_NO',title:'관능 평가 번호'},
-			                                           {name:'MESURE_DATE',title:'측정 날짜'},
-			                                           {name:'MESURE_TIME',title:'측정 시간'},
-			                                           {name:'SENSE_BSML_DGREE',title:'관능 악취 도'},
-			                                           {name:'CMPND_BSML',title:'복합 악취'}]},
-	'portableMeasurement':'이동식 측정 데이터',
-	'fixedMeasurement':'고정식 측정 데이터',
-	'odorReduction':'악취저감설비 관리',
-	'odorOrigin':'악취원점 관리',
-	'observatory':'기상청측정망',
-	'environmentCorporation':'환경공단 측정망',
-	'unmannedOdor':'청주시 무인악취 측정망',
-	'airMap':'KT 에어맵 코리아 측정망',
-	'odorMovement':'악취 원점'
-};*/
-    
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
 		    prevText: '이전 달',
