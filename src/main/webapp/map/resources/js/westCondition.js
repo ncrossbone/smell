@@ -28,6 +28,7 @@ var _WestCondition = function () {
     					  isVisible:true,
     					  isUseGeoserver:true,
     					  isLabelLayer:false,
+    					  isUseDataBase:true,
     					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DTH'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
     					             {name:'CVPL_DT',title:'민원 일시'},
@@ -47,6 +48,7 @@ var _WestCondition = function () {
 						isVisible:true,
 						isUseGeoserver:false,
 						isLabelLayer:true,
+						isUseDataBase:true,
 						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
 						     {name:'MESURE_DT',title:'측정 일시'},
@@ -80,6 +82,7 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
+			isUseDataBase:true,
 			popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			     {name:'MESURE_DT',title:'측정 일시'},
@@ -105,6 +108,36 @@ var _WestCondition = function () {
 			     {name:'TMA',title:'트리메틸아민'},
 			     {name:'ETHANOL',title:'에탄올'},
 			     {name:'DATE',title:'날짜',visible:false}]
+    	},
+    	'sensoryEvaluation':{
+    		cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE','town':'LEGALDONG_CODE','branchName':'PT_NM','endOU':'OU','startOU':'OU'},
+			layerType:'base',
+			title:'관능 평가 데이터',
+			keyColumn:['CODE','DATE'],
+			isVisible:true,
+			isUseGeoserver:true,
+			isLabelLayer:false,
+			isUseDataBase:false,
+			popupColumnArr:[{text:'지점명',id:'PT_NM'},{text:'주소',id:'ATTR'},{text:'OU_내용',id:'OU'}]
+    	},
+    	'odorOrigin':{
+    		//cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE','town':'LEGALDONG_CODE','branchName':'PT_NM','endOU':'OU','startOU':'OU'},
+			layerType:'base',
+			title:'악취원점 관리',
+			keyColumn:['CODE','DATE'],
+			isVisible:true,
+			isUseGeoserver:true,
+			isLabelLayer:false,
+			isUseDataBase:true,
+			popupColumnArr:[{text:'지점명',id:'PT_NM'},{text:'주소',id:'ATTR'},{text:'OU_내용',id:'OU'}],
+			columnArr:[{name:'BPLC_ID',title:'사업장 ID',visible:false},
+			           {name:'BSML_TRGNPT_SE_CODE',title:'악취 원점 구분'},
+			           {name:'CMPNY_NM',title:'회사 명'},
+			           {name:'LEGALDONG_CODE',title:'주소'},
+			           {name:'TELNO',title:'전화번호'},
+			           {name:'INDUTY',title:'업종'},
+			           {name:'X',title:'x좌표'},
+			           {name:'Y',title:'y좌표'}]
     	}
     };
     
@@ -183,6 +216,36 @@ var _WestCondition = function () {
     		
     		writeCity(cityTownObj,'cityDistrictToolbar');
     		setToolbarCity({adm_cd:'4311425300'});
+    		
+    		
+    		//polygonText
+    		/*_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined, '').done(function (data) {
+    			var coord = data.features[0].geometry.coordinates;
+    			var polyArr = [];
+    			var polygonFeature;
+    			for(var i = 0; i<data.features.length; i++){
+    				polyArr.push(new ol.Feature(new ol.geom.Polygon(data.features[i].geometry.coordinates)));
+    			}
+    			
+    			var source = new ol.source.Vector({
+    				features: polyArr
+    			});
+    			var vectorLayer = new ol.layer.Vector({
+    		        source: source,
+    		        style: new ol.style.Style({
+    		        	stroke: new ol.style.Stroke({
+    		        		width: 3,
+    		        		color: '#ffffff'
+    		        	}),
+    		        	fill: new ol.style.Fill({
+    		        		color: '#4472C4'
+    		        	})
+    		        }),
+    		        zIndex:2,
+    		        visible:true
+    			});
+    			_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
+    		});*/
     	});
 
         
@@ -508,11 +571,18 @@ var _WestCondition = function () {
 		}
 		
 		if(contentsConfig[placeId].isUseGeoserver){
-			$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
-					_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
-						writeGrid(placeId,gridData[0]);
-						writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
-					});
+			if(contentsConfig[placeId].isUseDataBase){
+				$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
+						_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
+							writeGrid(placeId,gridData[0]);
+							writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
+						});
+			}else{ 
+				writeLayer(placeId,undefined,contentsConfig[placeId].isUseGeoserver);
+				/*_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '').done(function (data) {
+					writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
+				});*/
+			}
 		}else{
 			getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(data){
 				writeGrid(placeId,data);
@@ -536,7 +606,9 @@ var _WestCondition = function () {
     };
     
     var writeLayer = function(id, data, isUseGeoserver, labelParentId){
-    	
+    	if(!data){
+    		data = [{geometry:{coordinates:[14184251.1479574, 4397710.5504426]},properties:{PT_NM:'테스트',ADDR:'청주시',PT_NO:'1'}}]
+    	}
     	var getLayerForName = _CoreMap.getMap().getLayerForName(id);
 		if(getLayerForName){
 			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
@@ -613,11 +685,32 @@ var _WestCondition = function () {
 		case 'text':
 			styleFunction = labelStyleFunction;
 			break;
+		case 'sensoryEvaluation':
+			styleFunction = sensoryEvaluationStyleFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
+    };
+    
+    var sensoryEvaluationStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 20,
+    			fill: new ol.style.Fill({
+    		        color: '#4472C4'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
+  		});
+    	
+    	return style;
     };
     
     var labelStyleFunction = function(feature){

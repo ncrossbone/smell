@@ -186,4 +186,12 @@
   		</if>
 	 	 
 	</select>
+	<select id="odorOriginGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT BPLC_ID,BSML_TRGNPT_SE_CODE,CMPNY_NM,'데이터 나오면 JOIN' AS LEGALDONG_CODE,'데이터 나오면 JOIN' AS LEGALDONG_ETC,TELNO,INDUTY,'shape 나오면 join' as X,'shape 나오면 join' as Y 
+  		FROM BPLC_INFO
+ 	   WHERE LEGALDONG_CODE LIKE  CONCAT(#{town}, '%')
+ 	   <if test="branchName != null">
+   	     AND BSML_TRGNPT_NM LIKE CONCAT('%', #{branchName}, '%')
+   	   </if>
+	</select>
 </mapper>

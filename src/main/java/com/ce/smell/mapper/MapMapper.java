@@ -18,6 +18,8 @@ public interface MapMapper {
 	public List<Map<String, Object>> complaintStatusGrid(HashMap param);
 	public List<Map<String, Object>> portableMeasurementGrid(HashMap param);
 	public List<Map<String, Object>> fixedMeasurementGrid(HashMap param);
+	public List<Map<String, Object>> odorOriginGrid(HashMap param);
+	
 	
 	public List<Map<String, Object>> portableMeasurementClick(HashMap param);
 	public List<Map<String, Object>> fixedMeasurementClick(HashMap param);
