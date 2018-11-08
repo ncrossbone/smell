@@ -83,4 +83,9 @@ public class MapBiz {
 		return mapMapper.getPOISearch(param);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getArea(HashMap param){
+		return mapMapper.getArea(param);
+	}
+	
 }

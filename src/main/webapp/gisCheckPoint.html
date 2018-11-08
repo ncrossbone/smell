@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<title>청주시 지능형 도농복합도시 악취관리시스템</title>
+<link href="/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/css/basic.css" rel="stylesheet" type="text/css" />
+<script src="/js/jquery.min-1.8.3.js"></script>
+<script type="text/javascript" src="/js/jquery.jqtransform.js"></script>
+
+<link href="/css/gis.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/map/resources/js/lib/mapEventBus.js" ></script>
+<script type="text/javascript" src="/map/resources/js/lib/ol/ol.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/proj4.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/jsts/jsts.min.js"></script>
+
+<script type="text/javascript" src="/map/resources/js/mapService.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/vworldLayer.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/coreMap.js"></script>
+<script type="text/javascript" src="/map/resources/js/ui.js"></script>
+<script type="text/javascript" src="/map/resources/js/westCondition.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/jquery-ui.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/zoomSlider.js"></script>
+<script type="text/javascript" src="/map/resources/js/smellMapBiz.js"></script>
+<link rel="stylesheet" href="/css/jquery-ui-1.12.1.css"></link>
+<link type="text/css" rel="stylesheet" href="/css/jsgrid.min-1.5.3.css" />
+<link type="text/css" rel="stylesheet" href="/css/jsgrid-theme.min-1.5.3.css" />
+<script type="text/javascript" src="/js/jsgrid.min-1.5.3.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		// selectbox design
+		//$('.comm_sel').jqTransform();
+		
+		_CoreMap.init('mapCheckPoint');
+		_WestCondition.init();
+		_SmellMapBiz.init();
+
+		$(window).on('resize', function() {
+			var ww = $(window).width();
+			var wh = $(window).height();
+
+			var map = _CoreMap.getMap();
+
+			$('#mapCheckPoint').width(ww);
+			$('#mapCheckPoint').height(wh);
+			//$('#westContainer').height(wh-50); 
+			if (map) {
+				map.setSize([ ww, wh]);
+			}
+		});
+		$('#popup').draggable({ containment: '#map' });
+		$(window).trigger('resize');
+		
+		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
+		
+		$('#checkPointEvent').click(function(){
+			var checkPointLayer = _CoreMap.getMap().getLayerForName('checkPoint');
+			if(checkPointLayer){
+				var coordinates =_CoreMap.getCoordinates(checkPointLayer);
+				/*
+					parent.~.~();
+				
+				*/
+				/* $('#checkPointEvent').attr('utmX' , coordinates[0]);
+				$('#checkPointEvent').attr('utmY' , coordinates[1]); */
+			}else{
+				alert("지점을 선택하세요");
+			}
+			
+			
+		})
+	});
+
+	
+</script>
+</head>
+
+<body>
+<div id="warp">
+    <div id="top">
+        <h1></h1>
+    </div>
+    	
+    <div id="nav">
+    	<div class="fl">
+            <em class="here">청주시</em>
+            <span class="arrow"></span>
+            <span class="comm_sel">
+                <select id="cityDistrictToolbar"></select>
+            </span>
+            
+            <span class="comm_sel">
+                <select id="townToolbar"></select>
+            </span>
+            
+            <span>
+            	<button id="checkPointEvent">입력</button>
+            </span>
+        </div>
+    </div>
+    <div id="container">
+		<div id="mapCheckPoint" style="position: absolute;">      
+		</div>
+    </div>
+</div>
+
+</body>
+</html>
