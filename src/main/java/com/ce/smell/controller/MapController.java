@@ -64,4 +64,9 @@ public class MapController {
 	public List<Map<String, Object>> getPOISearch(@RequestBody HashMap param){
 		return mapBiz.getPOISearch(param);
 	}
+	
+	@RequestMapping(value = "/getItem", method = RequestMethod.POST)
+	public List<Map<String, Object>> getItem(@RequestBody HashMap param){
+		return mapBiz.getItem(param);
+	}
 }

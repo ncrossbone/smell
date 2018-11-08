@@ -28,7 +28,7 @@ var _WestCondition = function () {
     					  isVisible:true,
     					  isUseGeoserver:true,
     					  isLabelLayer:false,
-    					  isUseDataBase:true,
+    					  isWriteGrid:true,
     					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DTH'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
     					             {name:'CVPL_DT',title:'민원 일시'},
@@ -48,7 +48,7 @@ var _WestCondition = function () {
 						isVisible:true,
 						isUseGeoserver:false,
 						isLabelLayer:true,
-						isUseDataBase:true,
+						isWriteGrid:true,
 						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
 						     {name:'MESURE_DT',title:'측정 일시'},
@@ -82,7 +82,7 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
-			isUseDataBase:true,
+			isWriteGrid:true,
 			popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			     {name:'MESURE_DT',title:'측정 일시'},
@@ -110,15 +110,14 @@ var _WestCondition = function () {
 			     {name:'DATE',title:'날짜',visible:false}]
     	},
     	'sensoryEvaluation':{
-    		cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE','town':'LEGALDONG_CODE','branchName':'PT_NM','endOU':'OU','startOU':'OU'},
 			layerType:'base',
 			title:'관능 평가 데이터',
-			keyColumn:['CODE','DATE'],
+			keyColumn:['SENSE_EVL_NO'],
 			isVisible:true,
-			isUseGeoserver:true,
+			isUseGeoserver:false,
 			isLabelLayer:false,
-			isUseDataBase:false,
-			popupColumnArr:[{text:'지점명',id:'PT_NM'},{text:'주소',id:'ATTR'},{text:'OU_내용',id:'OU'}]
+			isWriteGrid:false,
+			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'OU_내용',id:'BSML_FQ'}]
     	},
     	'odorOrigin':{
     		//cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE','town':'LEGALDONG_CODE','branchName':'PT_NM','endOU':'OU','startOU':'OU'},
@@ -128,8 +127,8 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:true,
 			isLabelLayer:false,
-			isUseDataBase:true,
-			popupColumnArr:[{text:'지점명',id:'PT_NM'},{text:'주소',id:'ATTR'},{text:'OU_내용',id:'OU'}],
+			isWriteGrid:true,
+			popupColumnArr:[{text:'지점명',id:'PT_NM'},{text:'주소',id:'ATTR'},{text:'OU 내용',id:'OU'}],
 			columnArr:[{name:'BPLC_ID',title:'사업장 ID',visible:false},
 			           {name:'BSML_TRGNPT_SE_CODE',title:'악취 원점 구분'},
 			           {name:'CMPNY_NM',title:'회사 명'},
@@ -138,6 +137,39 @@ var _WestCondition = function () {
 			           {name:'INDUTY',title:'업종'},
 			           {name:'X',title:'x좌표'},
 			           {name:'Y',title:'y좌표'}]
+    	},
+    	'environmentCorporation':{
+    		layerType:'base',
+			title:'환경공단 측정망',
+			keyColumn:['CODE','DATE','NTWK_NM'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:true,
+			popupColumnArr:[{text:'지점명',id:'NAME'},{text:'주소',id:'ADDR'},{text:'측정 날짜',id:'MESURE_DT'}],
+			columnArr:[{name:'NAME',title:'측정소명'},
+		     {name:'MESURE_DT',title:'검측 일시'},
+			 {name:'SO2_DNSTY',title:'아황산가스 농도'},
+			 {name:'CMO_DNSTY',title:'일산화탄소 농도'},
+			 {name:'OZ_DNSTY',title:'오존 농도'},
+			 {name:'NO2_DNSTY',title:'이산화질소 농도'},
+			 {name:'PM10_DNSTY',title:'PM10 농도'},
+			 {name:'PM10_HOUR24_PREDICT_MVMN_DNSTY',title:'PM10_24시간 예측 이동 농도'},
+			 {name:'PM25_DNSTY',title:'PM2.5 농도'},
+			 {name:'PM25_HOUR24_PREDICT_MVMN_DNSTY',title:'PM2.5 24시간 예측 이동 농도'},
+			 {name:'UNITY_AIR_ENVRN_NCL',title:'통합 대기 환경 수치'},
+			 {name:'UNITY_AIR_ENVRN_IDEX',title:'통합 대기 환경 지수'},
+			 {name:'SO2_IDEX',title:'아황산가스 지수'},
+			 {name:'CMO_IDEX',title:'일산화탄소 지수'},
+			 {name:'OZ_IDEX',title:'오존 지수'},
+			 {name:'NO2_IDEX',title:'이산화질소 지수'},
+			 {name:'PM10_HOUR24_GRAD',title:'PM10 24시간 등급'},
+			 {name:'PM25_HOUR24_GRAD',title:'PM2.5 24시간 등급'},
+			 {name:'PM10_HOUR1_GRAD',title:'PM10 1시간 등급'},
+			 {name:'PM25_HOUR1_GRAD',title:'PM2.5 1시간 등급'},
+			 {name:'CODE',title:'코드',visible:false},
+			 {name:'DATE',title:'코드',visible:false},
+			 {name:'NTWK_NM',title:'항목',visible:false}]
     	}
     };
     
@@ -247,7 +279,13 @@ var _WestCondition = function () {
     			_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     		});*/
     	});
-
+    	
+    	getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
+    		if(data.length == 0){
+    			return;
+    		}
+    		writeItem('environmentCorporation',data);
+    	});
         
         var dateArr = setCommonCombo({
         	type:'input',
@@ -263,7 +301,7 @@ var _WestCondition = function () {
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
-		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime').html(timeOptions);
+		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime').html(timeOptions);
 		
 		var timeOptionMinute = '';
 		
@@ -297,6 +335,15 @@ var _WestCondition = function () {
         $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
         
         setEvent();
+    };
+    
+    var writeItem = function(id, data){
+    	var html = '';
+    	for(var i = 0; i<data.length; i++){
+    		var value = data[i].CODE?data[i].CODE:data[i].NAME;
+    		html += '<option value="'+value+'">'+data[i].NAME+'</option>';
+    	}
+    	$('#'+id+'Item').html(html);
     };
     
     var initPOI = function(){
@@ -571,21 +618,17 @@ var _WestCondition = function () {
 		}
 		
 		if(contentsConfig[placeId].isUseGeoserver){
-			if(contentsConfig[placeId].isUseDataBase){
-				$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
-						_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
-							writeGrid(placeId,gridData[0]);
-							writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
-						});
-			}else{ 
-				writeLayer(placeId,undefined,contentsConfig[placeId].isUseGeoserver);
-				/*_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '').done(function (data) {
-					writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
-				});*/
-			}
+			$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
+					_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
+						writeGrid(placeId,gridData[0]);
+						writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
+					});
 		}else{
 			getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(data){
-				writeGrid(placeId,data);
+				if(contentsConfig[placeId].isWriteGrid){
+					writeGrid(placeId,data);
+				}
+				
 				writeLayer(placeId,data,contentsConfig[placeId].isUseGeoserver);
 				
 				if(contentsConfig[placeId].isLabelLayer){
@@ -606,9 +649,6 @@ var _WestCondition = function () {
     };
     
     var writeLayer = function(id, data, isUseGeoserver, labelParentId){
-    	if(!data){
-    		data = [{geometry:{coordinates:[14184251.1479574, 4397710.5504426]},properties:{PT_NM:'테스트',ADDR:'청주시',PT_NO:'1'}}]
-    	}
     	var getLayerForName = _CoreMap.getMap().getLayerForName(id);
 		if(getLayerForName){
 			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
@@ -630,7 +670,12 @@ var _WestCondition = function () {
 				feature.setGeometry(new ol.geom.Point(data[i].geometry.coordinates));
 				feature.setProperties(data[i].properties);
 			}else{
-				feature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([data[i].LO,data[i].LA],true)));
+				if(100 < data[i].POINT_X && data[i].POINT_X < 200){
+					feature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([data[i].POINT_X,data[i].POINT_Y],true)));
+				}else{
+					feature.setGeometry(new ol.geom.Point([data[i].POINT_X,data[i].POINT_Y]));
+				}
+				
 				data[i].itemType = $('#' + id + 'Item').val();
 				feature.setProperties(data[i]);
 			}
@@ -688,6 +733,8 @@ var _WestCondition = function () {
 		case 'sensoryEvaluation':
 			styleFunction = sensoryEvaluationStyleFunction;
 			break;
+		case 'environmentCorporation':
+			styleFunction = environmentCorporationStyleFunction;
 		default:
 			break;
 		}
@@ -695,11 +742,29 @@ var _WestCondition = function () {
     	return styleFunction;
     };
     
+    var environmentCorporationStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 10,
+    			fill: new ol.style.Fill({
+    		        color: '#ED7D31'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
+  		});
+    	
+    	return style;
+    };
+    
     var sensoryEvaluationStyleFunction = function(feature){
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
-    			radius: 20,
+    			radius: 10,
     			fill: new ol.style.Fill({
     		        color: '#4472C4'
     		    }),
@@ -940,7 +1005,11 @@ var _WestCondition = function () {
     		geo = data.geometry.coordinates;
     		attr = data.properties;
     	}else{
-    		geo = _CoreMap.convertLonLatCoord([data.LO,data.LA],true);
+    		if(100 < data.POINT_X && data.POINT_X < 200){
+    			geo = _CoreMap.convertLonLatCoord([data.POINT_X,data.POINT_Y],true);
+			}else{
+				geo = [data.POINT_X,data.POINT_Y];
+			}
     		attr = data;
     	}
     	
