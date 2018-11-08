@@ -84,6 +84,11 @@ public class MapBiz {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getArea(HashMap param){
+		return mapMapper.getArea(param);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getItem(HashMap param){
 		List resultList = null;
 		HashMap result = new HashMap();

@@ -34,5 +34,7 @@ public interface MapMapper {
 	public List<Map<String, Object>> getPOISelect();
 	public List<Map<String, Object>> getPOISearch(HashMap param);
 	
+	public List<Map<String, Object>> getArea(HashMap param);
 	public List<Map<String, Object>> environmentCorporationItem(HashMap param);
+	
 }

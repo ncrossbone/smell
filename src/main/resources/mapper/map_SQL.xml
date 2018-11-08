@@ -12,7 +12,7 @@
 	</select>
 
 	<update id="putFlag" parameterType="java.util.HashMap">
-		UPDATE CMAQ_9KM_WGS84_2 SET FLAG = #{flag} WHERE INDEXID = #{indexId}
+		UPDATE ANALS_AREA_MANAGE SET GRID_INTRST_SE_CODE = #{flag} WHERE ANALS_AREA_ID = #{indexId}
 	</update>
 	
 	<select id="complaintStatusGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -186,6 +186,26 @@
   		</if>
 	 	 
 	</select>
+	
+	<select id="getArea" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT ANALS_AREA_ID 
+			,GRID_INTRST_SE_CODE
+			,INTRST_AREA_NM
+			,INTRST_AREA_LC
+			,TPGRPH_AL
+			,REGIST_DT
+			,PREDICT_AL
+			,REGISTER_ID
+			,UTMX
+			,UTMY 
+			FROM ANALS_AREA_MANAGE
+		  WHERE 1=1
+	 	 <if test="analsAreaId != null">
+    			AND ANALS_AREA_ID = #{analsAreaId}
+  		</if>
+	 	 
+	</select>
+	
 	<select id="odorOriginGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  SELECT BPLC_ID,BSML_TRGNPT_SE_CODE,CMPNY_NM,'데이터 나오면 JOIN' AS LEGALDONG_CODE,'데이터 나오면 JOIN' AS LEGALDONG_ETC,TELNO,INDUTY,'shape 나오면 join' as X,'shape 나오면 join' as Y 
   		FROM BPLC_INFO

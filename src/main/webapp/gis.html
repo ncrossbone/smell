@@ -54,8 +54,9 @@
 		$('#popup').draggable({ containment: '#map' });
 		$(window).trigger('resize');
 		
-		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13); 
+		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
 	});
+	
 </script>
 </head>
 
@@ -102,6 +103,7 @@
             <li class="PdT35" style="height: 95px;" tabType="smellMeasure">측정소</li>
             <li tabType="smellReport">악취분석</li>
 		</ul>
+    	
     	
 	<ul class="lnb" id="smellMap">
 		<li>
@@ -776,6 +778,46 @@
         </li>
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
+     	<ul id="legend">
+			<li><a class="legendMain" onOff="on">학교</a>
+				<ul style="top: 0px; left: 58px;" > 
+					<li>
+						<ul>
+							<a class="legendButton" layerName="SHP_DYCR_FCLT" onOff="off"><div>어린이집</div></a>
+						</ul>
+						<ul>
+							<a class="legendButton" layerName="SHP_KNDR_FCLT" onOff="off"><div>유치원</div></a>
+						</ul>
+						<ul>
+							<a class="legendButton" layerName="SHP_ELMN_SCHL_FCLT" onOff="off"><div>초등학교</div></a>
+						</ul>
+						<ul>
+							<a class="legendButton" layerName="SHP_MDL_SCHL_FCLT" onOff="off"><div>중학교</div></a>
+						</ul>
+							<ul>
+							<a class="legendButton" layerName="SHP_HIGH_SCHL_FCLT" onOff="off"><div>고등학교</div></a>
+						</ul>
+						
+					</li>
+				</ul>
+			</li>
+			<li><a>학교</a>
+				<ul style=" top: 0px; left: 58px;" >
+					<li>
+						<ul>
+							<a><div>초등학교</div></a>
+						</ul>
+							<ul>
+							<a><div>중학교</div></a>
+						</ul>
+							<ul>
+							<a><div>고등학교</div></a>
+						</ul>
+						
+					</li>
+				</ul>
+			</li>
+		</ul>
      	<ul id="map_type">
         	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li>
             <li id="airMaps"><a href="javascript:void(0)">위성</a></li>

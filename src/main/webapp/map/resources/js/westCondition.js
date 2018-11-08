@@ -173,6 +173,38 @@ var _WestCondition = function () {
     	}
     };
     
+    var legendLayerList = [
+    	{title:'어린이집',layerNm:'SHP_DYCR_FCLT',layerId:'SHP_DYCR_FCLT',isVisible:false,isTiled:true,cql:null,opacity:1},
+    	{title:'유치원',layerNm:'SHP_KNDR_FCLT',layerId:'SHP_KNDR_FCLT',isVisible:false,isTiled:true,cql:null,opacity:1},
+    	{title:'초등학교',layerNm:'SHP_ELMN_SCHL_FCLT',layerId:'SHP_ELMN_SCHL_FCLT',isVisible:false,isTiled:true,cql:null,opacity:1},
+    	{title:'중학교',layerNm:'SHP_MDL_SCHL_FCLT',layerId:'SHP_MDL_SCHL_FCLT',isVisible:false,isTiled:true,cql:null,opacity:1},
+    	{title:'고등학교',layerNm:'SHP_HIGH_SCHL_FCLT',layerId:'SHP_HIGH_SCHL_FCLT',isVisible:false,isTiled:true,cql:null,opacity:1}
+    ]
+    
+    var legendLayer = function(){
+    	var layer = _CoreMap.createTileLayer(legendLayerList);
+    	//_MapEventBus.trigger(_MapEvents.map_addLayer, layer);
+    	if(layer.length > 0 ){
+    		for(var i = 0 ; i < layer.length ; i++){
+            	_MapEventBus.trigger(_MapEvents.map_addLayer, layer[i]);
+        	}
+    	}
+    }
+    
+    var legendLayerOnOff = function(value){
+    	var layer = _CoreMap.getMap().getLayerForName(value.getAttribute('layerName'));
+		if(value.getAttribute('onOff') == "on"){
+			value.setAttribute('onOff', 'off');
+			value.style.backgroundColor = '';
+			layer.setVisible(false);
+		}else{
+			value.setAttribute('onOff', 'on');
+			value.style.backgroundColor = '#1688e8';//#1688e8
+			layer.setVisible(true);
+		}
+    }
+    
+    
     var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
 		    prevText: '이전 달',
@@ -308,6 +340,11 @@ var _WestCondition = function () {
         $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
         
         setEvent();
+        
+
+		
+		
+		
     };
     
     var writeItem = function(id, data){
@@ -689,6 +726,37 @@ var _WestCondition = function () {
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
     };
     
+    
+    var checkPointMarker = function(id, event){
+    	
+    	var getLayerForName = _CoreMap.getMap().getLayerForName(id);
+		if(getLayerForName){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+		}
+    	
+    	clearFocusLayer();
+    	
+    	var pointArray = [];
+		var source;
+		source = new ol.source.Vector({
+			features: [new ol.Feature(new ol.geom.Point(event.coordinate))]
+		});
+		
+		
+		var styleFunction = selectStyleFunction(id);
+		
+		var vectorLayer = new ol.layer.Vector({
+	        source: source,
+	        id:id,
+	        name:id,
+	        style:styleFunction,
+	        zIndex:2,
+	        visible: true
+		});
+		
+		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
+    };
+    
     var selectStyleFunction = function(id){
     	
     	var styleFunction;
@@ -702,6 +770,9 @@ var _WestCondition = function () {
 			break;
 		case 'text':
 			styleFunction = labelStyleFunction;
+			break;
+		case 'checkPoint':
+			styleFunction = checkPointStyleFunction;
 			break;
 		case 'sensoryEvaluation':
 			styleFunction = sensoryEvaluationStyleFunction;
@@ -790,6 +861,16 @@ var _WestCondition = function () {
 				}),
 				font: '11px bold, Verdana'
 			})
+  		});
+    	
+    	return style;
+    };
+    
+    var checkPointStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+			image: new ol.style.Icon(({
+		          src: '/images/maker.png'
+		        }))
   		});
     	
     	return style;
@@ -1132,6 +1213,41 @@ var _WestCondition = function () {
     		}
     	}
     };
+    
+    var popupOverlayData = function(areaId){
+    	//test db param
+    	areaId = "1057";
+		getData({url: '/getArea.do', contentType: 'application/json', params: {"analsAreaId": areaId } }).done(function(data){
+			
+			if(data.length > 0){
+				console.info(data[0]);
+				
+				$('#popupOverlay').show();
+				$('#popup-content').show();
+				
+				$('#cellRemeveBtn').attr('flag', data[0].GRID_INTRST_SE_CODE);
+				$('#cellRemeveBtn').attr('indexId', data[0].ANALS_AREA_ID);
+				if(data[0].GRID_INTRST_SE_CODE == "Y"){
+					$('#cellRemeveBtn').val('격자해제');
+					
+				}else{
+					$('#cellRemeveBtn').val('격자추가');
+				}
+				
+				
+				$('#intrstAreaNm').val(data[0].INTRST_AREA_NM);
+				$('#tpgrphAl').val(data[0].TPGRPH_AL);
+				$('#predictAl').val(data[0].PREDICT_AL);
+				
+				
+				//intrstArea
+				//tpgrphAl
+				//predictAl
+				
+			}
+			
+		});
+	}
 
     return {
         init: init,
@@ -1149,6 +1265,20 @@ var _WestCondition = function () {
         },
         setToolbarCity:function(p){
         	setToolbarCity(p);
+        },
+        
+        checkPointMarker:function(id,event){
+        	checkPointMarker(id,event);
+        },
+        legendLayer: function(){
+        	legendLayer();
+        },
+        legendLayerOnOff: function(value){
+        	legendLayerOnOff(value);
+        },
+        
+        popupOverlayData: function(areaId){
+        	popupOverlayData(areaId);
         }
     };
 }();
