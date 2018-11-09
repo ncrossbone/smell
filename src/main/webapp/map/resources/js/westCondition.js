@@ -13,7 +13,8 @@ var _WestCondition = function () {
     		SHP_BDONG : ':SHP_BDONG',
     		SHP_POI : ':shp_poi',
     		SHP_SGG_PT : ':shp_sgg_pt',
-    		SHP_BDONG_PT:':shp_bdong_pt'
+    		SHP_BDONG_PT:':shp_bdong_pt',
+    		SHP_BPLC_FOR_WESTCONDITION:':shp_bplc_for_westcondition'
     };
     var contentsConfig = {
     	'complaintStatus':{cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
@@ -120,25 +121,6 @@ var _WestCondition = function () {
 			isWriteGrid:false,
 			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'OU_내용',id:'BSML_FQ'}]
     	},
-    	'odorOrigin':{
-    		//cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE','town':'LEGALDONG_CODE','branchName':'PT_NM','endOU':'OU','startOU':'OU'},
-			layerType:'base',
-			title:'악취원점 관리',
-			keyColumn:['CODE','DATE'],
-			isVisible:true,
-			isUseGeoserver:true,
-			isLabelLayer:false,
-			isWriteGrid:true,
-			popupColumnArr:[{text:'지점명',id:'PT_NM'},{text:'주소',id:'ATTR'},{text:'OU 내용',id:'OU'}],
-			columnArr:[{name:'BPLC_ID',title:'사업장 ID',visible:false},
-			           {name:'BSML_TRGNPT_SE_CODE',title:'악취 원점 구분'},
-			           {name:'CMPNY_NM',title:'회사 명'},
-			           {name:'LEGALDONG_CODE',title:'주소'},
-			           {name:'TELNO',title:'전화번호'},
-			           {name:'INDUTY',title:'업종'},
-			           {name:'X',title:'x좌표'},
-			           {name:'Y',title:'y좌표'}]
-    	},
     	'environmentCorporation':{
     		layerType:'base',
 			title:'환경공단 측정망',
@@ -204,7 +186,30 @@ var _WestCondition = function () {
 			     {name:'TMA',title:'트리메틸아민'},
 			     {name:'ETHANOL',title:'에탄올'},
 			     {name:'DATE',title:'날짜',visible:false}]
+    	},
+    	'odorOrigin':{
+    		cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
+    			'town':'LEGALDONG_CODE',
+    			'branchName':'BSML_TRGNPT_NM'
+    				},
+    			layerName:westLayerObj.SHP_BPLC_FOR_WESTCONDITION,
+    			layerType:'polygon',
+    			title:'악취원점 관리',
+    			keyColumn:['BPLC_ID'],
+    			isVisible:true,
+    			isUseGeoserver:true,
+    			isLabelLayer:false,
+    			isWriteGrid:true,
+    			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
+    			columnArr:[{name:'BPLC_ID',title:'사업장 ID',visible:false},
+    			           {name:'BSML_TRGNPT_SE_CODE',title:'악취 원점 구분'},
+    			           {name:'CMPNY_NM',title:'회사 명'},
+    			           {name:'LEGALDONG_ETC',title:'주소'},
+    			           {name:'TELNO',title:'전화번호'},
+    			           {name:'INDUTY',title:'업종'},
+    			           {name:'ERTHSF_AL',title:'지표 고도'}]
     	}
+    	
     };
     
     var legendLayerList = [
@@ -287,36 +292,6 @@ var _WestCondition = function () {
     		
     		writeCity(cityTownObj,'cityDistrictToolbar');
     		setToolbarCity({adm_cd:'4311425300'});
-    		
-    		
-    		//polygonText
-    		/*_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined, '').done(function (data) {
-    			var coord = data.features[0].geometry.coordinates;
-    			var polyArr = [];
-    			var polygonFeature;
-    			for(var i = 0; i<data.features.length; i++){
-    				polyArr.push(new ol.Feature(new ol.geom.Polygon(data.features[i].geometry.coordinates)));
-    			}
-    			
-    			var source = new ol.source.Vector({
-    				features: polyArr
-    			});
-    			var vectorLayer = new ol.layer.Vector({
-    		        source: source,
-    		        style: new ol.style.Style({
-    		        	stroke: new ol.style.Stroke({
-    		        		width: 3,
-    		        		color: '#ffffff'
-    		        	}),
-    		        	fill: new ol.style.Fill({
-    		        		color: '#4472C4'
-    		        	})
-    		        }),
-    		        zIndex:2,
-    		        visible:true
-    			});
-    			_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
-    		});*/
     	});
     	
     	getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
@@ -708,7 +683,11 @@ var _WestCondition = function () {
 			var feature = new ol.Feature();
 			
 			if(isUseGeoserver){
-				feature.setGeometry(new ol.geom.Point(data[i].geometry.coordinates));
+				if(contentsConfig[id].layerType=='polygon'){
+					feature.setGeometry(new ol.geom.Polygon(data[i].geometry.coordinates));
+				}else{
+					feature.setGeometry(new ol.geom.Point(data[i].geometry.coordinates));
+				}
 				feature.setProperties(data[i].properties);
 			}else{
 				if(100 < data[i].POINT_X && data[i].POINT_X < 200){
@@ -817,11 +796,32 @@ var _WestCondition = function () {
 		case 'unmannedOdor':
 			styleFunction = unmannedOdorStyleFunction;
 			break;
+		case 'odorOrigin':
+			styleFunction = odorOriginFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
+    };
+    var odorOriginFunction = function(feature){
+    	var colorObj = {'BSL01001':'red',
+    			'BSL01002':'blue',
+    			'BSL01003':'yellow',
+    			'BSL01004':'gray'};
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		fill: new ol.style.Fill({
+		        color: colorObj[feature.getProperties().BSML_TRGNPT_SE_CODE]
+		    }),
+		    stroke: new ol.style.Stroke({
+		    	color: '#AFABAB',
+		    	width: 3
+		    })
+  		});
+    	
+    	return style;
     };
     var unmannedOdorStyleFunction = function(feature){
     	var style = new ol.style.Style({
@@ -1085,7 +1085,6 @@ var _WestCondition = function () {
     			if(result.features.length == 0){
     				return;
     			}
-    			
     			writeFocusLayer(result.features[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}else{
@@ -1103,15 +1102,27 @@ var _WestCondition = function () {
 			
     };
     
+    var getCenterOfExtent = function(Extent){
+    	var X = Extent[0] + (Extent[2]-Extent[0])/2;
+    	var Y = Extent[1] + (Extent[3]-Extent[1])/2;
+    	return [X, Y];
+    };
+    
     var writeFocusLayer = function(data, config, title){
     	var attr;
     	var geo;
     	var popupHtml = '<table class="map_info_table"><caption></caption>';
 		popupHtml += '<colgroup><col style="width:100px;"><col></colgroup>';
 		popupHtml += '<tbody>';
-		
+
     	if(config.isUseGeoserver){
-    		geo = data.geometry.coordinates;
+    		if(config.layerType=='polygon'){
+    			var extent = new ol.geom.Polygon(data.geometry.coordinates).getExtent();
+    			geo = getCenterOfExtent(extent);
+    		}else{
+    			geo = data.geometry.coordinates;
+    		}
+    		
     		attr = data.properties;
     	}else{
     		if(100 < data.POINT_X && data.POINT_X < 200){
@@ -1132,27 +1143,28 @@ var _WestCondition = function () {
     	popupHtml +=	'</tbody></table>';
     	
     	deferredForSetCenter(geo,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
-			clearFocusLayer();
-			var newFocusLayer = new ol.layer.Vector({
-				source : new ol.source.Vector({
-					features : [new ol.Feature(new ol.geom.Point(geo))]
-				}),
-				style : new ol.style.Style({
-	    			image: new ol.style.Circle({
-	    				radius: 21,
-	    				stroke: new ol.style.Stroke({
-	    					color: '#f00',
-	    					width: 5
-	    				})
-	    			})
-	    		}),
-				visible: true,
-				zIndex:1,
-				name:'focus'
-			});
-			
-	    	_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
-		});
+    		if(config.layerType!='polygon'){
+    			clearFocusLayer();
+    			var newFocusLayer = new ol.layer.Vector({
+    				source : new ol.source.Vector({
+    					features : [new ol.Feature(new ol.geom.Point(geo))]
+    				}),
+    				style : new ol.style.Style({
+    					image: new ol.style.Circle({
+    						radius: 21,
+    						stroke: new ol.style.Stroke({
+    							color: '#f00',
+    							width: 5
+    						})
+    					})
+    				}),
+    				visible: true,
+    				zIndex:1,
+    				name:'focus'
+    			});
+    			_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
+    		}
+    	});
     	
     	$('#popup').show();
     	$('#popup').find('.pop_tit_text').text(title);
@@ -1248,6 +1260,7 @@ var _WestCondition = function () {
 			clickCluster(feature,name);
 			break;
 		case 'base':
+		case 'polygon':
 			clickBase(feature,name);
 			break;
 		default:
