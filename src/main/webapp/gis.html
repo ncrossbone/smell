@@ -614,7 +614,7 @@
 	</ul>
 	<ul class="lnb" id="smellReport" style="display: none;">
 		<li>
-			<h2 class="ov accordion"><em></em>바람장 분석<span></span></h2>
+			<h2 class="ov accordion"><em></em>기상장 분석<span></span></h2>
 			<div class="lnb_conts" id="weatherAnalysis" >
 				<h3>기상장 분석</h3>
                 <ul>
@@ -627,6 +627,32 @@
 <!--                             	</select> -->
 <!--                             </dd> -->
 <!--                         </dl> -->
+						<dl>
+                            <dd>
+                            	<input style="margin-left: 70px; margin-right: 5px;" id="weatherNow" type="radio" name="weatherType" value="weather_now" checked="checked" class="contents"/>
+                                <label class="W60 dis_ib" for="weatherNow" style="width: 50px !important; margin-bottom: 8px;">실시간</label>
+                    			<input style="margin-left: 0px;margin-right: 5px;" id="weatherForecast" type="radio" name="weatherType" value="weather_forecast" class="contents"/>
+                    			<label class="W60 dis_ib" for="weatherForecast" style="width: 50px !important; margin-bottom: 8px;">예보</label>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>풍향</dt>
+                             <dd>
+                             	<img style="cursor:pointer" src="../images/btn_on.png" value="_wd" id="weatherWsBtn" onclick="if($(this).attr('value')=='_wd'){$(this).attr('value',''); $(this).prop('src','../images/btn_off.png');}else{$(this).attr('value', '_wd'); $(this).prop('src','../images/btn_on.png');}"></img>
+                            </dd>
+                        </dl>
+                         <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="weatherMeasurement" class="W95p">
+                            		<option value="">선택</option>
+                            		<option value="ws">풍속</option>
+                            		<option value="tmprt">기온</option>
+                            		<option value="stable">안정도</option>
+                            		<option value="mxhg">혼합고</option>
+                            	</select>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>조회기간</dt>
                              <dd>
@@ -676,6 +702,14 @@
 <!--                             	</select> -->
 <!--                             </dd> -->
 <!--                         </dl> -->
+						<dl>
+                            <dd>
+                            	<input style="margin-left: 70px; margin-right: 5px;" id="odorSpreadNow" type="radio" name="odorSpreadLayerType" value="anals_area_now" checked="checked" class="contents"/>
+                                <label class="W60 dis_ib" for="weatherNow" style="width: 50px !important; margin-bottom: 8px;">실시간</label>
+                    			<input style="margin-left: 0px;margin-right: 5px;" id="odorSpreadForecast" type="radio" name="odorSpreadLayerType" value="anals_area_forecast" class="contents"/>
+                    			<label class="W60 dis_ib" for="odorSpreadNowForecast" style="width: 50px !important; margin-bottom: 8px;">예보</label>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>조회기간</dt>
                              <dd>
@@ -717,50 +751,59 @@
 				<h3>악취 이동경로</h3>
                 <ul>
                     <li>
+                    	<dl>
+                            <dd style="width:285px !important;">
+                            	<input style="margin-left: 5px; margin-right: 5px;" id="odorMovementNow" type="radio" name="odorMovementType" value="cours_now" checked="checked" class="contents"/>
+                                <label class="W60 dis_ib" for="odorMovementNow" style="width: 75px !important; margin-bottom: 8px;">실시간 관심</label>
+                    			<input style="margin-left: 0px;margin-right: 5px;" id="odorMovementSensor" type="radio" name="odorMovementType" value="2" class="contents"/>
+                    			<label class="W60 dis_ib" for="odorMovementSensor" style="width: 75px !important; margin-bottom: 8px;">실시간 센서</label>
+                    			<input style="margin-left: 0px;margin-right: 5px;" id="odorMovementForecast" type="radio" name="odorMovementType" value="cours_forecast" class="contents"/>
+                    			<label class="W60 dis_ib" for="odorMovementForecast" style="width: 50px !important; margin-bottom: 8px;">예보</label>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지점</dt>
                             <dd>
                             	<select id="odorMovementItem" class="W95p">
-                            		<option>CO2</option>
+                            		<option value='1057'>오창산업단지_샘플</option>
                             	</select>
                             </dd>
                         </dl>
                         <dl>
-                            <dt>조회기간</dt>
+                            <dt>조회시간</dt>
                              <dd>
                                 <input type="text" id="odorMovementStartDate" class="W105" style="width: 135px !important"/>
                                 <select id="odorMovementStartTime">
-                                	<option>00시</option>
                                 </select>
                             </dd>
                         </dl>
-                        <dl>
-                            <dt></dt>
-                             <dd>
-                                <input type="text" id="odorMovementEndDate" class="W105" style="width: 135px !important"/>
-                                <select id="odorMovementEndTime">
-                                	<option>00시</option>
-                                </select>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지도에 표현된<br />시간</dt>
-                            <dd>
-                                <label class="hidden">지도 표현 시간</label>
-                                <input type="text" class="W90p" title="지도에 표현된 시간" id="odorMovementDate"/>
-                            </dd>
-                        </dl>
+<!--                         <dl> -->
+<!--                             <dt></dt> -->
+<!--                              <dd> -->
+<!--                                 <input type="text" id="odorMovementEndDate" class="W105" style="width: 135px !important"/> -->
+<!--                                 <select id="odorMovementEndTime"> -->
+<!--                                 	<option>00시</option> -->
+<!--                                 </select> -->
+<!--                             </dd> -->
+<!--                         </dl> -->
+<!--                         <dl> -->
+<!--                             <dt>지도에 표현된<br />시간</dt> -->
+<!--                             <dd> -->
+<!--                                 <label class="hidden">지도 표현 시간</label> -->
+<!--                                 <input type="text" class="W90p" title="지도에 표현된 시간" id="odorMovementDate"/> -->
+<!--                             </dd> -->
+<!--                         </dl> -->
                         <div class="ctrl_btn MgT20 MgB20">
-                        	<a href="javascript:void(0)" class="ctrl_left" id="odorMovementPrevious"></a>
+<!--                         	<a href="javascript:void(0)" class="ctrl_left" id="odorMovementPrevious"></a> -->
                             <a href="javascript:void(0)" class="ctrl_play" id="odorMovementPlay"></a>
                             <a href="javascript:void(0)" class="ctrl_right" id="odorMovementNext"></a>
                         </div>
                         
                         <dl>
-                            <dt>인근 오염원점 조회</dt>
+                            <dt style="">인근 오염원점 조회</dt>
                             <dd>
                                 <p class="MgB30 AC" style="margin-top: 18px;">
-                           			<a class="btn01" href="javascript:void(0)" id="odorMovementViews">조회</a>
+                           			<a class="btn01" href="javascript:void(0)" id="odorMovementBufferBtn">조회</a>
                         		</p>
                             </dd>
                         </dl>
@@ -816,6 +859,7 @@
             <li id="grayMaps"><a href="javascript:void(0)">흑백</a></li>
         </ul>
         <div id="mapNavBar"></div>
+			    
         <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute;">
                 <a id="testBtn0" >풍향</a>
                 <a id="testBtn1" style="margin-left: -4px;">격자</a>
