@@ -78,13 +78,14 @@ var _WestCondition = function () {
     	'fixedMeasurement':{
 			layerType:'base',
 			title:'고정식 측정 데이터',
-			keyColumn:['CODE','DATE'],
+			keyColumn:['CODE'],
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
-			popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
+			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
+			           {name:'SENSOR_NM',title:'지점명'},
 			     {name:'MESURE_DT',title:'측정 일시'},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
 			     {name:'VOCS',title:'휘발성유기물'},
@@ -141,12 +142,12 @@ var _WestCondition = function () {
     	'environmentCorporation':{
     		layerType:'base',
 			title:'환경공단 측정망',
-			keyColumn:['CODE','DATE','NTWK_NM'],
+			keyColumn:['CODE'],
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
-			popupColumnArr:[{text:'지점명',id:'NAME'},{text:'주소',id:'ADDR'},{text:'측정 날짜',id:'MESURE_DT'}],
+			popupColumnArr:[{text:'지점코드',id:'CODE'},{text:'지점명',id:'NAME'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'NAME',title:'측정소명'},
 		     {name:'MESURE_DT',title:'검측 일시'},
 			 {name:'SO2_DNSTY',title:'아황산가스 농도'},
@@ -167,9 +168,42 @@ var _WestCondition = function () {
 			 {name:'PM25_HOUR24_GRAD',title:'PM2.5 24시간 등급'},
 			 {name:'PM10_HOUR1_GRAD',title:'PM10 1시간 등급'},
 			 {name:'PM25_HOUR1_GRAD',title:'PM2.5 1시간 등급'},
-			 {name:'CODE',title:'코드',visible:false},
-			 {name:'DATE',title:'코드',visible:false},
-			 {name:'NTWK_NM',title:'항목',visible:false}]
+			 {name:'CODE',title:'코드',visible:false}]
+    	},
+    	'unmannedOdor':{
+    		layerType:'base',
+			title:'청주시 무인악취 측정망',
+			keyColumn:['CODE'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:true,
+			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
+			columnArr:[{name:'CODE',title:'센서ID'},
+			           {name:'SENSOR_NM',title:'지점명'},
+			     {name:'MESURE_DT',title:'측정 일시'},
+			     {name:'OPR_STTUS_CODE',title:'센서명'},
+			     {name:'VOCS',title:'휘발성유기물'},
+			     {name:'CCNT',title:'접점센서'},
+			     {name:'NH3',title:'암모니아'},
+			     {name:'ERCRT',title:'전류센서'},
+			     {name:'H2S',title:'황화수소'},
+			     {name:'ARCSR',title:'기압'},
+			     {name:'OU',title:'복합 악취'},
+			     {name:'SOLRAD',title:'일사'},
+			     {name:'HD',title:'습도'},
+			     {name:'TMPRT',title:'기온'},
+			     {name:'WD',title:'풍향'},
+			     {name:'WS',title:'풍속'},
+			     {name:'NO2',title:'이산화질소'},
+			     {name:'SO2',title:'이산화황'},
+			     {name:'PM10',title:'미세먼지10'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
+			     {name:'CFC',title:'염소'},
+			     {name:'CH3SH',title:'메틸메르캅탄'},
+			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'ETHANOL',title:'에탄올'},
+			     {name:'DATE',title:'날짜',visible:false}]
     	}
     };
     
@@ -306,14 +340,14 @@ var _WestCondition = function () {
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
-		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime').html(timeOptions);
+		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
 		
 		var timeOptionMinute = '';
 		
 		for(var i=0; i<60; i++){
 			timeOptionMinute += '<option value="'+(i<10 ? ('0'+i): i)+'">'+i+'분</option>';
 		}
-		$('#fixedMeasurementStartMinute').html(timeOptionMinute);
+		$('#fixedMeasurementStartMinute, #unmannedOdorStartMinute, #unmannedOdorEndMinute').html(timeOptionMinute);
 		
         for(var i = 0; i < dateArr.length; i++){
         	$('#' + dateArr[i]).datepicker($.extend(datePickerDefine,{
@@ -340,11 +374,6 @@ var _WestCondition = function () {
         $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
         
         setEvent();
-        
-
-		
-		
-		
     };
     
     var writeItem = function(id, data){
@@ -634,15 +663,17 @@ var _WestCondition = function () {
 						writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
 					});
 		}else{
-			getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(data){
+			getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
 				if(contentsConfig[placeId].isWriteGrid){
-					writeGrid(placeId,data);
+					getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
+						writeGrid(placeId,gridData);
+					})
 				}
 				
-				writeLayer(placeId,data,contentsConfig[placeId].isUseGeoserver);
+				writeLayer(placeId,featureData,contentsConfig[placeId].isUseGeoserver);
 				
 				if(contentsConfig[placeId].isLabelLayer){
-					writeLayer('text',data,contentsConfig[placeId].isUseGeoserver,placeId);
+					writeLayer('text',featureData,contentsConfig[placeId].isUseGeoserver,placeId);
 				}
 			});
 		}
@@ -705,6 +736,9 @@ var _WestCondition = function () {
 				source = new ol.source.Vector({
 					features: pointArray
 				});
+				if(!isNaN(source.getExtent()[0])){
+					_CoreMap.getMap().getView().fit(source.getExtent(),_CoreMap.getMap().getSize());
+				}
 			}
 		}else{
 			source = new ol.source.Vector({
@@ -779,13 +813,33 @@ var _WestCondition = function () {
 			break;
 		case 'environmentCorporation':
 			styleFunction = environmentCorporationStyleFunction;
+			break;
+		case 'unmannedOdor':
+			styleFunction = unmannedOdorStyleFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
     };
-    
+    var unmannedOdorStyleFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 10,
+    			fill: new ol.style.Fill({
+    		        color: '#70AD47'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
+  		});
+    	
+    	return style;
+    };
     var environmentCorporationStyleFunction = function(feature){
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
@@ -842,6 +896,7 @@ var _WestCondition = function () {
     };
     
     var portableMeasurementStyleFunction = function(feature){
+    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType] + '':'-';
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
@@ -855,7 +910,7 @@ var _WestCondition = function () {
     		    })
     		}),
 			text: new ol.style.Text({
-				text: feature.getProperties()[feature.getProperties().itemType] + '',
+				text: text,
 				fill: new ol.style.Fill({
 					color: '#fff'
 				}),
