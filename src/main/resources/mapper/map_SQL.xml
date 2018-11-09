@@ -12,7 +12,7 @@
 	</select>
 
 	<update id="putFlag" parameterType="java.util.HashMap">
-		UPDATE CMAQ_9KM_WGS84_2 SET FLAG = #{flag} WHERE INDEXID = #{indexId}
+		UPDATE ANALS_AREA_MANAGE SET GRID_INTRST_SE_CODE = #{flag} WHERE ANALS_AREA_ID = #{indexId}
 	</update>
 	
 	<select id="complaintStatusGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -39,9 +39,10 @@
 	<select id="portableMeasurementGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 			   B.OPR_STTUS_CODE,
-			   LA,
-	   		   LO,
+			   LA AS POINT_Y,
+	   		   LO AS POINT_X,
 	   		   CONCAT( CASE WHEN A.SPOT_CODE='0005' THEN '1호 ' WHEN A.SPOT_CODE='0006' THEN '2호 ' END,DATE_FORMAT(MESURE_DT,'%Y년%m월%d일')) AS LABEL,
+	   		   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='1' THEN MESURE_DNSTY END),3) AS 'VOCS',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='2' THEN MESURE_DNSTY END),3) AS 'CCNT',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='3' THEN MESURE_DNSTY END),3) AS 'NH3',
@@ -75,15 +76,16 @@
      	   <if test="branchName != null">
     			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
   			</if>
-	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, LA,LO
+	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_X,POINT_Y,MESURE_DT
 	</select>
 	
 	<select id="fixedMeasurementGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 			   C.OPR_STTUS_CODE,
-			   B.LA,
-			   B.LO,
+			   B.LA AS POINT_Y,
+			   B.LO AS POINT_X,
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
+			   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='1' THEN MESURE_DNSTY END),3) AS 'VOCS',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='2' THEN MESURE_DNSTY END),3) AS 'CCNT',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='3' THEN MESURE_DNSTY END),3) AS 'NH3',
@@ -108,7 +110,7 @@
 	   		   IOT_SENSOR_INFO B,
 	   		   IOT_SENSOR_SPCS_INFO C,
 	   		   IOT_MESURE_IEM_MANAGE D
-		 WHERE A.SPOT_CODE IN ('0001',0002)
+		 WHERE A.SPOT_CODE IN ('0001','0002')
   		   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
   		   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE,A.SENSOR_SPCS_NO) = CONCAT(C.LEGALDONG_CODE,C.SPOT_CODE,C.SENSOR_SPCS_NO)
   		   AND CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE) = CONCAT(C.LEGALDONG_CODE,C.SPOT_CODE)
@@ -118,25 +120,27 @@
      	    <if test="branchName != null">
     			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
   			</if>
-  	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, LA,LO
+  	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_Y,POINT_X,MESURE_DT
 	</select>
 	
 	<select id="portableMeasurementClick" parameterType="String" resultType="java.util.HashMap">
-		 SELECT LO,LA 
-  		   FROM IOT_SENSOR_MESURE_INFO
-		  WHERE CONCAT(LEGALDONG_CODE,SPOT_CODE) = #{CODE}
-  			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = #{DATE}
-	   GROUP BY LO,LA
+	   	SELECT LO AS POINT_X,LA AS POINT_Y,DATE_FORMAT(A.MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS SENSOR_ID,OPR_STTUS_CODE
+  		   FROM IOT_SENSOR_MESURE_INFO A,
+		        IOT_SENSOR_SPCS_INFO B
+		  WHERE CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE,A.SENSOR_SPCS_NO) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE,B.SENSOR_SPCS_NO)
+		    AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = #{CODE}
+  			AND DATE_FORMAT(A.MESURE_DT,'%Y%m%d%H%i') = #{DATE}
+       GROUP BY POINT_X,POINT_Y,MESURE_DT,SENSOR_ID,OPR_STTUS_CODE
 	</select>
 	
 	<select id="fixedMeasurementClick" parameterType="String" resultType="java.util.HashMap">
-	   	 SELECT B.LO,B.LA 
+	   SELECT B.LO AS POINT_X,B.LA AS POINT_Y, CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS SENSOR_ID, OPR_STTUS_CODE,DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT
   		   FROM IOT_SENSOR_MESURE_INFO A,
 		        IOT_SENSOR_INFO B
 		  WHERE CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
 		    AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = #{CODE}
   			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = #{DATE}
-	   GROUP BY LO,LA
+	   GROUP BY POINT_X,POINT_Y,SENSOR_ID,OPR_STTUS_CODE,MESURE_DT
 	</select>
 	
 	<select id="getCity" parameterType="String" resultType="java.util.HashMap">
@@ -181,5 +185,107 @@
     			AND FMYNM LIKE CONCAT('%',#{poiText},'%')
   		</if>
 	 	 
+	</select>
+	
+	<select id="getArea" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT ANALS_AREA_ID 
+			,GRID_INTRST_SE_CODE
+			,INTRST_AREA_NM
+			,INTRST_AREA_LC
+			,TPGRPH_AL
+			,REGIST_DT
+			,PREDICT_AL
+			,REGISTER_ID
+			,UTMX
+			,UTMY 
+			FROM ANALS_AREA_MANAGE
+		  WHERE 1=1
+	 	 <if test="analsAreaId != null">
+    			AND ANALS_AREA_ID = #{analsAreaId}
+  		</if>
+	 	 
+	</select>
+	
+	<select id="odorOriginGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT BPLC_ID,BSML_TRGNPT_SE_CODE,CMPNY_NM,'데이터 나오면 JOIN' AS LEGALDONG_CODE,'데이터 나오면 JOIN' AS LEGALDONG_ETC,TELNO,INDUTY,'shape 나오면 join' as X,'shape 나오면 join' as Y 
+  		FROM BPLC_INFO
+ 	   WHERE LEGALDONG_CODE LIKE  CONCAT(#{town}, '%')
+ 	   <if test="branchName != null">
+   	     AND BSML_TRGNPT_NM LIKE CONCAT('%', #{branchName}, '%')
+   	   </if>
+	</select>
+	
+	<select id="sensoryEvaluationGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT SENSE_EVL_NO,POINT_X,POINT_Y 
+  		FROM SHP_SENSE_EVL_REAL A
+	LEFT OUTER JOIN SENSE_EVL B
+  		  ON A.SENSE_EVL_ = B.SENSE_EVL_NO
+  	WHERE BSML_FQ <![CDATA[>=]]> #{startOU}
+	  AND BSML_FQ <![CDATA[<=]]> #{endOU}
+	</select>
+	
+	<select id="sensoryEvaluationClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT SENSE_EVL_NO,ADD_TEXT,BSML_FQ ,POINT_X,POINT_Y
+  		FROM SHP_SENSE_EVL_REAL A
+	LEFT OUTER JOIN SENSE_EVL B
+  		  ON A.SENSE_EVL_ = B.SENSE_EVL_NO
+  	  WHERE SENSE_EVL_NO = #{SENSE_EVL_NO}
+	</select>
+	
+	<select id="environmentCorporationItem" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  SELECT DISTINCT NTWK_NM AS NAME
+	    FROM AIRKOREA_MSRSTN_INFO 
+	ORDER BY NTWK_NM
+	</select>
+	
+	<select id="environmentCorporationGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  	   SELECT CODE,
+		          NAME,
+		          DATE_FORMAT(MESURE_DT,'%Y%m%d%H') AS DATE,
+			      DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시') AS MESURE_DT,
+				  POINT_X,
+				  POINT_Y,
+				  SO2_DNSTY,
+				  CMO_DNSTY,
+				  OZ_DNSTY,
+				  NO2_DNSTY,
+				  PM10_DNSTY,
+				  PM10_HOUR24_PREDICT_MVMN_DNSTY,
+				  PM25_DNSTY,
+				  PM25_HOUR24_PREDICT_MVMN_DNSTY,
+				  UNITY_AIR_ENVRN_NCL,
+				  UNITY_AIR_ENVRN_IDEX,
+				  SO2_IDEX,
+				  CMO_IDEX,
+				  OZ_IDEX,
+				  NO2_IDEX,
+				  PM10_HOUR24_GRAD,
+				  PM25_HOUR24_GRAD,
+				  PM10_HOUR1_GRAD,
+				  PM25_HOUR1_GRAD,
+				  NTWK_NM
+  		FROM SHP_AIRKOREA_MSRSTN A
+	LEFT OUTER JOIN AIRKOREA_MESURE_INFO B
+  		  ON A.CODE = B.MSRSTN_ID
+  		 WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
+     	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
+		   AND NTWK_NM = #{item}
+		   <if test="branchName != null">
+   	     		AND NAME LIKE CONCAT('%', #{branchName}, '%')
+   	   	   </if>
+	</select>
+	
+	<select id="environmentCorporationClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  	  SELECT NAME,
+				  CONCAT(ADDR,' ',ADDR_DETAI) AS ADDR,
+			      DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시') AS MESURE_DT,
+				  POINT_X,
+				  POINT_Y
+  		FROM SHP_AIRKOREA_MSRSTN A
+	LEFT OUTER JOIN AIRKOREA_MESURE_INFO B
+  		  ON A.CODE = B.MSRSTN_ID
+		  WHERE CODE = #{CODE}
+		    AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = #{DATE}
+			AND NTWK_NM = #{NTWK_NM}
 	</select>
 </mapper>

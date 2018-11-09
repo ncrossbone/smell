@@ -18,13 +18,23 @@ public interface MapMapper {
 	public List<Map<String, Object>> complaintStatusGrid(HashMap param);
 	public List<Map<String, Object>> portableMeasurementGrid(HashMap param);
 	public List<Map<String, Object>> fixedMeasurementGrid(HashMap param);
+	public List<Map<String, Object>> odorOriginGrid(HashMap param);
+	public List<Map<String, Object>> sensoryEvaluationGrid(HashMap param);
+	public List<Map<String, Object>> environmentCorporationGrid(HashMap param);
+	
 	
 	public List<Map<String, Object>> portableMeasurementClick(HashMap param);
 	public List<Map<String, Object>> fixedMeasurementClick(HashMap param);
+	public List<Map<String, Object>> sensoryEvaluationClick(HashMap param);
+	public List<Map<String, Object>> environmentCorporationClick(HashMap param);
 	
 	public List<Map<String, Object>> getCity();
 	public List<Map<String, Object>> getTown(HashMap param);
 	
 	public List<Map<String, Object>> getPOISelect();
 	public List<Map<String, Object>> getPOISearch(HashMap param);
+	
+	public List<Map<String, Object>> getArea(HashMap param);
+	public List<Map<String, Object>> environmentCorporationItem(HashMap param);
+	
 }

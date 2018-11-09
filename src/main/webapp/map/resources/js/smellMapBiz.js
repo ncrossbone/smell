@@ -16,7 +16,7 @@ var _SmellMapBiz = function () {
 	
 	var bizUrl = window.location.protocol+'//'+window.location.host;
 	
-	var bizLayers = {'CELL9KM' : 'cell_200m_utmk',
+	var bizLayers = {'CELL9KM' : 'shp_anals_area',//'cell_200m_utmk',
 					 'ALL9KM' : 'ALL_CMAQ_9KM',
 			         'LINE' : 'line_test_wgs84',
 			         'POINT' : 'CELL_AIR_9KM_PT',
@@ -435,14 +435,15 @@ var _SmellMapBiz = function () {
 				var flag = $(this).attr('flag');
 				var indexId = $(this).attr('indexId');
 				$.ajax({
-		            url : bizUrl+'/putFlag.do?flag='+(flag == 0 ? 1:0)+'&indexId='+indexId,
+		            url : bizUrl+'/putFlag.do?flag='+(flag == "Y" ? "N":"Y")+'&indexId='+indexId,
 		            type : 'GET',
 		            contentType : 'application/json'
 		    	}).done(function(result){
-		    		noCacheCount++;
+		    		//noCacheCount++;
 		    		
 		    		var wmsSource = wmsSelectTestLayer.getSource();
-		    		wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
+		    		//wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
+		    		wmsSource.updateParams({CQL_FILTER:"1=1"});
 		    		
 		    		$('#popup-closer').trigger('click');
 		    	});
@@ -494,7 +495,7 @@ var _SmellMapBiz = function () {
 				wmsSelectTestLayer.setOpacity(0.0);
 				
 				var wmsSource = wmsSelectTestLayer.getSource();
-				wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND "+noCacheCount+"="+noCacheCount});
+				//wmsSource.updateParams({CQL_FILTER:"1=1"});
 				
 				var view = _CoreMap.getMap().getView();
 				var viewResolution = /** @type {number} */ (view.getResolution());
@@ -504,7 +505,7 @@ var _SmellMapBiz = function () {
 				if (url) {
 					$.getJSON(url, function(result){
 						
-						wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
+						//wmsSource.updateParams({CQL_FILTER:"1=1"});
 						
 						setTimeout(function(){wmsSelectTestLayer.setOpacity(0.7);}, 10);
 						
@@ -516,6 +517,9 @@ var _SmellMapBiz = function () {
 						if(result.features == null || result.features.length <= 0){
 							return;
 						}
+						
+						//result.features[0].properties.anals_area_id
+						
 						  
 						var feature = new ol.Feature({id:result.features[0].id,geometry:new ol.geom.Polygon(result.features[0].geometry.coordinates), properties:{}});
 						feature.setProperties(result.features[0].properties);
@@ -537,18 +541,18 @@ var _SmellMapBiz = function () {
 						var featureCenter = ol.extent.getCenter(featureExtent);
 						
 						if(popupOverlay){
-							$('#popupOverlay').show();
-							$('#popup-content').show();
-							popupOverlay.setPosition(featureCenter);
 							
-							$('#cellRemeveBtn').attr('flag', result.features[0].properties.FLAG);
+							popupOverlay.setPosition(featureCenter);
+							_WestCondition.popupOverlayData(result.features[0].properties.anals_area_id);
+							
+							/*$('#cellRemeveBtn').attr('flag', result.features[0].properties.FLAG);
 							$('#cellRemeveBtn').attr('indexId', result.features[0].properties.IDX);
 							
 							if(result.features[0].properties.FLAG == 0){
 								$('#cellRemeveBtn').val('격자해제');
 							}else{
 								$('#cellRemeveBtn').val('격자추가');
-							}
+							}*/
 						}
 					});
 				}
@@ -1027,6 +1031,11 @@ var _SmellMapBiz = function () {
 			});
 		});
 		
+		
+		$('.legendButton').click(function(){
+			_WestCondition.legendLayerOnOff(this);
+		});
+		
 	};
 	var writeGrid = function(id, gridData){
 		$('#gridArea').show();
@@ -1205,6 +1214,8 @@ var _SmellMapBiz = function () {
 	        }))
 		});
 	}
+	
+	
     // public functions
     return {
     	  

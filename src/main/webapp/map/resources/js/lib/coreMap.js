@@ -188,6 +188,9 @@ var _CoreMap = function() {
 		
 		setEventListener();
 		
+		//주제도 레이어 올리기
+		_WestCondition.legendLayer();
+		
 		// feature 클릭시 팝업을 띄우기 위한 초기화
 	    setPopupOverlay();
 		
@@ -264,10 +267,14 @@ var _CoreMap = function() {
 		coreMap.on('click', function(event) {
 			event.preventDefault();
 			
-			
 			_MapEventBus.trigger(_MapEvents.map_clicked, {
 				result : event
 			});
+			
+			if(_CoreMap.getMap().getTarget() == "mapCheckPoint"){
+				_WestCondition.checkPointMarker("checkPoint",event);
+			}
+			
 		});
 		
 		//dblclick (ol.MapBrowserEvent) - A true double click, with no dragging.
@@ -650,7 +657,12 @@ var _CoreMap = function() {
 				mapLayers[i].setVisible(baseMapType==mapType?true:false);
 			}
 		}
+	}
+	
+	var getCoordinates = function(layer){
+		return layer.getSource().getFeatures()[0].getGeometry().getCoordinates();
 	};
+	
 	// public functions
 	return {
 
@@ -714,6 +726,9 @@ var _CoreMap = function() {
 		},
 		changeBaseMap:function(mapType){
 			changeBaseMap(mapType);
+		},
+		getCoordinates : function(layer){
+			return getCoordinates(layer);
 		}
 	};
 }();
