@@ -21,7 +21,8 @@ var _WestCondition = function () {
     										'town':'LEGALDONG_CODE',
     										'startDate':'CVPL_DT',
     										'endDate':'CVPL_DT',
-    										'branchName':'CVPL_CN'},
+    										'branchName':'CVPL_CN',
+    										'checkBox':'CVPL_TY_CODE'},
     					  layerName:westLayerObj.CVPL_POINT,
     					  layerType:'cluster',
     					  title:'민원현황',
@@ -284,14 +285,15 @@ var _WestCondition = function () {
     				cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd].text = properties.dong_nm;
     			}
     		}
-    		
+    		var sensoryInitTownCode ='43114';
     		for(var i = 0; i < cityArr.length; i++){
-    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityTownObj[initTownCode].child;
+    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityArr[i] =='sensoryEvaluationTown'?cityTownObj[sensoryInitTownCode].child:cityTownObj[initTownCode].child;
         		writeCity(data, cityArr[i]);
     		}
     		
     		writeCity(cityTownObj,'cityDistrictToolbar');
     		setToolbarCity({adm_cd:'4311425300'});
+    		$('#sensoryEvaluationCityDistrict').val(sensoryInitTownCode);
     	});
     	
     	getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
@@ -549,8 +551,8 @@ var _WestCondition = function () {
     		}
     	});
     	
-    	$('.lnb').find('em').off('click').on('click',function(){
-    		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
+    	$('.layerOnOff').off('click').on('click',function(){
+    		var contentsId = $(this).parent().find('.lnb_conts').attr('id');
     		var isShow = false;
     		clearFocusLayer();
     		try{
@@ -564,7 +566,7 @@ var _WestCondition = function () {
         		}	
     		}catch(e){}
     		
-    		var reportCheck = $(this).parent().parent().parent().attr('id');
+    		var reportCheck = $(this).parent().parent().attr('id');
 
     		// 분석쪽은 별도
     		if(reportCheck == 'smellReport'){
@@ -605,7 +607,25 @@ var _WestCondition = function () {
 					var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
 					
 					if(!paramObj[replaceName]){
-						paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+						if($($('input[name="' + searchPlaceName + '"]')[0]).attr('type')=='checkbox'){
+							if(typeof(paramObj[replaceName])!='Array'){
+								paramObj[replaceName] = [];
+							}
+							var checkboxArr = $('input[name="' + searchPlaceName + '"]:checked');
+							
+							if(checkboxArr.length == 0){
+								return alert('항목을 선택하세요.');
+							}
+							var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
+							for(var k=0; k<checkboxArr.length; k++){
+								paramObj[replaceName].push($(checkboxArr[k]).val());
+								checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
+							}
+							
+							cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
+						}else{
+							paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+						}
 					}
 				}else if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
@@ -818,7 +838,15 @@ var _WestCondition = function () {
 		    stroke: new ol.style.Stroke({
 		    	color: '#AFABAB',
 		    	width: 3
-		    })
+		    }),
+		    text: new ol.style.Text({
+				text: feature.getProperties().BSML_TRGNPT_NM,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: '13px bold, Verdana'
+			})
   		});
     	
     	return style;

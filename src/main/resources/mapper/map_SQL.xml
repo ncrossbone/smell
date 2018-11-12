@@ -32,7 +32,11 @@
      	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
      	   <if test="branchName != null">
     			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
-  			</if>	
+  			</if>
+  			AND CVPL_TY_CODE IN
+  			<foreach collection="checkBox" item="type" index="index" open="(" separator="," close=")">
+				#{type}
+  			</foreach>	
      	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
 	</select>
 	
