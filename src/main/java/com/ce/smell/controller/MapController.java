@@ -74,4 +74,9 @@ public class MapController {
 	public List<Map<String, Object>> getItem(@RequestBody HashMap param){
 		return mapBiz.getItem(param);
 	}
+	
+	@RequestMapping(value = "/getFeature", method = RequestMethod.POST)
+	public List<Map<String, Object>> getFeature(@RequestBody HashMap param){
+		return mapBiz.getFeature(param);
+	}
 }
