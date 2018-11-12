@@ -58,19 +58,35 @@
 		$('#checkPointEvent').click(function(){
 			var checkPointLayer = _CoreMap.getMap().getLayerForName('checkPoint');
 			if(checkPointLayer){
-				var coordinates =_CoreMap.getCoordinates(checkPointLayer);
-				/*
-					parent.~.~();
-				
-				*/
-				/* $('#checkPointEvent').attr('utmX' , coordinates[0]);
-				$('#checkPointEvent').attr('utmY' , coordinates[1]); */
-			}else{
-				alert("지점을 선택하세요");
-			}
+	            var coordinates =_CoreMap.getCoordinates(checkPointLayer);
+	            var convertCoord = _CoreMap.convertLonLatCoord(coordinates,false);
+	            var data = {"data":convertCoord};
+	            if(opener != null){
+		            opener.postMessage(data,'http://localhost:8080/cms/dataManage/cvplDataManag/regForm');
+		            window.close();
+	            }
+	            
+	         }else{
+	            alert("지점을 선택하세요");
+	         }
 			
 			
 		})
+
+		//임시
+		if(window.location.search != ""){
+			var param = window.location.search.substring(1).replace('utmX=','').replace('utmY=','');
+			
+			param = param.split('&');
+			var intParam = [];
+			intParam.push(parseFloat(param[0]));
+			intParam.push(parseFloat(param[1]));
+			
+			var convertCoord = _CoreMap.convertLonLatCoord(intParam,true);
+			var data = {'coordinate':[convertCoord[0],convertCoord[1]]};
+			_WestCondition.checkPointMarker("checkPoint",data);
+			
+		}
 	});
 
 	
