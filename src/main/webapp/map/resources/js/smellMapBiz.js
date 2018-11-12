@@ -88,10 +88,10 @@ var _SmellMapBiz = function () {
 	}
 	var setComponents = function(){
 		var toDay = new Date();
-		var hour = toDay.getHours()+1;
+		var hour = toDay.getHours();
 		var timeOptions = '';
-		for(var i=1; i<25; i++){
-			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
+		for(var i=0; i<24; i++){
+			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i) +'">'+i+'시</option>';
 		}
 		
 		//기상장
@@ -239,8 +239,6 @@ var _SmellMapBiz = function () {
 	}
 	
 	var setEvent = function(){
-		
-		
 		$('#testBtn0').on('click', function(){
 			if(!wmsWindLayer){
 				drawWindLayer();
@@ -632,7 +630,6 @@ var _SmellMapBiz = function () {
 				var jstsGeom = parser.read(bufferFeature.getGeometry());
 				var buffered = jstsGeom.buffer(8500);
 				bufferFeature.setGeometry(parser.write(buffered));
-//				bufferFeature.getProperties().properties.isBuffered = true;
 				
 				
 				if(pointBufferFeatureLayer){
@@ -655,28 +652,21 @@ var _SmellMapBiz = function () {
 					_MapEventBus.trigger(_MapEvents.map_addLayer, pointBufferFeatureLayer);
 				}
 			}
+			
+			
 			if(originLayer){
-				console.log(data);
-				debugger;
-				
-				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer) {
-			        				return feature;
-			        			});
+				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer) {return feature;});
 			    if (feature) {
-			    	
 			    	var geometry = feature.getGeometry();
+			    	var properties = feature.getProperties().properties;
 					var featureExtent = geometry.getExtent();
 					var featureCenter = ol.extent.getCenter(featureExtent);
-					
 					if(popupOverlay){
-						$('#poiPopup').show();
+						$('#popupOverlay').show();
+						$('#popup-content').show();
 						popupOverlay.setPosition(featureCenter);
-						
-//						if(result.features[0].properties.FLAG == 0){
-//							$('#cellRemeveBtn').val('격자해제');
-//						}else{
-//							$('#cellRemeveBtn').val('격자추가');
-//						}
+						$('#originTitle').html(properties.CMPNY_NM);
+						$('#originTel').html(properties.TELNO);
 					}
 			    }
 			}
@@ -801,7 +791,7 @@ var _SmellMapBiz = function () {
 				
 				if(weatherAnalysisIndex < 0){
 					weatherAnalysisIndex = 0;
-					return;
+//					return;
 				}
 				
 				updateLayer(weatherAnalysisLayer, weatherAnalysisTimeSeries[weatherAnalysisIndex]);
@@ -817,7 +807,7 @@ var _SmellMapBiz = function () {
 				
 				if(weatherAnalysisTimeSeries.length <= (weatherAnalysisIndex+1)){
 					weatherAnalysisIndex = weatherAnalysisTimeSeries.length-1;
-					return;
+//					return;
 				}
 				
 				updateLayer(weatherAnalysisLayer, weatherAnalysisTimeSeries[weatherAnalysisIndex]);
@@ -972,6 +962,10 @@ var _SmellMapBiz = function () {
 		});
 		
 		$('#odorMovementBufferBtn').on('click', function(){
+			if(originLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, originLayer);
+				originLayer = null;
+			}
 			if(trackingFeatures == null || trackingFeatures.length <= 0){
 				return;
 			}
@@ -985,23 +979,12 @@ var _SmellMapBiz = function () {
 				for(var i=0; i<trackingFeatures.length; i++){
 					var bufferFeature = trackingFeatures[i].clone();
 					linePathCoord.push(bufferFeature.getGeometry().getCoordinates());
-					
-					
-//					var jstsGeom = parser.read(bufferFeature.getGeometry());
-//					var buffered = jstsGeom.buffer(100);
-//					bufferFeature.setGeometry(parser.write(buffered));
-//					bufferFeatures.push(bufferFeature);
 				}
 				
 				var lineFeature = new ol.Feature({geometry:new ol.geom.LineString(linePathCoord), properties:null});
 				var jstsGeom = parser.read(lineFeature.getGeometry());
 				var buffered = jstsGeom.buffer(100);
-//				lineFeature.setGeometry(parser.write(buffered));
 				var bufferedGeometry = parser.write(buffered);
-				
-				var polygonBufferFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:null});
-				
-				var targetBufferGeometry = polygonBufferFeature.getGeometry();
 
 				var interFeatures = [];
 				var gridData = [];
@@ -1017,6 +1000,7 @@ var _SmellMapBiz = function () {
 						gridData.push(result.features[i].properties);
 					}
 				}
+				
 				var source = new ol.source.Vector();
 				source.addFeatures(interFeatures);
 				originLayer = new ol.layer.Vector({
@@ -1164,7 +1148,7 @@ var _SmellMapBiz = function () {
 				break;
 			}
 			var timeSeries = {date : y+''+(m<10?'0'+m:m)+''+(d<10?'0'+d:d), time:(stime<10?'0'+stime:stime+''), layer:layerNm, style:styleNm};
-			if(stime > 24){
+			if(stime > 23){
 				stime = 1;
 				tdate.setDate(d + 1);
 				continue;

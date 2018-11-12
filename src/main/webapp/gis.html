@@ -28,6 +28,51 @@
 <link type="text/css" rel="stylesheet" href="/css/jsgrid-theme.min-1.5.3.css" />
 <script type="text/javascript" src="/js/jsgrid.min-1.5.3.js"></script>
 
+<style type="text/css">
+      .ol-popup {
+        display: none;
+        position: absolute;
+        background-color: white;
+        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+      }
+      .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+      .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+      }
+      .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+      }
+      .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+      }
+      .ol-popup-closer:after {
+        content: "✖";
+      }
+</style>
 <script type="text/javascript">
 	$(function() {
 		// selectbox design
@@ -867,6 +912,13 @@
             <li id="grayMaps"><a href="javascript:void(0)">흑백</a></li>
         </ul>
         <div id="mapNavBar"></div>
+		<div id="popupOverlay" class="ol-popup">
+			<a href="javascript:;" id="popup-closer" class="ol-popup-closer"></a>
+			<div id="popup-content" style="width:100px;">
+				<div id="originTitle"></div>
+				<div id="originTel"></div>
+			</div>
+	    </div>
 			    
         <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute;">
                 <a id="testBtn0" >풍향</a>
