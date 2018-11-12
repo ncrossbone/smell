@@ -1,5 +1,4 @@
 var _WestCondition = function () {
-    var initTownCode = '43111';
     var dateMappingObj = {};
     var cityMappingObj = {};
     var noDataContent = '데이터가 없습니다.';
@@ -272,20 +271,42 @@ var _WestCondition = function () {
     		if(data.features.length == 0){
     			return;
     		}
+    		
+    		var sensoryInitTownCode ='43114';
+    		var initTownCode = '4311';
+    		
     		for(var i = 0; i < data.features.length; i++){
     			var properties = data.features[i].properties;
+        		
     			if(!cityTownObj[properties.adm_cd.substr(0,5)]){
+    				if(!cityTownObj[initTownCode]){
+    					cityTownObj[initTownCode] = {};
+        				cityTownObj[initTownCode].text = '전체';
+        				cityTownObj[initTownCode].child = {};
+    				}
+    				
     				cityTownObj[properties.adm_cd.substr(0,5)] = {};
     				cityTownObj[properties.adm_cd.substr(0,5)].text = properties.cty_nm;
     				cityTownObj[properties.adm_cd.substr(0,5)].child = {};
     			}
     			
     			if(!cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd]){
+    				if(!cityTownObj[initTownCode].child[initTownCode]){
+    					cityTownObj[initTownCode].child[initTownCode] = {};
+        				cityTownObj[initTownCode].child[initTownCode].text = '전체';
+    				}
+    				
+    				if(!cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd.substr(0,5)]){
+    					cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd.substr(0,5)] = {};
+    					cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd.substr(0,5)].text = '전체';
+    				}
+    				
     				cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd] = {};
     				cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd].text = properties.dong_nm;
     			}
     		}
-    		var sensoryInitTownCode ='43114';
+    		
+    		
     		for(var i = 0; i < cityArr.length; i++){
     			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityArr[i] =='sensoryEvaluationTown'?cityTownObj[sensoryInitTownCode].child:cityTownObj[initTownCode].child;
         		writeCity(data, cityArr[i]);
@@ -1262,15 +1283,18 @@ var _WestCondition = function () {
     
     var writeCity = function (data, comboId) {
         var html = '';
-        var allHtml = '';
+        
         for (var key in data) {
-        	if(comboId.toLowerCase().indexOf('town') > -1){
-        		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
+        	if(comboId!='cityDistrictToolbar' && comboId!='townToolbar'){
+        		html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
+        	}else{
+        		if(data[key].text!='전체'){
+        			html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
+        		}
         	}
-        	html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
         }
         
-        $('#' + comboId).html(allHtml+html);
+        $('#' + comboId).html(html);
     };
 
     var getData = function (options) {
