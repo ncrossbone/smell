@@ -119,7 +119,7 @@ var _WestCondition = function () {
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:false,
-			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'OU_내용',id:'BSML_FQ'}]
+			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'악취 빈도',id:'BSML_FQ'}]
     	},
     	'environmentCorporation':{
     		layerType:'base',
@@ -208,6 +208,27 @@ var _WestCondition = function () {
     			           {name:'TELNO',title:'전화번호'},
     			           {name:'INDUTY',title:'업종'},
     			           {name:'ERTHSF_AL',title:'지표 고도'}]
+    	},
+    	'observatory':{
+    		layerType:'base',
+			title:'기상청 측정망',
+			keyColumn:['STATION_ID'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:true,
+			popupColumnArr:[{text:'측정소 코드',id:'STATION_ID'},{text:'측정소 명',id:'NAME'},{text:'주소',id:'POS'}],
+			columnArr:[{name:'STATION_ID',title:'센서ID',visible:false},
+			           {name:'NAME',title:'관측소명'},
+			     {name:'OBSR_TIME',title:'측정 일시'},
+			     {name:'MIN60_ACCMLT_RAINFL',title:'60분 누적 강수량'},
+			     {name:'DE_RAINFL',title:'일 강수량'},
+			     {name:'TMPRT',title:'기온'},
+			     {name:'MXMM_MONT_WD',title:'최대 순간 풍향'},
+			     {name:'MXMM_MONT_WS',title:'최대 순간 풍속'},
+			     {name:'MIN10_AVRG_WD',title:'10분 평균 풍향'},
+			     {name:'MIN10_AVRG_WS',title:'10분 평균 풍속'},
+			     {name:'HD',title:'습도'}]
     	}
     	
     };
@@ -338,7 +359,7 @@ var _WestCondition = function () {
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
-		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
+		$('#observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
 		
 		var timeOptionMinute = '';
 		
@@ -840,12 +861,34 @@ var _WestCondition = function () {
 		case 'odorOrigin':
 			styleFunction = odorOriginFunction;
 			break;
+		case 'observatory':
+			styleFunction = observatoryFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
     };
+    
+    var observatoryFunction= function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 15,
+    			fill: new ol.style.Fill({
+    		        color: '#118575'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
+  		});
+    	
+    	return style;
+    }
+    
     var odorOriginFunction = function(feature){
     	var colorObj = {'BSL01001':'red',
     			'BSL01002':'blue',
@@ -911,7 +954,7 @@ var _WestCondition = function () {
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
-    			radius: 10,
+    			radius: 20,
     			fill: new ol.style.Fill({
     		        color: '#4472C4'
     		    }),
@@ -919,7 +962,14 @@ var _WestCondition = function () {
     		    	color: '#AFABAB',
     		    	width: 3
     		    })
-    		})
+    		}),
+			text: new ol.style.Text({
+				text: feature.getProperties().BSML_FQ,
+				fill: new ol.style.Fill({
+					color: '#fff'
+				}),
+				font: '9px bold, Verdana'
+			})
   		});
     	
     	return style;
@@ -1032,12 +1082,14 @@ var _WestCondition = function () {
     };
     
     var createLastPoint = function(feature) {
+    	
+    	var tyCode = {'CVP02001':'red','CVP02002':'green','CVP02003':'blue'};
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
-    			radius: 5,
+    			radius: 10,
     			fill: new ol.style.Fill({
-    		        color: '#f00'
+    		        color: tyCode[feature.getProperties().CVPL_TY_CODE]
     		    })
     		})
     	});

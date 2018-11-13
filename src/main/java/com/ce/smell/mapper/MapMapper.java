@@ -21,12 +21,14 @@ public interface MapMapper {
 	public List<Map<String, Object>> odorOriginGrid(HashMap param);
 	public List<Map<String, Object>> environmentCorporationGrid(HashMap param);
 	public List<Map<String, Object>> unmannedOdorGrid(HashMap param);
+	public List<Map<String, Object>> observatoryGrid(HashMap param);
 	
 	public List<Map<String, Object>> portableMeasurementClick(HashMap param);
 	public List<Map<String, Object>> fixedMeasurementClick(HashMap param);
 	public List<Map<String, Object>> sensoryEvaluationClick(HashMap param);
 	public List<Map<String, Object>> environmentCorporationClick(HashMap param);
 	public List<Map<String, Object>> unmannedOdorClick(HashMap param);
+	public List<Map<String, Object>> observatoryClick(HashMap param);
 	
 	public List<Map<String, Object>> getCity();
 	public List<Map<String, Object>> getTown(HashMap param);
@@ -42,5 +44,6 @@ public interface MapMapper {
 	public List<Map<String, Object>> sensoryEvaluationFeature(HashMap param);
 	public List<Map<String, Object>> environmentCorporationFeature(HashMap param);
 	public List<Map<String, Object>> unmannedOdorFeature(HashMap param);
+	public List<Map<String, Object>> observatoryFeature(HashMap param);
 	
 }
