@@ -15,6 +15,25 @@
 		UPDATE ANALS_AREA_MANAGE SET GRID_INTRST_SE_CODE = #{flag} WHERE ANALS_AREA_ID = #{indexId}
 	</update>
 	
+	<select id="complaintStatusFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT CVPL_NO,
+			   LA AS POINT_X,
+			   LO AS POINT_Y,
+			   CVPL_TY_CODE
+  		  FROM CVPL_MANAGE
+  		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
+     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
+     	   AND LA IS NOT NULL
+     	   <if test="branchName != null">
+    			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
+  			</if>
+  			AND CVPL_TY_CODE IN
+  			<foreach collection="checkBox" item="type" index="index" open="(" separator="," close=")">
+				#{type}
+  			</foreach>	
+     	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
+	</select>
+	
 	<select id="complaintStatusGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CVPL_NO,
 	           DATE_FORMAT(CVPL_DT,'%Y년 %m월 %d일 %h시') AS CVPL_DT,
@@ -30,6 +49,7 @@
   		  FROM CVPL_MANAGE
   		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
      	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
+     	   AND LA IS NOT NULL
      	   <if test="branchName != null">
     			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
   			</if>
@@ -38,6 +58,16 @@
 				#{type}
   			</foreach>	
      	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
+	</select>
+	
+	<select id="complaintStatusClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT DATE_FORMAT(CVPL_DT,'%Y년 %m월 %d일 %h시') AS CVPL_DT,
+			   LA AS POINT_X,
+			   LO AS POINT_Y,
+			   CVPL_LC,
+			   CVPL_CN
+  		  FROM CVPL_MANAGE
+  		 WHERE CVPL_NO = #{CVPL_NO}
 	</select>
 	
 	<select id="portableMeasurementGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -498,8 +528,8 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
           POINT_X, 
           POINT_Y, 
           CONCAT(SUBSTR(OBSR_TIME,1,4),'년 ',SUBSTR(OBSR_TIME,5,2),'월 ',SUBSTR(OBSR_TIME,7,2),'일 ',SUBSTR(OBSR_TIME,9,2),'시') AS OBSR_TIME, 
-          MIN60_ACCMLT_RAINFL, 
-          DE_RAINFL, 
+          CASE WHEN TRUNCATE(MIN60_ACCMLT_RAINFL,1) =-99.9 THEN 0 ELSE MIN60_ACCMLT_RAINFL END AS MIN60_ACCMLT_RAINFL,
+          CASE WHEN TRUNCATE(DE_RAINFL,1) =-99.9 THEN 0 ELSE DE_RAINFL END AS DE_RAINFL,
           TMPRT, 
           MXMM_MONT_WD, 
           MXMM_MONT_WS, 

@@ -16,21 +16,14 @@ var _WestCondition = function () {
     		SHP_BPLC_FOR_WESTCONDITION:':shp_bplc_for_westcondition'
     };
     var contentsConfig = {
-    	'complaintStatus':{cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
-    										'town':'LEGALDONG_CODE',
-    										'startDate':'CVPL_DT',
-    										'endDate':'CVPL_DT',
-    										'branchName':'CVPL_CN',
-    										'checkBox':'CVPL_TY_CODE'},
-    					  layerName:westLayerObj.CVPL_POINT,
-    					  layerType:'cluster',
+    	'complaintStatus':{layerType:'cluster',
     					  title:'민원현황',
     					  keyColumn:['CVPL_NO'],
     					  isVisible:true,
-    					  isUseGeoserver:true,
+    					  isUseGeoserver:false,
     					  isLabelLayer:false,
     					  isWriteGrid:true,
-    					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DTH'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
+    					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DT'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
     					             {name:'CVPL_DT',title:'민원 일시'},
     					             {name:'CPTTR',title:'민원인'},
@@ -666,13 +659,13 @@ var _WestCondition = function () {
 							if(checkboxArr.length == 0){
 								return alert('항목을 선택하세요.');
 							}
-							var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
+							//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
 							for(var k=0; k<checkboxArr.length; k++){
 								paramObj[replaceName].push($(checkboxArr[k]).val());
-								checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
+								//checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
 							}
 							
-							cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
+							//cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
 						}else{
 							paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
 						}

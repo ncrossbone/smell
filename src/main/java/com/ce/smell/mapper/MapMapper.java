@@ -29,6 +29,7 @@ public interface MapMapper {
 	public List<Map<String, Object>> environmentCorporationClick(HashMap param);
 	public List<Map<String, Object>> unmannedOdorClick(HashMap param);
 	public List<Map<String, Object>> observatoryClick(HashMap param);
+	public List<Map<String, Object>> complaintStatusClick(HashMap param);
 	
 	public List<Map<String, Object>> getCity();
 	public List<Map<String, Object>> getTown(HashMap param);
@@ -46,5 +47,6 @@ public interface MapMapper {
 	public List<Map<String, Object>> unmannedOdorFeature(HashMap param);
 	public List<Map<String, Object>> observatoryFeature(HashMap param);
 	public List<Map<String, Object>> iotSensorInfoFeature(HashMap param);
+	public List<Map<String, Object>> complaintStatusFeature(HashMap param);
 	
 }
