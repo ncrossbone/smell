@@ -45,5 +45,6 @@ public interface MapMapper {
 	public List<Map<String, Object>> environmentCorporationFeature(HashMap param);
 	public List<Map<String, Object>> unmannedOdorFeature(HashMap param);
 	public List<Map<String, Object>> observatoryFeature(HashMap param);
+	public List<Map<String, Object>> iotSensorInfoFeature(HashMap param);
 	
 }

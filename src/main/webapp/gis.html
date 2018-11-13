@@ -166,10 +166,10 @@
                                 <input type="checkbox" class="dis_ib" value="CVP02001" id="complaintStatusCheckBox01" name="complaintStatusCheckBox" checked="checked"/>
                                 <label class="contents" for="complaintStatusCheckBox01" style="margin-right: 20px;">청주시</label>
                                 
-                                <input type="checkbox" class="dis_ib" value="CVP02002" id="complaintStatusCheckBox02" name="complaintStatusCheckBox" checked="checked"/>
+                                <input type="checkbox" class="dis_ib" value="CVP02002" id="complaintStatusCheckBox02" name="complaintStatusCheckBox"/>
                                 <label class="contents" for="complaintStatusCheckBox02" style="margin-right: 20px;">네이버</label>
                                 
-                                <input type="checkbox" class="dis_ib" value="CVP02003" id="complaintStatusCheckBox03" name="complaintStatusCheckBox" checked="checked"/>
+                                <input type="checkbox" class="dis_ib" value="CVP02003" id="complaintStatusCheckBox03" name="complaintStatusCheckBox"/>
                                 <label class="contents" for="complaintStatusCheckBox03">오창지킴이</label>
                             </dd>
                         </dl>
@@ -238,7 +238,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>악취 빈도</dt>
+                            <dt>복합악취 ou</dt>
                             <dd>
                                 <input id="sensoryEvaluationStartOU" class="W105" style="width: 90px !important;" type="text" value="0"/>
                                 ~
@@ -302,13 +302,6 @@
                                         </select>
                                     </p>
                                 </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>센서명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="portableMeasurementBranchName" title="지점명 검색어" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
@@ -380,11 +373,13 @@
 		<li>
 			<div class="layerOnOff"></div>
 			<h2 class="ov accordion">IOT 센서 정보<span></span></h2>
-			<div class="lnb_conts">
+			<div class="lnb_conts" id="iotSensorInfo">
 				<h3>IOT 센서 정보</h3>
                 <ul>
                     <li>
-                        
+                        <p class="MgT35 MgB30 AC">
+                           <a class="btn01" href="javascript:void(0)" id="iotSensorInfoViews">조회</a>
+                        </p>
                     </li>
                 </ul>
             </div>
@@ -656,60 +651,6 @@
                         </dl>
                         <p class="MgT35 MgB30 AC">
                            <a class="btn01" href="javascript:void(0)" id="unmannedOdorViews">조회</a>
-                        </p>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li>
-        	<div class="layerOnOff"></div>
-            <h2 class="accordion">KT 에어맵 코리아 측정망<span></span></h2>
-            <div class="lnb_conts" style="display: none;" id="airMap">
-				<h3>KT 에어맵 코리아 측정망</h3>
-                <ul>
-                    <li>
-                        <dl>
-                            <dt>측정항목</dt>
-                            <dd>
-                            	<select id="airMapItem" class="W95p">
-                            		<option>CO2</option>
-                            	</select>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                             <dd>
-                                <input type="text" id="airMapStartDate" class="W105" style="width: 90px !important"/>
-                                ~
-                                <input type="text" id="airMapEndDate" class="W105" style="width: 90px !important"/>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지역 선택</dt>
-                            <dd>
-                                <div class="box">
-                                    <p>
-                                        <label class="W60 dis_ib" for="airMapCityDistrict">시·군·구</label>
-                                        <select name="" id="airMapCityDistrict" title="" class="W130">
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="airMapTown">읍·면·동</label>
-                                        <select name="" id="airMapTown" title="" class="W130">
-                                        </select>
-                                    </p>
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지점명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="airMapBranchName" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)" id="airMapViews">조회</a>
                         </p>
                     </li>
                 </ul>

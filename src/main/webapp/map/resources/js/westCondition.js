@@ -119,7 +119,7 @@ var _WestCondition = function () {
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:false,
-			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'악취 빈도',id:'BSML_FQ'}]
+			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'복합악취 ou',id:'BSML_FQ'}]
     	},
     	'environmentCorporation':{
     		layerType:'base',
@@ -229,8 +229,16 @@ var _WestCondition = function () {
 			     {name:'MIN10_AVRG_WD',title:'10분 평균 풍향'},
 			     {name:'MIN10_AVRG_WS',title:'10분 평균 풍속'},
 			     {name:'HD',title:'습도'}]
+    	},
+    	'iotSensorInfo':{
+    		layerType:'base',
+			title:'IOT 센서 정보',
+			keyColumn:['STATION_ID'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:false
     	}
-    	
     };
     
     var legendLayerList = [
@@ -864,11 +872,52 @@ var _WestCondition = function () {
 		case 'observatory':
 			styleFunction = observatoryFunction;
 			break;
+		case 'iotSensorInfo':
+			styleFunction = iotSensorInfoFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
+    };
+    
+    var iotSensorInfoFunction= function(feature){
+    	var width = 200;
+    	var height = 200;
+		var style =  new ol.style.Style({
+			image: new ol.style.Icon({
+				opacity: 1,
+				img:writeDynamicTableSvg({
+					feature:feature,
+					width:width,
+					height:height,
+					itemArr:[{text:'테스트',id:'POS'}]
+				}),
+				imgSize:[width,height]
+			}),
+	        zIndex:1
+		});
+    	
+    	return style;
+    };
+    
+    var writeDynamicTableSvg = function(options){
+    	var img = document.createElement("IMG");
+    	
+    	var svgString = '<svg width="'+options.width+'" height="'+options.height+'" version="1.1" xmlns="http://www.w3.org/2000/svg">';
+		img.height = options.height * options.itemArr.length;
+		img.width = options.width;
+		svgString += "<g id='columnGroup'> <rect x='0' y='10' width='70' height='100' fill='gainsboro'/> <rect x='70' y='10' width='70' height='100' fill='#fff'/> <text x='10' y='15' font-size='18px' font-weight='bold' fill='crimson'> <tspan x='10' dy='1em'>CO2</tspan> <tspan x='10' dy='1em'>SO2</tspan> <tspan x='10' dy='1em'>NO3</tspan> <tspan x='10' dy='1em'>PM2.5</tspan> </text> <text x='90' y='15' font-size='18px' text-anchor='middle'> <tspan x='90' dy='1em'>30</tspan> <tspan x='90' dy='1em'>40</tspan> <tspan x='90' dy='1em'>50</tspan> <tspan x='90' dy='1em'>60</tspan> </text> </g>";
+		for(var i = 0; i < options.itemArr.length; i++){
+			
+		}
+		
+		svgString += '</svg>';
+		
+		img.src = 'data:image/svg+xml;charset=utf8,'+encodeURIComponent(svgString);
+		
+		return img
     };
     
     var observatoryFunction= function(feature){
@@ -877,23 +926,31 @@ var _WestCondition = function () {
     		image: new ol.style.Circle({
     			radius: 15,
     			fill: new ol.style.Fill({
-    		        color: '#118575'
-    		    }),
-    		    stroke: new ol.style.Stroke({
-    		    	color: '#AFABAB',
-    		    	width: 3
-    		    })
-    		})
+    				color: '#118575'
+    			}),
+    			stroke: new ol.style.Stroke({
+    				color: '#AFABAB',
+    				width: 3
+    			})
+    		}),
+			text: new ol.style.Text({
+				text: feature.getProperties().NAME,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: '13px bold, Verdana'
+			})
   		});
     	
     	return style;
     }
     
     var odorOriginFunction = function(feature){
-    	var colorObj = {'BSL01001':'red',
-    			'BSL01002':'blue',
-    			'BSL01003':'yellow',
-    			'BSL01004':'gray'};
+    	var colorObj = {'BSL01001':'#70AD47',
+    			'BSL01002':'#ED7D31',
+    			'BSL01003':'#4472C4',
+    			'BSL01004':'#548235'};
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		fill: new ol.style.Fill({
@@ -909,7 +966,7 @@ var _WestCondition = function () {
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: '16px bold, Verdana'
 			})
   		});
     	
@@ -944,7 +1001,15 @@ var _WestCondition = function () {
     		    	color: '#AFABAB',
     		    	width: 3
     		    })
-    		})
+    		}),
+			text: new ol.style.Text({
+				text: feature.getProperties().NAME,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: '13px bold, Verdana'
+			})
   		});
     	
     	return style;

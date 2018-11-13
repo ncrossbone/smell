@@ -204,6 +204,7 @@
 		          WHERE SENSOR_TY_CODE = 'SEN01001'
                     AND SPOT_CODE NOT IN ('0003')
                     AND LEGALDONG_CODE LIKE CONCAT(#{town},'%')
+                    AND LO IS NOT NULL
 					<if test="branchName != null">
     					AND SENSOR_NM LIKE CONCAT('%', #{branchName}, '%')
   					</if>
@@ -483,9 +484,11 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
 	<select id="observatoryFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	SELECT STATION_ID, 
 		   POINT_X, 
-		   POINT_Y
+		   POINT_Y,
+		   NAME
       FROM bdsm.SHP_OBSR_SPOT
      WHERE ADM_CODE LIKE CONCAT(#{town},'%')
+       AND STATION_ID = '131'
 	</select>
 	
 	<select id="observatoryGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -494,7 +497,7 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
 		  NAME, 
           POINT_X, 
           POINT_Y, 
-          OBSR_TIME, 
+          CONCAT(SUBSTR(OBSR_TIME,1,4),'년 ',SUBSTR(OBSR_TIME,5,2),'월 ',SUBSTR(OBSR_TIME,7,2),'일 ',SUBSTR(OBSR_TIME,9,2),'시') AS OBSR_TIME, 
           MIN60_ACCMLT_RAINFL, 
           DE_RAINFL, 
           TMPRT, 
@@ -515,5 +518,10 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
 	SELECT STATION_ID,POS,NAME, POINT_X, POINT_Y
                 FROM bdsm.SHP_OBSR_SPOT
 			   WHERE STATION_ID = #{STATION_ID}
+	</select>
+	<select id="iotSensorInfoFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT STATION_ID,POS,NAME, POINT_X, POINT_Y
+                FROM bdsm.SHP_OBSR_SPOT
+               WHERE ADM_CODE LIKE '4311%'
 	</select>
 </mapper>
