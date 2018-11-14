@@ -154,11 +154,25 @@
     	
 	<ul class="lnb" id="smellMap">
 		<li>
-			<h2 class="ov accordion"><em></em>민원현황<span></span></h2>
+			<div class="layerOnOff"></div>
+			<h2 class="ov accordion">민원현황<span></span></h2>
 			<div class="lnb_conts"  id="complaintStatus">
 				<h3>민원현황<span></span></h3>
                 <ul>
                     <li>
+                    	<dl>
+                            <dt>항목 선택</dt>
+                            <dd style="margin-top: 8px;">
+                                <input type="checkbox" class="dis_ib" value="CVP02001" id="complaintStatusCheckBox01" name="complaintStatusCheckBox" checked="checked"/>
+                                <label class="contents" for="complaintStatusCheckBox01" style="margin-right: 20px;">청주시</label>
+                                
+                                <input type="checkbox" class="dis_ib" value="CVP02002" id="complaintStatusCheckBox02" name="complaintStatusCheckBox"/>
+                                <label class="contents" for="complaintStatusCheckBox02" style="margin-right: 20px;">네이버</label>
+                                
+                                <input type="checkbox" class="dis_ib" value="CVP02003" id="complaintStatusCheckBox03" name="complaintStatusCheckBox"/>
+                                <label class="contents" for="complaintStatusCheckBox03">오창지킴이</label>
+                            </dd>
+                        </dl>
                         <dl>
                             <dt>지역 선택</dt>
                             <dd>
@@ -200,7 +214,8 @@
 		</li>
 
         <li>
-            <h2 class="accordion"><em></em>관능 평가 데이터<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">관능 평가 데이터<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="sensoryEvaluation">
 				<h3>관능 평가 데이터</h3>
                 <ul>
@@ -223,7 +238,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>OU 범위</dt>
+                            <dt>복합악취 ou</dt>
                             <dd>
                                 <input id="sensoryEvaluationStartOU" class="W105" style="width: 90px !important;" type="text" value="0"/>
                                 ~
@@ -239,7 +254,8 @@
         </li>
         
         <li>
-            <h2 class="accordion"><em></em>이동식 측정 데이터<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">이동식 측정 데이터<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="portableMeasurement">
 				<h3>이동식 측정 데이터</h3>
                 <ul>
@@ -288,13 +304,6 @@
                                 </div>
                             </dd>
                         </dl>
-                        <dl>
-                            <dt>센서명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="portableMeasurementBranchName" title="지점명 검색어" />
-                            </dd>
-                        </dl>
                         <p class="MgT35 MgB30 AC">
                            <a class="btn01" href="javascript:void(0)" id="portableMeasurementViews">조회</a>
                         </p>
@@ -304,7 +313,8 @@
         </li>
         
         <li>
-            <h2 class="accordion"><em></em>고정식 측정 데이터<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">고정식 측정 데이터<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="fixedMeasurement">
 				<h3>고정식 측정 데이터</h3>
                 <ul>
@@ -361,19 +371,33 @@
 	</ul>         
     <ul class="lnb" id="smellInfo" style="display: none;">
 		<li>
-			<h2 class="ov accordion"><em></em>IOT 센서 정보<span></span></h2>
-			<div class="lnb_conts">
+			<div class="layerOnOff"></div>
+			<h2 class="ov accordion">IOT 센서 정보<span></span></h2>
+			<div class="lnb_conts" id="iotSensorInfo">
 				<h3>IOT 센서 정보</h3>
                 <ul>
                     <li>
-                        
+                        <dl>
+			                 <dt>항목 선택</dt>
+			                 <dd style="margin-top: 8px;">
+			                     <input type="checkbox" class="dis_ib" value="test1" id="iotSensorInfoCheckBox01" name="iotSensorInfoCheckBox"/>
+			                     <label class="contents" for="iotSensorInfoCheckBox01" style="margin-right: 20px;">청주시</label>
+			                     
+			                     <input type="checkbox" class="dis_ib" value="test2" id="iotSensorInfoCheckBox02" name="iotSensorInfoCheckBox"/>
+			                     <label class="contents" for="iotSensorInfoCheckBox02" style="margin-right: 20px;">네이버</label>
+			                     
+			                     <input type="checkbox" class="dis_ib" value="test3" id="iotSensorInfoCheckBox03" name="iotSensorInfoCheckBox"/>
+			                     <label class="contents" for="iotSensorInfoCheckBox03">오창지킴이</label>
+			                 </dd>
+			             </dl>
                     </li>
                 </ul>
             </div>
 		</li>
 
         <li>
-            <h2 class="accordion"><em></em>악취저감설비 관리<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">악취저감설비 관리<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorReduction">
 				<h3>악취저감설비 관리</h3>
                 <ul>
@@ -411,7 +435,8 @@
         </li>
         
         <li>
-            <h2 class="accordion"><em></em>악취원점 관리<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">악취원점 관리<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorOrigin">
 				<h3>악취원점 관리</h3>
                 <ul>
@@ -447,28 +472,62 @@
                 </ul>
             </div>
         </li>
+        <li>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">저감 모니터링<span></span></h2>
+            <div class="lnb_conts" style="display: none;" id="reductionMonitoring">
+				<h3>저감 모니터링</h3>
+                <ul>
+                    <li>
+                        <dl>
+                            <dt>지역 선택</dt>
+                            <dd>
+                                <div class="box">
+                                    <p>
+                                        <label class="W60 dis_ib" for="reductionMonitoringCityDistrict">시·군·구</label>
+                                        <select name="" id="reductionMonitoringCityDistrict" title="" class="W130">
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <label class="W60 dis_ib" for="reductionMonitoringTown">읍·면·동</label>
+                                        <select name="" id="reductionMonitoringTown" title="" class="W130">
+                                        </select>
+                                    </p>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>지점명</dt>
+                            <dd>
+                                <label class="hidden">지점명 검색어</label>
+                                <input type="text" class="W95p" name="" value="" id="reductionMonitoringBranchName" title="지점명 검색어" />
+                            </dd>
+                        </dl>
+                        <p class="MgT35 MgB30 AC">
+                           <a class="btn01" href="javascript:void(0)" id="reductionMonitoringViews">조회</a>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </li>
 	</ul>
 	<ul class="lnb" id="smellMeasure" style="display: none;">
 		<li>
-			<h2 class="ov accordion"><em></em>기상청측정망<span></span></h2>
+			<div class="layerOnOff"></div>
+			<h2 class="ov accordion">기상청측정망<span></span></h2>
 			<div class="lnb_conts" id="observatory">
 				<h3>기상청측정망</h3>
                 <ul>
                     <li>
                         <dl>
-                            <dt>측정항목</dt>
-                            <dd>
-                            	<select id="observatoryItem" class="W95p">
-                            		<option>CO2</option>
-                            	</select>
-                            </dd>
-                        </dl>
-                        <dl>
                             <dt>조회기간</dt>
                              <dd>
-                                <input type="text" id="observatoryStartDate" class="W105" style="width: 90px !important"/>
-                                ~
-                                <input type="text" id="observatoryEndDate" class="W105" style="width: 90px !important"/>
+                                <input type="text" id="observatoryStartDate" class="W105" style="width: 145px !important"/>
+                                <select id="observatoryStartTime">
+                                </select>
+                                <input type="text" id="observatoryEndDate" class="W105" style="margin-top:7px; width: 145px !important"/>
+                                <select id="observatoryEndTime">
+                                </select>
                             </dd>
                         </dl>
                         <dl>
@@ -497,7 +556,8 @@
 		</li>
 
         <li>
-            <h2 class="accordion"><em></em>환경공단 측정망<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">환경공단 측정망<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="environmentCorporation">
 				<h3>환경공단 측정망</h3>
                 <ul>
@@ -554,7 +614,8 @@
         </li>
         
         <li>
-            <h2 class="accordion"><em></em>청주시 무인악취 측정망<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">청주시 무인악취 측정망<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="unmannedOdor">
 				<h3>청주시 무인악취 측정망</h3>
                 <ul>
@@ -605,63 +666,11 @@
                 </ul>
             </div>
         </li>
-        <li>
-            <h2 class="accordion"><em></em>KT 에어맵 코리아 측정망<span></span></h2>
-            <div class="lnb_conts" style="display: none;" id="airMap">
-				<h3>KT 에어맵 코리아 측정망</h3>
-                <ul>
-                    <li>
-                        <dl>
-                            <dt>측정항목</dt>
-                            <dd>
-                            	<select id="airMapItem" class="W95p">
-                            		<option>CO2</option>
-                            	</select>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>조회기간</dt>
-                             <dd>
-                                <input type="text" id="airMapStartDate" class="W105" style="width: 90px !important"/>
-                                ~
-                                <input type="text" id="airMapEndDate" class="W105" style="width: 90px !important"/>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지역 선택</dt>
-                            <dd>
-                                <div class="box">
-                                    <p>
-                                        <label class="W60 dis_ib" for="airMapCityDistrict">시·군·구</label>
-                                        <select name="" id="airMapCityDistrict" title="" class="W130">
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="W60 dis_ib" for="airMapTown">읍·면·동</label>
-                                        <select name="" id="airMapTown" title="" class="W130">
-                                        </select>
-                                    </p>
-                                </div>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>지점명</dt>
-                            <dd>
-                                <label class="hidden">지점명 검색어</label>
-                                <input type="text" class="W95p" name="" value="" id="airMapBranchName" title="지점명 검색어" />
-                            </dd>
-                        </dl>
-                        <p class="MgT35 MgB30 AC">
-                           <a class="btn01" href="javascript:void(0)" id="airMapViews">조회</a>
-                        </p>
-                    </li>
-                </ul>
-            </div>
-        </li>
 	</ul>
 	<ul class="lnb" id="smellReport" style="display: none;">
 		<li>
-			<h2 class="ov accordion"><em></em>기상장 분석<span></span></h2>
+			<div class="layerOnOff"></div>
+			<h2 class="ov accordion">기상장 분석<span></span></h2>
 			<div class="lnb_conts" id="weatherAnalysis" >
 				<h3>기상장 분석</h3>
                 <ul>
@@ -736,7 +745,8 @@
 		</li>
 
         <li>
-            <h2 class="accordion"><em></em>악취확산 분석<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">악취확산 분석<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorSpread">
 				<h3>악취확산 분석</h3>
                 <ul>
@@ -793,7 +803,8 @@
         </li>
         
         <li>
-            <h2 class="accordion"><em></em>악취 이동경로<span></span></h2>
+        	<div class="layerOnOff"></div>
+            <h2 class="accordion">악취 이동경로<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorMovement">
 				<h3>악취 이동경로</h3>
                 <ul>

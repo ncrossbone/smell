@@ -1,5 +1,4 @@
 var _WestCondition = function () {
-    var initTownCode = '43111';
     var dateMappingObj = {};
     var cityMappingObj = {};
     var noDataContent = '데이터가 없습니다.';
@@ -17,20 +16,14 @@ var _WestCondition = function () {
     		SHP_BPLC_FOR_WESTCONDITION:':shp_bplc_for_westcondition'
     };
     var contentsConfig = {
-    	'complaintStatus':{cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
-    										'town':'LEGALDONG_CODE',
-    										'startDate':'CVPL_DT',
-    										'endDate':'CVPL_DT',
-    										'branchName':'CVPL_CN'},
-    					  layerName:westLayerObj.CVPL_POINT,
-    					  layerType:'cluster',
+    	'complaintStatus':{layerType:'cluster',
     					  title:'민원현황',
     					  keyColumn:['CVPL_NO'],
     					  isVisible:true,
-    					  isUseGeoserver:true,
+    					  isUseGeoserver:false,
     					  isLabelLayer:false,
     					  isWriteGrid:true,
-    					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DTH'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
+    					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DT'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
     					             {name:'CVPL_DT',title:'민원 일시'},
     					             {name:'CPTTR',title:'민원인'},
@@ -119,7 +112,7 @@ var _WestCondition = function () {
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:false,
-			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'OU_내용',id:'BSML_FQ'}]
+			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'복합악취 ou',id:'BSML_FQ'}]
     	},
     	'environmentCorporation':{
     		layerType:'base',
@@ -208,8 +201,37 @@ var _WestCondition = function () {
     			           {name:'TELNO',title:'전화번호'},
     			           {name:'INDUTY',title:'업종'},
     			           {name:'ERTHSF_AL',title:'지표 고도'}]
+    	},
+    	'observatory':{
+    		layerType:'base',
+			title:'기상청 측정망',
+			keyColumn:['STATION_ID'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:true,
+			popupColumnArr:[{text:'측정소 코드',id:'STATION_ID'},{text:'측정소 명',id:'NAME'},{text:'주소',id:'POS'}],
+			columnArr:[{name:'STATION_ID',title:'센서ID',visible:false},
+			           {name:'NAME',title:'관측소명'},
+			     {name:'OBSR_TIME',title:'측정 일시'},
+			     {name:'MIN60_ACCMLT_RAINFL',title:'60분 누적 강수량'},
+			     {name:'DE_RAINFL',title:'일 강수량'},
+			     {name:'TMPRT',title:'기온'},
+			     {name:'MXMM_MONT_WD',title:'최대 순간 풍향'},
+			     {name:'MXMM_MONT_WS',title:'최대 순간 풍속'},
+			     {name:'MIN10_AVRG_WD',title:'10분 평균 풍향'},
+			     {name:'MIN10_AVRG_WS',title:'10분 평균 풍속'},
+			     {name:'HD',title:'습도'}]
+    	},
+    	'iotSensorInfo':{
+    		layerType:'base',
+			title:'IOT 센서 정보',
+			keyColumn:['STATION_ID'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:false
     	}
-    	
     };
     
     var legendLayerList = [
@@ -271,27 +293,50 @@ var _WestCondition = function () {
     		if(data.features.length == 0){
     			return;
     		}
+    		
+    		var sensoryInitTownCode ='43114';
+    		var initTownCode = '4311';
+    		
     		for(var i = 0; i < data.features.length; i++){
     			var properties = data.features[i].properties;
+        		
     			if(!cityTownObj[properties.adm_cd.substr(0,5)]){
+    				if(!cityTownObj[initTownCode]){
+    					cityTownObj[initTownCode] = {};
+        				cityTownObj[initTownCode].text = '전체';
+        				cityTownObj[initTownCode].child = {};
+    				}
+    				
     				cityTownObj[properties.adm_cd.substr(0,5)] = {};
     				cityTownObj[properties.adm_cd.substr(0,5)].text = properties.cty_nm;
     				cityTownObj[properties.adm_cd.substr(0,5)].child = {};
     			}
     			
     			if(!cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd]){
+    				if(!cityTownObj[initTownCode].child[initTownCode]){
+    					cityTownObj[initTownCode].child[initTownCode] = {};
+        				cityTownObj[initTownCode].child[initTownCode].text = '전체';
+    				}
+    				
+    				if(!cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd.substr(0,5)]){
+    					cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd.substr(0,5)] = {};
+    					cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd.substr(0,5)].text = '전체';
+    				}
+    				
     				cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd] = {};
     				cityTownObj[properties.adm_cd.substr(0,5)].child[properties.adm_cd].text = properties.dong_nm;
     			}
     		}
     		
+    		
     		for(var i = 0; i < cityArr.length; i++){
-    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityTownObj[initTownCode].child;
+    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityArr[i] =='sensoryEvaluationTown'?cityTownObj[sensoryInitTownCode].child:cityTownObj[initTownCode].child;
         		writeCity(data, cityArr[i]);
     		}
     		
     		writeCity(cityTownObj,'cityDistrictToolbar');
     		setToolbarCity({adm_cd:'4311425300'});
+    		$('#sensoryEvaluationCityDistrict').val(sensoryInitTownCode);
     	});
     	
     	getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
@@ -315,7 +360,7 @@ var _WestCondition = function () {
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
-		$('#portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
+		$('#observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
 		
 		var timeOptionMinute = '';
 		
@@ -520,6 +565,13 @@ var _WestCondition = function () {
     };
 
     var setEvent = function(){
+    	$('input[name$="CheckBox"]').off('change').on('change',function(){
+    		var id = $(this).attr('id');
+    		if(id.indexOf('iotSensorInfo')>-1){
+    			checkSearchCondition(id.split('CheckBox')[0]);
+    		}
+    	});
+    	
     	$('#poiView').off('click').on('click',function(){
     		initPOI();
     	});
@@ -549,8 +601,8 @@ var _WestCondition = function () {
     		}
     	});
     	
-    	$('.lnb').find('em').off('click').on('click',function(){
-    		var contentsId = $(this).parent().parent().find('.lnb_conts').attr('id');
+    	$('.layerOnOff').off('click').on('click',function(){
+    		var contentsId = $(this).parent().find('.lnb_conts').attr('id');
     		var isShow = false;
     		clearFocusLayer();
     		try{
@@ -564,7 +616,7 @@ var _WestCondition = function () {
         		}	
     		}catch(e){}
     		
-    		var reportCheck = $(this).parent().parent().parent().attr('id');
+    		var reportCheck = $(this).parent().parent().attr('id');
 
     		// 분석쪽은 별도
     		if(reportCheck == 'smellReport'){
@@ -605,7 +657,25 @@ var _WestCondition = function () {
 					var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
 					
 					if(!paramObj[replaceName]){
-						paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+						if($($('input[name="' + searchPlaceName + '"]')[0]).attr('type')=='checkbox'){
+							if(typeof(paramObj[replaceName])!='Array'){
+								paramObj[replaceName] = [];
+							}
+							var checkboxArr = $('input[name="' + searchPlaceName + '"]:checked');
+							
+							if(checkboxArr.length == 0){
+								return alert('항목을 선택하세요.');
+							}
+							//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
+							for(var k=0; k<checkboxArr.length; k++){
+								paramObj[replaceName].push($(checkboxArr[k]).val());
+								//checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
+							}
+							
+							//cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
+						}else{
+							paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+						}
 					}
 				}else if(searchPlaceId){
 					var splitId = searchPlaceId.split(placeId)[1];
@@ -799,17 +869,92 @@ var _WestCondition = function () {
 		case 'odorOrigin':
 			styleFunction = odorOriginFunction;
 			break;
+		case 'observatory':
+			styleFunction = observatoryFunction;
+			break;
+		case 'iotSensorInfo':
+			styleFunction = iotSensorInfoFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
     };
+    
+    var iotSensorInfoFunction= function(feature){
+    	var width = 200;
+    	var height = 200;
+    	var itemArr = [];
+    	var checkBox = $('input[name=iotSensorInfoCheckBox]:checked');
+    	
+    	var img = document.createElement("IMG");
+		img.height = height * checkBox.length;
+		img.width = width;
+		
+		var svgString = '<svg width="'+width+'" height="'+height+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
+		var colString = '';
+		var dataString = '';
+		
+		svgString += '<rect x="0" y="10" width="70" height="100" fill="gainsboro"/>';
+		svgString += '<rect x="70" y="10" width="70" height="100" fill="#fff"/>';
+		
+		colString += '<text x="10" y="15" font-size="18px" font-weight="bold" fill="crimson">';
+		dataString += '<text x="90" y="15" font-size="18px" text-anchor="middle">';
+		for(var i = 0; i < checkBox.length; i++){
+			colString += '<tspan x="10" dy="1em">CO2</tspan>';
+			dataString += '<tspan x="90" dy="1em">50</tspan>';
+    	}
+		colString += '</text>';
+		dataString += '</text>'
+		
+		svgString += colString + dataString + '</g></svg>';
+		
+		img.src = 'data:image/svg+xml;charset=utf8,'+encodeURIComponent(svgString);
+		
+		var style =  new ol.style.Style({
+			image: new ol.style.Icon({
+				opacity: 1,
+				img:img,
+				imgSize:[width,height]
+			}),
+	        zIndex:1
+		});
+    	
+    	return style;
+    };
+    
+    var observatoryFunction= function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 15,
+    			fill: new ol.style.Fill({
+    				color: '#118575'
+    			}),
+    			stroke: new ol.style.Stroke({
+    				color: '#AFABAB',
+    				width: 3
+    			})
+    		}),
+			text: new ol.style.Text({
+				text: feature.getProperties().NAME,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: '13px bold, Verdana'
+			})
+  		});
+    	
+    	return style;
+    }
+    
     var odorOriginFunction = function(feature){
-    	var colorObj = {'BSL01001':'red',
-    			'BSL01002':'blue',
-    			'BSL01003':'yellow',
-    			'BSL01004':'gray'};
+    	var colorObj = {'BSL01001':'#70AD47',
+    			'BSL01002':'#ED7D31',
+    			'BSL01003':'#4472C4',
+    			'BSL01004':'#548235'};
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		fill: new ol.style.Fill({
@@ -818,7 +963,15 @@ var _WestCondition = function () {
 		    stroke: new ol.style.Stroke({
 		    	color: '#AFABAB',
 		    	width: 3
-		    })
+		    }),
+		    text: new ol.style.Text({
+				text: feature.getProperties().BSML_TRGNPT_NM,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: '16px bold, Verdana'
+			})
   		});
     	
     	return style;
@@ -852,7 +1005,15 @@ var _WestCondition = function () {
     		    	color: '#AFABAB',
     		    	width: 3
     		    })
-    		})
+    		}),
+			text: new ol.style.Text({
+				text: feature.getProperties().NAME,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: '13px bold, Verdana'
+			})
   		});
     	
     	return style;
@@ -862,7 +1023,7 @@ var _WestCondition = function () {
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
-    			radius: 10,
+    			radius: 20,
     			fill: new ol.style.Fill({
     		        color: '#4472C4'
     		    }),
@@ -870,7 +1031,14 @@ var _WestCondition = function () {
     		    	color: '#AFABAB',
     		    	width: 3
     		    })
-    		})
+    		}),
+			text: new ol.style.Text({
+				text: feature.getProperties().BSML_FQ,
+				fill: new ol.style.Fill({
+					color: '#fff'
+				}),
+				font: '9px bold, Verdana'
+			})
   		});
     	
     	return style;
@@ -983,12 +1151,14 @@ var _WestCondition = function () {
     };
     
     var createLastPoint = function(feature) {
+    	
+    	var tyCode = {'CVP02001':'red','CVP02002':'green','CVP02003':'blue'};
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
-    			radius: 5,
+    			radius: 10,
     			fill: new ol.style.Fill({
-    		        color: '#f00'
+    		        color: tyCode[feature.getProperties().CVPL_TY_CODE]
     		    })
     		})
     	});
@@ -1234,15 +1404,18 @@ var _WestCondition = function () {
     
     var writeCity = function (data, comboId) {
         var html = '';
-        var allHtml = '';
+        
         for (var key in data) {
-        	if(comboId.toLowerCase().indexOf('town') > -1){
-        		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
+        	if(comboId!='cityDistrictToolbar' && comboId!='townToolbar'){
+        		html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
+        	}else{
+        		if(data[key].text!='전체'){
+        			html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
+        		}
         	}
-        	html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
         }
         
-        $('#' + comboId).html(allHtml+html);
+        $('#' + comboId).html(html);
     };
 
     var getData = function (options) {
