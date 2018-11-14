@@ -15,6 +15,22 @@
 		UPDATE ANALS_AREA_MANAGE SET GRID_INTRST_SE_CODE = #{flag} WHERE ANALS_AREA_ID = #{indexId}
 	</update>
 	
+	<insert id="insertAnals" parameterType="java.util.HashMap">
+		INSERT INTO ANALS_AREA_MANAGE
+		 (ANALS_AREA_ID, GRID_INTRST_SE_CODE ,INTRST_AREA_NM,INTRST_AREA_LC,TPGRPH_AL,REGIST_DT,REGISTER_ID,CHANGE_DT,CHANGER_ID,PREDICT_AL,UTMX,UTMY,GRID_AREA_ID)
+		 SELECT (SELECT  MAX(CAST(ANALS_AREA_ID AS INT))+1 AS MAX_AREA_ID 
+		   FROM ANALS_AREA_MANAGE ),'ANL01002' ,INTRST_AREA_NM,INTRST_AREA_LC,TPGRPH_AL,REGIST_DT,REGISTER_ID,CHANGE_DT,CHANGER_ID,PREDICT_AL,UTMX,UTMY,GRID_AREA_ID
+		 FROM ANALS_AREA_MANAGE
+		 WHERE GRID_INTRST_SE_CODE = 'ANL01001'
+		 AND GRID_AREA_ID = #{indexId}
+	</insert>
+	
+	<delete id="deleteAnals" parameterType="java.util.HashMap">
+		DELETE FROM ANALS_AREA_MANAGE
+	      WHERE GRID_INTRST_SE_CODE = 'ANL01002' 
+		  AND GRID_AREA_ID = #{indexId}
+	</delete>
+	
 	<select id="complaintStatusFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CVPL_NO,
 			   LA AS POINT_X,
@@ -337,20 +353,17 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
 	</select>
 	
 	<select id="getArea" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-	  SELECT ANALS_AREA_ID 
-			,GRID_INTRST_SE_CODE
-			,INTRST_AREA_NM
-			,INTRST_AREA_LC
-			,TPGRPH_AL
-			,REGIST_DT
-			,PREDICT_AL
-			,REGISTER_ID
-			,UTMX
-			,UTMY 
-			FROM ANALS_AREA_MANAGE
-		  WHERE 1=1
+	  SELECT   ANALS_AREA_ID,
+		       INTRST_AREA_NM,
+		       INTRST_AREA_LC,
+		       TPGRPH_AL,
+		       PREDICT_AL,
+		       UTMX,
+		       UTMY
+		  FROM ANALS_AREA_MANAGE
+		 WHERE GRID_INTRST_SE_CODE = 'ANL01001' 
 	 	 <if test="analsAreaId != null">
-    			AND ANALS_AREA_ID = #{analsAreaId}
+    			AND GRID_AREA_ID = #{analsAreaId}
   		</if>
 	 	 
 	</select>

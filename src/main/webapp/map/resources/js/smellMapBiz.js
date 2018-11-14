@@ -16,7 +16,7 @@ var _SmellMapBiz = function () {
 	
 	var bizUrl = window.location.protocol+'//'+window.location.host;
 	
-	var bizLayers = {'CELL9KM' : 'shp_anals_area',//'cell_200m_utmk',
+	var bizLayers = {'CELL9KM' : 'shp_anals_area_new',//'cell_200m_utmk',
 					 'ALL9KM' : 'ALL_CMAQ_9KM',
 			         'LINE' : 'line_test_wgs84',
 			         'POINT' : 'CELL_AIR_9KM_PT',
@@ -88,7 +88,10 @@ var _SmellMapBiz = function () {
 	}
 	var setComponents = function(){
 		var toDay = new Date();
-		var hour = toDay.getHours();
+		var hour = toDay.getHours()-1;
+		if(hour < 0 ){
+			hour = 0;
+		}
 		var timeOptions = '';
 		for(var i=0; i<24; i++){
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i) +'">'+i+'시</option>';
@@ -114,6 +117,7 @@ var _SmellMapBiz = function () {
 		
 		$('#weatherAnalysisStartDate').datepicker('setDate', toDay);
 		$('#weatherAnalysisEndDate').datepicker('setDate', toDay);
+		$('#weatherAnalysisEndDate').datepicker( "option", "disabled", true );
 		
 		//악취 확산 분석
 		$('#odorSpreadStartTime').html(timeOptions);
@@ -135,6 +139,7 @@ var _SmellMapBiz = function () {
 		
 		$('#odorSpreadStartDate').datepicker('setDate', toDay);
 		$('#odorSpreadEndDate').datepicker('setDate', toDay);
+		$('#odorSpreadEndDate').datepicker( "option", "disabled", true );
 
 		// 악취 경로
 		$('#odorMovementStartDate').datepicker('setDate', toDay);
@@ -428,23 +433,57 @@ var _SmellMapBiz = function () {
 			}
 		});
 		
+		
+		$('#testBtn6').on('click', function(){
+			var me = $(this);
+			_WestCondition.tabCloseOpen(me);
+		});
+		
+		$('#testBtn7').on('click', function(){
+			var me = $(this);
+			if($('#gridArea> #tabs').children().length > 2){
+				_WestCondition.gridCloseOpen(me);
+			}
+		});
+		
+		
 		$('#cellRemeveBtn').on('click', function(){
 			if(highlightVectorLayer){
-				var flag = $(this).attr('flag');
 				var indexId = $(this).attr('indexId');
-				$.ajax({
-		            url : bizUrl+'/putFlag.do?flag='+(flag == "Y" ? "N":"Y")+'&indexId='+indexId,
-		            type : 'GET',
-		            contentType : 'application/json'
-		    	}).done(function(result){
-		    		//noCacheCount++;
-		    		
-		    		var wmsSource = wmsSelectTestLayer.getSource();
-		    		//wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
-		    		wmsSource.updateParams({CQL_FILTER:"1=1"});
-		    		
-		    		$('#popup-closer').trigger('click');
-		    	});
+				var flag = $(this).attr('reg');
+				
+				if(flag == "0"){
+					$.ajax({
+			            url : bizUrl+'/insertAnals.do?indexId='+indexId,
+			            type : 'GET',
+			            contentType : 'application/json'
+			    	}).done(function(result){
+			    		//noCacheCount++;
+			    		
+			    		var wmsSource = wmsSelectTestLayer.getSource();
+			    		//wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
+			    		wmsSource.updateParams({CQL_FILTER:"1=1"});
+			    		
+			    		$('#popup-closer').trigger('click');
+			    		
+			    	});
+				}else{
+					$.ajax({
+			            url : bizUrl+'/deleteAnals.do?indexId='+indexId,
+			            type : 'GET',
+			            contentType : 'application/json'
+			    	}).done(function(result){
+			    		//noCacheCount++;
+			    		
+			    		var wmsSource = wmsSelectTestLayer.getSource();
+			    		//wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
+			    		wmsSource.updateParams({CQL_FILTER:"1=1"});
+			    		
+			    		$('#popup-closer').trigger('click');
+			    	});
+				}
+				
+				
 			}
 		});
 		
@@ -541,7 +580,7 @@ var _SmellMapBiz = function () {
 						if(popupOverlay){
 							
 							popupOverlay.setPosition(featureCenter);
-							_WestCondition.popupOverlayData(result.features[0].properties.anals_area_id);
+							_WestCondition.popupOverlayData(result.features[0].properties.ANALS_AREA_ID , result.features[0].properties.REG);
 							
 							/*$('#cellRemeveBtn').attr('flag', result.features[0].properties.FLAG);
 							$('#cellRemeveBtn').attr('indexId', result.features[0].properties.IDX);
@@ -691,12 +730,30 @@ var _SmellMapBiz = function () {
 		});
 		
 		$('input[name="weatherType"]').on('click', function(){
+			var toDay = new Date();
+			var layerNm = $('input[name="weatherType"]:checked').val();
+			
+			// 실시간
+			if(layerNm == 'weather_now'){
+				$('#weatherAnalysisEndDate').datepicker('setDate', toDay);
+				$('#weatherAnalysisStartDate').datepicker( "option", "disabled", false );
+				$('#weatherAnalysisEndDate').datepicker( "option", "disabled", true );
+			}else{ // 예보
+				$('#weatherAnalysisStartDate').datepicker('setDate', toDay);
+				$('#weatherAnalysisStartDate').datepicker( "option", "disabled", true );
+				$('#weatherAnalysisEndDate').datepicker( "option", "disabled", false );
+			}
 			if(weatherAnalysisLayer){
-				var layerNm = $('input[name="weatherType"]:checked').val();
-				for(var i=0; i<weatherAnalysisTimeSeries.length; i++){
-					weatherAnalysisTimeSeries[i].layer = layerNm;
-				}
-				updateLayer(weatherAnalysisLayer, weatherAnalysisTimeSeries[weatherAnalysisIndex]);
+				
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, weatherAnalysisLayer);
+				weatherAnalysisLayer = null;
+				
+				clearInterval(weatherAnalysisInterval);
+				weatherAnalysisInterval = null;
+//				for(var i=0; i<weatherAnalysisTimeSeries.length; i++){
+//					weatherAnalysisTimeSeries[i].layer = layerNm;
+//				}
+//				updateLayer(weatherAnalysisLayer, weatherAnalysisTimeSeries[weatherAnalysisIndex]);
 			}
 		})
 		$('#weatherWsBtn').on('click', function(){
@@ -815,15 +872,6 @@ var _SmellMapBiz = function () {
 			}
 		}); 
 		
-		$('input[name="odorSpreadLayerType"]').on('click', function(){
-			if(odorSpreadLayer){
-				var layerNm = $('input[name="odorSpreadLayerType"]:checked').val();
-				for(var i=0; i<odorSpreadTimeSeries.length; i++){
-					odorSpreadTimeSeries[i].layer = layerNm;
-				}
-				updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
-			}
-		})
 		// 악취 확산 분석
 		$('#odorSpreadPlay').on('click', function(){
 			
@@ -896,6 +944,35 @@ var _SmellMapBiz = function () {
 				setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
 			}
 		}); 
+		$('input[name="odorSpreadLayerType"]').on('click', function(){
+			var layerNm = $('input[name="odorSpreadLayerType"]:checked').val();
+			
+			// 실시간
+			if(layerNm == 'anals_area_now'){
+				$('#odorSpreadEndDate').datepicker('setDate', toDay);
+				$('#odorSpreadStartDate').datepicker( "option", "disabled", false );
+				$('#odorSpreadEndDate').datepicker( "option", "disabled", true );
+			}else{ // 예보
+				$('#odorSpreadStartDate').datepicker('setDate', toDay);
+				$('#odorSpreadStartDate').datepicker( "option", "disabled", true );
+				$('#odorSpreadEndDate').datepicker( "option", "disabled", false );
+			}
+			
+			if(odorSpreadLayer){
+				
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadLayer);
+				odorSpreadLayer = null;
+				
+				clearInterval(odorSpreadInterval);
+				odorSpreadInterval = null;
+				
+//				for(var i=0; i<odorSpreadTimeSeries.length; i++){
+//					odorSpreadTimeSeries[i].layer = layerNm;
+//				}
+				//updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
+			}
+		})
+		
 		// 악취 이동경로
 		$('#odorMovementPlay').on('click', function(){
 			

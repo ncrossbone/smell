@@ -29,6 +29,16 @@ public class MapBiz {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public int insertAnals(HashMap param) {
+		return mapMapper.insertAnals(param);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public int deleteAnals(HashMap param) {
+		return mapMapper.deleteAnals(param);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public int putFlag(HashMap param) {
 		return mapMapper.putFlag(param);
 	}
