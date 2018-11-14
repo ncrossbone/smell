@@ -451,9 +451,9 @@ var _WestCondition = function () {
         		}
             	var korObj = {};
             	var countObj = {
-            			x:-1,
-            			y:-1,
-            			z:-1
+            			x:0,
+            			y:0,
+            			z:0
             	};
             	
             	for(var i = 0; i < data.length; i++){
@@ -485,14 +485,20 @@ var _WestCondition = function () {
             	}
             	
             	writePOI(POIConditionObj,'poiSelect01');
-            	writePOI(POIConditionObj[0].child,'poiSelect02');
-            	writePOI(POIConditionObj[0].child[0].child,'poiSelect03');
-            	
+            	writePOI(POIConditionObj[1].child,'poiSelect02');
+            	writePOI(POIConditionObj[1].child[1].child,'poiSelect03');
+
             	$('#poiSelect01, #poiSelect02').off('change').on('change',function(){
             		var mappingId = '';
             		if($(this).attr('id')=='poiSelect01'){
-            			writePOI(POIConditionObj[$(this).val()].child,'poiSelect02');
-            			writePOI(POIConditionObj[$(this).val()].child[$('#poiSelect02').val()].child,'poiSelect03');
+            			if(POIConditionObj[$(this).val()] == undefined){
+            				writePOI([],'poiSelect02');
+            			}else{
+            				writePOI(POIConditionObj[$(this).val()].child,'poiSelect02');
+            			}
+            			
+            			writePOI([],'poiSelect03');
+            			//writePOI(POIConditionObj[$(this).val()].child[$('#poiSelect02').val()].child,'poiSelect03');
             		}else{
             			writePOI(POIConditionObj[$('#poiSelect01').val()].child[$(this).val()].child,'poiSelect03');
             		}
@@ -1396,12 +1402,20 @@ var _WestCondition = function () {
     var writePOI = function (data, comboId) {
         var html = '';
         //var allHtml = '';
+        if(data[0] == undefined){
+        	data[0] = {};
+            data[0].text = "전체";
+        }
+        
+        
         for (var key in data) {
         	/*if(comboId.toLowerCase().indexOf('town') > -1){
         		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
         	}*/
         	html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
         }
+        
+        delete data[0];
         
         $('#' + comboId).html(html);
     };
@@ -1465,7 +1479,6 @@ var _WestCondition = function () {
 		getData({url: '/getArea.do', contentType: 'application/json', params: {"analsAreaId": areaId } }).done(function(data){
 			
 			if(data.length > 0){
-				console.info(data[0]);
 				
 				$('#popupOverlay').show();
 				$('#popup-content').show();
@@ -1500,9 +1513,7 @@ var _WestCondition = function () {
     		}
     	}
     	
-    	
-    	
-    	gridId = gridId.split('grid')[1];
+    	gridId = gridId.split('place')[1];
     	if(gridId != undefined){
     		//grid = ;
     		//_WestCondition.getContentsConfig().complaintStatus.title
@@ -1539,13 +1550,14 @@ var _WestCondition = function () {
 
 	var tabCloseOpen = function(value){
 		
-		
+		var value = $('#tabOpeners');
 		//$('#tab').find('li').parent().find('li')
-		if(value.attr('class') == undefined || value.attr('class') == ""){
+		if(value.attr('class') == "on"){
 			$('.lnb').css('display', 'none');
 			$('#tab').css('left',0);
+			$('#tabOpener').css('left',0);
 			$('#map').css('left',0);
-			value.addClass('on');
+			value.removeClass('on');
 			
 			$('#tab').attr('value','off') ;
 			
@@ -1566,8 +1578,9 @@ var _WestCondition = function () {
 			}
 			
 			$('#tab').css('left',360);
+			$('#tabOpener').css('left',360);
 			$('#map').css('left',351);
-			value.removeClass('on');
+			value.addClass('on');
 			
 			$('#tab').attr('value','on');
 			
@@ -1602,6 +1615,13 @@ var _WestCondition = function () {
 			value.removeClass('on');
 			
 			reH = 92;
+			
+			if($('#tab').css('left') == '0px'){
+				$('#gridArea').css('left','0px');
+			}else{
+				$('#gridArea').css('left','361px');
+			}
+			
 		}
 		
 		reSizeMap(reW,reH);

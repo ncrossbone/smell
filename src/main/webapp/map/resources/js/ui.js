@@ -70,12 +70,18 @@ var _ui = (function () {
 		
 
 		/*주제도2dep떠라떠라*/
-		$("#around_info> li").mouseenter(function () {
+		$("#around_info> li").mouseover(function () {
 			$(this).find('.ar_detail').show();
 			$(this).siblings().find('.ar_detail').hide();
 			$("#around_info> li").removeClass("active");
 			$(this).addClass("active");
 		});
+		
+		$("#ar_detail>").mouseleave(function(){
+			$('.ar_detail').hide();
+			$("#around_info> li").removeClass("active");
+		});
+		
 		
     };
 
