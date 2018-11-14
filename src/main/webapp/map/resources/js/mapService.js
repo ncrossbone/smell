@@ -2,7 +2,8 @@ var _MapServiceInfo = {
 	params    : "/geoserver/CE-TECH/ows?&service=WFS&version=1.0.0&request=GetFeature&outputFormat=application%2Fjson",
 	type : "&typeName=CE-TECH",
 	property : "&PROPERTYNAME=",
-	sort : "&SORTBY="
+	sort : "&SORTBY=",
+	serviceUrl: 'http://112.218.1.243:44002'
 }
 
 var _proxyUrl = 'http://112.218.1.243:44002';

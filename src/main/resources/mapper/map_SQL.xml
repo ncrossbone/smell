@@ -554,4 +554,42 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
                 FROM bdsm.SHP_OBSR_SPOT
                WHERE ADM_CODE LIKE '4311%'
 	</select>
+	
+	<!-- 관심지역 -->
+	<select id="getIntrstList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT ANALS_AREA_ID AS "analsAreaId", 
+	       INTRST_AREA_NM AS "intrstAreaNm", 
+	       GRID_AREA_ID AS "gridAreaId" 
+      FROM ANALS_AREA_MANAGE 
+     WHERE GRID_INTRST_SE_CODE = 'ANL01002';
+	</select>
+	<!-- 센서 -->
+	<select id="getSensorList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT SPOT_CODE AS "spotCode", 
+	       SENSOR_NM AS "sensorNm" 
+	  FROM IOT_SENSOR_INFO 
+	 WHERE SENSOR_TY_CODE = 'SEN01001'
+	</select>
+	
+	<select id="getCoursModel" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT ANALS_AREA_ID AS "analsAreaId", 
+	       DATE_FORMAT(DTA_DT,'%Y%m%d%H') AS "dtaDt", 
+	       SN AS "sn", 
+	       REPLACE(FORMAT(UTMX,0),',','') AS "utmx", 
+	       REPLACE(FORMAT(UTMY,0),',','') AS "utmy" 
+	  FROM ${tableNm}
+	 WHERE ANALS_AREA_ID = #{analsAreaId} AND DATE_FORMAT(DTA_DT,'%Y%m%d%H') = #{dtaDt}
+	</select>
+	<select id="getCoursModelBySensor" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT SPOT_CODE AS "analsAreaId", 
+	       DATE_FORMAT(DTA_DT,'%Y%m%d%H') AS "dtaDt", 
+	       SN AS "sn", 
+	       REPLACE(FORMAT(UTMX,0),',','') AS "utmx", 
+	       REPLACE(FORMAT(UTMY,0),',','') AS "utmy" 
+	  FROM RLTM_SENSOR_MVMN_COURS_MODEL
+	 WHERE SPOT_CODE = #{analsAreaId} AND DATE_FORMAT(DTA_DT,'%Y%m%d%H')  = #{dtaDt}
+	</select>
+	
+	
+     
 </mapper>

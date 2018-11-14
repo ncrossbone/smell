@@ -77,9 +77,8 @@
 
 <script type="text/javascript">
 	$(function() {
-		// selectbox design
-		//$('.comm_sel').jqTransform();
-		
+		$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
+			
 		_CoreMap.init('map');
 		_ui.init();
 		_WestCondition.init();
@@ -673,24 +672,12 @@
 			<h2 class="ov accordion">기상장 분석<span></span></h2>
 			<div class="lnb_conts" id="weatherAnalysis" >
 				<h3>기상장 분석</h3>
-                <ul>
+				<ul class="btn_radio">
+                	<li class="W150"><a class="on" style="padding-left: 50px !important;" name="weatherType" value="weather_now" href="javascript:void(0)">실시간</a></li>
+                    <li class="W150"><a            style="padding-left: 60px !important;" name="weatherType" value="weather_forecast" href="javascript:void(0)">예보</a></li>
+                </ul>
+                <ul> 
                     <li>
-<!--                         <dl> -->
-<!--                             <dt>측정항목</dt> -->
-<!--                             <dd> -->
-<!--                             	<select id="weatherAnalysisItem" class="W95p"> -->
-<!--                             		<option>CO2</option> -->
-<!--                             	</select> -->
-<!--                             </dd> -->
-<!--                         </dl> -->
-						<dl>
-                            <dd>
-                            	<input style="margin-left: 70px; margin-right: 5px;" id="weatherNow" type="radio" name="weatherType" value="weather_now" checked="checked" class="contents"/>
-                                <label class="W60 dis_ib" for="weatherNow" style="width: 50px !important; margin-bottom: 8px;">실시간</label>
-                    			<input style="margin-left: 0px;margin-right: 5px;" id="weatherForecast" type="radio" name="weatherType" value="weather_forecast" class="contents"/>
-                    			<label class="W60 dis_ib" for="weatherForecast" style="width: 50px !important; margin-bottom: 8px;">예보</label>
-                            </dd>
-                        </dl>
                         <dl>
                             <dt>풍향</dt>
                              <dd>
@@ -749,24 +736,16 @@
             <h2 class="accordion">악취확산 분석<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorSpread">
 				<h3>악취확산 분석</h3>
+				<ul class="btn_radio">
+                	<li class="W150"><a class="on" style="padding-left: 60px !important;" name="odorSpreadLayerType" value="anals_area_now" href="javascript:void(0)">실시간</a></li>
+                    <li class="W150"><a            style="padding-left: 60px !important;" name="odorSpreadLayerType" value="anals_area_forecast" href="javascript:void(0)">예보</a></li>
+                </ul>
+                <ul class="btn_radio">
+                	<li class="W150"><a class="on" style="padding-left: 60px !important;" name="odorSpreadMapType" value="cell" href="javascript:void(0)">격자</a></li>
+                    <li class="W150"><a            style="padding-left: 60px !important;" name="odorSpreadMapType" value="heat" href="javascript:void(0)">밀도</a></li>
+                </ul>
                 <ul>
-                    <li>
-<!--                         <dl> -->
-<!--                             <dt>측정항목</dt> -->
-<!--                             <dd> -->
-<!--                             	<select id="odorSpreadItem" class="W95p"> -->
-<!--                             		<option>CO2</option> -->
-<!--                             	</select> -->
-<!--                             </dd> -->
-<!--                         </dl> -->
-						<dl>
-                            <dd>
-                            	<input style="margin-left: 70px; margin-right: 5px;" id="odorSpreadNow" type="radio" name="odorSpreadLayerType" value="anals_area_now" checked="checked" class="contents"/>
-                                <label class="W60 dis_ib" for="weatherNow" style="width: 50px !important; margin-bottom: 8px;">실시간</label>
-                    			<input style="margin-left: 0px;margin-right: 5px;" id="odorSpreadForecast" type="radio" name="odorSpreadLayerType" value="anals_area_forecast" class="contents"/>
-                    			<label class="W60 dis_ib" for="odorSpreadNowForecast" style="width: 50px !important; margin-bottom: 8px;">예보</label>
-                            </dd>
-                        </dl>
+                    <li> 
                         <dl>
                             <dt>조회기간</dt>
                              <dd>
@@ -801,27 +780,22 @@
                 </ul>
             </div>
         </li>
-        
         <li>
         	<div class="layerOnOff"></div>
             <h2 class="accordion">악취 이동경로<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorMovement">
 				<h3>악취 이동경로</h3>
+				 <ul class="btn_radio">
+                	<li class="W100"><a class="on" style="padding-left: 20px !important;" name="odorMovementType" value="cours_now" href="javascript:void(0)">실시간 관심</a></li>
+                    <li class="W100"><a            style="padding-left: 20px !important;" name="odorMovementType" value="cours_sensor" href="javascript:void(0)">실시간 센서</a></li>
+                    <li class="W100"><a            style="padding-left: 35px !important;" name="odorMovementType" value="cours_forecast" href="javascript:void(0)">예보</a></li>
+                </ul>
                 <ul>
                     <li>
-                    	<dl>
-                            <dd style="width:285px !important;">
-                            	<input style="margin-left: 5px; margin-right: 5px;" id="odorMovementNow" type="radio" name="odorMovementType" value="cours_now" checked="checked" class="contents"/>
-                                <label class="W60 dis_ib" for="odorMovementNow" style="width: 75px !important; margin-bottom: 8px;">실시간 관심</label>
-                    			<input style="margin-left: 0px;margin-right: 5px;" id="odorMovementForecast" type="radio" name="odorMovementType" value="cours_forecast" class="contents"/>
-                    			<label class="W60 dis_ib" for="odorMovementForecast" style="width: 50px !important; margin-bottom: 8px;">예보</label>
-                            </dd>
-                        </dl>
                         <dl>
                             <dt>지점</dt>
                             <dd>
                             	<select id="odorMovementItem" class="W95p">
-                            		<option value='1057'>오창산업단지_샘플</option>
                             	</select>
                             </dd>
                         </dl>
@@ -833,28 +807,10 @@
                                 </select>
                             </dd>
                         </dl>
-<!--                         <dl> -->
-<!--                             <dt></dt> -->
-<!--                              <dd> -->
-<!--                                 <input type="text" id="odorMovementEndDate" class="W105" style="width: 135px !important"/> -->
-<!--                                 <select id="odorMovementEndTime"> -->
-<!--                                 	<option>00시</option> -->
-<!--                                 </select> -->
-<!--                             </dd> -->
-<!--                         </dl> -->
-<!--                         <dl> -->
-<!--                             <dt>지도에 표현된<br />시간</dt> -->
-<!--                             <dd> -->
-<!--                                 <label class="hidden">지도 표현 시간</label> -->
-<!--                                 <input type="text" class="W90p" title="지도에 표현된 시간" id="odorMovementDate"/> -->
-<!--                             </dd> -->
-<!--                         </dl> -->
                         <div class="ctrl_btn MgT20 MgB20">
-<!--                         	<a href="javascript:void(0)" class="ctrl_left" id="odorMovementPrevious"></a> -->
                             <a href="javascript:void(0)" class="ctrl_play" id="odorMovementPlay"></a>
                             <a href="javascript:void(0)" class="ctrl_right" id="odorMovementNext"></a>
                         </div>
-                        
                         <dl>
                             <dt style="">인근 오염원점 조회</dt>
                             <dd>

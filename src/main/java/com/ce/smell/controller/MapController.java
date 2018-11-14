@@ -79,4 +79,18 @@ public class MapController {
 	public List<Map<String, Object>> getFeature(@RequestBody HashMap param){
 		return mapBiz.getFeature(param);
 	}
+	
+	@RequestMapping(value = "/getIntrstList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getIntrstList(){
+		return mapBiz.getIntrstList(null);
+	}
+	@RequestMapping(value = "/getSensorList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getSensorList(){
+		return mapBiz.getSensorList(null);
+	}
+	@RequestMapping(value = "/getCoursModel", method = RequestMethod.POST)
+	public List<Map<String, Object>> getCoursModel(@RequestBody HashMap param){
+		return mapBiz.getCoursModel(param);
+	}
+	
 }
