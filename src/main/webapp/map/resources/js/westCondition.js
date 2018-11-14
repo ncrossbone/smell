@@ -356,7 +356,7 @@ var _WestCondition = function () {
         var toDay = new Date();
 		var hour = toDay.getHours()+1;
 		var timeOptions = '';
-		for(var i=1; i<25; i++){
+		for(var i=0; i<25; i++){
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
@@ -883,16 +883,17 @@ var _WestCondition = function () {
     };
     
     var iotSensorInfoFunction= function(feature){
-    	var width = 200;
-    	var height = 200;
-    	var itemArr = [];
     	var checkBox = $('input[name=iotSensorInfoCheckBox]:checked');
+    	var width = 200;
+    	var height = 30;
+    	var itemArr = [];
+    	
     	
     	var img = document.createElement("IMG");
 		img.height = height * checkBox.length;
 		img.width = width;
 		
-		var svgString = '<svg width="'+width+'" height="'+height+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
+		var svgString = '<svg width="'+width+'" height="'+(height*checkBox.length)+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
 		var colString = '';
 		var dataString = '';
 		
@@ -916,7 +917,7 @@ var _WestCondition = function () {
 			image: new ol.style.Icon({
 				opacity: 1,
 				img:img,
-				imgSize:[width,height]
+				imgSize:[width,(height*checkBox.length)]
 			}),
 	        zIndex:1
 		});
@@ -970,7 +971,7 @@ var _WestCondition = function () {
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '16px bold, Verdana'
+				font: 'bold 15px/30px sans-serif, serif'
 			})
   		});
     	
