@@ -958,13 +958,13 @@ var _WestCondition = function () {
     				width: 3
     			})
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().NAME,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1009,7 +1009,15 @@ var _WestCondition = function () {
     		    	color: '#AFABAB',
     		    	width: 3
     		    })
-    		})
+    		}),
+    		text: new ol.style.Text({
+				text: feature.getProperties().SENSOR_NM,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: 'bold 13px/30px sans-serif, serif'
+			})
   		});
     	
     	return style;
@@ -1027,13 +1035,13 @@ var _WestCondition = function () {
     		    	width: 3
     		    })
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().NAME,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1185,7 +1193,7 @@ var _WestCondition = function () {
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: 'bold 15px/30px sans-serif, serif'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
     	});
     };
