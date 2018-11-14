@@ -25,6 +25,7 @@ var _WestCondition = function () {
     					  isUseGeoserver:false,
     					  isLabelLayer:false,
     					  isWriteGrid:true,
+    					  isPopupShow:true,
     					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DT'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호',width:40},
     					             {name:'CVPL_DT',title:'민원 일시',width:70},
@@ -45,6 +46,7 @@ var _WestCondition = function () {
 						isUseGeoserver:false,
 						isLabelLayer:true,
 						isWriteGrid:true,
+						isPopupShow:false,
 						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
 						     {name:'MESURE_DT',title:'측정 일시',width:170},
@@ -79,6 +81,7 @@ var _WestCondition = function () {
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
+			isPopupShow:true,
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			           {name:'SENSOR_NM',title:'지점명'},
@@ -113,6 +116,7 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
+			isPopupShow:true,
 			isWriteGrid:false,
 			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'복합악취 ou',id:'BSML_FQ'}]
     	},
@@ -121,6 +125,7 @@ var _WestCondition = function () {
 			title:'환경공단 측정망',
 			keyColumn:['CODE'],
 			isVisible:true,
+			isPopupShow:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
@@ -153,6 +158,7 @@ var _WestCondition = function () {
 			keyColumn:['CODE'],
 			isVisible:true,
 			isUseGeoserver:false,
+			isPopupShow:true,
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
@@ -193,6 +199,7 @@ var _WestCondition = function () {
     			keyColumn:['BPLC_ID'],
     			isVisible:true,
     			isUseGeoserver:true,
+    			isPopupShow:true,
     			isLabelLayer:false,
     			isWriteGrid:true,
     			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
@@ -215,6 +222,7 @@ var _WestCondition = function () {
     			keyColumn:['BPLC_ID'],
     			isVisible:true,
     			isUseGeoserver:true,
+    			isPopupShow:true,
     			isLabelLayer:false,
     			isWriteGrid:true,
     			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
@@ -231,6 +239,7 @@ var _WestCondition = function () {
 			keyColumn:['STATION_ID'],
 			isVisible:true,
 			isUseGeoserver:false,
+			isPopupShow:true,
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'측정소 코드',id:'STATION_ID'},{text:'측정소 명',id:'NAME'},{text:'주소',id:'POS'}],
@@ -251,6 +260,7 @@ var _WestCondition = function () {
 			title:'IOT 센서 정보',
 			keyColumn:['STATION_ID'],
 			isVisible:true,
+			isPopupShow:false,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:false
@@ -1085,13 +1095,13 @@ var _WestCondition = function () {
     		image: new ol.style.Circle({
     			radius: 0
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().LABEL,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1191,7 +1201,8 @@ var _WestCondition = function () {
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png'
+    			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
+    			scale:1.5
     		})),
 		    text: new ol.style.Text({
 				text: feature.getProperties().CVPL_LC,
@@ -1382,9 +1393,11 @@ var _WestCondition = function () {
     		}
     	});
     	
-    	$('#popup').show();
-    	$('#popup').find('.pop_tit_text').text(title);
-    	$('#popup').find('.pop_conts').html(popupHtml);
+    	if(config.isPopupShow){
+    		$('#popup').show();
+        	$('#popup').find('.pop_tit_text').text(title);
+        	$('#popup').find('.pop_conts').html(popupHtml);
+    	}
     };
     
     var deferredForSetCenter = function(coord,zoom){
