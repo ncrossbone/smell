@@ -14,7 +14,8 @@ var _WestCondition = function () {
     		SHP_POI : ':shp_poi',
     		SHP_SGG_PT : ':shp_sgg_pt',
     		SHP_BDONG_PT:':shp_bdong_pt',
-    		SHP_BPLC_FOR_WESTCONDITION:':shp_bplc_for_westcondition'
+    		SHP_BPLC_FOR_WESTCONDITION:':shp_bplc_for_westcondition',
+    		ODORREDUCTION:':odorReduction'
     };
     var contentsConfig = {
     	'complaintStatus':{layerType:'cluster',
@@ -25,16 +26,16 @@ var _WestCondition = function () {
     					  isLabelLayer:false,
     					  isWriteGrid:true,
     					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DT'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
-    					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
-    					             {name:'CVPL_DT',title:'민원 일시'},
-    					             {name:'CPTTR',title:'민원인'},
-    					             {name:'CPTTR_CTTPC',title:'민원인 연락처'},
+    					  columnArr:[{name:'CVPL_NO',title:'민원 번호',width:40},
+    					             {name:'CVPL_DT',title:'민원 일시',width:70},
+    					             {name:'CPTTR',title:'민원인',width:40},
+    					             {name:'CPTTR_CTTPC',title:'민원인 연락처',width:70},
     					             {name:'CVPL_LC',title:'민원 위치'},
     					             {name:'CVPL_CN',title:'민원 내용'},
-    					             {name:'REGIST_DT',title:'등록 일시'},
-    					             {name:'REGISTER_ID',title:'등록자 ID'},
-    					             {name:'CHANGE_DT',title:'변경 일시'},
-    					             {name:'CHANGER_ID',title:'변경자 ID'}]
+    					             {name:'REGIST_DT',title:'등록 일시',width:70},
+    					             {name:'REGISTER_ID',title:'등록자 ID',width:40},
+    					             {name:'CHANGE_DT',title:'변경 일시',width:70},
+    					             {name:'CHANGER_ID',title:'변경자 ID',width:40}]
     	},
     	'portableMeasurement':{
 						layerType:'base',
@@ -46,7 +47,7 @@ var _WestCondition = function () {
 						isWriteGrid:true,
 						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
-						     {name:'MESURE_DT',title:'측정 일시'},
+						     {name:'MESURE_DT',title:'측정 일시',width:170},
 						     {name:'OPR_STTUS_CODE',title:'센서명'},
 						     {name:'VOCS',title:'휘발성유기물'},
 						     {name:'CCNT',title:'접점센서'},
@@ -81,7 +82,7 @@ var _WestCondition = function () {
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			           {name:'SENSOR_NM',title:'지점명'},
-			     {name:'MESURE_DT',title:'측정 일시'},
+			     {name:'MESURE_DT',title:'측정 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
 			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'CCNT',title:'접점센서'},
@@ -124,8 +125,8 @@ var _WestCondition = function () {
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'지점코드',id:'CODE'},{text:'지점명',id:'NAME'},{text:'주소',id:'ADDR'}],
-			columnArr:[{name:'NAME',title:'측정소명'},
-		     {name:'MESURE_DT',title:'검측 일시'},
+			columnArr:[{name:'NAME',title:'측정소명',width:170},
+		     {name:'MESURE_DT',title:'검측 일시',width:170},
 			 {name:'SO2_DNSTY',title:'아황산가스 농도'},
 			 {name:'CMO_DNSTY',title:'일산화탄소 농도'},
 			 {name:'OZ_DNSTY',title:'오존 농도'},
@@ -157,7 +158,7 @@ var _WestCondition = function () {
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			           {name:'SENSOR_NM',title:'지점명'},
-			     {name:'MESURE_DT',title:'측정 일시'},
+			     {name:'MESURE_DT',title:'측정 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
 			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'CCNT',title:'접점센서'},
@@ -202,6 +203,27 @@ var _WestCondition = function () {
     			           {name:'TELNO',title:'전화번호'},
     			           {name:'INDUTY',title:'업종'},
     			           {name:'ERTHSF_AL',title:'지표 고도'}]
+    	},
+    	'odorReduction':{
+    		cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
+    			'town':'LEGALDONG_CODE',
+    			'branchName':'CMPNY_NM'
+    				},
+    			layerName:westLayerObj.ODORREDUCTION,
+    			layerType:'polygon',
+    			title:'악취저감설비 관리',
+    			keyColumn:['BPLC_ID'],
+    			isVisible:true,
+    			isUseGeoserver:true,
+    			isLabelLayer:false,
+    			isWriteGrid:true,
+    			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
+    			columnArr:[{name:'BPLC_ID',title:'사업장 ID',visible:false},
+    			           {name:'REDUC_EQP_NM',title:'저감 설비 명'},
+    			           {name:'REGISTER_ID',title:'등록자'},
+    			           {name:'CMPNY_NM',title:'회사 명'},
+    			           {name:'LEGALDONG_ETC',title:'주소'},
+    			           {name:'TELNO',title:'전화번호'}]
     	},
     	'observatory':{
     		layerType:'base',
@@ -353,7 +375,7 @@ var _WestCondition = function () {
         var toDay = new Date();
 		var hour = toDay.getHours()+1;
 		var timeOptions = '';
-		for(var i=1; i<25; i++){
+		for(var i=0; i<25; i++){
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
@@ -870,6 +892,7 @@ var _WestCondition = function () {
 			styleFunction = unmannedOdorStyleFunction;
 			break;
 		case 'odorOrigin':
+		case 'odorReduction':
 			styleFunction = odorOriginFunction;
 			break;
 		case 'observatory':
@@ -886,16 +909,17 @@ var _WestCondition = function () {
     };
     
     var iotSensorInfoFunction= function(feature){
-    	var width = 200;
-    	var height = 200;
-    	var itemArr = [];
     	var checkBox = $('input[name=iotSensorInfoCheckBox]:checked');
+    	var width = 200;
+    	var height = 30;
+    	var itemArr = [];
+    	
     	
     	var img = document.createElement("IMG");
 		img.height = height * checkBox.length;
 		img.width = width;
 		
-		var svgString = '<svg width="'+width+'" height="'+height+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
+		var svgString = '<svg width="'+width+'" height="'+(height*checkBox.length)+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
 		var colString = '';
 		var dataString = '';
 		
@@ -919,7 +943,7 @@ var _WestCondition = function () {
 			image: new ol.style.Icon({
 				opacity: 1,
 				img:img,
-				imgSize:[width,height]
+				imgSize:[width,(height*checkBox.length)]
 			}),
 	        zIndex:1
 		});
@@ -968,12 +992,12 @@ var _WestCondition = function () {
 		    	width: 3
 		    }),
 		    text: new ol.style.Text({
-				text: feature.getProperties().BSML_TRGNPT_NM,
+				text: feature.getProperties().CMPNY_NM,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '16px bold, Verdana'
+				font: 'bold 15px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1155,15 +1179,20 @@ var _WestCondition = function () {
     
     var createLastPoint = function(feature) {
     	
-    	var tyCode = {'CVP02001':'red','CVP02002':'green','CVP02003':'blue'};
+    	var tyCode = {'CVP02001':'chung','CVP02002':'naver','CVP02003':'five'};
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 10,
-    			fill: new ol.style.Fill({
-    		        color: tyCode[feature.getProperties().CVPL_TY_CODE]
-    		    })
-    		})
+    		image: new ol.style.Icon(({
+    			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png'
+    		})),
+		    text: new ol.style.Text({
+				text: feature.getProperties().CVPL_LC,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: 'bold 15px/30px sans-serif, serif'
+			})
     	});
     };
     
@@ -1231,7 +1260,7 @@ var _WestCondition = function () {
     	}
     	
     	$('#grid' + id).jsGrid({
-    		width: '1300px',
+    		width: '1540px',
     		height: '170px',
 
     		inserting: false,
@@ -1240,7 +1269,6 @@ var _WestCondition = function () {
     		paging: false,	
     		noDataContent: noDataContent,
     		data: clients,
-
     		fields: contentsConfig[id].columnArr,
     		rowClick:function(data){
     			var paramObj = {contentsId:id};

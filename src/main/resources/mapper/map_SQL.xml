@@ -35,7 +35,8 @@
 		SELECT CVPL_NO,
 			   LA AS POINT_X,
 			   LO AS POINT_Y,
-			   CVPL_TY_CODE
+			   CVPL_TY_CODE,
+			   CVPL_LC
   		  FROM CVPL_MANAGE
   		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
      	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
@@ -562,9 +563,28 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
                 FROM bdsm.SHP_OBSR_SPOT
 			   WHERE STATION_ID = #{STATION_ID}
 	</select>
+	
 	<select id="iotSensorInfoFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	SELECT STATION_ID,POS,NAME, POINT_X, POINT_Y
                 FROM bdsm.SHP_OBSR_SPOT
                WHERE ADM_CODE LIKE '4311%'
 	</select>
+	
+	<select id="odorReductionGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT A.BPLC_ID,
+               A.REDUC_EQP_NM,
+               A.REGISTER_ID,
+               CMPNY_NM,
+               LEGALDONG_ETC,
+			   TELNO
+          FROM bdsm.BSML_REDUC_EQP_INFO A,
+               bdsm.BPLC_INFO C
+		 WHERE A.BPLC_ID = C.bplc_id
+		   AND LEGALDONG_CODE LIKE CONCAT(#{town},'%')
+		   <if test="branchName != null">
+    			AND CMPNY_NM LIKE CONCAT('%', #{branchName}, '%')
+  			</if>
+	</select>
+	
+	
 </mapper>
