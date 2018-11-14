@@ -1258,11 +1258,11 @@ var _WestCondition = function () {
     		/*if(tabs.find('#excelDown').length == 0){
     			tabs.append('<button id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</button>');
     		}*/
-        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="margin-left: 6px; color: #333b3e; font-family: \'Dotum\'; font-size: 13px; letter-spacing: -1px;">'+data.length+'개</span>' +
-        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #1688e8; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 35px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
-        			'<div id="grid' + id + '" style="padding: 0px 5px !important;"></div></span>');
+        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="font-size: 12px; color: #4a4a4a; letter-spacing: -1px; font-family: \'Verdana\'; position: absolute; z-index: 10; top: 25px; right: 450px;">[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]</span>' +
+        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #595959; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 23px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
+        			'<div id="grid' + id + '" style="padding: 7px 5px !important;"></div></span>');
     	}else{
-    		$('#place'+id).find('.dataLength').text(data.length+'개');
+    		$('#place'+id).find('.dataLength').html('[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]');
     	}
     	
     	tabs.tabs('refresh');
@@ -1280,7 +1280,7 @@ var _WestCondition = function () {
     	
     	$('#grid' + id).jsGrid({
     		width: '1540px',
-    		height: '170px',
+    		height: '200px',
 
     		inserting: false,
     		editing: false,
