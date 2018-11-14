@@ -540,10 +540,9 @@ var _SmellMapBiz = function () {
 				}
 			}
 		});
+		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
 			
-			console.log(ol.proj.transform(data.result.coordinate, 'EPSG:3857', 'EPSG:32652'));
-		
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
 				var lyrNm = layer.get('name');
 				
@@ -558,7 +557,6 @@ var _SmellMapBiz = function () {
 				wmsSelectTestLayer.setOpacity(0.0);
 				
 				var wmsSource = wmsSelectTestLayer.getSource();
-				//wmsSource.updateParams({CQL_FILTER:"1=1"});
 				
 				var view = _CoreMap.getMap().getView();
 				var viewResolution = /** @type {number} */ (view.getResolution());
@@ -567,8 +565,6 @@ var _SmellMapBiz = function () {
 				var url = wmsSource.getGetFeatureInfoUrl( data.result.coordinate, viewResolution, viewProjection, {'INFO_FORMAT': 'application/json'});
 				if (url) {
 					$.getJSON(url, function(result){
-						
-						//wmsSource.updateParams({CQL_FILTER:"1=1"});
 						
 						setTimeout(function(){wmsSelectTestLayer.setOpacity(0.7);}, 10);
 						
@@ -580,9 +576,6 @@ var _SmellMapBiz = function () {
 						if(result.features == null || result.features.length <= 0){
 							return;
 						}
-						
-						//result.features[0].properties.anals_area_id
-						
 						  
 						var feature = new ol.Feature({id:result.features[0].id,geometry:new ol.geom.Polygon(result.features[0].geometry.coordinates), properties:{}});
 						feature.setProperties(result.features[0].properties);
@@ -628,10 +621,6 @@ var _SmellMapBiz = function () {
 		        });
 			        
 			    if (feature) {
-//			    	if(feature.getProperties().properties.isBuffered ){
-//			    		return;
-//			    	}
-			    	
 					var parser = new jsts.io.OL3Parser();
 					
 					var bufferFeature = feature.clone();
@@ -921,6 +910,8 @@ var _SmellMapBiz = function () {
 			
 			var layerNm =  $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
 			
+			var mapType = $('a[name="odorSpreadMapType"][class="on"]').attr('value');
+			
 			var odorSpreadStartDate = $('#odorSpreadStartDate').val().replace(regExp, '');
 			var odorSpreadStartTime = parseInt($('#odorSpreadStartTime').val());
 			if(odorSpreadStartTime < 10){
@@ -950,12 +941,51 @@ var _SmellMapBiz = function () {
 			odorSpreadTimeSeries = setTimeSeries(odorSpreadStartDate, odorSpreadEndDate, odorSpreadStartTime, odorSpreadEndTime, layerNm, null);
 			odorSpreadIndex = 0;
 			
-			var layerInfos = [{layerNm:layerNm,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+odorSpreadStartDate+odorSpreadStartTime+'\'', zIndex:4}];
-			odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
-			_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
-			
-			setCurrentDate({date:odorSpreadStartDate, time:odorSpreadStartTime}, 'odorSpreadDate');
-			playOdorSpreadLayer();
+			if(mapType == 'cell'){
+				var layerInfos = [{layerNm:layerNm,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+odorSpreadStartDate+odorSpreadStartTime+'\'', zIndex:4}];
+				odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
+				_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
+				
+				setCurrentDate({date:odorSpreadStartDate, time:odorSpreadStartTime}, 'odorSpreadDate');
+				playOdorSpreadLayer();
+			}else{
+				if(layerNm.indexOf('now') >= 0){
+					layerNm = bizLayers.ANALS_POINT_NOW;
+				}else{
+					layerNm = bizLayers.ANALS_POINT_FORECAST
+				}
+				
+				odorSpreadHeatMapLayer = new ol.layer.Heatmap({
+					name:'odorSpreadHeatMapLayer',
+					source:new ol.source.Vector({
+					url: _MapServiceInfo.serviceUrl +'/geoserver/CE-TECH/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=CE-TECH:'+layerNm+'&maxFeatures=5000&outputFormat=application/json&CQL_FILTER=DTA_DT=\''+odorSpreadTimeSeries[odorSpreadIndex].date+odorSpreadTimeSeries[odorSpreadIndex].time+'\'',
+					format: new ol.format.GeoJSON({
+						featureProjection:'EPSG:3857'
+						})
+					}),
+					blur: parseInt(55, 10),
+					radius: parseInt(55, 10),
+					zIndex: 3000
+      			});
+
+				odorSpreadHeatMapLayer.getSource().on('addfeature', function(event) {
+					var val = event.feature.get('BSML_DNSTY');
+					
+					var coVal = String(event.feature.get('BSML_DNSTY')).split('.');
+					var targetVal = String(event.feature.get('BSML_DNSTY')).replace('.','');
+					var preFixCnt = coVal[0].length;
+					var preFix = '00';
+					
+					for(var i=0; i<preFixCnt;i++){
+						preFix = preFix.substring(0, preFix.length-1);
+					}
+					
+					var sum = parseFloat('0.'+preFix+targetVal);
+			        event.feature.set('weight', sum);
+				});
+	
+				_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadHeatMapLayer);
+			}
 			
 		});
 		$('#odorSpreadPrevious').on('click', function(){
@@ -1040,6 +1070,13 @@ var _SmellMapBiz = function () {
 				if(odorSpreadLayer){
 					odorSpreadLayer.setVisible(true);
 					updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
+				}else{
+//					var layerInfos = [{layerNm:layerNm,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+odorSpreadTimeSeries[odorSpreadIndex].date+odorSpreadTimeSeries[odorSpreadIndex].time:4}];
+//					odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
+//					_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
+					
+//					setCurrentDate({date:odorSpreadStartDate, time:odorSpreadStartTime}, 'odorSpreadDate');
+//					playOdorSpreadLayer();
 				}
 			}else{ // 밀도
 				if(odorSpreadLayer){
@@ -1244,8 +1281,6 @@ var _SmellMapBiz = function () {
 					style: bufferVectorStyle
 				});
 				_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
-				
-//				writeGrid('odorMovement', gridData);
 			});
 		});
 		
@@ -1402,11 +1437,11 @@ var _SmellMapBiz = function () {
 	var bufferVectorStyle = function(){
 		return new ol.style.Style({
 	          stroke: new ol.style.Stroke({
-	            color: 'blue',
-	            width: 2
+	            color: 'red',
+	            width: 3
 	          }),
 	          fill: new ol.style.Fill({
-	            color: 'rgba(255, 255, 0, 0.5)'
+	            color: 'rgba(255, 255, 0, 0.1)'
 	          })
 	        })
 	};
