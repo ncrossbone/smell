@@ -7,13 +7,15 @@ var _WestCondition = function () {
     var clusterDistance = 100;
     var cityTownObj = {};
     var POIConditionObj = {};
+    var reW = 0,reH = 0;
     var westLayerObj = {
     		CVPL_POINT : ':CVPL_POINT',
     		SHP_BDONG : ':SHP_BDONG',
     		SHP_POI : ':shp_poi',
     		SHP_SGG_PT : ':shp_sgg_pt',
     		SHP_BDONG_PT:':shp_bdong_pt',
-    		SHP_BPLC_FOR_WESTCONDITION:':shp_bplc_for_westcondition'
+    		SHP_BPLC_FOR_WESTCONDITION:':shp_bplc_for_westcondition',
+    		ODORREDUCTION:':odorReduction'
     };
     var contentsConfig = {
     	'complaintStatus':{layerType:'cluster',
@@ -23,17 +25,18 @@ var _WestCondition = function () {
     					  isUseGeoserver:false,
     					  isLabelLayer:false,
     					  isWriteGrid:true,
+    					  isPopupShow:true,
     					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DT'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
-    					  columnArr:[{name:'CVPL_NO',title:'민원 번호'},
-    					             {name:'CVPL_DT',title:'민원 일시'},
-    					             {name:'CPTTR',title:'민원인'},
-    					             {name:'CPTTR_CTTPC',title:'민원인 연락처'},
+    					  columnArr:[{name:'CVPL_NO',title:'민원 번호',width:40},
+    					             {name:'CVPL_DT',title:'민원 일시',width:70},
+    					             {name:'CPTTR',title:'민원인',width:40},
+    					             {name:'CPTTR_CTTPC',title:'민원인 연락처',width:70},
     					             {name:'CVPL_LC',title:'민원 위치'},
     					             {name:'CVPL_CN',title:'민원 내용'},
-    					             {name:'REGIST_DT',title:'등록 일시'},
-    					             {name:'REGISTER_ID',title:'등록자 ID'},
-    					             {name:'CHANGE_DT',title:'변경 일시'},
-    					             {name:'CHANGER_ID',title:'변경자 ID'}]
+    					             {name:'REGIST_DT',title:'등록 일시',width:70},
+    					             {name:'REGISTER_ID',title:'등록자 ID',width:40},
+    					             {name:'CHANGE_DT',title:'변경 일시',width:70},
+    					             {name:'CHANGER_ID',title:'변경자 ID',width:40}]
     	},
     	'portableMeasurement':{
 						layerType:'base',
@@ -43,9 +46,10 @@ var _WestCondition = function () {
 						isUseGeoserver:false,
 						isLabelLayer:true,
 						isWriteGrid:true,
+						isPopupShow:false,
 						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
-						     {name:'MESURE_DT',title:'측정 일시'},
+						     {name:'MESURE_DT',title:'측정 일시',width:170},
 						     {name:'OPR_STTUS_CODE',title:'센서명'},
 						     {name:'VOCS',title:'휘발성유기물'},
 						     {name:'CCNT',title:'접점센서'},
@@ -77,10 +81,11 @@ var _WestCondition = function () {
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
+			isPopupShow:true,
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			           {name:'SENSOR_NM',title:'지점명'},
-			     {name:'MESURE_DT',title:'측정 일시'},
+			     {name:'MESURE_DT',title:'측정 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
 			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'CCNT',title:'접점센서'},
@@ -111,6 +116,7 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
+			isPopupShow:true,
 			isWriteGrid:false,
 			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'복합악취 ou',id:'BSML_FQ'}]
     	},
@@ -119,12 +125,13 @@ var _WestCondition = function () {
 			title:'환경공단 측정망',
 			keyColumn:['CODE'],
 			isVisible:true,
+			isPopupShow:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'지점코드',id:'CODE'},{text:'지점명',id:'NAME'},{text:'주소',id:'ADDR'}],
-			columnArr:[{name:'NAME',title:'측정소명'},
-		     {name:'MESURE_DT',title:'검측 일시'},
+			columnArr:[{name:'NAME',title:'측정소명',width:170},
+		     {name:'MESURE_DT',title:'검측 일시',width:170},
 			 {name:'SO2_DNSTY',title:'아황산가스 농도'},
 			 {name:'CMO_DNSTY',title:'일산화탄소 농도'},
 			 {name:'OZ_DNSTY',title:'오존 농도'},
@@ -151,12 +158,13 @@ var _WestCondition = function () {
 			keyColumn:['CODE'],
 			isVisible:true,
 			isUseGeoserver:false,
+			isPopupShow:true,
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			           {name:'SENSOR_NM',title:'지점명'},
-			     {name:'MESURE_DT',title:'측정 일시'},
+			     {name:'MESURE_DT',title:'측정 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
 			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'CCNT',title:'접점센서'},
@@ -191,6 +199,7 @@ var _WestCondition = function () {
     			keyColumn:['BPLC_ID'],
     			isVisible:true,
     			isUseGeoserver:true,
+    			isPopupShow:true,
     			isLabelLayer:false,
     			isWriteGrid:true,
     			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
@@ -202,12 +211,35 @@ var _WestCondition = function () {
     			           {name:'INDUTY',title:'업종'},
     			           {name:'ERTHSF_AL',title:'지표 고도'}]
     	},
+    	'odorReduction':{
+    		cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
+    			'town':'LEGALDONG_CODE',
+    			'branchName':'CMPNY_NM'
+    				},
+    			layerName:westLayerObj.ODORREDUCTION,
+    			layerType:'polygon',
+    			title:'악취저감설비 관리',
+    			keyColumn:['BPLC_ID'],
+    			isVisible:true,
+    			isUseGeoserver:true,
+    			isPopupShow:true,
+    			isLabelLayer:false,
+    			isWriteGrid:true,
+    			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
+    			columnArr:[{name:'BPLC_ID',title:'사업장 ID',visible:false},
+    			           {name:'REDUC_EQP_NM',title:'저감 설비 명'},
+    			           {name:'REGISTER_ID',title:'등록자'},
+    			           {name:'CMPNY_NM',title:'회사 명'},
+    			           {name:'LEGALDONG_ETC',title:'주소'},
+    			           {name:'TELNO',title:'전화번호'}]
+    	},
     	'observatory':{
     		layerType:'base',
 			title:'기상청 측정망',
 			keyColumn:['STATION_ID'],
 			isVisible:true,
 			isUseGeoserver:false,
+			isPopupShow:true,
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'측정소 코드',id:'STATION_ID'},{text:'측정소 명',id:'NAME'},{text:'주소',id:'POS'}],
@@ -228,6 +260,7 @@ var _WestCondition = function () {
 			title:'IOT 센서 정보',
 			keyColumn:['STATION_ID'],
 			isVisible:true,
+			isPopupShow:false,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:false
@@ -254,14 +287,10 @@ var _WestCondition = function () {
     
     var legendLayerOnOff = function(value){
     	var layer = _CoreMap.getMap().getLayerForName(value.getAttribute('layerName'));
-		if(value.getAttribute('onOff') == "on"){
-			value.setAttribute('onOff', 'off');
-			value.style.backgroundColor = '';
-			layer.setVisible(false);
-		}else{
-			value.setAttribute('onOff', 'on');
-			value.style.backgroundColor = '#1688e8';//#1688e8
+		if(value.checked == true){
 			layer.setVisible(true);
+		}else{
+			layer.setVisible(false);
 		}
     }
     
@@ -356,7 +385,7 @@ var _WestCondition = function () {
         var toDay = new Date();
 		var hour = toDay.getHours()+1;
 		var timeOptions = '';
-		for(var i=1; i<25; i++){
+		for(var i=0; i<25; i++){
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
@@ -454,9 +483,9 @@ var _WestCondition = function () {
         		}
             	var korObj = {};
             	var countObj = {
-            			x:-1,
-            			y:-1,
-            			z:-1
+            			x:0,
+            			y:0,
+            			z:0
             	};
             	
             	for(var i = 0; i < data.length; i++){
@@ -488,14 +517,20 @@ var _WestCondition = function () {
             	}
             	
             	writePOI(POIConditionObj,'poiSelect01');
-            	writePOI(POIConditionObj[0].child,'poiSelect02');
-            	writePOI(POIConditionObj[0].child[0].child,'poiSelect03');
-            	
+            	writePOI(POIConditionObj[1].child,'poiSelect02');
+            	writePOI(POIConditionObj[1].child[1].child,'poiSelect03');
+
             	$('#poiSelect01, #poiSelect02').off('change').on('change',function(){
             		var mappingId = '';
             		if($(this).attr('id')=='poiSelect01'){
-            			writePOI(POIConditionObj[$(this).val()].child,'poiSelect02');
-            			writePOI(POIConditionObj[$(this).val()].child[$('#poiSelect02').val()].child,'poiSelect03');
+            			if(POIConditionObj[$(this).val()] == undefined){
+            				writePOI([],'poiSelect02');
+            			}else{
+            				writePOI(POIConditionObj[$(this).val()].child,'poiSelect02');
+            			}
+            			
+            			writePOI([],'poiSelect03');
+            			//writePOI(POIConditionObj[$(this).val()].child[$('#poiSelect02').val()].child,'poiSelect03');
             		}else{
             			writePOI(POIConditionObj[$('#poiSelect01').val()].child[$(this).val()].child,'poiSelect03');
             		}
@@ -867,6 +902,7 @@ var _WestCondition = function () {
 			styleFunction = unmannedOdorStyleFunction;
 			break;
 		case 'odorOrigin':
+		case 'odorReduction':
 			styleFunction = odorOriginFunction;
 			break;
 		case 'observatory':
@@ -883,16 +919,17 @@ var _WestCondition = function () {
     };
     
     var iotSensorInfoFunction= function(feature){
-    	var width = 200;
-    	var height = 200;
-    	var itemArr = [];
     	var checkBox = $('input[name=iotSensorInfoCheckBox]:checked');
+    	var width = 200;
+    	var height = 30;
+    	var itemArr = [];
+    	
     	
     	var img = document.createElement("IMG");
 		img.height = height * checkBox.length;
 		img.width = width;
 		
-		var svgString = '<svg width="'+width+'" height="'+height+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
+		var svgString = '<svg width="'+width+'" height="'+(height*checkBox.length)+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
 		var colString = '';
 		var dataString = '';
 		
@@ -916,7 +953,7 @@ var _WestCondition = function () {
 			image: new ol.style.Icon({
 				opacity: 1,
 				img:img,
-				imgSize:[width,height]
+				imgSize:[width,(height*checkBox.length)]
 			}),
 	        zIndex:1
 		});
@@ -937,13 +974,13 @@ var _WestCondition = function () {
     				width: 3
     			})
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().NAME,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -965,12 +1002,12 @@ var _WestCondition = function () {
 		    	width: 3
 		    }),
 		    text: new ol.style.Text({
-				text: feature.getProperties().BSML_TRGNPT_NM,
+				text: feature.getProperties().CMPNY_NM,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '16px bold, Verdana'
+				font: 'bold 15px/30px sans-serif, serif'
 			})
   		});
     	
@@ -988,7 +1025,15 @@ var _WestCondition = function () {
     		    	color: '#AFABAB',
     		    	width: 3
     		    })
-    		})
+    		}),
+    		text: new ol.style.Text({
+				text: feature.getProperties().SENSOR_NM,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: 'bold 13px/30px sans-serif, serif'
+			})
   		});
     	
     	return style;
@@ -1006,13 +1051,13 @@ var _WestCondition = function () {
     		    	width: 3
     		    })
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().NAME,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1050,13 +1095,13 @@ var _WestCondition = function () {
     		image: new ol.style.Circle({
     			radius: 0
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().LABEL,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1152,15 +1197,21 @@ var _WestCondition = function () {
     
     var createLastPoint = function(feature) {
     	
-    	var tyCode = {'CVP02001':'red','CVP02002':'green','CVP02003':'blue'};
+    	var tyCode = {'CVP02001':'chung','CVP02002':'naver','CVP02003':'five'};
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 10,
-    			fill: new ol.style.Fill({
-    		        color: tyCode[feature.getProperties().CVPL_TY_CODE]
-    		    })
-    		})
+    		image: new ol.style.Icon(({
+    			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
+    			scale:1.5
+    		})),
+		    text: new ol.style.Text({
+				text: feature.getProperties().CVPL_LC,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: 'bold 13px/30px sans-serif, serif'
+			})
     	});
     };
     
@@ -1200,11 +1251,18 @@ var _WestCondition = function () {
     	
     	var tabTitle = contentsConfig[id].title;
     	var tabId = 'tabs-' + id;
-    	var li = $(tabTemplate.replace(/#\{id\}/g,tabId).replace(/#\{href\}/g, '#grid'+id).replace(/#\{label\}/g,tabTitle));
+    	var li = $(tabTemplate.replace(/#\{id\}/g,tabId).replace(/#\{href\}/g, '#place'+id).replace(/#\{label\}/g,tabTitle));
     	
     	if($('#'+tabId).length == 0){
     		tabs.find('.ui-tabs-nav').append( li );
-        	tabs.append('<div id="grid' + id + '" style="padding: 10px 3px !important;"></div>');
+    		/*if(tabs.find('#excelDown').length == 0){
+    			tabs.append('<button id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</button>');
+    		}*/
+        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="margin-left: 6px; color: #333b3e; font-family: \'Dotum\'; font-size: 13px; letter-spacing: -1px;">'+data.length+'개</span>' +
+        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #1688e8; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 35px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
+        			'<div id="grid' + id + '" style="padding: 0px 5px !important;"></div></span>');
+    	}else{
+    		$('#place'+id).find('.dataLength').text(data.length+'개');
     	}
     	
     	tabs.tabs('refresh');
@@ -1221,7 +1279,7 @@ var _WestCondition = function () {
     	}
     	
     	$('#grid' + id).jsGrid({
-    		width: '1300px',
+    		width: '1540px',
     		height: '170px',
 
     		inserting: false,
@@ -1230,7 +1288,6 @@ var _WestCondition = function () {
     		paging: false,	
     		noDataContent: noDataContent,
     		data: clients,
-
     		fields: contentsConfig[id].columnArr,
     		rowClick:function(data){
     			var paramObj = {contentsId:id};
@@ -1336,9 +1393,11 @@ var _WestCondition = function () {
     		}
     	});
     	
-    	$('#popup').show();
-    	$('#popup').find('.pop_tit_text').text(title);
-    	$('#popup').find('.pop_conts').html(popupHtml);
+    	if(config.isPopupShow){
+    		$('#popup').show();
+        	$('#popup').find('.pop_tit_text').text(title);
+        	$('#popup').find('.pop_conts').html(popupHtml);
+    	}
     };
     
     var deferredForSetCenter = function(coord,zoom){
@@ -1392,12 +1451,20 @@ var _WestCondition = function () {
     var writePOI = function (data, comboId) {
         var html = '';
         //var allHtml = '';
+        if(data[0] == undefined){
+        	data[0] = {};
+            data[0].text = "전체";
+        }
+        
+        
         for (var key in data) {
         	/*if(comboId.toLowerCase().indexOf('town') > -1){
         		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
         	}*/
         	html += '<option value=\'' + key + '\'>' + data[key].text + '</option>';
         }
+        
+        delete data[0];
         
         $('#' + comboId).html(html);
     };
@@ -1455,40 +1522,177 @@ var _WestCondition = function () {
     	}
     };
     
-    var popupOverlayData = function(areaId){
+    var popupOverlayData = function(areaId, reg){
     	//test db param
-    	areaId = "1057";
+    	//areaId = "1057";
 		getData({url: '/getArea.do', contentType: 'application/json', params: {"analsAreaId": areaId } }).done(function(data){
 			
 			if(data.length > 0){
-				console.info(data[0]);
 				
 				$('#popupOverlay').show();
 				$('#popup-content').show();
 				
-				$('#cellRemeveBtn').attr('flag', data[0].GRID_INTRST_SE_CODE);
+				//$('#cellRemeveBtn').attr('flag', data[0].GRID_INTRST_SE_CODE);
 				$('#cellRemeveBtn').attr('indexId', data[0].ANALS_AREA_ID);
-				if(data[0].GRID_INTRST_SE_CODE == "Y"){
+				$('#cellRemeveBtn').attr('reg', reg);
+				if(reg == "1"){
 					$('#cellRemeveBtn').val('격자해제');
 					
 				}else{
 					$('#cellRemeveBtn').val('격자추가');
 				}
 				
-				
 				$('#intrstAreaNm').val(data[0].INTRST_AREA_NM);
 				$('#tpgrphAl').val(data[0].TPGRPH_AL);
 				$('#predictAl').val(data[0].PREDICT_AL);
-				
-				
-				//intrstArea
-				//tpgrphAl
-				//predictAl
 				
 			}
 			
 		});
 	}
+    
+    var excelDwonLoad = function(){
+    	
+    	var gridId = "";
+    	var grid = "";
+    	
+    	for(var i = 0 ; i < $('ul[role="tablist"]').children().length; i++){
+    		if($($('ul[role="tablist"]').children()[i]).attr('tabindex') == "0"){
+    			gridId = $($('ul[role="tablist"]').children()[i]).attr('aria-controls');
+    		}
+    	}
+    	
+    	gridId = gridId.split('place')[1];
+    	if(gridId != undefined){
+    		//grid = ;
+    		//_WestCondition.getContentsConfig().complaintStatus.title
+    		var tabName = contentsConfig[gridId].title;
+    		// contentsConfig
+    		
+    		
+    		var csv = $('#grid'+gridId).jsGrid("exportData", {
+        	    type: "csv", //Only CSV supported
+        	    subset: "all" | "visible", //Visible will only output the currently displayed page
+        	    delimiter: ",", //If using csv, the character to seperate fields
+        	    includeHeaders: true, //Include header row in output
+        	    encapsulate: true, //Surround each field with qoutation marks; needed for some systems
+        	    newline: "\r\n", //Newline character to use
+        	    
+        	    //Takes each item and returns true if it should be included in output.
+        	    //Executed only on the records within the given subset above.
+        	    filter: function(item){return true},
+        	    
+        	});
+
+        	var uri = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURI(csv);
+
+        	var downloadLink = document.createElement("a");
+        	downloadLink.href = uri;
+        	downloadLink.download = tabName+".csv";
+
+        	document.body.appendChild(downloadLink);
+        	downloadLink.click();
+        	document.body.removeChild(downloadLink);
+    	}
+    	
+    }	
+
+	var tabCloseOpen = function(value){
+		
+		var value = $('#tabOpeners');
+		//$('#tab').find('li').parent().find('li')
+		if(value.attr('class') == "on"){
+			$('.lnb').css('display', 'none');
+			$('#tab').css('left',0);
+			$('#tabOpener').css('left',0);
+			$('#map').css('left',0);
+			value.removeClass('on');
+			
+			$('#tab').attr('value','off') ;
+			
+			reW = 0;
+						
+			if($('#gridArea').css('display') != 'none'){
+				$('#gridArea').css('left','0');
+			}
+			
+		}else{
+			//$('#tab').find('.on')
+			for(var i = 0 ; i  < $('.lnb').length; i++){
+				if($('#tab').find('.on').attr('tabtype') == $($('.lnb')[i]).attr('id')){
+					$($('.lnb')[i]).css('display', 'block');
+				}else{
+					$($('.lnb')[i]).css('display', 'none');
+				}
+			}
+			
+			$('#tab').css('left',360);
+			$('#tabOpener').css('left',360);
+			$('#map').css('left',351);
+			value.addClass('on');
+			
+			$('#tab').attr('value','on');
+			
+			reW = 340;
+			
+			if($('#gridArea').css('display') != 'none'){
+				$('#gridArea').css('left','361px');
+			}
+			
+		}
+		
+		reSizeMap(reW,reH);
+		
+	}
+	
+	var gridCloseOpen = function(value){
+		
+		
+		if(value.attr('class') == undefined || value.attr('class') == ""){
+			
+			$('#gridArea').css('display','none');
+			$('#gridArea').attr('value','off') ;
+			value.addClass('on');
+			
+			reH = 0;
+			
+			
+		}else{
+			
+			$('#gridArea').css('display','block');
+			$('#gridArea').attr('value','on') ;
+			value.removeClass('on');
+			
+			reH = 92;
+			
+			if($('#tab').css('left') == '0px'){
+				$('#gridArea').css('left','0px');
+			}else{
+				$('#gridArea').css('left','361px');
+			}
+			
+		}
+		
+		reSizeMap(reW,reH);
+		
+	}
+	
+	var reSizeMap = function(width,height){
+		
+		var ww = $(window).width();
+		var wh = $(window).height();
+		
+		var map = _CoreMap.getMap();
+
+		$('#map').width(ww - reW);
+		$('#map').height(wh - reH);
+		//$('#westContainer').height(wh-50); 
+		if (map) {
+			map.setSize([ ww - width, wh - height]);
+		}
+		
+	}
+	
 
     return {
         init: init,
@@ -1518,8 +1722,20 @@ var _WestCondition = function () {
         	legendLayerOnOff(value);
         },
         
-        popupOverlayData: function(areaId){
-        	popupOverlayData(areaId);
+        popupOverlayData: function(areaId, reg){
+        	popupOverlayData(areaId, reg);
+        },
+        
+        excelDwonLoad: function(){
+        	excelDwonLoad();
+        },
+        
+        tabCloseOpen: function(value){
+        	tabCloseOpen(value);
+        },
+        
+        gridCloseOpen: function(value){
+        	gridCloseOpen(value);
         }
     };
 }();

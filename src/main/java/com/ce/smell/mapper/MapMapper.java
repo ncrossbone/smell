@@ -14,6 +14,8 @@ public interface MapMapper {
 	public List<MapVO> getCMAQ9KM();
 	
 	public int putFlag(HashMap param);
+	public int insertAnals(HashMap param);
+	public int deleteAnals(HashMap param);
 	
 	public List<Map<String, Object>> complaintStatusGrid(HashMap param);
 	public List<Map<String, Object>> portableMeasurementGrid(HashMap param);
@@ -22,6 +24,7 @@ public interface MapMapper {
 	public List<Map<String, Object>> environmentCorporationGrid(HashMap param);
 	public List<Map<String, Object>> unmannedOdorGrid(HashMap param);
 	public List<Map<String, Object>> observatoryGrid(HashMap param);
+	public List<Map<String, Object>> odorReductionGrid(HashMap param);
 	
 	public List<Map<String, Object>> portableMeasurementClick(HashMap param);
 	public List<Map<String, Object>> fixedMeasurementClick(HashMap param);

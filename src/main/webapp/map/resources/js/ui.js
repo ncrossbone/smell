@@ -27,6 +27,11 @@ var _ui = (function () {
         });
 
         $('#tab').find('li').on('click', function () {
+        	
+        	if($('#tab').attr('value') == 'off'){
+        		return;
+        	}
+        	
             var me = $(this);
             var value = me.attr('tabType');
             for (var i = 0; i < me.parent().find('li').length; i++) {
@@ -38,6 +43,7 @@ var _ui = (function () {
                     $($(me.parent()).find('li')[i]).removeClass('on');
                 }
             }
+
         });
 
         $('#mapMenu').find('a').on('click', function () {
@@ -55,6 +61,28 @@ var _ui = (function () {
 			$(this).addClass('on');
 			_CoreMap.changeBaseMap($(this).attr('id'));
 		});
+		
+		
+		//팝업, 툴팁 닫기
+		$(".pop_close").click(function () {
+			$(this).parent().parent().fadeOut();
+		});
+		
+
+		/*주제도2dep떠라떠라*/
+		$("#around_info> li").mouseover(function () {
+			$(this).find('.ar_detail').show();
+			$(this).siblings().find('.ar_detail').hide();
+			$("#around_info> li").removeClass("active");
+			$(this).addClass("active");
+		});
+		
+		$("#ar_detail>").mouseleave(function(){
+			$('.ar_detail').hide();
+			$("#around_info> li").removeClass("active");
+		});
+		
+		
     };
 
     return {

@@ -16,7 +16,7 @@ var _SmellMapBiz = function () {
 	
 	var bizUrl = window.location.protocol+'//'+window.location.host;
 	
-	var bizLayers = {'CELL9KM' : 'shp_anals_area',//'cell_200m_utmk',
+	var bizLayers = {'CELL9KM' : 'shp_anals_area_new',//'cell_200m_utmk',
 					 'ALL9KM' : 'ALL_CMAQ_9KM',
 			         'LINE' : 'line_test_wgs84',
 			         'POINT' : 'CELL_AIR_9KM_PT',
@@ -196,7 +196,6 @@ var _SmellMapBiz = function () {
 	}
 	
 	var drawCell = function(){
-//		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'RESULT_DT=\'2018062501\' AND FLAG=0', zIndex:10}];
 		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'1=1', zIndex:10}];
 		wmsSelectTestLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
@@ -467,23 +466,50 @@ var _SmellMapBiz = function () {
 			}
 		});
 		
+		
+		$('#tabOpeners').on('click', function(){
+			var me = $(this);
+			_WestCondition.tabCloseOpen(me);
+		});
+		
+		$('#testBtn7').on('click', function(){
+			var me = $(this);
+			if($('#gridArea> #tabs').children().length > 1){
+				_WestCondition.gridCloseOpen(me);
+			}
+		});
+		
+		
 		$('#cellRemeveBtn').on('click', function(){
 			if(highlightVectorLayer){
-				var flag = $(this).attr('flag');
 				var indexId = $(this).attr('indexId');
-				$.ajax({
-		            url : bizUrl+'/putFlag.do?flag='+(flag == "Y" ? "N":"Y")+'&indexId='+indexId,
-		            type : 'GET',
-		            contentType : 'application/json'
-		    	}).done(function(result){
-		    		//noCacheCount++;
-		    		
-		    		var wmsSource = wmsSelectTestLayer.getSource();
-		    		//wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
-		    		wmsSource.updateParams({CQL_FILTER:"1=1"});
-		    		
-		    		$('#popup-closer').trigger('click');
-		    	});
+				var flag = $(this).attr('reg');
+				
+				if(flag == "0"){
+					$.ajax({
+			            url : bizUrl+'/insertAnals.do?indexId='+indexId,
+			            type : 'GET',
+			            contentType : 'application/json'
+			    	}).done(function(result){
+			    		
+			    		var wmsSource = wmsSelectTestLayer.getSource();
+			    		wmsSource.updateParams({"time":Date.now()});
+			    		
+			    		$('#popup-closer').trigger('click');
+			    	});
+				}else{
+					$.ajax({
+			            url : bizUrl+'/deleteAnals.do?indexId='+indexId,
+			            type : 'GET',
+			            contentType : 'application/json'
+			    	}).done(function(result){
+			    		
+			    		var wmsSource = wmsSelectTestLayer.getSource();
+			    		wmsSource.updateParams({"time":Date.now()});
+			    		
+			    		$('#popup-closer').trigger('click');
+			    	});
+				}
 			}
 		});
 		
@@ -580,7 +606,7 @@ var _SmellMapBiz = function () {
 						if(popupOverlay){
 							
 							popupOverlay.setPosition(featureCenter);
-							_WestCondition.popupOverlayData(result.features[0].properties.anals_area_id);
+							_WestCondition.popupOverlayData(result.features[0].properties.ANALS_AREA_ID , result.features[0].properties.REG);
 							
 							/*$('#cellRemeveBtn').attr('flag', result.features[0].properties.FLAG);
 							$('#cellRemeveBtn').attr('indexId', result.features[0].properties.IDX);
@@ -1459,6 +1485,9 @@ var _SmellMapBiz = function () {
         	var me = this;
         	init();
         	return me;
+        },
+        getwmsSelectTestLayer: function(){
+        	return wmsSelectTestLayer;
         }
     };
 }();

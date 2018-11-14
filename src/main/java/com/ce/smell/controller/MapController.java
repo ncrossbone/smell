@@ -35,6 +35,20 @@ public class MapController {
 		return mapBiz.putFlag(param);
 	}
 	
+	@RequestMapping("/insertAnals")
+	public int insertAnals(@RequestParam String indexId) {
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("indexId", indexId);
+		return mapBiz.insertAnals(param);
+	}
+	
+	@RequestMapping("/deleteAnals")
+	public int deleteAnals(@RequestParam String indexId) {
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("indexId", indexId);
+		return mapBiz.deleteAnals(param);
+	}
+	
 	@RequestMapping(value = "/getGrid", method = RequestMethod.POST)
 	public List<Map<String, Object>> getGrid(@RequestBody HashMap param){
 		return mapBiz.getGrid(param);

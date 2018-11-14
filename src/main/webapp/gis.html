@@ -143,7 +143,11 @@
         -->
     </div>
     <div id="container">
-		<ul id="tab">
+    	<ul id="tabOpener">
+    		<li class="on" id="tabOpeners">최소화</li>
+    	</ul>
+    
+		<ul id="tab" value="on">
         	<li class="on" tabType="smellMap">악취지도</li>
             <li tabType="smellInfo">악취정보</li>
             <li class="PdT35" style="height: 95px;" tabType="smellMeasure">측정소</li>
@@ -377,16 +381,16 @@
                 <ul>
                     <li>
                         <dl>
-			                 <dt>항목 선택</dt>
+			                 <dt>센서 선택</dt>
 			                 <dd style="margin-top: 8px;">
-			                     <input type="checkbox" class="dis_ib" value="test1" id="iotSensorInfoCheckBox01" name="iotSensorInfoCheckBox"/>
-			                     <label class="contents" for="iotSensorInfoCheckBox01" style="margin-right: 20px;">청주시</label>
+			                     <input type="radio" class="dis_ib" value="SEN01001" id="iotSensorInfoCheckBox01" name="iotSensorInfoCheckBox"/>
+			                     <label class="contents" for="iotSensorInfoCheckBox01" style="margin-right: 20px;">고정식</label>
 			                     
-			                     <input type="checkbox" class="dis_ib" value="test2" id="iotSensorInfoCheckBox02" name="iotSensorInfoCheckBox"/>
-			                     <label class="contents" for="iotSensorInfoCheckBox02" style="margin-right: 20px;">네이버</label>
+			                     <input type="radio" class="dis_ib" value="SEN01002" id="iotSensorInfoCheckBox02" name="iotSensorInfoCheckBox"/>
+			                     <label class="contents" for="iotSensorInfoCheckBox02" style="margin-right: 20px;">이동식</label>
 			                     
-			                     <input type="checkbox" class="dis_ib" value="test3" id="iotSensorInfoCheckBox03" name="iotSensorInfoCheckBox"/>
-			                     <label class="contents" for="iotSensorInfoCheckBox03">오창지킴이</label>
+			                     <input type="radio" class="dis_ib" value="SEN01003" id="iotSensorInfoCheckBox03" name="iotSensorInfoCheckBox"/>
+			                     <label class="contents" for="iotSensorInfoCheckBox03">무인</label>
 			                 </dd>
 			             </dl>
                     </li>
@@ -825,45 +829,19 @@
         </li>
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
-     	<ul id="legend">
-			<li><a class="legendMain" onOff="on">학교</a>
-				<ul style="top: 0px; left: 58px;" > 
-					<li>
-						<ul>
-							<a class="legendButton" layerName="SHP_DYCR_FCLT" onOff="off"><div>어린이집</div></a>
-						</ul>
-						<ul>
-							<a class="legendButton" layerName="SHP_KNDR_FCLT" onOff="off"><div>유치원</div></a>
-						</ul>
-						<ul>
-							<a class="legendButton" layerName="SHP_ELMN_SCHL_FCLT" onOff="off"><div>초등학교</div></a>
-						</ul>
-						<ul>
-							<a class="legendButton" layerName="SHP_MDL_SCHL_FCLT" onOff="off"><div>중학교</div></a>
-						</ul>
-							<ul>
-							<a class="legendButton" layerName="SHP_HIGH_SCHL_FCLT" onOff="off"><div>고등학교</div></a>
-						</ul>
-						
-					</li>
-				</ul>
-			</li>
-			<li><a>학교</a>
-				<ul style=" top: 0px; left: 58px;" >
-					<li>
-						<ul>
-							<a><div>초등학교</div></a>
-						</ul>
-							<ul>
-							<a><div>중학교</div></a>
-						</ul>
-							<ul>
-							<a><div>고등학교</div></a>
-						</ul>
-						
-					</li>
-				</ul>
-			</li>
+     	<ul id="around_info">
+			<li>
+                <span class="pic_school">학교</span>
+                <div class="ar_detail" id="ar_detail">
+                    <table>
+                        <tr><td class="icon_011"><label for="col_01" />어린이집<input type="checkbox" id="col_01" layerName="SHP_DYCR_FCLT"  onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_012"><label for="col_02" />유치원<input type="checkbox" id="col_02" layerName="SHP_KNDR_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_013"><label for="col_03" />초등학교<input type="checkbox" id="col_03" layerName="SHP_ELMN_SCHL_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_014"><label for="col_04" />중학교<input type="checkbox" id="col_04" layerName="SHP_MDL_SCHL_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_015"><label for="col_05" />고등학교<input type="checkbox" id="col_05" layerName="SHP_HIGH_SCHL_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                    </table>
+                </div>
+            </li>
 		</ul>
      	<ul id="map_type">
         	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li>
@@ -879,13 +857,15 @@
 			</div>
 	    </div>
 			    
-        <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute;">
+        <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute; display: none;">
                 <a id="testBtn0" >풍향</a>
                 <a id="testBtn1" style="margin-left: -4px;">격자</a>
                 <a id="testBtn2" style="margin-left: -4px;">버퍼</a>
                 <a id="testBtn3" style="margin-left: -4px;">포인트 버퍼</a>
                 <a id="testBtn4" style="margin-left: -4px;">포인트 버퍼 Play</a>
                 <a id="testBtn5" style="margin-left: -4px;">클러스터</a>
+                <a id="testBtn6" style="margin-left: -4px;">탭 최소화</a>
+                <a id="testBtn7" style="margin-left: -4px;">검색결과 최소화</a>
             </div>
         <div id="popup" style="right: 150px; top: 250px; display: none;">
         	<p class="pop_tit"><span class="pop_tit_text">API 제공 레이어</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
@@ -915,7 +895,7 @@
      </div>
      
     </div>
-     <div id="gridArea" style="position: absolute; width: 100%; background: white; height: 250px; bottom: 0px; display: none; left:361px;">
+     <div id="gridArea"  value="off" style="position: absolute; width: 100%; background: white; height: 250px; bottom: 0px; display: none; left:361px;">
      	<div id="tabs">
      		<ul></ul>
      	</div>
