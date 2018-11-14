@@ -565,6 +565,13 @@ var _WestCondition = function () {
     };
 
     var setEvent = function(){
+    	$('input[name$="CheckBox"]').off('change').on('change',function(){
+    		var id = $(this).attr('id');
+    		if(id.indexOf('iotSensorInfo')>-1){
+    			checkSearchCondition(id.split('CheckBox')[0]);
+    		}
+    	});
+    	
     	$('#poiView').off('click').on('click',function(){
     		initPOI();
     	});
@@ -878,39 +885,43 @@ var _WestCondition = function () {
     var iotSensorInfoFunction= function(feature){
     	var width = 200;
     	var height = 200;
+    	var itemArr = [];
+    	var checkBox = $('input[name=iotSensorInfoCheckBox]:checked');
+    	
+    	var img = document.createElement("IMG");
+		img.height = height * checkBox.length;
+		img.width = width;
+		
+		var svgString = '<svg width="'+width+'" height="'+height+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
+		var colString = '';
+		var dataString = '';
+		
+		svgString += '<rect x="0" y="10" width="70" height="100" fill="gainsboro"/>';
+		svgString += '<rect x="70" y="10" width="70" height="100" fill="#fff"/>';
+		
+		colString += '<text x="10" y="15" font-size="18px" font-weight="bold" fill="crimson">';
+		dataString += '<text x="90" y="15" font-size="18px" text-anchor="middle">';
+		for(var i = 0; i < checkBox.length; i++){
+			colString += '<tspan x="10" dy="1em">CO2</tspan>';
+			dataString += '<tspan x="90" dy="1em">50</tspan>';
+    	}
+		colString += '</text>';
+		dataString += '</text>'
+		
+		svgString += colString + dataString + '</g></svg>';
+		
+		img.src = 'data:image/svg+xml;charset=utf8,'+encodeURIComponent(svgString);
+		
 		var style =  new ol.style.Style({
 			image: new ol.style.Icon({
 				opacity: 1,
-				img:writeDynamicTableSvg({
-					feature:feature,
-					width:width,
-					height:height,
-					itemArr:[{text:'테스트',id:'POS'}]
-				}),
+				img:img,
 				imgSize:[width,height]
 			}),
 	        zIndex:1
 		});
     	
     	return style;
-    };
-    
-    var writeDynamicTableSvg = function(options){
-    	var img = document.createElement("IMG");
-    	
-    	var svgString = '<svg width="'+options.width+'" height="'+options.height+'" version="1.1" xmlns="http://www.w3.org/2000/svg">';
-		img.height = options.height * options.itemArr.length;
-		img.width = options.width;
-		svgString += "<g id='columnGroup'> <rect x='0' y='10' width='70' height='100' fill='gainsboro'/> <rect x='70' y='10' width='70' height='100' fill='#fff'/> <text x='10' y='15' font-size='18px' font-weight='bold' fill='crimson'> <tspan x='10' dy='1em'>CO2</tspan> <tspan x='10' dy='1em'>SO2</tspan> <tspan x='10' dy='1em'>NO3</tspan> <tspan x='10' dy='1em'>PM2.5</tspan> </text> <text x='90' y='15' font-size='18px' text-anchor='middle'> <tspan x='90' dy='1em'>30</tspan> <tspan x='90' dy='1em'>40</tspan> <tspan x='90' dy='1em'>50</tspan> <tspan x='90' dy='1em'>60</tspan> </text> </g>";
-		for(var i = 0; i < options.itemArr.length; i++){
-			
-		}
-		
-		svgString += '</svg>';
-		
-		img.src = 'data:image/svg+xml;charset=utf8,'+encodeURIComponent(svgString);
-		
-		return img
     };
     
     var observatoryFunction= function(feature){
