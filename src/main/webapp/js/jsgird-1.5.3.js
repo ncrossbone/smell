@@ -1113,10 +1113,12 @@
                 for(var i=0;i<fieldsLength;i++){
                     var field = this.fields[i];
                     
-                    if ("includeInDataExport" in field){
+                    /* includeInDataExport == true
+                     * if ("includeInDataExport" in field){
                         if (field.includeInDataExport === true)
                             fieldNames[i] = field.title || field.name;
-                    }
+                    }*/
+                    fieldNames[i] = field.title || field.name;
                         
                 }
                 

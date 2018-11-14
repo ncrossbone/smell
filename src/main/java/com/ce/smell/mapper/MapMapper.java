@@ -14,6 +14,8 @@ public interface MapMapper {
 	public List<MapVO> getCMAQ9KM();
 	
 	public int putFlag(HashMap param);
+	public int insertAnals(HashMap param);
+	public int deleteAnals(HashMap param);
 	
 	public List<Map<String, Object>> complaintStatusGrid(HashMap param);
 	public List<Map<String, Object>> portableMeasurementGrid(HashMap param);

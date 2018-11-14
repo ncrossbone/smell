@@ -144,7 +144,7 @@
         -->
     </div>
     <div id="container">
-		<ul id="tab">
+		<ul id="tab" value="on">
         	<li class="on" tabType="smellMap">악취지도</li>
             <li tabType="smellInfo">악취정보</li>
             <li class="PdT35" style="height: 95px;" tabType="smellMeasure">측정소</li>
@@ -860,45 +860,19 @@
         </li>
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
-     	<ul id="legend">
-			<li><a class="legendMain" onOff="on">학교</a>
-				<ul style="top: 0px; left: 58px;" > 
-					<li>
-						<ul>
-							<a class="legendButton" layerName="SHP_DYCR_FCLT" onOff="off"><div>어린이집</div></a>
-						</ul>
-						<ul>
-							<a class="legendButton" layerName="SHP_KNDR_FCLT" onOff="off"><div>유치원</div></a>
-						</ul>
-						<ul>
-							<a class="legendButton" layerName="SHP_ELMN_SCHL_FCLT" onOff="off"><div>초등학교</div></a>
-						</ul>
-						<ul>
-							<a class="legendButton" layerName="SHP_MDL_SCHL_FCLT" onOff="off"><div>중학교</div></a>
-						</ul>
-							<ul>
-							<a class="legendButton" layerName="SHP_HIGH_SCHL_FCLT" onOff="off"><div>고등학교</div></a>
-						</ul>
-						
-					</li>
-				</ul>
-			</li>
-			<li><a>학교</a>
-				<ul style=" top: 0px; left: 58px;" >
-					<li>
-						<ul>
-							<a><div>초등학교</div></a>
-						</ul>
-							<ul>
-							<a><div>중학교</div></a>
-						</ul>
-							<ul>
-							<a><div>고등학교</div></a>
-						</ul>
-						
-					</li>
-				</ul>
-			</li>
+     	<ul id="around_info">
+			<li>
+                <span class="pic_school">학교</span>
+                <div class="ar_detail" id="ar_detail">
+                    <table>
+                        <tr><td class="icon_011"><label for="col_01" />어린이집<input type="checkbox" id="col_01" layerName="SHP_DYCR_FCLT"  onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_012"><label for="col_02" />유치원<input type="checkbox" id="col_02" layerName="SHP_KNDR_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_013"><label for="col_03" />초등학교<input type="checkbox" id="col_03" layerName="SHP_ELMN_SCHL_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_014"><label for="col_04" />중학교<input type="checkbox" id="col_04" layerName="SHP_MDL_SCHL_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                        <tr><td class="icon_015"><label for="col_05" />고등학교<input type="checkbox" id="col_05" layerName="SHP_HIGH_SCHL_FCLT" onclick="_WestCondition.legendLayerOnOff(this)"></td></tr>
+                    </table>
+                </div>
+            </li>
 		</ul>
      	<ul id="map_type">
         	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li>
@@ -921,6 +895,8 @@
                 <a id="testBtn3" style="margin-left: -4px;">포인트 버퍼</a>
                 <a id="testBtn4" style="margin-left: -4px;">포인트 버퍼 Play</a>
                 <a id="testBtn5" style="margin-left: -4px;">클러스터</a>
+                <a id="testBtn6" style="margin-left: -4px;">탭 최소화</a>
+                <a id="testBtn7" style="margin-left: -4px;">검색결과 최소화</a>
             </div>
         <div id="popup" style="right: 150px; top: 250px; display: none;">
         	<p class="pop_tit"><span class="pop_tit_text">API 제공 레이어</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
@@ -950,7 +926,7 @@
      </div>
      
     </div>
-     <div id="gridArea" style="position: absolute; width: 100%; background: white; height: 250px; bottom: 0px; display: none; left:361px;">
+     <div id="gridArea"  value="off" style="position: absolute; width: 100%; background: white; height: 250px; bottom: 0px; display: none; left:361px;">
      	<div id="tabs">
      		<ul></ul>
      	</div>

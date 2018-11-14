@@ -8,6 +8,7 @@ var _WestCondition = function () {
     var clusterDistance = 100;
     var cityTownObj = {};
     var POIConditionObj = {};
+    var reW = 0,reH = 0;
     var westLayerObj = {
     		CVPL_POINT : ':CVPL_POINT',
     		SHP_BDONG : ':SHP_BDONG',
@@ -232,14 +233,10 @@ var _WestCondition = function () {
     
     var legendLayerOnOff = function(value){
     	var layer = _CoreMap.getMap().getLayerForName(value.getAttribute('layerName'));
-		if(value.getAttribute('onOff') == "on"){
-			value.setAttribute('onOff', 'off');
-			value.style.backgroundColor = '';
-			layer.setVisible(false);
-		}else{
-			value.setAttribute('onOff', 'on');
-			value.style.backgroundColor = '#1688e8';//#1688e8
+		if(value.checked == true){
 			layer.setVisible(true);
+		}else{
+			layer.setVisible(false);
 		}
     }
     
@@ -1030,11 +1027,18 @@ var _WestCondition = function () {
     	
     	var tabTitle = contentsConfig[id].title;
     	var tabId = 'tabs-' + id;
-    	var li = $(tabTemplate.replace(/#\{id\}/g,tabId).replace(/#\{href\}/g, '#grid'+id).replace(/#\{label\}/g,tabTitle));
+    	var li = $(tabTemplate.replace(/#\{id\}/g,tabId).replace(/#\{href\}/g, '#place'+id).replace(/#\{label\}/g,tabTitle));
     	
     	if($('#'+tabId).length == 0){
     		tabs.find('.ui-tabs-nav').append( li );
-        	tabs.append('<div id="grid' + id + '" style="padding: 10px 3px !important;"></div>');
+    		/*if(tabs.find('#excelDown').length == 0){
+    			tabs.append('<button id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</button>');
+    		}*/
+        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="margin-left: 6px; color: #333b3e; font-family: \'Dotum\'; font-size: 13px; letter-spacing: -1px;">'+data.length+'개</span>' +
+        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #1688e8; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 35px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
+        			'<div id="grid' + id + '" style="padding: 0px 5px !important;"></div></span>');
+    	}else{
+    		$('#place'+id).find('.dataLength').text(data.length+'개');
     	}
     	
     	tabs.tabs('refresh');
@@ -1282,9 +1286,9 @@ var _WestCondition = function () {
     	}
     };
     
-    var popupOverlayData = function(areaId){
+    var popupOverlayData = function(areaId, reg){
     	//test db param
-    	areaId = "1057";
+    	//areaId = "1057";
 		getData({url: '/getArea.do', contentType: 'application/json', params: {"analsAreaId": areaId } }).done(function(data){
 			
 			if(data.length > 0){
@@ -1293,29 +1297,160 @@ var _WestCondition = function () {
 				$('#popupOverlay').show();
 				$('#popup-content').show();
 				
-				$('#cellRemeveBtn').attr('flag', data[0].GRID_INTRST_SE_CODE);
+				//$('#cellRemeveBtn').attr('flag', data[0].GRID_INTRST_SE_CODE);
 				$('#cellRemeveBtn').attr('indexId', data[0].ANALS_AREA_ID);
-				if(data[0].GRID_INTRST_SE_CODE == "Y"){
+				$('#cellRemeveBtn').attr('reg', reg);
+				if(reg == "1"){
 					$('#cellRemeveBtn').val('격자해제');
 					
 				}else{
 					$('#cellRemeveBtn').val('격자추가');
 				}
 				
-				
 				$('#intrstAreaNm').val(data[0].INTRST_AREA_NM);
 				$('#tpgrphAl').val(data[0].TPGRPH_AL);
 				$('#predictAl').val(data[0].PREDICT_AL);
-				
-				
-				//intrstArea
-				//tpgrphAl
-				//predictAl
 				
 			}
 			
 		});
 	}
+    
+    var excelDwonLoad = function(){
+    	
+    	var gridId = "";
+    	var grid = "";
+    	
+    	for(var i = 0 ; i < $('ul[role="tablist"]').children().length; i++){
+    		if($($('ul[role="tablist"]').children()[i]).attr('tabindex') == "0"){
+    			gridId = $($('ul[role="tablist"]').children()[i]).attr('aria-controls');
+    		}
+    	}
+    	
+    	
+    	
+    	gridId = gridId.split('grid')[1];
+    	if(gridId != undefined){
+    		//grid = ;
+    		//_WestCondition.getContentsConfig().complaintStatus.title
+    		var tabName = contentsConfig[gridId].title;
+    		// contentsConfig
+    		
+    		
+    		var csv = $('#grid'+gridId).jsGrid("exportData", {
+        	    type: "csv", //Only CSV supported
+        	    subset: "all" | "visible", //Visible will only output the currently displayed page
+        	    delimiter: ",", //If using csv, the character to seperate fields
+        	    includeHeaders: true, //Include header row in output
+        	    encapsulate: true, //Surround each field with qoutation marks; needed for some systems
+        	    newline: "\r\n", //Newline character to use
+        	    
+        	    //Takes each item and returns true if it should be included in output.
+        	    //Executed only on the records within the given subset above.
+        	    filter: function(item){return true},
+        	    
+        	});
+
+        	var uri = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURI(csv);
+
+        	var downloadLink = document.createElement("a");
+        	downloadLink.href = uri;
+        	downloadLink.download = tabName+".csv";
+
+        	document.body.appendChild(downloadLink);
+        	downloadLink.click();
+        	document.body.removeChild(downloadLink);
+    	}
+    	
+    }	
+
+	var tabCloseOpen = function(value){
+		
+		
+		//$('#tab').find('li').parent().find('li')
+		if(value.attr('class') == undefined || value.attr('class') == ""){
+			$('.lnb').css('display', 'none');
+			$('#tab').css('left',0);
+			$('#map').css('left',0);
+			value.addClass('on');
+			
+			$('#tab').attr('value','off') ;
+			
+			reW = 0;
+						
+			if($('#gridArea').css('display') != 'none'){
+				$('#gridArea').css('left','0');
+			}
+			
+		}else{
+			//$('#tab').find('.on')
+			for(var i = 0 ; i  < $('.lnb').length; i++){
+				if($('#tab').find('.on').attr('tabtype') == $($('.lnb')[i]).attr('id')){
+					$($('.lnb')[i]).css('display', 'block');
+				}else{
+					$($('.lnb')[i]).css('display', 'none');
+				}
+			}
+			
+			$('#tab').css('left',360);
+			$('#map').css('left',351);
+			value.removeClass('on');
+			
+			$('#tab').attr('value','on');
+			
+			reW = 340;
+			
+			if($('#gridArea').css('display') != 'none'){
+				$('#gridArea').css('left','361px');
+			}
+			
+		}
+		
+		reSizeMap(reW,reH);
+		
+	}
+	
+	var gridCloseOpen = function(value){
+		
+		
+		if(value.attr('class') == undefined || value.attr('class') == ""){
+			
+			$('#gridArea').css('display','none');
+			$('#gridArea').attr('value','off') ;
+			value.addClass('on');
+			
+			reH = 0;
+			
+			
+		}else{
+			
+			$('#gridArea').css('display','block');
+			$('#gridArea').attr('value','on') ;
+			value.removeClass('on');
+			
+			reH = 92;
+		}
+		
+		reSizeMap(reW,reH);
+		
+	}
+	
+	var reSizeMap = function(width,height){
+		
+		var ww = $(window).width();
+		var wh = $(window).height();
+		
+		var map = _CoreMap.getMap();
+
+		$('#map').width(ww - reW);
+		$('#map').height(wh - reH);
+		//$('#westContainer').height(wh-50); 
+		if (map) {
+			map.setSize([ ww - width, wh - height]);
+		}
+		
+	}
+	
 
     return {
         init: init,
@@ -1345,8 +1480,20 @@ var _WestCondition = function () {
         	legendLayerOnOff(value);
         },
         
-        popupOverlayData: function(areaId){
-        	popupOverlayData(areaId);
+        popupOverlayData: function(areaId, reg){
+        	popupOverlayData(areaId, reg);
+        },
+        
+        excelDwonLoad: function(){
+        	excelDwonLoad();
+        },
+        
+        tabCloseOpen: function(value){
+        	tabCloseOpen(value);
+        },
+        
+        gridCloseOpen: function(value){
+        	gridCloseOpen(value);
         }
     };
 }();
