@@ -162,7 +162,6 @@ var _SmellMapBiz = function () {
 	}
 	
 	var drawCell = function(){
-//		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'RESULT_DT=\'2018062501\' AND FLAG=0', zIndex:10}];
 		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'1=1', zIndex:10}];
 		wmsSelectTestLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
@@ -434,14 +433,14 @@ var _SmellMapBiz = function () {
 		});
 		
 		
-		$('#testBtn6').on('click', function(){
+		$('#tabOpeners').on('click', function(){
 			var me = $(this);
 			_WestCondition.tabCloseOpen(me);
 		});
 		
 		$('#testBtn7').on('click', function(){
 			var me = $(this);
-			if($('#gridArea> #tabs').children().length > 2){
+			if($('#gridArea> #tabs').children().length > 1){
 				_WestCondition.gridCloseOpen(me);
 			}
 		});
@@ -458,14 +457,11 @@ var _SmellMapBiz = function () {
 			            type : 'GET',
 			            contentType : 'application/json'
 			    	}).done(function(result){
-			    		//noCacheCount++;
 			    		
 			    		var wmsSource = wmsSelectTestLayer.getSource();
-			    		//wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
-			    		wmsSource.updateParams({CQL_FILTER:"1=1"});
+			    		wmsSource.updateParams({"time":Date.now()});
 			    		
 			    		$('#popup-closer').trigger('click');
-			    		
 			    	});
 				}else{
 					$.ajax({
@@ -473,17 +469,13 @@ var _SmellMapBiz = function () {
 			            type : 'GET',
 			            contentType : 'application/json'
 			    	}).done(function(result){
-			    		//noCacheCount++;
 			    		
 			    		var wmsSource = wmsSelectTestLayer.getSource();
-			    		//wmsSource.updateParams({CQL_FILTER:"RESULT_DT='2018062501' AND FLAG=0 AND "+noCacheCount+"="+noCacheCount});
-			    		wmsSource.updateParams({CQL_FILTER:"1=1"});
+			    		wmsSource.updateParams({"time":Date.now()});
 			    		
 			    		$('#popup-closer').trigger('click');
 			    	});
 				}
-				
-				
 			}
 		});
 		
@@ -1284,6 +1276,9 @@ var _SmellMapBiz = function () {
         	var me = this;
         	init();
         	return me;
+        },
+        getwmsSelectTestLayer: function(){
+        	return wmsSelectTestLayer;
         }
     };
 }();
