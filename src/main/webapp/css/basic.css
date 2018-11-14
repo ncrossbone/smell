@@ -163,11 +163,18 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 #around_info> li.active span { background-position: -19px center; }
 #around_info label { font-family: 'Dotum'; font-size: 11px; }
 
+/*20181114*/
+.btn_radio { margin-bottom: 20px; }
+.btn_radio:after { display: block; clear: both; content: ''; } 
+.btn_radio> li { float: left; margin-right: 1px; }
+.btn_radio> li:last-child { margin-right: 0; }
+.btn_radio> li> a { height: 22px; padding-top: 8px; padding-left: 33px; color: #fff; font-family: 'Dotum'; font-size: 12px; font-weight: bold; letter-spacing: -1px; display: block; background: url(../images/icon_radio_none.png) 10px 6px no-repeat, #27bac1; }
+
+.btn_radio> li> a.off { }
+.btn_radio> li> a.on { background: url(../images/icon_radio_chk.png) 10px 6px no-repeat, #3d4866; }
+
 #around_info span { height: 20px; display: block; padding: 10px 0 0 30px; background-position: 5px center; }
 .pic_school { background: url(../images/icon_010.png) no-repeat; }
-
-
-
 
 
 .ar_detail { width: 150px; border: 1px solid #5a6173; position: absolute; left: 100px; top: -1px; display: none; background: #fff; z-index: 1000; }
