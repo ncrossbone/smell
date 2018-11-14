@@ -318,6 +318,15 @@ var _WestCondition = function () {
 			flag:'city',
 		});
     	
+    	/*_MapEventBus.on(_MapEvents.smellMapWriteLayer, smellMapWriteLayer);
+    	
+    	_MapEventBus.trigger(_MapEvents.smellMapWriteLayer, {
+    		cqlString:'',
+    		geoserverLayerId:westLayerObj.SHP_BPLC_FOR_WESTCONDITION,
+    		layerId:'test',
+    		layerType:'polygon'
+    	});*/
+    	
     	_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined,'cty_nm, dong_nm').done(function(data){
     		if(data.features.length == 0){
     			return;
@@ -423,6 +432,56 @@ var _WestCondition = function () {
         $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
         
         setEvent();
+    };
+    
+    var smellMapWriteLayer = function(event, options){
+    	/*cqlString:'',
+		geoserverLayerId:westLayerObj.SHP_BPLC_FOR_WESTCONDITION,
+		layerId:'test',
+		layerType:'polygon'*/
+    	_MapService.getWfs(options.geoserverLayerId,'*',encodeURIComponent(options.cqlString), '').done(function (data) {
+    		var getLayerForName = _CoreMap.getMap().getLayerForName(options.layerId);
+    		if(getLayerForName){
+    			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+    		}
+    		
+        	if(data < 1){
+    			return;
+    		}
+        	
+        	var featureArray = [];
+    		var source;
+    		
+    		for(var i=0; i<data.length; i++){
+    			var feature = new ol.Feature();
+
+    			if(options.layerType=='polygon'){
+    				feature.setGeometry(new ol.geom.Polygon(data[i].geometry.coordinates));
+    			}else{
+    				//point, line...
+    			}
+    			feature.setProperties(data[i].properties);
+
+    			featureArray.push(feature);
+    		}
+    		
+    		var styleFunction = selectStyleFunction(options.layerId);
+    		
+    		contentsConfig[options.layerId].isVisible = options.visible;
+    		contentsConfig[options.layerId].isPopupShow = false;
+    		/*
+    		var vectorLayer = new ol.layer.Vector({
+    	        source: source,
+    	        id:id,
+    	        name:id,
+    	        style:styleFunction,
+    	        zIndex:2,
+    	        visible:
+    		});*/
+    		
+    		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
+		});
+		
     };
     
     var writeItem = function(id, data){
@@ -1691,7 +1750,7 @@ var _WestCondition = function () {
 			map.setSize([ ww - width, wh - height]);
 		}
 		
-	}
+	};
 	
 
     return {
