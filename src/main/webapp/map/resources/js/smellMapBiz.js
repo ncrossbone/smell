@@ -956,67 +956,78 @@ var _SmellMapBiz = function () {
 					layerNm = bizLayers.ANALS_POINT_FORECAST
 				}
 				
-				odorSpreadHeatMapLayer = new ol.layer.Heatmap({
-					name:'odorSpreadHeatMapLayer',
-					source:new ol.source.Vector({
-					url: _MapServiceInfo.serviceUrl +'/geoserver/CE-TECH/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=CE-TECH:'+layerNm+'&maxFeatures=5000&outputFormat=application/json&CQL_FILTER=DTA_DT=\''+odorSpreadTimeSeries[odorSpreadIndex].date+odorSpreadTimeSeries[odorSpreadIndex].time+'\'',
-					format: new ol.format.GeoJSON({
-						featureProjection:'EPSG:3857'
-						})
-					}),
-					blur: parseInt(55, 10),
-					radius: parseInt(55, 10),
-					zIndex: 3000
-      			});
-
-				odorSpreadHeatMapLayer.getSource().on('addfeature', function(event) {
-					var val = event.feature.get('BSML_DNSTY');
-					
-					var coVal = String(event.feature.get('BSML_DNSTY')).split('.');
-					var targetVal = String(event.feature.get('BSML_DNSTY')).replace('.','');
-					var preFixCnt = coVal[0].length;
-					var preFix = '00';
-					
-					for(var i=0; i<preFixCnt;i++){
-						preFix = preFix.substring(0, preFix.length-1);
-					}
-					
-					var sum = parseFloat('0.'+preFix+targetVal);
-			        event.feature.set('weight', sum);
-				});
-	
-				_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadHeatMapLayer);
+				drawHeatMapLayer(layerNm);
 			}
-			
 		});
 		$('#odorSpreadPrevious').on('click', function(){
-			if(odorSpreadLayer){
+			
+			var mapType = $('input[name="odorSpreadMapType"]:checked').val();
+			
+			if(odorSpreadInterval){
 				clearInterval(odorSpreadInterval);
 				odorSpreadInterval = null;
-				
-				odorSpreadIndex--;
-				
-				if(odorSpreadIndex < 0){
-					odorSpreadIndex = 0;
+			}
+			
+			odorSpreadIndex--;
+			
+			if(odorSpreadIndex < 0){
+				odorSpreadIndex = 0;
+			}
+			
+			if(mapType == 'cell'){
+				if(odorSpreadLayer){
+					updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
+					setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+				}
+			}else{
+				var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
+				if(layerNm.indexOf('now') >= 0){
+					layerNm = bizLayers.ANALS_POINT_NOW;
+				}else{
+					layerNm = bizLayers.ANALS_POINT_FORECAST
 				}
 				
-				updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
-				setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+				if(odorSpreadHeatMapLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+					odorSpreadHeatMapLayer = null;
+				}
+				drawHeatMapLayer(layerNm);
 			}
 		});
 		$('#odorSpreadNext').on('click', function(){
-			if(odorSpreadLayer){
+			
+			var mapType = $('input[name="odorSpreadMapType"]:checked').val();
+			
+			if(odorSpreadInterval){
 				clearInterval(odorSpreadInterval);
 				odorSpreadInterval = null;
-				
-				odorSpreadIndex++;
-				
-				if(odorSpreadTimeSeries.length <= (odorSpreadIndex+1)){
-					odorSpreadIndex = odorSpreadTimeSeries.length-1;
+			}
+			
+			odorSpreadIndex++;
+			
+			if(odorSpreadTimeSeries.length <= (odorSpreadIndex+1)){
+				odorSpreadIndex = odorSpreadTimeSeries.length-1;
+			}
+			
+			if(mapType == 'cell'){
+				if(odorSpreadLayer){
+					updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
+					setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+				}
+			}else{
+				var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
+				if(layerNm.indexOf('now') >= 0){
+					layerNm = bizLayers.ANALS_POINT_NOW;
+				}else{
+					layerNm = bizLayers.ANALS_POINT_FORECAST
 				}
 				
-				updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
-				setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+				if(odorSpreadHeatMapLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+					odorSpreadHeatMapLayer = null;
+				}
+				
+				drawHeatMapLayer(layerNm);
 			}
 		}); 
 		$('a[name="odorSpreadLayerType"]').on('click', function(){
@@ -1048,82 +1059,52 @@ var _SmellMapBiz = function () {
 			}
 			
 			if(odorSpreadLayer){
-				
 				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadLayer);
 				odorSpreadLayer = null;
 				
 				clearInterval(odorSpreadInterval);
 				odorSpreadInterval = null;
 			}
+			if(odorSpreadHeatMapLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+				odorSpreadHeatMapLayer = null;
+			}
 		})
 		$('input[name="odorSpreadMapType"]').on('click', function(){
-//			$('a[name="odorSpreadMapType"]').removeClass('on');
-//			$(this).addClass('on');
-			
 			var mapType = $('input[name="odorSpreadMapType"]:checked').val();
 			var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
 			
 			// 격자
 			if(mapType == 'cell'){
 				if(odorSpreadHeatMapLayer){
-					odorSpreadHeatMapLayer.setVisible(false);
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+					odorSpreadHeatMapLayer = null;
 				}
 				if(odorSpreadLayer){
 					odorSpreadLayer.setVisible(true);
 					updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
 				}else{
-//					var layerInfos = [{layerNm:layerNm,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+odorSpreadTimeSeries[odorSpreadIndex].date+odorSpreadTimeSeries[odorSpreadIndex].time:4}];
-//					odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
-//					_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
-					
-//					setCurrentDate({date:odorSpreadStartDate, time:odorSpreadStartTime}, 'odorSpreadDate');
-//					playOdorSpreadLayer();
+					var layerInfos = [{layerNm:layerNm,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+odorSpreadTimeSeries[odorSpreadIndex].date+odorSpreadTimeSeries[odorSpreadIndex].time+'\'', zIndex:4}];
+					odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
+					_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
 				}
 			}else{ // 밀도
 				if(odorSpreadLayer){
 					odorSpreadLayer.setVisible(false);
 				}
-				if(odorSpreadHeatMapLayer){
-					odorSpreadHeatMapLayer.setVisible(true);
-					updateLayer(odorSpreadHeatMapLayer, odorSpreadTimeSeries[odorSpreadIndex]);
+				if(layerNm.indexOf('now') >= 0){
+					layerNm = bizLayers.ANALS_POINT_NOW;
 				}else{
+					layerNm = bizLayers.ANALS_POINT_FORECAST
+				}
+				
+				if(odorSpreadHeatMapLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+					odorSpreadHeatMapLayer = null;
 					
-					if(layerNm.indexOf('now') >= 0){
-						layerNm = bizLayers.ANALS_POINT_NOW;
-					}else{
-						layerNm = bizLayers.ANALS_POINT_FORECAST
-					}
-					
-					odorSpreadHeatMapLayer = new ol.layer.Heatmap({
-						name:'odorSpreadHeatMapLayer',
-						source:new ol.source.Vector({
-						url: _MapServiceInfo.serviceUrl +'/geoserver/CE-TECH/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=CE-TECH:'+layerNm+'&maxFeatures=5000&outputFormat=application/json&CQL_FILTER=DTA_DT=\''+odorSpreadTimeSeries[odorSpreadIndex].date+odorSpreadTimeSeries[odorSpreadIndex].time+'\'',
-						format: new ol.format.GeoJSON({
-							featureProjection:'EPSG:3857'
-							})
-						}),
-						blur: parseInt(55, 10),
-						radius: parseInt(55, 10),
-						zIndex: 3000
-	      			});
-
-					odorSpreadHeatMapLayer.getSource().on('addfeature', function(event) {
-						var val = event.feature.get('BSML_DNSTY');
-						
-						var coVal = String(event.feature.get('BSML_DNSTY')).split('.');
-						var targetVal = String(event.feature.get('BSML_DNSTY')).replace('.','');
-						var preFixCnt = coVal[0].length;
-						var preFix = '00';
-						
-						for(var i=0; i<preFixCnt;i++){
-							preFix = preFix.substring(0, preFix.length-1);
-						}
-						
-						var sum = parseFloat('0.'+preFix+targetVal);
-				        event.feature.set('weight', sum);
-					});
-		
-					_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadHeatMapLayer);
+					drawHeatMapLayer(layerNm);
+				}else{
+					drawHeatMapLayer(layerNm);
 				}
 			}
 		});
@@ -1291,6 +1272,39 @@ var _SmellMapBiz = function () {
 		});
 		
 	};
+	
+	var drawHeatMapLayer = function(layerNm){
+		odorSpreadHeatMapLayer = new ol.layer.Heatmap({
+			name:'odorSpreadHeatMapLayer',
+			source:new ol.source.Vector({
+			url: _MapServiceInfo.serviceUrl +'/geoserver/CE-TECH/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=CE-TECH:'+layerNm+'&maxFeatures=5000&outputFormat=application/json&CQL_FILTER=DTA_DT=\''+odorSpreadTimeSeries[odorSpreadIndex].date+odorSpreadTimeSeries[odorSpreadIndex].time+'\'',
+			format: new ol.format.GeoJSON({
+				featureProjection:'EPSG:3857'
+				})
+			}),
+			blur: parseInt(45, 10),
+			radius: parseInt(45, 10),
+			zIndex: 3000
+		});
+ 
+		odorSpreadHeatMapLayer.getSource().on('addfeature', function(event) {
+			var val = event.feature.get('BSML_DNSTY');
+			
+			var coVal = String(event.feature.get('BSML_DNSTY')).split('.');
+			var targetVal = String(event.feature.get('BSML_DNSTY')).replace('.','');
+			var preFixCnt = coVal[0].length;
+			var preFix = '00';
+			
+			for(var i=0; i<preFixCnt;i++){
+				preFix = preFix.substring(0, preFix.length-1);
+			}
+			
+			var sum = parseFloat('0.'+preFix+targetVal);
+	        event.feature.set('weight', sum);
+		});
+
+		_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadHeatMapLayer);
+	}
 	var writeGrid = function(id, gridData){
 		$('#gridArea').show();
     	var tabTitle = $('#tab_title');
@@ -1369,7 +1383,7 @@ var _SmellMapBiz = function () {
 				clearInterval(weatherAnalysisInterval);
 				return;
 			}
-		}, 1000 * 3);
+		}, 1000 * 5);
 	};
 	
 	var playOdorSpreadLayer = function(){
@@ -1384,7 +1398,7 @@ var _SmellMapBiz = function () {
 				clearInterval(odorSpreadInterval);
 				return;
 			}
-		}, 1000 * 3);
+		}, 1000 * 5);
 	};
 	var updateLayer = function(layer, param){
 		var source = layer.getSource();
