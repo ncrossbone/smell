@@ -41,7 +41,7 @@
   		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
      	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
      	   AND LA IS NOT NULL
-     	   <if test="branchName != null">
+     	   <if test="branchName != ''">
     			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
   			</if>
   			AND CVPL_TY_CODE IN
@@ -67,7 +67,7 @@
   		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
      	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
      	   AND LA IS NOT NULL
-     	   <if test="branchName != null">
+     	   <if test="branchName != ''">
     			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
   			</if>
   			AND CVPL_TY_CODE IN
@@ -124,7 +124,7 @@
    		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
    		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
      	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
-     	   <if test="branchName != null">
+     	   <if test="branchName != ''">
     			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
   			</if>
 	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_X,POINT_Y,MESURE_DT
@@ -167,7 +167,7 @@
    		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
    		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
      	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
-     	   <if test="branchName != null">
+     	   <if test="branchName != ''">
     			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
   			</if>
 	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_X,POINT_Y,MESURE_DT
@@ -175,10 +175,8 @@
 	
 	<select id="fixedMeasurementGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
-			   C.OPR_STTUS_CODE,
 			   B.SENSOR_NM,
-			   B.LA AS POINT_Y,
-			   B.LO AS POINT_X,
+               OPR_STTUS_CODE,
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
 			   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='1' THEN MESURE_DNSTY END),3) AS 'VOCS',
@@ -201,26 +199,22 @@
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='18' THEN MESURE_DNSTY END),3) AS 'CH3SH',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='19' THEN MESURE_DNSTY END),3) AS 'TMA',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='20' THEN MESURE_DNSTY END),3) AS 'ETHANOL' 
-  		  FROM IOT_SENSOR_MESURE_INFO A,
-	   		   IOT_SENSOR_INFO B,
-	   		   IOT_SENSOR_SPCS_INFO C,
-	   		   IOT_MESURE_IEM_MANAGE D
-		 WHERE A.SPOT_CODE IN ('0001','0002')
+  		  FROM bdsm.IOT_SENSOR_MESURE_INFO A,
+	   		   bdsm.IOT_SENSOR_INFO B
+		 WHERE  SENSOR_TY_CODE = 'SEN01001'
   		   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
-  		   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE,A.SENSOR_SPCS_NO) = CONCAT(C.LEGALDONG_CODE,C.SPOT_CODE,C.SENSOR_SPCS_NO)
-  		   AND CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE) = CONCAT(C.LEGALDONG_CODE,C.SPOT_CODE)
-  		   AND D.IEM_CODE = C.IEM_CODE
-  		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
+  		   AND A.LEGALDONG_CODE LIKE CONCAT(#{town}, '%')
    		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = CONCAT(#{startDate},#{startTime},#{startMinute})
-     	    <if test="branchName != null">
+   		   AND A.SPOT_CODE NOT IN ('0003')
+     	    <if test="branchName != ''">
     			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
   			</if>
-  	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_Y,POINT_X,MESURE_DT,SENSOR_NM
+  	  GROUP BY CODE,B.SENSOR_NM,OPR_STTUS_CODE,DATE,MESURE_DT
 	</select>
 	
 	<select id="fixedMeasurementFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-  	   SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
-                B.OPR_STTUS_CODE,
+	 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
+                OPR_STTUS_CODE,
                 SENSOR_NM,
                 A.LA AS POINT_Y,
                 A.LO AS POINT_X,
@@ -250,15 +244,15 @@
 				   FROM bdsm.IOT_SENSOR_INFO
 		          WHERE SENSOR_TY_CODE = 'SEN01001'
                     AND SPOT_CODE NOT IN ('0003')
-                    AND LEGALDONG_CODE LIKE CONCAT(#{town},'%')
                     AND LO IS NOT NULL
-					<if test="branchName != null">
+                    AND LEGALDONG_CODE LIKE CONCAT(#{town},'%')
+                    <if test="branchName != ''">
     					AND SENSOR_NM LIKE CONCAT('%', #{branchName}, '%')
   					</if>
   					) AS A
-LEFT OUTER JOIN (SELECT A.SPOT_CODE,DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
+LEFT OUTER JOIN (SELECT A.SPOT_CODE,
+						A.LEGALDONG_CODE,DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
 			   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
-               OPR_STTUS_CODE,
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='1' THEN MESURE_DNSTY END),3) AS 'VOCS',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='2' THEN MESURE_DNSTY END),3) AS 'CCNT',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='3' THEN MESURE_DNSTY END),3) AS 'NH3',
@@ -279,14 +273,10 @@ LEFT OUTER JOIN (SELECT A.SPOT_CODE,DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='18' THEN MESURE_DNSTY END),3) AS 'CH3SH',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='19' THEN MESURE_DNSTY END),3) AS 'TMA',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='20' THEN MESURE_DNSTY END),3) AS 'ETHANOL' 
-  FROM bdsm.IOT_SENSOR_MESURE_INFO A,
-       bdsm.IOT_SENSOR_SPCS_INFO B,
-       bdsm.IOT_MESURE_IEM_MANAGE C
- WHERE CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE,A.SENSOR_SPCS_NO) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE,B.SENSOR_SPCS_NO)
-   AND B.IEM_CODE = C.IEM_CODE
-   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = CONCAT(#{startDate},#{startTime},#{startMinute})
-GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY,MESURE_DT) AS B
-  		     ON A.SPOT_CODE = B.SPOT_CODE
+  FROM bdsm.IOT_SENSOR_MESURE_INFO A
+  WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = CONCAT(#{startDate},#{startTime},#{startMinute})
+GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
+  		     ON CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
 	</select>
 	
 	<select id="portableMeasurementClick" parameterType="String" resultType="java.util.HashMap">
@@ -389,7 +379,7 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
              ERTHSF_AL
   		FROM bdsm.BPLC_INFO
  	   WHERE LEGALDONG_CODE LIKE  CONCAT(#{town}, '%')
- 	   <if test="branchName != null">
+ 	   <if test="branchName != ''">
    	     AND BSML_TRGNPT_NM LIKE CONCAT('%', #{branchName}, '%')
    	   </if>
 	</select>
@@ -451,7 +441,7 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
      	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
 		   AND NTWK_NM = #{item}
 		   AND ADM_CODE LIKE CONCAT(#{town},'%')
-		   <if test="branchName != null">
+		   <if test="branchName != ''">
    	     		AND NAME LIKE CONCAT('%', #{branchName}, '%')
    	   	   </if>
 	</select>
@@ -472,7 +462,7 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
 				  POINT_Y
 			 FROM bdsm.SHP_AIRKOREA_MSRSTN
 		    WHERE ADM_CODE LIKE CONCAT('4311','%')
-		    <if test="branchName != null">
+		    <if test="branchName != ''">
               AND NAME LIKE CONCAT('%', #{branchName}, '%')
             </if>
               AND ADM_CODE LIKE CONCAT(#{town},'%')
@@ -523,7 +513,7 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
   		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') <![CDATA[>=]]> CONCAT(#{startDate},#{startTime},#{startMinute})
   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime},#{endMinute})
-     	    <if test="branchName != null">
+     	    <if test="branchName != ''">
     			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
   			</if>
            GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_Y,POINT_X,MESURE_DT,SENSOR_NM
@@ -660,7 +650,7 @@ LEFT OUTER JOIN ( SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
                bdsm.BPLC_INFO C
 		 WHERE A.BPLC_ID = C.bplc_id
 		   AND LEGALDONG_CODE LIKE CONCAT(#{town},'%')
-		   <if test="branchName != null">
+		   <if test="branchName != ''">
     			AND CMPNY_NM LIKE CONCAT('%', #{branchName}, '%')
   			</if>
 	</select>
