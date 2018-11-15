@@ -96,6 +96,8 @@
 			if (map) {
 				map.setSize([ ww - 340, wh - 92 ]);
 			}
+			
+			$('#gridArea').width(100-($($('.lnb')[0]).width() / ww * 100)+'%');
 		});
 		$('#popup').draggable({ containment: '#map' });
 		$(window).trigger('resize');
