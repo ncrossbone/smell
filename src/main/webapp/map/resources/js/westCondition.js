@@ -320,13 +320,6 @@ var _WestCondition = function () {
     	
     	_MapEventBus.on(_MapEvents.addWriteLayerForUseGeoserver, addWriteLayerForUseGeoserver);
     	
-    	_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {
-    		cqlString:'1=1',
-    		geoserverLayerId:_WestCondition.getWestLayerName().SHP_BPLC_FOR_WESTCONDITION,
-    		layerId:'odorOrigin',
-    		layerType:'polygon'
-    	});
-    	
     	_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined,'cty_nm, dong_nm').done(function(data){
     		if(data.features.length == 0){
     			return;
@@ -936,8 +929,10 @@ var _WestCondition = function () {
 			styleFunction = clusterStyleFunction;
 			break;
 		case 'portableMeasurement':
-		case 'fixedMeasurement':
 			styleFunction = portableMeasurementStyleFunction;
+			break;
+		case 'fixedMeasurement':
+			styleFunction = fixedMeasurementStyleFunction;
 			break;
 		case 'text':
 			styleFunction = labelStyleFunction;
@@ -1162,25 +1157,45 @@ var _WestCondition = function () {
     };
     
     var portableMeasurementStyleFunction = function(feature){
-    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType] + '':'-';
+    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 20,
-    			fill: new ol.style.Fill({
-    		        color: '#548235'
-    		    }),
-    		    stroke: new ol.style.Stroke({
-    		    	color: '#AFABAB',
-    		    	width: 3
-    		    })
-    		}),
+    		image: new ol.style.Icon(({
+    			src: '../images/portable.png'
+    		})),
 			text: new ol.style.Text({
 				text: text,
 				fill: new ol.style.Fill({
-					color: '#fff'
+					color: '#000'
 				}),
-				font: '11px bold, Verdana'
+				stroke : new ol.style.Stroke({
+					color : '#fff',
+					width : 3
+				}),
+				font: 'bold 12px Arial'
+			})
+  		});
+    	
+    	return style;
+    };
+    
+    var fixedMeasurementStyleFunction = function(feature){
+    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Icon(({
+    			src: '../images/fixed.png'
+    		})),
+			text: new ol.style.Text({
+				text: text,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				stroke : new ol.style.Stroke({
+					color : '#fff',
+					width : 3
+				}),
+				font: 'bold 12px Arial'
 			})
   		});
     	
