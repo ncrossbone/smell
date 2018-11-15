@@ -25,6 +25,7 @@ var _WestCondition = function () {
     					  isUseGeoserver:false,
     					  isLabelLayer:false,
     					  isWriteGrid:true,
+    					  isPopupShow:true,
     					  popupColumnArr:[{text:'민원 일시',id:'CVPL_DT'},{text:'민원 위치',id:'CVPL_LC'},{text:'민원 내용',id:'CVPL_CN'}],
     					  columnArr:[{name:'CVPL_NO',title:'민원 번호',width:40},
     					             {name:'CVPL_DT',title:'민원 일시',width:70},
@@ -45,6 +46,7 @@ var _WestCondition = function () {
 						isUseGeoserver:false,
 						isLabelLayer:true,
 						isWriteGrid:true,
+						isPopupShow:false,
 						popupColumnArr:[{text:'측정 일시',id:'MESURE_DT'},{text:'센서 ID',id:'SENSOR_ID'},{text:'센서명',id:'OPR_STTUS_CODE'}],
 						columnArr:[{name:'CODE',title:'센서ID'},
 						     {name:'MESURE_DT',title:'측정 일시',width:170},
@@ -79,6 +81,7 @@ var _WestCondition = function () {
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
+			isPopupShow:true,
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
 			columnArr:[{name:'CODE',title:'센서ID'},
 			           {name:'SENSOR_NM',title:'지점명'},
@@ -113,6 +116,7 @@ var _WestCondition = function () {
 			isVisible:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
+			isPopupShow:true,
 			isWriteGrid:false,
 			popupColumnArr:[{text:'지점코드',id:'SENSE_EVL_NO'},{text:'주소',id:'ADD_TEXT'},{text:'복합악취 ou',id:'BSML_FQ'}]
     	},
@@ -121,6 +125,7 @@ var _WestCondition = function () {
 			title:'환경공단 측정망',
 			keyColumn:['CODE'],
 			isVisible:true,
+			isPopupShow:true,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:true,
@@ -153,6 +158,7 @@ var _WestCondition = function () {
 			keyColumn:['CODE'],
 			isVisible:true,
 			isUseGeoserver:false,
+			isPopupShow:true,
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
@@ -193,6 +199,7 @@ var _WestCondition = function () {
     			keyColumn:['BPLC_ID'],
     			isVisible:true,
     			isUseGeoserver:true,
+    			isPopupShow:true,
     			isLabelLayer:false,
     			isWriteGrid:true,
     			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
@@ -215,6 +222,7 @@ var _WestCondition = function () {
     			keyColumn:['BPLC_ID'],
     			isVisible:true,
     			isUseGeoserver:true,
+    			isPopupShow:true,
     			isLabelLayer:false,
     			isWriteGrid:true,
     			popupColumnArr:[{text:'회사명',id:'CMPNY_NM'},{text:'주소',id:'LEGALDONG_ETC'},{text:'전화번호',id:'TELNO'}],
@@ -231,6 +239,7 @@ var _WestCondition = function () {
 			keyColumn:['STATION_ID'],
 			isVisible:true,
 			isUseGeoserver:false,
+			isPopupShow:true,
 			isLabelLayer:false,
 			isWriteGrid:true,
 			popupColumnArr:[{text:'측정소 코드',id:'STATION_ID'},{text:'측정소 명',id:'NAME'},{text:'주소',id:'POS'}],
@@ -251,6 +260,7 @@ var _WestCondition = function () {
 			title:'IOT 센서 정보',
 			keyColumn:['STATION_ID'],
 			isVisible:true,
+			isPopupShow:false,
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:false
@@ -307,6 +317,8 @@ var _WestCondition = function () {
 			childTypeId:'Town',
 			flag:'city',
 		});
+    	
+    	_MapEventBus.on(_MapEvents.addWriteLayerForUseGeoserver, addWriteLayerForUseGeoserver);
     	
     	_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined,'cty_nm, dong_nm').done(function(data){
     		if(data.features.length == 0){
@@ -413,6 +425,49 @@ var _WestCondition = function () {
         $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
         
         setEvent();
+    };
+    
+    var addWriteLayerForUseGeoserver = function(event, options){
+    	
+    	var getLayerForName = _CoreMap.getMap().getLayerForName(options.layerId);
+		if(getLayerForName){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+		}
+		
+    	_MapService.getWfs(options.geoserverLayerId,'*',encodeURIComponent(options.cqlString), '').done(function (d) {
+        	var featureArray = [];
+        	var data = d.features;
+        	
+    		for(var i=0; i<data.length; i++){
+    			var feature = new ol.Feature();
+
+    			if(options.layerType=='polygon'){
+    				feature.setGeometry(new ol.geom.Polygon(data[i].geometry.coordinates));
+    			}else{
+    				//point, line...
+    			}
+    			feature.setProperties(data[i].properties);
+
+    			featureArray.push(feature);
+    		}
+    		
+    		var styleFunction = selectStyleFunction(options.layerId);
+    		
+    		var source = new ol.source.Vector({
+				features: featureArray
+			});
+    		
+    		var vectorLayer = new ol.layer.Vector({
+    	        source: source,
+    	        id:options.layerId,
+    	        name:options.layerId,
+    	        style:styleFunction,
+    	        zIndex:2,
+    	        visible:contentsConfig[options.layerId].isVisible
+    		});
+    		
+    		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
+		});
     };
     
     var writeItem = function(id, data){
@@ -648,11 +703,10 @@ var _WestCondition = function () {
         			isShow = true;
         			$(this).css('background','url(../images/btn_on.png)');
         			contentsConfig[contentsId].isVisible = true;
-        		}	
+        		}
     		}catch(e){}
     		
     		var reportCheck = $(this).parent().parent().attr('id');
-
     		// 분석쪽은 별도
     		if(reportCheck == 'smellReport'){
     			_MapEventBus.trigger(_MapEvents.clickLayerOnOff, {target:contentsId, isShow:isShow});
@@ -669,6 +723,8 @@ var _WestCondition = function () {
             		}
         		}
     		}
+    		
+    		
     	});
     };
     
@@ -883,8 +939,10 @@ var _WestCondition = function () {
 			styleFunction = clusterStyleFunction;
 			break;
 		case 'portableMeasurement':
-		case 'fixedMeasurement':
 			styleFunction = portableMeasurementStyleFunction;
+			break;
+		case 'fixedMeasurement':
+			styleFunction = fixedMeasurementStyleFunction;
 			break;
 		case 'text':
 			styleFunction = labelStyleFunction;
@@ -974,13 +1032,13 @@ var _WestCondition = function () {
     				width: 3
     			})
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().NAME,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1025,7 +1083,15 @@ var _WestCondition = function () {
     		    	color: '#AFABAB',
     		    	width: 3
     		    })
-    		})
+    		}),
+    		text: new ol.style.Text({
+				text: feature.getProperties().SENSOR_NM,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				offsetY: 30,
+				font: 'bold 13px/30px sans-serif, serif'
+			})
   		});
     	
     	return style;
@@ -1043,13 +1109,13 @@ var _WestCondition = function () {
     		    	width: 3
     		    })
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().NAME,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1070,7 +1136,7 @@ var _WestCondition = function () {
     		    })
     		}),
 			text: new ol.style.Text({
-				text: feature.getProperties().BSML_FQ,
+				text: feature.getProperties().BSML_FQ.toFixed(1),
 				fill: new ol.style.Fill({
 					color: '#fff'
 				}),
@@ -1087,13 +1153,13 @@ var _WestCondition = function () {
     		image: new ol.style.Circle({
     			radius: 0
     		}),
-			text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().LABEL,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: '13px bold, Verdana'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
   		});
     	
@@ -1101,25 +1167,45 @@ var _WestCondition = function () {
     };
     
     var portableMeasurementStyleFunction = function(feature){
-    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType] + '':'-';
+    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 20,
-    			fill: new ol.style.Fill({
-    		        color: '#548235'
-    		    }),
-    		    stroke: new ol.style.Stroke({
-    		    	color: '#AFABAB',
-    		    	width: 3
-    		    })
-    		}),
+    		image: new ol.style.Icon(({
+    			src: '../images/portable.png'
+    		})),
 			text: new ol.style.Text({
 				text: text,
 				fill: new ol.style.Fill({
-					color: '#fff'
+					color: '#000'
 				}),
-				font: '11px bold, Verdana'
+				stroke : new ol.style.Stroke({
+					color : '#fff',
+					width : 3
+				}),
+				font: 'bold 12px Arial'
+			})
+  		});
+    	
+    	return style;
+    };
+    
+    var fixedMeasurementStyleFunction = function(feature){
+    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Icon(({
+    			src: '../images/fixed.png'
+    		})),
+			text: new ol.style.Text({
+				text: text,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				stroke : new ol.style.Stroke({
+					color : '#fff',
+					width : 3
+				}),
+				font: 'bold 12px Arial'
 			})
   		});
     	
@@ -1193,7 +1279,8 @@ var _WestCondition = function () {
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png'
+    			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
+    			scale:1.5
     		})),
 		    text: new ol.style.Text({
 				text: feature.getProperties().CVPL_LC,
@@ -1201,7 +1288,7 @@ var _WestCondition = function () {
 					color: '#000'
 				}),
 				offsetY: 30,
-				font: 'bold 15px/30px sans-serif, serif'
+				font: 'bold 13px/30px sans-serif, serif'
 			})
     	});
     };
@@ -1249,11 +1336,11 @@ var _WestCondition = function () {
     		/*if(tabs.find('#excelDown').length == 0){
     			tabs.append('<button id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</button>');
     		}*/
-        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="margin-left: 6px; color: #333b3e; font-family: \'Dotum\'; font-size: 13px; letter-spacing: -1px;">'+data.length+'개</span>' +
-        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #1688e8; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 35px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
-        			'<div id="grid' + id + '" style="padding: 0px 5px !important;"></div></span>');
+        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="font-size: 12px; color: #4a4a4a; letter-spacing: -1px; font-family: \'Verdana\'; position: absolute; z-index: 10; top: 25px; right: 450px;">[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]</span>' +
+        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #595959; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 23px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
+        			'<div id="grid' + id + '" style="padding: 7px 5px !important;"></div></span>');
     	}else{
-    		$('#place'+id).find('.dataLength').text(data.length+'개');
+    		$('#place'+id).find('.dataLength').html('[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]');
     	}
     	
     	tabs.tabs('refresh');
@@ -1271,7 +1358,7 @@ var _WestCondition = function () {
     	
     	$('#grid' + id).jsGrid({
     		width: '1540px',
-    		height: '170px',
+    		height: '200px',
 
     		inserting: false,
     		editing: false,
@@ -1384,9 +1471,11 @@ var _WestCondition = function () {
     		}
     	});
     	
-    	$('#popup').show();
-    	$('#popup').find('.pop_tit_text').text(title);
-    	$('#popup').find('.pop_conts').html(popupHtml);
+    	if(config.isPopupShow){
+    		$('#popup').show();
+        	$('#popup').find('.pop_tit_text').text(title);
+        	$('#popup').find('.pop_conts').html(popupHtml);
+    	}
     };
     
     var deferredForSetCenter = function(coord,zoom){
@@ -1680,7 +1769,7 @@ var _WestCondition = function () {
 			map.setSize([ ww - width, wh - height]);
 		}
 		
-	}
+	};
 	
 
     return {
@@ -1725,6 +1814,9 @@ var _WestCondition = function () {
         
         gridCloseOpen: function(value){
         	gridCloseOpen(value);
+        },
+        getWestLayerName : function(){
+        	return westLayerObj;
         }
     };
 }();

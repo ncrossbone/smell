@@ -112,6 +112,14 @@ var _ZoomSlider = function () {
 				_WestCondition.clearFocusLayer();
 			}
 			
+			
+			var labelLayer = _CoreMap.getMap().getLayerForName('text');
+			if(labelLayer){
+				if(_WestCondition.getContentsConfig()['portableMeasurement'].isVisible){
+					getZoom < 16?labelLayer.setVisible(false):labelLayer.setVisible(true);
+				}
+			}
+			
 			var clusterLayer = _CoreMap.getMap().getLayerForName('complaintStatus');
 			if(clusterLayer){
 				var distance = _CoreMap.getMap().getView().getZoom() == _CoreMap.getMap().getView().getMaxZoom()?1:_WestCondition.getDefaultClusterDistance();

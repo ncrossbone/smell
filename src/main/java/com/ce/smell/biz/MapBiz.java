@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -128,4 +129,27 @@ public class MapBiz {
 		return resultList;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getIntrstList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getIntrstList(param);
+	}
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getSensorList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getSensorList(param);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getCoursModel(HashMap param) {
+		String type = (String)param.get("type");
+		if("cours_now".equals(type)){
+			param.put("tableNm", "RLTM_MVMN_COURS_MODEL");
+		}else if("cours_forecast".equals(type)){
+			param.put("tableNm", "FRCST_MVMN_COURS_MODEL ");
+		}else{
+			return mapMapper.getCoursModelBySensor(param); 
+		} 
+		return mapMapper.getCoursModel(param);
+	}
 }

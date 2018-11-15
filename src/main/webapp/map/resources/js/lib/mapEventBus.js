@@ -23,6 +23,8 @@ _MapEvents.setZoom = 'setzoom';
 
 _MapEvents.clickLayerOnOff = 'clickLayerOnOff';
 
+_MapEvents.addWriteLayerForUseGeoserver = 'addWriteLayerForUseGeoserver';
+
 var _MapEventBus = $({});
 
 // sample 

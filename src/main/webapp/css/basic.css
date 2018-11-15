@@ -55,12 +55,12 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 /*좌측*/
 .lnb { width: 360px; height: 898px; border-right: 1px solid #000; overflow-y: scroll; background: #fff; position: absolute; left: 0px; top: 0; letter-spacing: -1px; z-index: 3;}
-.lnb h2 { height: 24px; padding: 7px 20px 7px 55px; border-bottom: 1px solid #d9d9d9; font-size: 16px; background: #f7f7f7; position: relative; cursor: pointer;  font-family: 'notokr-regular'; }
+.lnb h2 { height: 24px; padding: 7px 20px 7px 82px; border-bottom: 1px solid #d9d9d9; font-size: 17px; background: #f7f7f7; position: relative; cursor: pointer;  font-family: 'notokr-regular'; }
 .lnb h2> span { width: 10px; height: 6px; position: absolute; right: 20px; top: 15px; background: url(../images/btn_show.png) no-repeat; }
 .lnb h2.ov { background: #7dbe24; color: #fff; }
 .lnb h2.ov span { background: url(../images/btn_hide.png) no-repeat; }
 
-.lnb li> .layerOnOff { width: 28px; height: 28px; position: absolute; background: url(../images/btn_on.png) no-repeat; z-index: 1; cursor: pointer; margin-left: 20px; margin-top: 5px;}
+.lnb li> .layerOnOff { width: 67px; height: 31px; position: absolute; background: url(../images/btn_on.png) no-repeat; z-index: 1; cursor: pointer; margin-left: 8px; margin-top: 4px;}
 
 .lnb_conts { padding: 15px 20px; border-bottom: 1px solid #d9d9d9; }
 .lnb_conts h3 { border-bottom: 2px solid #464c5a; margin-bottom: 15px; font-family: 'Dotum'; padding-bottom: 5px; font-weight: bold; }
@@ -84,21 +84,33 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .ctrl_btn a {
     width: 36px;
     height: 36px;
-    border: 1px solid #005cc1;
+    border: 1px solid #000000;
     display: inline-block;
     background-position: center center;
 }
 
 .ctrl_left {
-    background: url(../images/ctrl_left.png) no-repeat;
+    background: url(../images/pre.png) no-repeat;
 }
 
 .ctrl_play {
-    background: url(../images/ctrl_play.png) no-repeat;
+    background: url(../images/play.png) no-repeat;
 }
 
 .ctrl_right {
-    background: url(../images/ctrl_right.png) no-repeat;
+    background: url(../images/next.png) no-repeat;
+}
+.ctrl_stop {
+    background: url(../images/stop.png) no-repeat;
+}
+.ctrl_pause {
+    background: url(../images/pause.png) no-repeat;
+}
+.ctrl_pause_play {
+    background: url(../images/pause_play.png) no-repeat;
+}
+.ctrl_fast_forward {
+    background: url(../images/fast_forward.png) no-repeat;
 }
 
 .ctrl_btn {
@@ -156,18 +168,25 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 
 /*20181112 주제도 추가*/
-#around_info  { position: absolute; right: 85%; top: 10px; letter-spacing: -1px; z-index:9999 }
+#around_info  { position: absolute; left: 55px; top: 10px; letter-spacing: -1px; z-index:9999 }
 #around_info> li { width: 100px; background: #fff; border-left: 1px solid #666; border-right: 1px solid #666; border-top: 1px solid #666; font-family: 'Dotum'; font-size: 11px; color: #58657a; position: relative; }
 #around_info> li:last-child { border-bottom: 1px solid #666; }
 #around_info> li.active { background: #9ca3bc; color: #fff; }
 #around_info> li.active span { background-position: -19px center; }
 #around_info label { font-family: 'Dotum'; font-size: 11px; }
 
+/*20181114*/
+.btn_radio { margin-bottom: 20px; }
+.btn_radio:after { display: block; clear: both; content: ''; } 
+.btn_radio> li { float: left; margin-right: 1px; }
+.btn_radio> li:last-child { margin-right: 0; }
+.btn_radio> li> a { height: 22px; padding-top: 8px; padding-left: 33px; color: #000; font-family: 'Dotum'; font-size: 12px; font-weight: bold; letter-spacing: -1px; display: block; background: url(../images/icon_radio_none.png) 10px 6px no-repeat, #27bac1; }
+
+.btn_radio> li> a.off { }
+.btn_radio> li> a.on { background: url(../images/icon_radio_chk.png) 10px 6px no-repeat, #3d4866; color:#fff;}
+
 #around_info span { height: 20px; display: block; padding: 10px 0 0 30px; background-position: 5px center; }
 .pic_school { background: url(../images/icon_010.png) no-repeat; }
-
-
-
 
 
 .ar_detail { width: 150px; border: 1px solid #5a6173; position: absolute; left: 100px; top: -1px; display: none; background: #fff; z-index: 1000; }
