@@ -180,7 +180,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .btn_radio:after { display: block; clear: both; content: ''; } 
 .btn_radio> li { float: left; margin-right: 1px; }
 .btn_radio> li:last-child { margin-right: 0; }
-.btn_radio> li> a { height: 22px; padding-top: 8px; padding-left: 33px; color: #000; font-family: 'Dotum'; font-size: 12px; font-weight: bold; letter-spacing: -1px; display: block; background: url(../images/icon_radio_none.png) 10px 6px no-repeat, #27bac1; }
+.btn_radio> li> a { height: 22px; padding-top: 8px; padding-left: 33px; color: #000; font-family: 'Dotum'; font-size: 12px; font-weight: bold; letter-spacing: -1px; display: block; background: url(../images/icon_radio_none.png) 10px 6px no-repeat, #d1d1d1; }
 
 .btn_radio> li> a.off { }
 .btn_radio> li> a.on { background: url(../images/icon_radio_chk.png) 10px 6px no-repeat, #3d4866; color:#fff;}
