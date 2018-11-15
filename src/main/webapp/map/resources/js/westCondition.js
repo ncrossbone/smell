@@ -318,14 +318,14 @@ var _WestCondition = function () {
 			flag:'city',
 		});
     	
-    	/*_MapEventBus.on(_MapEvents.smellMapWriteLayer, smellMapWriteLayer);
+    	_MapEventBus.on(_MapEvents.addWriteLayerForUseGeoserver, addWriteLayerForUseGeoserver);
     	
-    	_MapEventBus.trigger(_MapEvents.smellMapWriteLayer, {
-    		cqlString:'',
-    		geoserverLayerId:westLayerObj.SHP_BPLC_FOR_WESTCONDITION,
-    		layerId:'test',
+    	_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {
+    		cqlString:'1=1',
+    		geoserverLayerId:_WestCondition.getWestLayerName().SHP_BPLC_FOR_WESTCONDITION,
+    		layerId:'odorOrigin',
     		layerType:'polygon'
-    	});*/
+    	});
     	
     	_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined,'cty_nm, dong_nm').done(function(data){
     		if(data.features.length == 0){
@@ -434,24 +434,17 @@ var _WestCondition = function () {
         setEvent();
     };
     
-    var smellMapWriteLayer = function(event, options){
-    	/*cqlString:'',
-		geoserverLayerId:westLayerObj.SHP_BPLC_FOR_WESTCONDITION,
-		layerId:'test',
-		layerType:'polygon'*/
-    	_MapService.getWfs(options.geoserverLayerId,'*',encodeURIComponent(options.cqlString), '').done(function (data) {
-    		var getLayerForName = _CoreMap.getMap().getLayerForName(options.layerId);
-    		if(getLayerForName){
-    			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
-    		}
-    		
-        	if(data < 1){
-    			return;
-    		}
-        	
+    var addWriteLayerForUseGeoserver = function(event, options){
+    	
+    	var getLayerForName = _CoreMap.getMap().getLayerForName(options.layerId);
+		if(getLayerForName){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+		}
+		
+    	_MapService.getWfs(options.geoserverLayerId,'*',encodeURIComponent(options.cqlString), '').done(function (d) {
         	var featureArray = [];
-    		var source;
-    		
+        	var data = d.features;
+        	
     		for(var i=0; i<data.length; i++){
     			var feature = new ol.Feature();
 
@@ -467,21 +460,21 @@ var _WestCondition = function () {
     		
     		var styleFunction = selectStyleFunction(options.layerId);
     		
-    		contentsConfig[options.layerId].isVisible = options.visible;
-    		contentsConfig[options.layerId].isPopupShow = false;
-    		/*
+    		var source = new ol.source.Vector({
+				features: featureArray
+			});
+    		
     		var vectorLayer = new ol.layer.Vector({
     	        source: source,
-    	        id:id,
-    	        name:id,
+    	        id:options.layerId,
+    	        name:options.layerId,
     	        style:styleFunction,
     	        zIndex:2,
-    	        visible:
-    		});*/
+    	        visible:contentsConfig[options.layerId].isVisible
+    		});
     		
     		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
 		});
-		
     };
     
     var writeItem = function(id, data){
@@ -707,11 +700,10 @@ var _WestCondition = function () {
         			isShow = true;
         			$(this).css('background','url(../images/btn_on.png)');
         			contentsConfig[contentsId].isVisible = true;
-        		}	
+        		}
     		}catch(e){}
     		
     		var reportCheck = $(this).parent().parent().attr('id');
-
     		// 분석쪽은 별도
     		if(reportCheck == 'smellReport'){
     			_MapEventBus.trigger(_MapEvents.clickLayerOnOff, {target:contentsId, isShow:isShow});
@@ -728,6 +720,8 @@ var _WestCondition = function () {
             		}
         		}
     		}
+    		
+    		
     	});
     };
     
@@ -1795,6 +1789,9 @@ var _WestCondition = function () {
         
         gridCloseOpen: function(value){
         	gridCloseOpen(value);
+        },
+        getWestLayerName : function(){
+        	return westLayerObj;
         }
     };
 }();
