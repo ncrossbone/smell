@@ -204,8 +204,8 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 
 #tabOpener { position: absolute; left: 360px; top: 0px; z-index: 2;}
-#tabOpener li { width: 34px; height: 29px; text-align: center;  background: url(../images/tab_off.png) no-repeat; cursor: pointer; line-height: 18px; color: #000; margin-top: -1px; }
-#tabOpener li.on { background: url(../images/tab_on.png) no-repeat !important; color: #fff !important; }
+#tabOpener li { width: 32px; height: 32px; text-align: center;  background: url(../images/lnb_open.png) no-repeat; cursor: pointer; line-height: 18px; color: #000; margin-top: -1px; }
+#tabOpener li.on { background: url(../images/lnb_close.png) no-repeat !important; color: #fff !important; }
 
 
 
