@@ -84,30 +84,33 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .ctrl_btn a {
     width: 36px;
     height: 36px;
-    border: 1px solid #005cc1;
+    border: 1px solid #000000;
     display: inline-block;
     background-position: center center;
 }
 
 .ctrl_left {
-    background: url(../images/pre_b.png) no-repeat;
+    background: url(../images/pre.png) no-repeat;
 }
 
 .ctrl_play {
-    background: url(../images/play_b.png) no-repeat;
+    background: url(../images/play.png) no-repeat;
 }
 
 .ctrl_right {
-    background: url(../images/next_b.png) no-repeat;
+    background: url(../images/next.png) no-repeat;
 }
 .ctrl_stop {
-    background: url(../images/stop_b.png) no-repeat;
+    background: url(../images/stop.png) no-repeat;
 }
 .ctrl_pause {
-    background: url(../images/pause_b.png) no-repeat;
+    background: url(../images/pause.png) no-repeat;
 }
 .ctrl_pause_play {
-    background: url(../images/pause_play_b.png) no-repeat;
+    background: url(../images/pause_play.png) no-repeat;
+}
+.ctrl_fast_forward {
+    background: url(../images/fast_forward.png) no-repeat;
 }
 
 .ctrl_btn {
