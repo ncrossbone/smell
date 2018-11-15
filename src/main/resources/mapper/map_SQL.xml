@@ -124,18 +124,14 @@
    		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
    		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
      	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
-     	   <if test="branchName != ''">
-    			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
-  			</if>
 	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_X,POINT_Y,MESURE_DT
 	</select>
 	
 	<select id="portableMeasurementFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
-			   B.OPR_STTUS_CODE,
-			   LA AS POINT_Y,
-	   		   LO AS POINT_X,
 	   		   DATE_FORMAT(MESURE_DT,'%m/%d %H:%i') AS LABEL,
+	   		   LO AS POINT_X,
+	   		   LA AS POINT_Y,
 	   		   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='1' THEN MESURE_DNSTY END),3) AS 'VOCS',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='2' THEN MESURE_DNSTY END),3) AS 'CCNT',
@@ -158,19 +154,12 @@
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='19' THEN MESURE_DNSTY END),3) AS 'TMA',
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='20' THEN MESURE_DNSTY END),3) AS 'ETHANOL',
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE
-  		  FROM IOT_SENSOR_MESURE_INFO A,
-	   		   IOT_SENSOR_SPCS_INFO B,
-	     	   IOT_MESURE_IEM_MANAGE C
+  		  FROM IOT_SENSOR_MESURE_INFO A
  		 WHERE A.SPOT_CODE IN (#{radio})
-   		   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE,A.SENSOR_SPCS_NO) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE,B.SENSOR_SPCS_NO)
-   		   AND C.IEM_CODE = B.IEM_CODE
    		   AND A.LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
    		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
      	   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
-     	   <if test="branchName != ''">
-    			AND B.OPR_STTUS_CODE LIKE CONCAT('%', #{branchName}, '%')
-  			</if>
-	  GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_X,POINT_Y,MESURE_DT
+	  GROUP BY CODE,LABEL,MESURE_DT,DATE,POINT_X,POINT_Y
 	</select>
 	
 	<select id="fixedMeasurementGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
