@@ -1336,9 +1336,9 @@ var _WestCondition = function () {
     		/*if(tabs.find('#excelDown').length == 0){
     			tabs.append('<button id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</button>');
     		}*/
-        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="font-size: 12px; color: #4a4a4a; letter-spacing: -1px; font-family: \'Verdana\'; position: absolute; z-index: 10; top: 25px; right: 450px;">[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]</span>' +
-        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #595959; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 23px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
-        			'<div id="grid' + id + '" style="padding: 7px 5px !important;"></div></span>');
+        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="font-size: 12px; color: #4a4a4a; letter-spacing: -1px; font-family: \'Verdana\'; position: absolute; z-index: 10; top: 15px; right: 85px;">[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]</span>' +
+        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #595959; color: #fff; position: absolute; z-index: 1000; right: 20px; top: 13px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
+        			'<div id="grid' + id + '" style="padding: 5px 5px !important;"></div></span>');
     	}else{
     		$('#place'+id).find('.dataLength').html('[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]');
     	}
@@ -1357,9 +1357,8 @@ var _WestCondition = function () {
     	}
     	
     	$('#grid' + id).jsGrid({
-    		width: '1540px',
+    		width: '90%',
     		height: '200px',
-
     		inserting: false,
     		editing: false,
     		sorting: true,
