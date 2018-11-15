@@ -90,15 +90,24 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 }
 
 .ctrl_left {
-    background: url(../images/ctrl_left.png) no-repeat;
+    background: url(../images/pre_b.png) no-repeat;
 }
 
 .ctrl_play {
-    background: url(../images/ctrl_play.png) no-repeat;
+    background: url(../images/play_b.png) no-repeat;
 }
 
 .ctrl_right {
-    background: url(../images/ctrl_right.png) no-repeat;
+    background: url(../images/next_b.png) no-repeat;
+}
+.ctrl_stop {
+    background: url(../images/stop_b.png) no-repeat;
+}
+.ctrl_pause {
+    background: url(../images/pause_b.png) no-repeat;
+}
+.ctrl_pause_play {
+    background: url(../images/pause_play_b.png) no-repeat;
 }
 
 .ctrl_btn {
