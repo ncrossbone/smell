@@ -744,12 +744,21 @@
                 	<li class="W150"><a class="on" style="padding-left: 60px !important;" name="odorSpreadLayerType" value="anals_area_now" href="javascript:void(0)">실시간</a></li>
                     <li class="W150"><a            style="padding-left: 60px !important;" name="odorSpreadLayerType" value="anals_area_forecast" href="javascript:void(0)">예보</a></li>
                 </ul>
-                <ul class="btn_radio">
-                	<li class="W150"><a class="on" style="padding-left: 60px !important;" name="odorSpreadMapType" value="cell" href="javascript:void(0)">격자</a></li>
-                    <li class="W150"><a            style="padding-left: 60px !important;" name="odorSpreadMapType" value="heat" href="javascript:void(0)">밀도</a></li>
-                </ul>
+<!--                 <ul class="btn_radio"> -->
+<!--                 	<li class="W150"><a class="on" style="padding-left: 60px !important;" name="odorSpreadMapType" value="cell" href="javascript:void(0)">격자</a></li> -->
+<!--                     <li class="W150"><a            style="padding-left: 60px !important;" name="odorSpreadMapType" value="heat" href="javascript:void(0)">밀도</a></li> -->
+<!--                 </ul> -->
                 <ul>
                     <li> 
+                    	<dl>
+                            <dd>
+                            	<input style="margin-left: 70px; margin-right: 5px;" id="odorSpreadCell" type="radio" name="odorSpreadMapType" value="cell" checked="checked" class="contents"/>
+                                <label class="W60 dis_ib" for="odorSpreadCell" style="width: 50px !important; margin-bottom: 8px;">격자</label>
+                    			<input style="margin-left: 0px;margin-right: 5px;" id="odorSpreadHeat" type="radio" name="odorSpreadMapType" value="heat" class="contents"/>
+                    			<label class="W60 dis_ib" for="odorSpreadHeat" style="width: 50px !important; margin-bottom: 8px;">밀도</label>
+                            </dd>
+                        </dl>
+                        
                         <dl>
                             <dt>조회기간</dt>
                              <dd>
@@ -790,8 +799,8 @@
             <div class="lnb_conts" style="display: none;" id="odorMovement">
 				<h3>악취 이동경로</h3>
 				 <ul class="btn_radio">
-                	<li class="W100"><a class="on" style="padding-left: 20px !important;" name="odorMovementType" value="cours_now" href="javascript:void(0)">실시간 관심</a></li>
-                    <li class="W100"><a            style="padding-left: 20px !important;" name="odorMovementType" value="cours_sensor" href="javascript:void(0)">실시간 센서</a></li>
+                	<li class="W100"><a class="on" style="padding-left: 35px !important;" name="odorMovementType" value="cours_now" href="javascript:void(0)">실시간 관심</a></li>
+                    <li class="W100"><a            style="padding-left: 35px !important;" name="odorMovementType" value="cours_sensor" href="javascript:void(0)">실시간 센서</a></li>
                     <li class="W100"><a            style="padding-left: 35px !important;" name="odorMovementType" value="cours_forecast" href="javascript:void(0)">예보</a></li>
                 </ul>
                 <ul>

@@ -910,7 +910,8 @@ var _SmellMapBiz = function () {
 			
 			var layerNm =  $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
 			
-			var mapType = $('a[name="odorSpreadMapType"][class="on"]').attr('value');
+//			var mapType = $('a[name="odorSpreadMapType"][class="on"]').attr('value');
+			var mapType = $('input[name="odorSpreadMapType"]:checked').val();
 			
 			var odorSpreadStartDate = $('#odorSpreadStartDate').val().replace(regExp, '');
 			var odorSpreadStartTime = parseInt($('#odorSpreadStartTime').val());
@@ -1055,11 +1056,11 @@ var _SmellMapBiz = function () {
 				odorSpreadInterval = null;
 			}
 		})
-		$('a[name="odorSpreadMapType"]').on('click', function(){
-			$('a[name="odorSpreadMapType"]').removeClass('on');
-			$(this).addClass('on');
+		$('input[name="odorSpreadMapType"]').on('click', function(){
+//			$('a[name="odorSpreadMapType"]').removeClass('on');
+//			$(this).addClass('on');
 			
-			var mapType = $('a[name="odorSpreadMapType"][class="on"]').attr('value');
+			var mapType = $('input[name="odorSpreadMapType"]:checked').val();
 			var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
 			
 			// 격자
