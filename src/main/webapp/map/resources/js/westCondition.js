@@ -1126,7 +1126,7 @@ var _WestCondition = function () {
     		    })
     		}),
 			text: new ol.style.Text({
-				text: feature.getProperties().BSML_FQ,
+				text: feature.getProperties().BSML_FQ.toFixed(1),
 				fill: new ol.style.Fill({
 					color: '#fff'
 				}),
