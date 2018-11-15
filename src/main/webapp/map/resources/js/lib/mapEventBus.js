@@ -22,7 +22,8 @@ _MapEvents.onresizeall_end = 'onresizeall_end';
 _MapEvents.setZoom = 'setzoom';
 
 _MapEvents.clickLayerOnOff = 'clickLayerOnOff';
-_MapEvents.smellMapWriteLayer = 'smellMapWriteLayer';
+
+_MapEvents.addWriteLayerForUseGeoserver = 'addWriteLayerForUseGeoserver';
 
 var _MapEventBus = $({});
 
