@@ -533,33 +533,15 @@ var _WestCondition = function () {
             			paramObj[poiSearchArr[i]] = $('#'+poiSearchArr[i]).find('option:selected').text();
             		}
             		
-            		var poiSelectAll = "";
-            		
-            		if(paramObj[poiSearchArr[0]] != "전체"){
-            			if(paramObj[poiSearchArr[1]] == "전체"){
-            				$("#poiSelect02 option").each(function(a){
-            					if(a != 0){
-            						if(a != 1){
-            							poiSelectAll += ",";
-                					}
-            						poiSelectAll +="'"+ $(this).text() + "'";
-            					}
-    						});
-                		}else{
-                			$("#poiSelect03 option").each(function(a){
-            					if(a != 0){
-            						if(a != 1){
-            							poiSelectAll += ",";
-                					}
-            						poiSelectAll +="'"+ $(this).text() + "'";
-            					}
-    						});
-                		}
-            			
-            			paramObj.poiSelectAll = poiSelectAll;
+            		if(paramObj[poiSearchArr[0]] == "전체"){
+            			alert("대분류를 선택하세요.");
+            			return;
             		}
             		
-            		
+            		if(paramObj.poiText == ""){
+            			alert("명칭을 입력하세요.");
+            			return;
+            		}
             		
             		getData({url:'/getPOISearch.do', contentType: 'application/json', params: paramObj }).done(function(data){
             			$('#poiGrid').jsGrid({

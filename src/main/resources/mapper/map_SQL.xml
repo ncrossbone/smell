@@ -345,12 +345,17 @@ GROUP BY OPR_STTUS_CODE,A.SPOT_CODE,CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STT
 		 	 ETCADRES
     	FROM shp_poi
     	WHERE 1=1
-    	<if test="poiSelect01 != '전체'">
-    		<if test="poiSelect02 != '전체'">
-    			AND SCLASDC IN ( #{poiSelectAll} )
+    	<if test="!poiSelect01.equals('전체')">
+    		<if test="!poiSelect02.equals('전체')">
+    			<if test="poiSelect03.equals('전체')">
+    				AND MLSFCDC = #{poiSelect02}
+    			</if>
+    			<if test="!poiSelect03.equals('전체')">
+    				AND SCLASDC =  #{poiSelect03} 
+    			</if>
     		</if>
-    		<if test="poiSelect03 != '전체'">
-    			AND MLSFCDC IN ( #{poiSelectAll} )
+    		<if test="poiSelect02.equals('전체')">
+    			AND LCLASDC = #{poiSelect01} 
     		</if>
     	</if>
 	 	 <if test="poiText != null">
