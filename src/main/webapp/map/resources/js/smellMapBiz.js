@@ -61,13 +61,12 @@ var _SmellMapBiz = function () {
 	var odorSpreadStartDates;
 	var odorSpreadLayer;
 	var odorSpreadHeatMapLayer;
-	
 	var odorSpreadTimeSeries = [];
 	var odorSpreadIndex = 0;
 	var odorSpreadInterval = null;
 	var odorSpreadPlayType = 0; // 0 = 정지  1 = 재생  2 = 일시정지
-	
 	var odorSpreadIntervalTime = 3;
+	var odorSpreadMapType = 'cell';
 	
 	// 악취 이동경로
 	var odorMovementLayer = null;
@@ -534,8 +533,14 @@ var _SmellMapBiz = function () {
 					weatherAnalysisLayer.setVisible(data.isShow);
 				}
 			}else if(data.target == 'odorSpread'){
-				if(odorSpreadLayer){
-					odorSpreadLayer.setVisible(data.isShow);
+				if(odorSpreadMapType == 'cell'){
+					if(odorSpreadLayer){
+						odorSpreadLayer.setVisible(data.isShow);
+					}	
+				}else{
+					if(odorSpreadHeatMapLayer){
+						odorSpreadHeatMapLayer.setVisible(data.isShow);
+					}	
 				}
 			}else if(data.target == 'odorMovement'){
 				if(odorMovementLayer){
@@ -942,6 +947,8 @@ var _SmellMapBiz = function () {
 				var layerNm =  $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
 				var mapType = $('input[name="odorSpreadMapType"]:checked').val();
 				
+				odorSpreadMapType = mapType;
+				
 				var odorSpreadStartDate = $('#odorSpreadStartDate').val().replace(regExp, '');
 				var odorSpreadStartTime = parseInt($('#odorSpreadStartTime').val());
 				if(odorSpreadStartTime < 10){
@@ -1130,6 +1137,8 @@ var _SmellMapBiz = function () {
 		$('input[name="odorSpreadMapType"]').on('click', function(){
 			var mapType = $('input[name="odorSpreadMapType"]:checked').val();
 			var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
+			
+			odorSpreadMapType = mapType;
 			
 			odorSpreadPlayType = 0;
 			setControlButton('odorSpreadPlay', odorSpreadPlayType);
