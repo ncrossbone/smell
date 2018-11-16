@@ -616,7 +616,7 @@ var _WestCondition = function () {
             	    					return;
             	    				}
             	    				
-            	    				deferredForSetCenter(data.features[0].geometry.coordinates,_CoreMap.getMap().getView().getMaxZoom());
+            	    				deferredForSetCenter(data.features[0].geometry.coordinates);
             	    				
             	    				var getPOILayer = _CoreMap.getMap().getLayerForName('poi');
             	    	    		if(getPOILayer){
@@ -1023,7 +1023,7 @@ var _WestCondition = function () {
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
-    			radius: 15,
+    			radius: 10,
     			fill: new ol.style.Fill({
     				color: '#118575'
     			}),
@@ -1033,23 +1033,28 @@ var _WestCondition = function () {
     			})
     		}),
     		text: new ol.style.Text({
-				text: feature.getProperties().NAME,
-				fill: new ol.style.Fill({
-					color: '#000'
-				}),
-				offsetY: 30,
-				font: 'bold 13px/30px sans-serif, serif'
-			})
+    			text: feature.getProperties().NAME,
+    			fill: new ol.style.Fill({
+    				color: '#000'
+    			}),
+    			stroke : new ol.style.Stroke({
+    				color : '#fff',
+    				width : 3
+    			}),
+    			offsetY: 30,
+    			font: 'bold 12px Arial'
+    		})
   		});
     	
     	return style;
     }
     
     var odorOriginFunction = function(feature){
-    	var colorObj = {'BSL01001':'#70AD47',
-    			'BSL01002':'#ED7D31',
-    			'BSL01003':'#4472C4',
-    			'BSL01004':'#548235'};
+    	//ed145b ffa800
+    	var colorObj = {'BSL01001':'#ffde00',
+    			'BSL01002':'#0072bc',
+    			'BSL01003':'#ed145b',
+    			'BSL01004':'#ffa800'};
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		fill: new ol.style.Fill({
@@ -1060,13 +1065,16 @@ var _WestCondition = function () {
 		    	width: 3
 		    }),
 		    text: new ol.style.Text({
-				text: feature.getProperties().CMPNY_NM,
-				fill: new ol.style.Fill({
-					color: '#000'
-				}),
-				offsetY: 30,
-				font: 'bold 15px/30px sans-serif, serif'
-			})
+		    	text: feature.getProperties().CMPNY_NM,
+		    	fill: new ol.style.Fill({
+		    		color: '#000'
+		    	}),
+		    	stroke : new ol.style.Stroke({
+		    		color : '#fff',
+		    		width : 3
+		    	}),
+		    	font: 'bold 15px Arial'
+		    })
   		});
     	
     	return style;
@@ -1085,13 +1093,17 @@ var _WestCondition = function () {
     		    })
     		}),
     		text: new ol.style.Text({
-				text: feature.getProperties().SENSOR_NM,
-				fill: new ol.style.Fill({
-					color: '#000'
-				}),
-				offsetY: 30,
-				font: 'bold 13px/30px sans-serif, serif'
-			})
+    			text: feature.getProperties().SENSOR_NM,
+    			fill: new ol.style.Fill({
+    				color: '#000'
+    			}),
+    			stroke : new ol.style.Stroke({
+    				color : '#fff',
+    				width : 3
+    			}),
+    			offsetY: 30,
+    			font: 'bold 12px Arial'
+    		})
   		});
     	
     	return style;
@@ -1110,13 +1122,17 @@ var _WestCondition = function () {
     		    })
     		}),
     		text: new ol.style.Text({
-				text: feature.getProperties().NAME,
-				fill: new ol.style.Fill({
-					color: '#000'
-				}),
-				offsetY: 30,
-				font: 'bold 13px/30px sans-serif, serif'
-			})
+    			text: feature.getProperties().NAME,
+    			fill: new ol.style.Fill({
+    				color: '#000'
+    			}),
+    			stroke : new ol.style.Stroke({
+    				color : '#fff',
+    				width : 3
+    			}),
+    			offsetY: 30,
+    			font: 'bold 12px Arial'
+    		})
   		});
     	
     	return style;
@@ -1135,13 +1151,17 @@ var _WestCondition = function () {
     		    	width: 3
     		    })
     		}),
-			text: new ol.style.Text({
-				text: feature.getProperties().BSML_FQ.toFixed(1),
-				fill: new ol.style.Fill({
-					color: '#fff'
-				}),
-				font: '9px bold, Verdana'
-			})
+    		text: new ol.style.Text({
+    			text: feature.getProperties().BSML_FQ.toFixed(1),
+    			fill: new ol.style.Fill({
+    				color: '#000'
+    			}),
+    			stroke : new ol.style.Stroke({
+    				color : '#fff',
+    				width : 3
+    			}),
+    			font: 'bold 9px Arial'
+    		})
   		});
     	
     	return style;
@@ -1154,15 +1174,19 @@ var _WestCondition = function () {
     			radius: 0
     		}),
     		text: new ol.style.Text({
-				text: feature.getProperties().LABEL,
-				fill: new ol.style.Fill({
-					color: '#000'
-				}),
-				offsetY: 30,
-				font: 'bold 13px/30px sans-serif, serif'
-			})
-  		});
-    	
+    			text: feature.getProperties().LABEL,
+    			fill: new ol.style.Fill({
+    				color: '#000'
+    			}),
+    			stroke : new ol.style.Stroke({
+    				color : '#fff',
+    				width : 3
+    			}),
+    			offsetY: 30,
+    			font: 'bold 12px Arial'
+    		})
+    	});
+
     	return style;
     };
     
@@ -1282,13 +1306,17 @@ var _WestCondition = function () {
     			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
     			scale:1.5
     		})),
-		    text: new ol.style.Text({
+    		text: new ol.style.Text({
 				text: feature.getProperties().CVPL_LC,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
+				stroke : new ol.style.Stroke({
+					color : '#fff',
+					width : 3
+				}),
 				offsetY: 30,
-				font: 'bold 13px/30px sans-serif, serif'
+				font: 'bold 13px Arial'
 			})
     	});
     };
@@ -1446,7 +1474,7 @@ var _WestCondition = function () {
     	
     	popupHtml +=	'</tbody></table>';
     	
-    	deferredForSetCenter(geo,_CoreMap.getMap().getView().getMaxZoom()).then(function(){
+    	deferredForSetCenter(geo).then(function(){
     		if(config.layerType!='polygon'){
     			clearFocusLayer();
     			var newFocusLayer = new ol.layer.Vector({
@@ -1477,12 +1505,12 @@ var _WestCondition = function () {
     	}
     };
     
-    var deferredForSetCenter = function(coord,zoom){
+    var deferredForSetCenter = function(coord){
     	var duration = 500;
     	var deferred = $.Deferred();
     	_CoreMap.getMap().getView().animate({
     		duration: duration,
-    		zoom:_CoreMap.getMap().getView().getMaxZoom(),
+    		zoom:_CoreMap.getMap().getView().getMaxZoom() - 2,
     		center: coord,
     	});
     	
