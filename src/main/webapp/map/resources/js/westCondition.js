@@ -1066,7 +1066,7 @@ var _WestCondition = function () {
 		var svgString = '<svg width="' + width + '" height="' + height + '" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
 		var title = feature.getProperties().SENSOR_NM;
 		var x = 5;
-		var dataX = 85;
+		var dataX = 75;
 		var y = 4;
 		
 		svgString += '<rect x="0" y="0" width="' + width + '" height="' + basicHeight + '" fill="#0070c0"/>';

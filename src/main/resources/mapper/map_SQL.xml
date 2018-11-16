@@ -543,9 +543,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
   		FROM bdsm.SHP_OBSR_SPOT A,
              bdsm.AWS_OBSR_INFO B
 	   WHERE A.STATION_ID = B.OBSR_SPOT_ID
-         AND ADM_CODE LIKE CONCAT(#{town},'%')
-         AND OBSR_TIME <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
-		 AND OBSR_TIME <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
+         AND STATION_ID = '131'
 	</select>
 	
 	<select id="observatoryClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
