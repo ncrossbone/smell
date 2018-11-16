@@ -122,7 +122,7 @@ var _ZoomSlider = function () {
 			
 			var clusterLayer = _CoreMap.getMap().getLayerForName('complaintStatus');
 			if(clusterLayer){
-				var distance = _CoreMap.getMap().getView().getZoom() == _CoreMap.getMap().getView().getMaxZoom()?1:_WestCondition.getDefaultClusterDistance();
+				var distance = _CoreMap.getMap().getView().getZoom() == _CoreMap.getMap().getView().getMaxZoom() - 2?1:_WestCondition.getDefaultClusterDistance();
 				clusterLayer.getSource().setDistance(distance);
 			}
 			
