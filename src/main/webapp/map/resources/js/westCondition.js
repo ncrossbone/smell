@@ -264,6 +264,42 @@ var _WestCondition = function () {
 			isUseGeoserver:false,
 			isLabelLayer:false,
 			isWriteGrid:false
+    	},
+    	'reductionMonitoring':{
+			layerType:'base',
+			title:'저감 모니터링',
+			keyColumn:['CODE'],
+			isVisible:true,
+			isUseGeoserver:false,
+			isLabelLayer:false,
+			isWriteGrid:true,
+			isPopupShow:true,
+			popupColumnArr:[{text:'측정소 코드',id:'CODE'},{text:'측정소 명',id:'SENSOR_NM'},{text:'주소',id:'ADDR'}],
+			columnArr:[{name:'CODE',title:'센서ID'},
+			           {name:'SENSOR_NM',title:'지점명'},
+			     {name:'MESURE_DT',title:'측정 일시',width:170},
+			     {name:'OPR_STTUS_CODE',title:'센서명'},
+			     {name:'VOCS',title:'휘발성유기물'},
+			     {name:'CCNT',title:'접점센서'},
+			     {name:'NH3',title:'암모니아'},
+			     {name:'ERCRT',title:'전류센서'},
+			     {name:'H2S',title:'황화수소'},
+			     {name:'ARCSR',title:'기압'},
+			     {name:'OU',title:'복합 악취'},
+			     {name:'SOLRAD',title:'일사'},
+			     {name:'HD',title:'습도'},
+			     {name:'TMPRT',title:'기온'},
+			     {name:'WD',title:'풍향'},
+			     {name:'WS',title:'풍속'},
+			     {name:'NO2',title:'이산화질소'},
+			     {name:'SO2',title:'이산화황'},
+			     {name:'PM10',title:'미세먼지10'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
+			     {name:'CFC',title:'염소'},
+			     {name:'CH3SH',title:'메틸메르캅탄'},
+			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'ETHANOL',title:'에탄올'},
+			     {name:'DATE',title:'날짜',visible:false}]
     	}
     };
     
@@ -391,14 +427,14 @@ var _WestCondition = function () {
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
-		$('#observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
+		$('#reductionMonitoringStartTime, #observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
 		
 		var timeOptionMinute = '';
 		
 		for(var i=0; i<60; i++){
 			timeOptionMinute += '<option value="'+(i<10 ? ('0'+i): i)+'">'+i+'분</option>';
 		}
-		$('#fixedMeasurementStartMinute, #unmannedOdorStartMinute, #unmannedOdorEndMinute').html(timeOptionMinute);
+		$('#reductionMonitoringStartMinute ,#fixedMeasurementStartMinute, #unmannedOdorStartMinute, #unmannedOdorEndMinute').html(timeOptionMinute);
 		
         for(var i = 0; i < dateArr.length; i++){
         	$('#' + dateArr[i]).datepicker($.extend(datePickerDefine,{
@@ -422,7 +458,7 @@ var _WestCondition = function () {
         	portableMeasurementItemHtml += '<option value=\''+contentsConfig['portableMeasurement'].columnArr[i].name+'\'>'+contentsConfig['portableMeasurement'].columnArr[i].title+'</option>';
         }
         
-        $('#portableMeasurementItem, #fixedMeasurementItem').html(portableMeasurementItemHtml);
+        $('#portableMeasurementItem, #fixedMeasurementItem, #reductionMonitoringItem').html(portableMeasurementItemHtml);
         
         setEvent();
     };
@@ -969,11 +1005,44 @@ var _WestCondition = function () {
 		case 'iotSensorInfo':
 			styleFunction = iotSensorInfoFunction;
 			break;
+		case 'reductionMonitoring':
+			styleFunction = reductionMonitoringStyleFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
+    };
+    
+    var reductionMonitoringStyleFunction = function(feature){
+    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 20,
+    			fill: new ol.style.Fill({
+    				color: '#792BFF'
+    			}),
+    			stroke: new ol.style.Stroke({
+    				color: '#AFABAB',
+    				width: 3
+    			})
+    		}),
+			text: new ol.style.Text({
+				text: text,
+				fill: new ol.style.Fill({
+					color: '#000'
+				}),
+				stroke : new ol.style.Stroke({
+					color : '#fff',
+					width : 3
+				}),
+				font: 'bold 12px Arial'
+			})
+  		});
+    	
+    	return style;
     };
     
     var iotSensorInfoFunction= function(feature){

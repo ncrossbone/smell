@@ -381,8 +381,8 @@
     <ul class="lnb" id="smellInfo" style="display: none;">
 		<li>
 			<div class="layerOnOff"></div>
-			<h2 class="ov accordion">IOT 센서 정보<span></span></h2>
-			<div class="lnb_conts" id="iotSensorInfo">
+			<h2 class="accordion">IOT 센서 정보<span></span></h2>
+			<div class="lnb_conts" style="display: none;" id="iotSensorInfo">
 				<h3>IOT 센서 정보</h3>
                 <ul>
                     <li>
@@ -515,6 +515,24 @@
                 <ul>
                     <li>
                         <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="reductionMonitoringItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="reductionMonitoringStartDate" class="W105" style="width: 80px !important"/>
+                                <select id="reductionMonitoringStartTime">
+                                </select>
+                                <select id="reductionMonitoringStartMinute">
+                                </select>
+                            </dd>
+                        </dl>
+                        <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
@@ -532,7 +550,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>지점명</dt>
+                            <dt>센서명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
                                 <input type="text" class="W95p" name="" value="" id="reductionMonitoringBranchName" title="지점명 검색어" />
