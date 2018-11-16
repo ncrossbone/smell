@@ -68,7 +68,11 @@ var _SmellMapBiz = function () {
 	var odorSpreadIntervalTime = 3;
 	var odorSpreadMapType = 'cell';
 	
-	// 악취 이동경로
+	var odorSpreadZoomLevel = 0;
+	var odorSpreadHeatMapBlur = 30;
+	var odorSpreadHeatMapRadius = 18;
+	
+	// 악취 이동경로 
 	var odorMovementLayer = null;
 	var trackingFeatures;
 	var trackingIdx = 0;
@@ -758,6 +762,43 @@ var _SmellMapBiz = function () {
 			} else {
 				coreMap.getViewport().style.cursor = '';
 			}
+			
+			var zoom = _CoreMap.getMap().getView().getZoom();
+			
+			
+			if(odorSpreadZoomLevel != zoom){
+				if(odorSpreadMapType == 'heat'){
+					if(odorSpreadHeatMapLayer){
+						if(zoom < 13){
+							odorSpreadHeatMapBlur = 100;
+							odorSpreadHeatMapRadius = 10;
+						}else {
+							if(zoom == 13){
+								odorSpreadHeatMapBlur = 30;
+								odorSpreadHeatMapRadius = 18;
+							}else if(zoom == 14){
+								odorSpreadHeatMapBlur = 30;
+								odorSpreadHeatMapRadius = 28;
+							}else if(zoom == 15){
+								odorSpreadHeatMapBlur = 50;
+								odorSpreadHeatMapRadius = 50;
+							}else if(zoom == 16){
+								odorSpreadHeatMapBlur = 90;
+								odorSpreadHeatMapRadius = 80;
+							}else if(zoom == 17){
+								odorSpreadHeatMapBlur = 100;
+								odorSpreadHeatMapRadius = 70;
+							}else{
+								odorSpreadHeatMapBlur = 0;
+								odorSpreadHeatMapRadius = 0;
+							}
+						}
+						odorSpreadHeatMapLayer.setBlur(odorSpreadHeatMapBlur);
+						odorSpreadHeatMapLayer.setRadius(odorSpreadHeatMapRadius);
+					}
+				}	
+			}
+			odorSpreadZoomLevel = zoom;
 		});
 		
 		$('a[name="weatherType"]').on('click', function(){
@@ -974,6 +1015,10 @@ var _SmellMapBiz = function () {
 					clearInterval(odorSpreadInterval);
 					odorSpreadInterval = null;
 				}
+				if(odorSpreadHeatMapLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+					odorSpreadHeatMapLayer = null;
+				}
 				
 				odorSpreadTimeSeries = setTimeSeries(odorSpreadStartDate, odorSpreadEndDate, odorSpreadStartTime, odorSpreadEndTime, layerNm, null);
 				odorSpreadIndex = 0;
@@ -1142,7 +1187,9 @@ var _SmellMapBiz = function () {
 			
 			odorSpreadPlayType = 0;
 			setControlButton('odorSpreadPlay', odorSpreadPlayType);
-			
+			if(odorSpreadTimeSeries == null || odorSpreadTimeSeries.length <= 0){
+				return;
+			}
 			// 격자
 			if(mapType == 'cell'){
 				if(odorSpreadHeatMapLayer){
@@ -1396,8 +1443,8 @@ var _SmellMapBiz = function () {
 				featureProjection:'EPSG:3857'
 				})
 			}),
-			blur: parseInt(45, 10),
-			radius: parseInt(45, 10),
+			blur: odorSpreadHeatMapBlur ,
+			radius: odorSpreadHeatMapRadius,
 			zIndex: 3000
 		});
  
