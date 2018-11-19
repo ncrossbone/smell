@@ -97,7 +97,7 @@
 				map.setSize([ ww - 340, wh - 92 ]);
 			}
 			
-			$('#gridArea').width(100-($($('.lnb')[0]).width() / ww * 100)+'%');
+			$('#gridArea').width(100-(($($('.lnb')[0]).width()+6) / ww * 100)+'%');
 		});
 		$('#popup').draggable({ containment: '#map' });
 		$(window).trigger('resize');
@@ -364,7 +364,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>센서명</dt>
+                            <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
                                 <input type="text" class="W95p" name="" value="" id="fixedMeasurementBranchName" title="지점명 검색어" />
@@ -510,7 +510,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>지점명</dt>
+                            <dt>회사명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
                                 <input type="text" class="W95p" name="" value="" id="odorOriginBranchName" title="지점명 검색어" />
@@ -566,7 +566,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>센서명</dt>
+                            <dt>지점명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
                                 <input type="text" class="W95p" name="" value="" id="reductionMonitoringBranchName" title="지점명 검색어" />
@@ -668,7 +668,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>지점명</dt>
+                            <dt>측정소명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
                                 <input type="text" class="W95p" name="" value="" id="environmentCorporationBranchName" title="지점명 검색어" />
@@ -1001,7 +1001,18 @@
      </div>
      
     </div>
-     <div id="gridArea"  value="off" style="position: absolute; background: white; height: 250px; bottom: 0px; display: none; left:361px; z-index:10000 ; ">
+     <div id="gridArea"  value="off" style="position: absolute; background: white; height: 300px; bottom: 0px; display: none; left:361px; z-index:2; border: 3px solid #1fc700; border-top: none; ">
+     	<div>
+     		<div style="padding: 10px 10px; background: #1fc700; font-family: 'notokr-regular'; font-size: 17px; color:#fff;">검색결과</div>
+     		
+     		<img id="gridMinimize" src="../images/header-minimize.png" style="position: absolute; right: 66px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
+     		<img id="gridMaximize" src="../images/header-maximize.png" style="position: absolute; right: 38px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
+     		<img id="gridRestore" src="../images/header-restore.png" style="position: absolute; right: 38px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
+     		<img id="gridClose" src="../images/header-close.png" style="position: absolute; right: 10px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
+     		<div></div>
+     		<div></div>
+     		<div></div>
+		</div>
      	<div id="tabs">
      		<ul></ul>
      	</div>

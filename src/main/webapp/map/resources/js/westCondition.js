@@ -9,8 +9,8 @@ var _WestCondition = function () {
     var POIConditionObj = {};
     
     var reW = 0,reH = 0;
-    var maxHeight = $(window).height() - 110;
-	var defaultHeight = 250;
+    var maxHeight = 0;
+	var defaultHeight = 0;
 	
     var westLayerObj = {
     		CVPL_POINT : ':CVPL_POINT',
@@ -195,7 +195,7 @@ var _WestCondition = function () {
     	'odorOrigin':{
     		cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
     			'town':'LEGALDONG_CODE',
-    			'branchName':'BSML_TRGNPT_NM'
+    			'branchName':'CMPNY_NM'
     				},
     			layerName:westLayerObj.SHP_BPLC_FOR_WESTCONDITION,
     			layerType:'polygon',
@@ -470,6 +470,17 @@ var _WestCondition = function () {
         $('.iotGrid').html(iotItemHtml);
         
         setEvent();
+        
+        setDefaultHeight();
+        setMaxHeight();
+    };
+    
+    var setMaxHeight = function(){
+    	maxHeight = $(window).height() - $('#top').height() - $('#nav').height() - 22;
+    };
+    
+    var setDefaultHeight = function(){
+    	defaultHeight = $('#gridArea').height(); 
     };
     
     var addWriteLayerForUseGeoserver = function(event, options){
@@ -706,6 +717,9 @@ var _WestCondition = function () {
     			checkSearchCondition(id.split('CheckBox')[0]);
     		}
     	});*/
+    	$('#gridMinimize, #gridMaximize, #gridRestore, #gridClose').off('click').on('click',function(){
+    		gridBtnClickEvent($(this).attr('id'));
+    	});
     	
     	$('#poiView').off('click').on('click',function(){
     		initPOI();
@@ -771,6 +785,29 @@ var _WestCondition = function () {
     		
     		
     	});
+    };
+    
+    var gridBtnClickEvent = function(id){
+    	switch (id) {
+		case 'gridMinimize':
+			break;
+		case 'gridMaximize':
+			$('#gridArea').css('height', maxHeight);
+			$('#' + id).hide();
+			$('#gridRestore').show();
+			break;
+		case 'gridRestore':
+			$('#gridArea').css('height', defaultHeight);
+			$('#' + id).hide();
+			$('#gridMaximize').show();
+			break;
+		case 'gridClose':
+			$('#gridArea').css('height', '40px');
+			break;
+
+		default:
+			break;
+		}
     };
     
     var checkSearchCondition = function(placeId){
@@ -1414,10 +1451,6 @@ var _WestCondition = function () {
     	var tabContent = $('#tab_content');
     	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(../images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
-    	if($('#gridOpnerIcon').length == 0){
-    		tabs.append('<span id="gridOpnerIcon" onclick="_WestCondition.gridCloseOpen()" style="height: 10px;width: 10px;right: 25px;top: 5px;position: absolute;background: #4a4a4a;"></span>')
-    		tabs.append('<span id="gridFullIcon" value="off" onclick="_WestCondition.gridFullSize()" style="height: 10px;width: 10px;right: 11px;top: 5px;position: absolute;background: #4a4a4a;"></span>')
-    	}	
     		
     	tabs.off('click').on('click','span.ui-icon-close', function() {
     		var panelId = $( this ).closest('li').remove().attr('aria-controls');
@@ -1879,22 +1912,6 @@ var _WestCondition = function () {
 		
 	}
 	
-	var gridFullSize = function(){
-		//
-		
-		
-		if($('#gridFullIcon').attr('value') == 'off'){
-			$('#gridArea').css('height', maxHeight);
-			$('#gridFullIcon').attr('value', 'on');
-			
-		}else{
-			$('#gridArea').css('height', defaultHeight);
-			
-			$('#gridFullIcon').attr('value', 'off');
-		}
-		
-	}
-	
 	var reSizeMap = function(width,height){
 		
 		var ww = $(window).width();
@@ -1950,13 +1967,6 @@ var _WestCondition = function () {
         
         tabCloseOpen: function(value){
         	tabCloseOpen(value);
-        },
-        
-        gridCloseOpen: function(){
-        	gridCloseOpen();
-        },
-        gridFullSize: function(){
-        	gridFullSize();
         },
         getWestLayerName : function(){
         	return westLayerObj;

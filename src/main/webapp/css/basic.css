@@ -47,7 +47,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 
 
-#tab { position: absolute; left: 360px; top: 26px; z-index: 1;}
+#tab { position: absolute; left: 360px; top: 26px; z-index: 3;}
 #tab li { width: 22px; height: 102px; padding: 28px 5px 0px 5px; text-align: center; font-size: 16px; background: url(../images/tab_off.png) no-repeat; cursor: pointer; line-height: 18px; color: #000; margin-top: -1px; }
 #tab li.on { background: url(../images/tab_on.png) no-repeat !important; color: #fff !important; }
 
@@ -122,7 +122,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 /*gis*/
 #map { width: 100%; height: 898px;}
 
-#map_type { position: absolute; right: 20px; top: 10px; z-index: 2;}
+#map_type { position: absolute; right: 20px; top: 10px; z-index: 1;}
 #map_type:after { display: block; clear: both; content: ''; } 
 #map_type li { float:left; }
 #map_type li a { padding: 4px 8px; display: block; color: #333b3e; font-family: 'Dotum'; font-size: 11px; letter-spacing: -1px; background: #fff; border-top: 1px solid #a2abb4; border-left: 1px solid #a2abb4; border-bottom: 1px solid #a2abb4; }
@@ -169,7 +169,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 
 /*20181112 주제도 추가*/
-#around_info  { position: absolute; left: 55px; top: 10px; letter-spacing: -1px; z-index:9999 }
+#around_info  { position: absolute; left: 55px; top: 10px; letter-spacing: -1px; z-index:1 }
 #around_info> li { width: 100px; background: #fff; border-left: 1px solid #666; border-right: 1px solid #666; border-top: 1px solid #666; font-family: 'Dotum'; font-size: 11px; color: #58657a; position: relative; }
 #around_info> li:last-child { border-bottom: 1px solid #666; }
 #around_info> li.active { background: #9ca3bc; color: #fff; }
@@ -204,7 +204,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .icon_015 { background: url(../images/icon_015.gif) no-repeat; }
 
 
-#tabOpener { position: absolute; left: 360px; top: 0px; z-index: 2;}
+#tabOpener { position: absolute; left: 360px; top: 0px; z-index: 3;}
 #tabOpener li { width: 34px; height: 29px; text-align: center;  background: url(../images/open_west.png) no-repeat; cursor: pointer; line-height: 18px; color: #000; margin-top: -1px; }
 #tabOpener li.on { background: url(../images/close_west.png) no-repeat !important; color: #fff !important; }
 
