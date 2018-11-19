@@ -82,6 +82,10 @@ var _SmellMapBiz = function () {
 	
 	var originLayer  = null; 
 	
+	var bufferOriginLayer = null;
+	var bufferOriginFeature = null;
+	var bufferMeter = 200;
+	 
 	var init = function(){
 		proj4.defs('EPSG:32652','+proj=utm +zone=52 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
 		proj4.defs('EPSG:5179','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
@@ -552,6 +556,10 @@ var _SmellMapBiz = function () {
 					if(originLayer){
 						originLayer.setVisible(data.isShow);	
 					}
+					
+					if(bufferOriginLayer){
+						originLayer.setVisible(data.isShow);
+					}
 				}
 			}
 		});
@@ -723,27 +731,27 @@ var _SmellMapBiz = function () {
 			}
 			
 			
-			if(originLayer){
-				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer) {
-					if(layer.get('id') == 'originLayer'){
-						return feature;	
-					}
-					return null;
-				});
-			    if (feature) {
-			    	var geometry = feature.getGeometry();
-			    	var properties = feature.getProperties().properties;
-					var featureExtent = geometry.getExtent();
-					var featureCenter = ol.extent.getCenter(featureExtent);
-					if(popupOverlay){
-						$('#popupOverlay').show();
-						$('#popup-content').show();
-						popupOverlay.setPosition(featureCenter);
-						$('#originTitle').html(properties.CMPNY_NM);
-						$('#originTel').html(properties.TELNO);
-					}
-			    }
-			}
+//			if(originLayer){
+//				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer) {
+//					if(layer.get('id') == 'originLayer'){
+//						return feature;	
+//					}
+//					return null;
+//				});
+//			    if (feature) {
+//			    	var geometry = feature.getGeometry();
+//			    	var properties = feature.getProperties().properties;
+//					var featureExtent = geometry.getExtent();
+//					var featureCenter = ol.extent.getCenter(featureExtent);
+//					if(popupOverlay){
+//						$('#popupOverlay').show();
+//						$('#popup-content').show();
+//						popupOverlay.setPosition(featureCenter);
+//						$('#originTitle').html(properties.CMPNY_NM);
+//						$('#originTel').html(properties.TELNO);
+//					}
+//			    }
+//			}
 		});
 		
 		_MapEventBus.on(_MapEvents.map_mousemove, function(event, data){
@@ -1243,9 +1251,16 @@ var _SmellMapBiz = function () {
 				}
 				if(odorMovementLayer){
 					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorMovementLayer);
-					_MapEventBus.trigger(_MapEvents.map_removeLayer, originLayer);
+					if(originLayer){
+						_MapEventBus.trigger(_MapEvents.map_removeLayer, originLayer);	
+					}
+					if(bufferOriginLayer){
+						_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);	
+					}
 					odorMovementLayer = null;
 					originLayer = null;
+					bufferOriginLayer = null;
+					$('#bufferBtn').hide();
 				}
 				
 				var params = {"type":layerNm, "analsAreaId":odorMovementItem, "dtaDt":odorMovementStartDate+odorMovementStartTime};
@@ -1355,6 +1370,35 @@ var _SmellMapBiz = function () {
 				originLayer = null;
 			}
 			
+			$('#bufferBtn').show();
+			
+			$('#bufferOnOffBtn').off('click').on('click', function(){
+				if($(this).attr('value')=='on'){
+					$(this).attr('value','off');
+					$(this).prop('src','../images/wd_btn_off.png');
+					if(bufferOriginLayer){
+						_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);
+					}
+				}else{
+					$(this).attr('value', 'on'); 
+					$(this).prop('src','../images/wd_btn_on.png');
+					if(bufferOriginLayer){
+						_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);
+					}
+					
+					if(bufferOriginFeature){
+						var source = new ol.source.Vector();
+						source.addFeatures([bufferOriginFeature]);
+						bufferOriginLayer = new ol.layer.Vector({ 
+							source: source,
+							zIndex:1001,
+							name:'bufferOriginLayer',
+							style: bufferAreaStyle
+						});
+						_MapEventBus.trigger(_MapEvents.map_addLayer, bufferOriginLayer);
+					}
+				}
+			})
 			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {
 		          cqlString:'1=1',
 		          geoserverLayerId:_WestCondition.getWestLayerName().SHP_BPLC_FOR_WESTCONDITION,
@@ -1379,7 +1423,7 @@ var _SmellMapBiz = function () {
 				
 				var lineFeature = new ol.Feature({geometry:new ol.geom.LineString(linePathCoord), properties:null});
 				var jstsGeom = parser.read(lineFeature.getGeometry());
-				var buffered = jstsGeom.buffer(100);
+				var buffered = jstsGeom.buffer(bufferMeter);
 				var bufferedGeometry = parser.write(buffered);
 
 				var interFeatures = [];
@@ -1395,6 +1439,9 @@ var _SmellMapBiz = function () {
 						gridData.push(result.features[i].properties);
 					}
 				}
+				
+				bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{}});
+				
 				
 				if(interFeatures.length <= 0){
 					alert('오염원점이 없습니다.');
@@ -1625,8 +1672,19 @@ var _SmellMapBiz = function () {
 	          fill: new ol.style.Fill({
 	            color: 'rgba(255, 255, 0, 0.1)'
 	          })
-	        })
+	        });
 	};
+	var bufferAreaStyle = function(){
+		return new ol.style.Style({
+	          stroke: new ol.style.Stroke({
+	            color: 'blue',
+	            width: 3
+	          }),
+	          fill: new ol.style.Fill({
+	            color: 'rgba(0, 0, 255, 0.3)'
+	          })
+	        });
+	}
 	var highlightVectorStyle = function(){
 		return new ol.style.Style({
 	          stroke: new ol.style.Stroke({
@@ -1640,12 +1698,10 @@ var _SmellMapBiz = function () {
 	};
 	var odorMovementStyleFunction= function(feature){
 		var label = feature.getProperties().properties.sn;
-		console.log(feature.getProperties().sn);
-		console.log(label);
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({
-    			radius: 13,
+    			radius: 8,
     			fill: new ol.style.Fill({
     				color: '#ff0000'
     			}), 
