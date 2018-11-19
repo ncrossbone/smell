@@ -98,6 +98,7 @@
 			}
 			
 			$('#gridArea').width(100-(($($('.lnb')[0]).width()+6) / ww * 100)+'%');
+			_WestCondition.setMaxHeight();
 		});
 		$('#popup').draggable({ containment: '#map' });
 		$(window).trigger('resize');
@@ -1011,10 +1012,10 @@
      	<div>
      		<div style="padding: 10px 10px; background: #1fc700; font-family: 'notokr-regular'; font-size: 17px; color:#fff;">검색결과</div>
      		
-     		<img id="gridMinimize" src="../images/header-minimize.png" style="position: absolute; right: 66px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
-     		<img id="gridMaximize" src="../images/header-maximize.png" style="position: absolute; right: 38px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
+     		<img id="gridMinimize" src="../images/header-minimize.png" style="position: absolute; right: 66px; z-index: 3; top: 15px; cursor: pointer;" />
+     		<img id="gridMaximize" src="../images/header-maximize.png" style="position: absolute; right: 38px; z-index: 3; top: 15px; cursor: pointer;" />
      		<img id="gridRestore" src="../images/header-restore.png" style="position: absolute; right: 38px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
-     		<img id="gridClose" src="../images/header-close.png" style="position: absolute; right: 10px; z-index: 3; top: 15px; cursor: pointer; display: none;" />
+     		<img id="gridClose" src="../images/header-close.png" style="position: absolute; right: 10px; z-index: 3; top: 15px; cursor: pointer;" />
      		<div></div>
      		<div></div>
      		<div></div>

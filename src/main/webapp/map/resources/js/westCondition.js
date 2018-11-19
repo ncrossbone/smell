@@ -790,19 +790,41 @@ var _WestCondition = function () {
     var gridBtnClickEvent = function(id){
     	switch (id) {
 		case 'gridMinimize':
+			$('#gridArea').css('height', '40px');
+			$('#gridMinimize').hide();
+			$('#gridMaximize').hide();
+			$('#gridRestore').show();
 			break;
 		case 'gridMaximize':
 			$('#gridArea').css('height', maxHeight);
 			$('#' + id).hide();
 			$('#gridRestore').show();
+			
+			for(key in contentsConfig){
+				if($('#grid' + key).jsGrid()[0]){
+					$('#grid' + key).jsGrid({height:(maxHeight-100) + 'px'})
+				}
+			}
+			
 			break;
 		case 'gridRestore':
 			$('#gridArea').css('height', defaultHeight);
 			$('#' + id).hide();
 			$('#gridMaximize').show();
+			$('#gridMinimize').show();
+			
+			for(key in contentsConfig){
+				if($('#grid' + key).jsGrid()[0]){
+					$('#grid' + key).jsGrid({height:(defaultHeight-100) + 'px'})
+				}
+			}
 			break;
 		case 'gridClose':
-			$('#gridArea').css('height', '40px');
+			for(key in contentsConfig){
+				if($('#grid' + key).jsGrid()[0]){
+					clearTab('place'+key);
+				}
+			}
 			break;
 
 		default:
@@ -1445,6 +1467,33 @@ var _WestCondition = function () {
     	});
     };
     
+    var clearTab = function(tabId){
+    	$('li[aria-controls="'+tabId+'"]').remove();
+		$('#' + tabId ).remove();
+		$('#tabs').tabs('refresh');
+		
+		if($('ul[role="tablist"]').find('li').length==0){
+			$('#gridArea').hide();
+		}
+		
+		var id = tabId.split('place')[1];
+		var layerForName = _CoreMap.getMap().getLayerForName(id);
+		
+		if(layerForName){
+			if(layerForName){
+    			_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
+    		}
+		}
+		clearFocusLayer();
+		
+		if(contentsConfig[id].isLabelLayer){
+			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
+			if(labelLayerForName){
+    			_MapEventBus.trigger(_MapEvents.map_removeLayer, labelLayerForName);
+    		}
+		}
+    };
+    
     var writeGrid = function(id, data){
     	$('#gridArea').show();
     	var tabTitle = $('#tab_title');
@@ -1453,30 +1502,7 @@ var _WestCondition = function () {
     	var tabs = $('#tabs').tabs();
     		
     	tabs.off('click').on('click','span.ui-icon-close', function() {
-    		var panelId = $( this ).closest('li').remove().attr('aria-controls');
-    		$('#' + panelId ).remove();
-    		tabs.tabs('refresh');
-    		
-    		if($('ul[role="tablist"]').find('li').length==0){
-    			$('#gridArea').hide();
-    		}
-    		
-    		var id = $(this).parent().find('a').attr('id').split('tabs-')[1];
-    		var layerForName = _CoreMap.getMap().getLayerForName(id);
-    		
-    		if(layerForName){
-    			if(layerForName){
-        			_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
-        		}
-    		}
-    		clearFocusLayer();
-    		
-    		if(contentsConfig[id].isLabelLayer){
-    			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
-    			if(labelLayerForName){
-        			_MapEventBus.trigger(_MapEvents.map_removeLayer, labelLayerForName);
-        		}
-    		}
+    		clearTab($(this).closest('li').attr('aria-controls'));
     	});
 
     	var tabTitle = contentsConfig[id].title;
@@ -1510,7 +1536,7 @@ var _WestCondition = function () {
     	
     	$('#grid' + id).jsGrid({
     		width: '90%',
-    		height: '200px',
+    		height: ($('#gridArea').height()-100),
     		inserting: false,
     		editing: false,
     		sorting: true,
@@ -1878,40 +1904,6 @@ var _WestCondition = function () {
 		
 	}
 	
-	var gridCloseOpen = function(){
-		
-		
-		if($('#gridArea').css('display') == 'block'){
-			
-			$('#gridArea').css('display','none');
-			//$('#gridArea').css('bottom','-205px');
-			$('#gridArea').attr('value','off') ;
-			//value.addClass('on');
-			
-			reH = 0;
-			
-			
-		}else{
-			
-			$('#gridArea').css('display','block');
-			//$('#gridArea').css('bottom','0px');
-			$('#gridArea').attr('value','on') ;
-			//value.removeClass('on');
-			
-			reH = 92;
-			
-			if($('#tab').css('left') == '0px'){
-				$('#gridArea').css('left','0px');
-			}else{
-				$('#gridArea').css('left','361px');
-			}
-			
-		}
-		
-		reSizeMap(reW,reH);
-		
-	}
-	
 	var reSizeMap = function(width,height){
 		
 		var ww = $(window).width();
@@ -1970,6 +1962,9 @@ var _WestCondition = function () {
         },
         getWestLayerName : function(){
         	return westLayerObj;
+        },
+        setMaxHeight: function(){
+        	setMaxHeight();
         }
     };
 }();
