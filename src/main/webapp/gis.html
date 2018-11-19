@@ -96,11 +96,17 @@
 			if (map) {
 				map.setSize([ ww - 340, wh - 92 ]);
 			}
+			
+			$('#gridArea').width(100-($($('.lnb')[0]).width() / ww * 100)+'%');
 		});
 		$('#popup').draggable({ containment: '#map' });
 		$(window).trigger('resize');
 		
 		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
+		
+		/* document.location.href
+		$('li[tabtype="smellReport"]').trigger('click'); */
+		
 	});
 	
 </script>
@@ -383,18 +389,34 @@
                         <dl>
 			                 <dt>센서 선택</dt>
 			                 <dd style="margin-top: 8px;">
-			                     <input type="radio" class="dis_ib" value="SEN01001" id="iotSensorInfoCheckBox01" name="iotSensorInfoCheckBox"/>
-			                     <label class="contents" for="iotSensorInfoCheckBox01" style="margin-right: 20px;">고정식</label>
+			                     <input type="radio" class="dis_ib" value="SEN01001" id="iotSensorInfoRadio01" name="iotSensorInfoRadio" checked="checked"/>
+			                     <label class="contents" for="iotSensorInfoRadio01" style="margin-right: 20px;">고정식</label> 
 			                     
-			                     <input type="radio" class="dis_ib" value="SEN01002" id="iotSensorInfoCheckBox02" name="iotSensorInfoCheckBox"/>
-			                     <label class="contents" for="iotSensorInfoCheckBox02" style="margin-right: 20px;">이동식</label>
+			                     <input type="radio" class="dis_ib" value="SEN01002" id="iotSensorInfoRadio02" name="iotSensorInfoRadio"/>
+			                     <label class="contents" for="iotSensorInfoRadio02" style="margin-right: 20px;">이동식</label>
 			                     
-			                     <input type="radio" class="dis_ib" value="SEN01003" id="iotSensorInfoCheckBox03" name="iotSensorInfoCheckBox"/>
-			                     <label class="contents" for="iotSensorInfoCheckBox03">무인</label>
+			                     <input type="radio" class="dis_ib" value="SEN01003" id="iotSensorInfoRadio03" name="iotSensorInfoRadio"/>
+			                     <label class="contents" for="iotSensorInfoRadio03">무인</label>
 			                 </dd>
 			             </dl>
                     </li>
                 </ul>
+                <ul class="box iotTerm iotGrid" style="margin-top: 10px; margin-bottom: 10px;">
+            	</ul>
+            	<dl>
+                    <dt>조회기간</dt>
+                     <dd>
+                        <input type="text" id="iotSensorInfoStartDate" class="W105" style="width: 80px !important"/>
+                        <select id="iotSensorInfoStartTime">
+                        </select>
+                        <select id="iotSensorInfoStartMinute">
+                        </select>
+                    </dd>
+                </dl>
+            	<p class="MgT35 MgB30 AC">
+                           <a class="btn01" href="javascript:void(0)" id="iotSensorInfoViews">조회</a>
+                </p>
+                
             </div>
 		</li>
 
@@ -442,6 +464,32 @@
             <h2 class="accordion">악취원점 관리<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorOrigin">
 				<h3>악취원점 관리</h3>
+				<ul class="box grid term" style="margin-bottom: 10px;">
+            		<li>
+                    	<dl>
+                        	<dt class="W70">산업단지</dt>
+                            <dd class="W30"><span class="guide01"></span></dd>
+                        </dl>
+                    </li>
+                    <li class="MgT0">
+                    	<dl>
+                        	<dt class="W70">환경시설</dt>
+                            <dd class="W30"><span class="guide02"></span></dd>
+                        </dl>
+                    </li>
+                    <li>
+                    	<dl>
+                        	<dt class="W70">양계장</dt>
+                            <dd class="W30"><span class="guide03"></span></dd>
+                        </dl>
+                    </li>
+                    <li>
+                    	<dl>
+                        	<dt class="W70">양돈장</dt>
+                            <dd class="W30"><span class="guide04"></span></dd>
+                        </dl>
+                    </li>
+            	</ul>
                 <ul>
                     <li>
                         <dl>
@@ -483,6 +531,24 @@
                 <ul>
                     <li>
                         <dl>
+                            <dt>측정항목</dt>
+                            <dd>
+                            	<select id="reductionMonitoringItem" class="W95p">
+                            		<option>CO2</option>
+                            	</select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>조회기간</dt>
+                             <dd>
+                                <input type="text" id="reductionMonitoringStartDate" class="W105" style="width: 80px !important"/>
+                                <select id="reductionMonitoringStartTime">
+                                </select>
+                                <select id="reductionMonitoringStartMinute">
+                                </select>
+                            </dd>
+                        </dl>
+                        <dl>
                             <dt>지역 선택</dt>
                             <dd>
                                 <div class="box">
@@ -500,7 +566,7 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt>지점명</dt>
+                            <dt>센서명</dt>
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
                                 <input type="text" class="W95p" name="" value="" id="reductionMonitoringBranchName" title="지점명 검색어" />
@@ -733,6 +799,33 @@
                         </div>
                     </li>
                 </ul>
+               <ul class="box grid term L0" style="height: 40px;">
+            		<li>
+                    	<dl>
+                        	<dt class="W70">~2.0</dt>
+                            <dd class="W30"><img src="images/wind_0_1.png" /></dd>
+                        </dl>
+                    </li>
+                    <li class="MgT0">
+                    	<dl>
+                        	<dt class="W70">2.0~4.0</dt>
+                            <dd class="W30"><img src="images/wind_0_2.png" /></dd>
+                        </dl>
+                    </li>
+                    <li>
+                    	<dl>
+                        	<dt class="W70">4.0~6.0</dt>
+                            <dd class="W30"><img src="images/wind_0_3.png" /></dd>
+                        </dl>
+                    </li>
+                    <li>
+                    	<dl>
+                        	<dt class="W70">6.0~</dt>
+                            <dd class="W30"><img src="images/wind_0_4.png" /></dd>
+                        </dl>
+                    </li>
+            	</ul>
+                <p class="txt11 AR">* 단위(m/s)</p>
             </div>
 		</li>
 
@@ -829,7 +922,7 @@
                             <a href="javascript:void(0)" class="ctrl_fast_forward" id="odorMovementNext"></a>
                         </div>
                         <dl>
-                            <dt style="">인근 오염원점 조회</dt>
+                            <dt style="">인근 사업장</dt>
                             <dd>
                                 <p class="MgB30 AC" style="margin-top: 18px;">
                            			<a class="btn01" href="javascript:void(0)" id="odorMovementBufferBtn">조회</a>

@@ -88,6 +88,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
     display: inline-block;
     background-position: center center;
 }
+.grid> li {width: 50%;float: left;}
 
 .ctrl_left {
     background: url(../images/pre.png) no-repeat;
@@ -183,7 +184,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .btn_radio> li> a { height: 22px; padding-top: 8px; padding-left: 33px; color: #000; font-family: 'Dotum'; font-size: 12px; font-weight: bold; letter-spacing: -1px; display: block; background: url(../images/icon_radio_none.png) 10px 6px no-repeat, #d1d1d1; }
 
 .btn_radio> li> a.off { }
-.btn_radio> li> a.on { background: url(../images/icon_radio_chk.png) 10px 6px no-repeat, #3d4866; color:#fff;}
+.btn_radio> li> a.on { background: url(../images/icon_radio_chk.png) 10px 6px no-repeat, #3d4866; color: #fff; }
 
 #around_info span { height: 20px; display: block; padding: 10px 0 0 30px; background-position: 5px center; }
 .pic_school { background: url(../images/icon_010.png) no-repeat; }
@@ -210,9 +211,25 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 
 
+/*20181115*/
+.term { }
+.grid:after { display: block; clear: both; content: ''; }
 
+.iotGrid:after { display: block; clear: both; content: ''; }
+.iotGrid>li {width: 33%;float: left; margin-bottom: 5px;}
 
+.iotTerm> li:nth-child(1) { margin-top: 0; } 
+.iotTerm dt { margin-top: 0px !important; }
+.iotTerm span { width: 22px; height: 13px; display: block; }
+ 
+.term> li { margin-top: 8px; }
+.term> li:nth-child(1) { margin-top: 0; } 
+.term dt { margin-top: 0px !important; }
+.term span { width: 22px; height: 13px; display: block; }
 
+.guide01 { background: #ffde00; border: 1px solid #dec100; }
+.guide02 { background: #ffa800; border: 1px solid #de9200; }
+.guide03 { background: #ed145b; border: 1px solid #d30045; }
+.guide04 { background: #0072bc; border: 1px solid #0061a0; }
 
-
-
+.txt11 { font-size: 11px; font-family: 'Dotum'; margin-top: 5px; color: #333; }
