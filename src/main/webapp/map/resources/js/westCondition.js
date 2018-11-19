@@ -427,14 +427,14 @@ var _WestCondition = function () {
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
 		}
 		
-		$('#reductionMonitoringStartTime, #observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
+		$('#iotSensorInfoStartTime, #reductionMonitoringStartTime, #observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').html(timeOptions);
 		
 		var timeOptionMinute = '';
 		
 		for(var i=0; i<60; i++){
 			timeOptionMinute += '<option value="'+(i<10 ? ('0'+i): i)+'">'+i+'분</option>';
 		}
-		$('#reductionMonitoringStartMinute ,#fixedMeasurementStartMinute, #unmannedOdorStartMinute, #unmannedOdorEndMinute').html(timeOptionMinute);
+		$('#iotSensorInfoStartMinute, #reductionMonitoringStartMinute ,#fixedMeasurementStartMinute, #unmannedOdorStartMinute, #unmannedOdorEndMinute').html(timeOptionMinute);
 		
         for(var i = 0; i < dateArr.length; i++){
         	$('#' + dateArr[i]).datepicker($.extend(datePickerDefine,{
@@ -453,12 +453,17 @@ var _WestCondition = function () {
         }
         
         var portableMeasurementItemHtml = '';
-        
+        var iotItemHtml = '';
         for(var i=3; i<contentsConfig['portableMeasurement'].columnArr.length - 1; i++){
         	portableMeasurementItemHtml += '<option value=\''+contentsConfig['portableMeasurement'].columnArr[i].name+'\'>'+contentsConfig['portableMeasurement'].columnArr[i].title+'</option>';
+           	var checked = i==3?'checked="checked"':'';
+        	iotItemHtml += '<li><input type="checkbox" value="'+contentsConfig['portableMeasurement'].columnArr[i].name+'" id="iotSensorInfoCheckBox'+(i-2)+'" name="iotSensorInfoCheckBox" ' + checked + ' />';
+        	iotItemHtml += '<label for="iotSensorInfoCheckBox'+(i-2)+'" class="contents">'+contentsConfig['portableMeasurement'].columnArr[i].title+'</label>';
         }
         
         $('#portableMeasurementItem, #fixedMeasurementItem, #reductionMonitoringItem').html(portableMeasurementItemHtml);
+        
+        $('.iotGrid').html(iotItemHtml);
         
         setEvent();
     };
@@ -691,12 +696,12 @@ var _WestCondition = function () {
     };
 
     var setEvent = function(){
-    	$('input[name$="CheckBox"]').off('change').on('change',function(){
+    	/*$('input[name$="CheckBox"]').off('change').on('change',function(){
     		var id = $(this).attr('id');
     		if(id.indexOf('iotSensorInfo')>-1){
     			checkSearchCondition(id.split('CheckBox')[0]);
     		}
-    	});
+    	});*/
     	
     	$('#poiView').off('click').on('click',function(){
     		initPOI();
@@ -792,6 +797,8 @@ var _WestCondition = function () {
 							
 							if(checkboxArr.length == 0){
 								return alert('항목을 선택하세요.');
+							}else if(checkboxArr.length > 4){
+								return alert('항목이 5개 이상 선택되었습니다.');
 							}
 							//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
 							for(var k=0; k<checkboxArr.length; k++){
@@ -1047,32 +1054,38 @@ var _WestCondition = function () {
     
     var iotSensorInfoFunction= function(feature){
     	var checkBox = $('input[name=iotSensorInfoCheckBox]:checked');
-    	var width = 200;
-    	var height = 30;
+    	var width = 140;
+    	var basicHeight = 25;
+    	var height = basicHeight * (checkBox.length+1);
     	var itemArr = [];
-    	
     	
     	var img = document.createElement("IMG");
 		img.height = height * checkBox.length;
 		img.width = width;
 		
-		var svgString = '<svg width="'+width+'" height="'+(height*checkBox.length)+'" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
-		var colString = '';
-		var dataString = '';
+		var svgString = '<svg width="' + width + '" height="' + height + '" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
+		var title = feature.getProperties().SENSOR_NM;
+		var x = 5;
+		var dataX = 75;
+		var y = 4;
 		
-		svgString += '<rect x="0" y="10" width="70" height="100" fill="gainsboro"/>';
-		svgString += '<rect x="70" y="10" width="70" height="100" fill="#fff"/>';
+		svgString += '<rect x="0" y="0" width="' + width + '" height="' + basicHeight + '" fill="#0070c0"/>';
+		svgString += '<rect x="0" y="' + basicHeight + '" width="' + (width/2) + '" height="' + height + '" fill="#f2f2f2"/>';
+		svgString += '<rect x="' + (width/2) + '" y="' + basicHeight + '" width="' + (width/2) + '" height="' + height + '" fill="#ffffff"/>';
 		
-		colString += '<text x="10" y="15" font-size="18px" font-weight="bold" fill="crimson">';
-		dataString += '<text x="90" y="15" font-size="18px" text-anchor="middle">';
+		svgString += '<text x="'+x+'" y="'+y+'" font-size="13px" font-weight="bold" fill="#fff"><tspan dy="1em">' + title + '</tspan></text>';
+		
 		for(var i = 0; i < checkBox.length; i++){
-			colString += '<tspan x="10" dy="1em">CO2</tspan>';
-			dataString += '<tspan x="90" dy="1em">50</tspan>';
+			var resultValue = feature.getProperties()[$(checkBox[i]).val()]?feature.getProperties()[$(checkBox[i]).val()].toFixed(2):'-';
+			svgString += '<text x="'+x+'" y="'+(y+(basicHeight*(i+1)))+'" font-size="13px" font-weight="bold" fill="#000">';
+			svgString += '<tspan dy="1em">'+$(checkBox[i]).val()+'</tspan>';
+			svgString += '</text>';
+			svgString += '<text x="'+dataX+'" y="'+(y+(basicHeight*(i+1)))+'" font-size="13px" fill="#000">';
+			svgString += '<tspan dy="1em">' + resultValue + '</tspan>';
+			svgString += '</text>';
     	}
-		colString += '</text>';
-		dataString += '</text>'
 		
-		svgString += colString + dataString + '</g></svg>';
+		svgString += '</g></svg>';
 		
 		img.src = 'data:image/svg+xml;charset=utf8,'+encodeURIComponent(svgString);
 		
@@ -1080,7 +1093,7 @@ var _WestCondition = function () {
 			image: new ol.style.Icon({
 				opacity: 1,
 				img:img,
-				imgSize:[width,(height*checkBox.length)]
+				imgSize:[width,height]
 			}),
 	        zIndex:1
 		});
@@ -1142,7 +1155,8 @@ var _WestCondition = function () {
 		    		color : '#fff',
 		    		width : 3
 		    	}),
-		    	font: 'bold 15px Arial'
+		    	font: 'bold 12px Arial',
+		    	overflow:true
 		    })
   		});
     	

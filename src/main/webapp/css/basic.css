@@ -213,9 +213,15 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 /*20181115*/
 .term { }
-.grid:after { display: block; clear: both; content: ''; } 
-.grid> li { width: 50%; float: left; }
+.grid:after { display: block; clear: both; content: ''; }
 
+.iotGrid:after { display: block; clear: both; content: ''; }
+.iotGrid>li {width: 33%;float: left; margin-bottom: 5px;}
+
+.iotTerm> li:nth-child(1) { margin-top: 0; } 
+.iotTerm dt { margin-top: 0px !important; }
+.iotTerm span { width: 22px; height: 13px; display: block; }
+ 
 .term> li { margin-top: 8px; }
 .term> li:nth-child(1) { margin-top: 0; } 
 .term dt { margin-top: 0px !important; }

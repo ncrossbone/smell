@@ -543,9 +543,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
   		FROM bdsm.SHP_OBSR_SPOT A,
              bdsm.AWS_OBSR_INFO B
 	   WHERE A.STATION_ID = B.OBSR_SPOT_ID
-         AND ADM_CODE LIKE CONCAT(#{town},'%')
-         AND OBSR_TIME <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
-		 AND OBSR_TIME <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
+         AND STATION_ID = '131'
 	</select>
 	
 	<select id="observatoryClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -555,11 +553,56 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	</select>
 	
 	<select id="iotSensorInfoFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT CASE WHEN LO IS NULL THEN POINT_X ELSE LO END AS POINT_X,
-			CASE WHEN LA IS NULL THEN POINT_Y ELSE LA END AS POINT_Y
+		SELECT TAB.POINT_X,
+			   TAB.POINT_Y,
+			   VOCS,
+                CCNT,
+			   NH3,
+			   ERCRT,
+			   H2S,
+			   ARCSR,
+			   OU,
+			   SOLRAD,
+			   HD,
+			   TMPRT,
+			   WD,
+			   WS,
+			   NO2,
+			   SO2,
+			   PM10,
+			   PM2_5,
+			   CFC,
+			   CH3SH,
+			   TMA,
+			   ETHANOL,
+			   SENSOR_NM
+			    FROM (
+SELECT CASE WHEN LO IS NULL THEN POINT_X ELSE LO END AS POINT_X,
+			CASE WHEN LA IS NULL THEN POINT_Y ELSE LA END AS POINT_Y,
+			VOCS,
+                CCNT,
+			   NH3,
+			   ERCRT,
+			   H2S,
+			   ARCSR,
+			   OU,
+			   SOLRAD,
+			   HD,
+			   TMPRT,
+			   WD,
+			   WS,
+			   NO2,
+			   SO2,
+			   PM10,
+			   PM2_5,
+			   CFC,
+			   CH3SH,
+			   TMA,
+			   ETHANOL,
+			   SENSOR_NM
 	  FROM ( SELECT * 
 			   FROM bdsm.IOT_SENSOR_INFO
-			  WHERE SENSOR_TY_CODE = 'SEN01002'
+			  WHERE SENSOR_TY_CODE = #{radio}
 			) AA
 LEFT OUTER JOIN ( SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 					   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
@@ -587,10 +630,11 @@ LEFT OUTER JOIN ( SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 					   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='20' THEN MESURE_DNSTY END),3) AS 'ETHANOL',
                        DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE
 				FROM bdsm.IOT_SENSOR_MESURE_INFO A
-                WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = '201810010000'
-                GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),MESURE_DNSTY,MESURE_DT
+                WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = CONCAT(#{startDate},#{startTime},#{startMinute})
+                 GROUP BY CODE,MESURE_DT,POINT_Y,POINT_X
 			 ) BB
-		ON CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE) = CODE;
+		ON CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE) = CODE) TAB
+WHERE TAB.POINT_X IS NOT NULL
 	</select>
 	
 	<!-- 관심지역 -->
