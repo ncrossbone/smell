@@ -1653,15 +1653,16 @@ var _SmellMapBiz = function () {
     				color: '#ffffff',
     				width: 1
     			})
-    		}),
-    		text: new ol.style.Text({
-				text: String(label),
-				fill: new ol.style.Fill({
-					color: '#dddddd'
-				}), 
-				offsetY: -1,
-				font: 'bold 13px/30px sans-serif, serif'
-			})
+    		})
+//    	,
+//    		text: new ol.style.Text({
+//				text: String(label),
+//				fill: new ol.style.Fill({
+//					color: '#dddddd'
+//				}), 
+//				offsetY: -1,
+//				font: 'bold 13px/30px sans-serif, serif'
+//			})
   		});
     	
     	return style;
