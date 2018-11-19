@@ -7,7 +7,11 @@ var _WestCondition = function () {
     var clusterDistance = 100;
     var cityTownObj = {};
     var POIConditionObj = {};
+    
     var reW = 0,reH = 0;
+    var maxHeight = $(window).height() - 110;
+	var defaultHeight = 250;
+	
     var westLayerObj = {
     		CVPL_POINT : ':CVPL_POINT',
     		SHP_BDONG : ':SHP_BDONG',
@@ -1299,7 +1303,11 @@ var _WestCondition = function () {
     	var tabContent = $('#tab_content');
     	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(../images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
-    	
+    	if($('#gridOpnerIcon').length == 0){
+    		tabs.append('<span id="gridOpnerIcon" onclick="_WestCondition.gridCloseOpen()" style="height: 10px;width: 10px;right: 25px;top: 5px;position: absolute;background: #4a4a4a;"></span>')
+    		tabs.append('<span id="gridFullIcon" value="off" onclick="_WestCondition.gridFullSize()" style="height: 10px;width: 10px;right: 11px;top: 5px;position: absolute;background: #4a4a4a;"></span>')
+    	}	
+    		
     	tabs.off('click').on('click','span.ui-icon-close', function() {
     		var panelId = $( this ).closest('li').remove().attr('aria-controls');
     		$('#' + panelId ).remove();
@@ -1336,8 +1344,8 @@ var _WestCondition = function () {
     		/*if(tabs.find('#excelDown').length == 0){
     			tabs.append('<button id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</button>');
     		}*/
-        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="font-size: 12px; color: #4a4a4a; letter-spacing: -1px; font-family: \'Verdana\'; position: absolute; z-index: 10; top: 25px; right: 450px;">[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]</span>' +
-        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #595959; color: #fff; position: absolute; z-index: 1000; right: 375px; top: 23px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
+        	tabs.append('<span id="place'+id+'" style="padding: 0px 0px !important;"><span class="dataLength" style="font-size: 12px; color: #4a4a4a; letter-spacing: -1px; font-family: \'Verdana\'; position: absolute; z-index: 10; top: 25px; right: 90px;">[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]</span>' +
+        			'<a href="javascript:void(0)" style="padding: 4px 8px; font-family: \'Dotum\'; font-size: 11px; letter-spacing: -1px;background: #595959; color: #fff; position: absolute; z-index: 1000; right: 15px; top: 23px;"id="excelDown" onclick="_WestCondition.excelDwonLoad()">엑셀다운</a>'+
         			'<div id="grid' + id + '" style="padding: 7px 5px !important;"></div></span>');
     	}else{
     		$('#place'+id).find('.dataLength').html('[전체 : <span style="color:#2eaf3b;">'+data.length+'</span>건]');
@@ -1357,7 +1365,7 @@ var _WestCondition = function () {
     	}
     	
     	$('#grid' + id).jsGrid({
-    		width: '1540px',
+    		width: '100%',
     		height: '200px',
 
     		inserting: false,
@@ -1677,6 +1685,8 @@ var _WestCondition = function () {
 
 	var tabCloseOpen = function(value){
 		
+		var ww = $(window).width();
+		
 		var value = $('#tabOpeners');
 		//$('#tab').find('li').parent().find('li')
 		if(value.attr('class') == "on"){
@@ -1692,6 +1702,7 @@ var _WestCondition = function () {
 						
 			if($('#gridArea').css('display') != 'none'){
 				$('#gridArea').css('left','0');
+				$('#gridArea').css('width', ww );
 			}
 			
 		}else{
@@ -1715,6 +1726,7 @@ var _WestCondition = function () {
 			
 			if($('#gridArea').css('display') != 'none'){
 				$('#gridArea').css('left','361px');
+				$('#gridArea').css('width', ww - 360 );
 			}
 			
 		}
@@ -1723,14 +1735,15 @@ var _WestCondition = function () {
 		
 	}
 	
-	var gridCloseOpen = function(value){
+	var gridCloseOpen = function(){
 		
 		
-		if(value.attr('class') == undefined || value.attr('class') == ""){
+		if($('#gridArea').css('display') == 'block'){
 			
 			$('#gridArea').css('display','none');
+			//$('#gridArea').css('bottom','-205px');
 			$('#gridArea').attr('value','off') ;
-			value.addClass('on');
+			//value.addClass('on');
 			
 			reH = 0;
 			
@@ -1738,8 +1751,9 @@ var _WestCondition = function () {
 		}else{
 			
 			$('#gridArea').css('display','block');
+			//$('#gridArea').css('bottom','0px');
 			$('#gridArea').attr('value','on') ;
-			value.removeClass('on');
+			//value.removeClass('on');
 			
 			reH = 92;
 			
@@ -1752,6 +1766,22 @@ var _WestCondition = function () {
 		}
 		
 		reSizeMap(reW,reH);
+		
+	}
+	
+	var gridFullSize = function(){
+		//
+		
+		
+		if($('#gridFullIcon').attr('value') == 'off'){
+			$('#gridArea').css('height', maxHeight);
+			$('#gridFullIcon').attr('value', 'on');
+			
+		}else{
+			$('#gridArea').css('height', defaultHeight);
+			
+			$('#gridFullIcon').attr('value', 'off');
+		}
 		
 	}
 	
@@ -1812,8 +1842,11 @@ var _WestCondition = function () {
         	tabCloseOpen(value);
         },
         
-        gridCloseOpen: function(value){
-        	gridCloseOpen(value);
+        gridCloseOpen: function(){
+        	gridCloseOpen();
+        },
+        gridFullSize: function(){
+        	gridFullSize();
         },
         getWestLayerName : function(){
         	return westLayerObj;

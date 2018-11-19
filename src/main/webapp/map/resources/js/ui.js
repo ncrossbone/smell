@@ -86,6 +86,9 @@ var _ui = (function () {
 		});
 		
 		
+
+		var ww = $(window).width();
+		$('#gridArea').css('width', ww - 360);
 		
 		
     };
