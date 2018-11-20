@@ -646,14 +646,16 @@ WHERE TAB.POINT_X IS NOT NULL
 	       INTRST_AREA_NM AS "intrstAreaNm", 
 	       GRID_AREA_ID AS "gridAreaId" 
       FROM ANALS_AREA_MANAGE 
-     WHERE GRID_INTRST_SE_CODE = 'ANL01002';
+     WHERE GRID_INTRST_SE_CODE = 'ANL01002'
 	</select>
 	<!-- 센서 -->
 	<select id="getSensorList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	SELECT SPOT_CODE AS "spotCode", 
-	       SENSOR_NM AS "sensorNm" 
+	       SENSOR_NM AS "sensorNm",
+	       LA AS "latitude",
+	       LO AS "longitude"
 	  FROM IOT_SENSOR_INFO 
-	 WHERE SENSOR_TY_CODE = 'SEN01001'
+	 WHERE SENSOR_TY_CODE = 'SEN01001' AND ( LA IS NOT NULL AND LO IS NOT NULL)
 	</select>
 	
 	<select id="getCoursModel" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -803,4 +805,8 @@ LEFT OUTER JOIN (SELECT A.SPOT_CODE,
 GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
   		     ON CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
 	</select>
+	
+	<update id="updateSensor" parameterType="java.util.HashMap">
+		UPDATE IOT_SENSOR_INFO SET LO = #{lo}, LA = #{la} WHERE SPOT_CODE = #{spotCode} AND SENSOR_TY_CODE = 'SEN01001'
+	</update>
 </mapper>
