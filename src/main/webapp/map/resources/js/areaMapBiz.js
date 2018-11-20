@@ -178,9 +178,11 @@ var _AreaMapBiz = function () {
 			sensorEditMode = true;
 			
 			sensorSelectedFeature.getProperties().properties.isEdit = true;
-			var center = _CoreMap.getMap().getView().getCenter();
-			center[0] = center[0]+1; 
-			_CoreMap.centerMap(center[0], center[1]);
+			setTimeout(function(){
+				var center = _CoreMap.getMap().getView().getCenter();
+				center[0] = center[0]+1; 
+				_CoreMap.centerMap(center[0], center[1]);	
+			}, 100);
 		});
 		
 		$('#popup-closer').on('click', function(){
