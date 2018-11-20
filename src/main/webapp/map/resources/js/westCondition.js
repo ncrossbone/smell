@@ -736,6 +736,7 @@ var _WestCondition = function () {
     	});
     	
     	$('a[id$="Views"]').off('click').on('click',function(){
+    		$('#popup').hide();
     		checkSearchCondition($(this).attr('id').split('Views')[0]);
     	});
     	
@@ -778,7 +779,14 @@ var _WestCondition = function () {
         		if(contentsConfig[contentsId].isLabelLayer){
         			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
         			if(labelLayerForName){
-        				labelLayerForName.setVisible(contentsConfig[contentsId].isVisible);
+        				var getZoom = _CoreMap.getMap().getView().getZoom();
+        				
+        				if(contentsConfig[contentsId].isVisible){
+        					getZoom < 16?labelLayerForName.setVisible(false):labelLayerForName.setVisible(true);
+        				}else{
+        					labelLayerForName.setVisible(false);
+        				}
+        					
             		}
         		}
     		}
@@ -823,6 +831,12 @@ var _WestCondition = function () {
 			for(key in contentsConfig){
 				if($('#grid' + key).jsGrid()[0]){
 					clearTab('place'+key);
+				}else{
+					var getLayerForName = _CoreMap.getMap().getLayerForName(key);
+					if(getLayerForName){
+						_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+					}
+					clearFocusLayer();
 				}
 			}
 			break;
@@ -963,7 +977,12 @@ var _WestCondition = function () {
 					feature.setGeometry(new ol.geom.Point([data[i].POINT_X,data[i].POINT_Y]));
 				}
 				
-				data[i].itemType = $('#' + id + 'Item').val();
+				if($('#' + id + 'Item')[0]){
+					data[i].itemType = $('#' + id + 'Item').val();
+				}else if($('input[name='+id+'CheckBox]:checked')[0]){
+					data[i].checkBox = $('input[name='+id+'CheckBox]:checked');
+				}
+				
 				feature.setProperties(data[i]);
 			}
 			
@@ -1116,7 +1135,7 @@ var _WestCondition = function () {
     };
     
     var iotSensorInfoFunction= function(feature){
-    	var checkBox = $('input[name=iotSensorInfoCheckBox]:checked');
+    	var checkBox = feature.getProperties().checkBox;
     	var width = 140;
     	var basicHeight = 25;
     	var height = basicHeight * (checkBox.length+1);
@@ -1129,19 +1148,19 @@ var _WestCondition = function () {
 		var svgString = '<svg width="' + width + '" height="' + height + '" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="columnGroup">';
 		var title = feature.getProperties().SENSOR_NM;
 		var x = 5;
-		var dataX = 75;
+		var dataX = 98;
 		var y = 4;
 		
 		svgString += '<rect x="0" y="0" width="' + width + '" height="' + basicHeight + '" fill="#0070c0"/>';
-		svgString += '<rect x="0" y="' + basicHeight + '" width="' + (width/2) + '" height="' + height + '" fill="#f2f2f2"/>';
-		svgString += '<rect x="' + (width/2) + '" y="' + basicHeight + '" width="' + (width/2) + '" height="' + height + '" fill="#ffffff"/>';
+		svgString += '<rect x="0" y="' + basicHeight + '" width="' + (width/3)*2 + '" height="' + height + '" fill="#f2f2f2"/>';
+		svgString += '<rect x="' + (width/3)*2 + '" y="' + basicHeight + '" width="' + (width/3) + '" height="' + height + '" fill="#ffffff"/>';
 		
 		svgString += '<text x="'+x+'" y="'+y+'" font-size="13px" font-weight="bold" fill="#fff"><tspan dy="1em">' + title + '</tspan></text>';
 		
 		for(var i = 0; i < checkBox.length; i++){
 			var resultValue = feature.getProperties()[$(checkBox[i]).val()]?feature.getProperties()[$(checkBox[i]).val()].toFixed(2):'-';
 			svgString += '<text x="'+x+'" y="'+(y+(basicHeight*(i+1)))+'" font-size="13px" font-weight="bold" fill="#000">';
-			svgString += '<tspan dy="1em">'+$(checkBox[i]).val()+'</tspan>';
+			svgString += '<tspan dy="1em">'+$(checkBox[i]).parent().find('label').text()+'</tspan>';
 			svgString += '</text>';
 			svgString += '<text x="'+dataX+'" y="'+(y+(basicHeight*(i+1)))+'" font-size="13px" fill="#000">';
 			svgString += '<tspan dy="1em">' + resultValue + '</tspan>';
@@ -1206,8 +1225,8 @@ var _WestCondition = function () {
 		        color: colorObj[feature.getProperties().BSML_TRGNPT_SE_CODE]
 		    }),
 		    stroke: new ol.style.Stroke({
-		    	color: '#AFABAB',
-		    	width: 3
+		    	color: '#313942',
+		    	width: 7
 		    }),
 		    text: new ol.style.Text({
 		    	text: feature.getProperties().CMPNY_NM,
@@ -1470,29 +1489,27 @@ var _WestCondition = function () {
     
     var clearTab = function(tabId){
     	$('li[aria-controls="'+tabId+'"]').remove();
-		$('#' + tabId ).remove();
-		$('#tabs').tabs('refresh');
-		
-		if($('ul[role="tablist"]').find('li').length==0){
-			$('#gridArea').hide();
-		}
-		
-		var id = tabId.split('place')[1];
-		var layerForName = _CoreMap.getMap().getLayerForName(id);
-		
-		if(layerForName){
-			if(layerForName){
-    			_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
-    		}
-		}
-		clearFocusLayer();
-		
-		if(contentsConfig[id].isLabelLayer){
-			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
-			if(labelLayerForName){
+    	$('#' + tabId ).remove();
+    	$('#tabs').tabs('refresh');
+
+    	if($('ul[role="tablist"]').find('li').length==0){
+    		$('#gridArea').hide();
+    	}
+
+    	var id = tabId.split('place')[1];
+    	var layerForName = _CoreMap.getMap().getLayerForName(id);
+
+    	if(layerForName){
+    		_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
+    	}
+    	clearFocusLayer();
+
+    	if(contentsConfig[id].isLabelLayer){
+    		var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
+    		if(labelLayerForName){
     			_MapEventBus.trigger(_MapEvents.map_removeLayer, labelLayerForName);
     		}
-		}
+    	}
     };
     
     var writeGrid = function(id, data){
