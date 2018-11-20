@@ -879,6 +879,8 @@ var _SmellMapBiz = function () {
 				originLayer = null;
 			}
 			
+			bufferMeter = parseInt($('#bufferMeter').val());
+			
 			$('#bufferBtn').show();
 			
 			$('#bufferOnOffBtn').off('click').on('click', function(){
@@ -914,6 +916,9 @@ var _SmellMapBiz = function () {
 		          layerId:'odorOrigin',
 		          layerType:'polygon'
 			});
+			
+			$('#bufferOnOffBtn').attr('value', 'on');
+			$('#bufferOnOffBtn').trigger('click');
 			
 			if(trackingFeatures == null || trackingFeatures.length <= 0){
 				return;
