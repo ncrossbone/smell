@@ -828,6 +828,7 @@ var _WestCondition = function () {
 			}
 			break;
 		case 'gridClose':
+			$('#popup').hide();
 			for(key in contentsConfig){
 				if($('#grid' + key).jsGrid()[0]){
 					clearTab('place'+key);
@@ -1520,6 +1521,7 @@ var _WestCondition = function () {
     	var tabs = $('#tabs').tabs();
     		
     	tabs.off('click').on('click','span.ui-icon-close', function() {
+    		$('#popup').hide();
     		clearTab($(this).closest('li').attr('aria-controls'));
     	});
 
@@ -1813,7 +1815,6 @@ var _WestCondition = function () {
     		var tabName = contentsConfig[gridId].title;
     		// contentsConfig
     		
-    		
     		var csv = $('#grid'+gridId).jsGrid("exportData", {
         	    type: "csv", //Only CSV supported
         	    subset: "all" | "visible", //Visible will only output the currently displayed page
@@ -1828,17 +1829,20 @@ var _WestCondition = function () {
         	    
         	});
 
-        	var uri = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURI(csv);
-
-        	var downloadLink = document.createElement("a");
-        	downloadLink.href = uri;
-        	downloadLink.download = tabName+".csv";
-
-        	document.body.appendChild(downloadLink);
-        	downloadLink.click();
-        	document.body.removeChild(downloadLink);
+        	if(navigator.msSaveBlob){ 
+        		navigator.msSaveBlob(new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' }), tabName+".csv"); 
+        	}else{
+        		var uri = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURI(csv);
+        		var downloadLink = document.createElement("a");
+            	downloadLink.href = uri;
+            	downloadLink.download = tabName+".csv";
+            	
+            	document.body.appendChild(downloadLink);
+            	downloadLink.click();
+            	document.body.removeChild(downloadLink);
+        	}
+        	
     	}
-    	
     }	
 
 	var tabCloseOpen = function(value){
