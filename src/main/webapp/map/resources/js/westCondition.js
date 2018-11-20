@@ -830,6 +830,12 @@ var _WestCondition = function () {
 			for(key in contentsConfig){
 				if($('#grid' + key).jsGrid()[0]){
 					clearTab('place'+key);
+				}else{
+					var getLayerForName = _CoreMap.getMap().getLayerForName(key);
+					if(getLayerForName){
+						_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+					}
+					clearFocusLayer();
 				}
 			}
 			break;
@@ -1481,29 +1487,27 @@ var _WestCondition = function () {
     
     var clearTab = function(tabId){
     	$('li[aria-controls="'+tabId+'"]').remove();
-		$('#' + tabId ).remove();
-		$('#tabs').tabs('refresh');
-		
-		if($('ul[role="tablist"]').find('li').length==0){
-			$('#gridArea').hide();
-		}
-		
-		var id = tabId.split('place')[1];
-		var layerForName = _CoreMap.getMap().getLayerForName(id);
-		
-		if(layerForName){
-			if(layerForName){
-    			_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
-    		}
-		}
-		clearFocusLayer();
-		
-		if(contentsConfig[id].isLabelLayer){
-			var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
-			if(labelLayerForName){
+    	$('#' + tabId ).remove();
+    	$('#tabs').tabs('refresh');
+
+    	if($('ul[role="tablist"]').find('li').length==0){
+    		$('#gridArea').hide();
+    	}
+
+    	var id = tabId.split('place')[1];
+    	var layerForName = _CoreMap.getMap().getLayerForName(id);
+
+    	if(layerForName){
+    		_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
+    	}
+    	clearFocusLayer();
+
+    	if(contentsConfig[id].isLabelLayer){
+    		var labelLayerForName = _CoreMap.getMap().getLayerForName('text');
+    		if(labelLayerForName){
     			_MapEventBus.trigger(_MapEvents.map_removeLayer, labelLayerForName);
     		}
-		}
+    	}
     };
     
     var writeGrid = function(id, data){
