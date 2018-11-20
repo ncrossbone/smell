@@ -736,6 +736,7 @@ var _WestCondition = function () {
     	});
     	
     	$('a[id$="Views"]').off('click').on('click',function(){
+    		$('#popup').hide();
     		checkSearchCondition($(this).attr('id').split('Views')[0]);
     	});
     	
