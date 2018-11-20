@@ -177,6 +177,7 @@ var _AreaMapBiz = function () {
 			$('#popup-content').hide();
 			sensorEditMode = true;
 			
+			sensorSelectedFeature.getProperties().properties.isEdit = true;
 			var center = _CoreMap.getMap().getView().getCenter();
 			center[0] = center[0]+1; 
 			_CoreMap.centerMap(center[0], center[1]);
@@ -209,9 +210,9 @@ var _AreaMapBiz = function () {
 		            data:JSON.stringify({spotCode:selectedSpotCode, la:coord[1], lo:coord[0]})
 		    	}).done(function(result){
 		    		selectedSpotCode = null;
+		    		sensorSelectedFeature = null;
 		    		drawSensorLayer();
-		    	});
-				
+		    	}); 
 				return;
 			}
 			if(cellLayer){
@@ -305,9 +306,10 @@ var _AreaMapBiz = function () {
 					$('#sensorNm').html(feature.getProperties().properties.sensorNm);
 //					$('#popupOverlay').css('width', '180px');
 					$('#popupOverlay').css('height', '90px');
-					feature.getProperties().properties.isEdit = true;
 					
 					$('#sensorMoveBtn').attr('spotCode',feature.getProperties().properties.spotCode);
+					
+					sensorSelectedFeature = feature;
 					
 					if(editMode){
 						$('#sensorMoveBtn').show();
