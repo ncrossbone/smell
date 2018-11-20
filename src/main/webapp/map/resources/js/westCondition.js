@@ -1385,7 +1385,8 @@ var _WestCondition = function () {
     var checkPointStyleFunction = function(feature){
     	var style = new ol.style.Style({
 			image: new ol.style.Icon(({
-		          src: '/images/maker.png'
+		          src: '/images/pin.png',
+		          anchor: [0.5,1]
 		        }))
   		});
     	
@@ -1776,35 +1777,6 @@ var _WestCondition = function () {
     		}
     	}
     };
-    
-    var popupOverlayData = function(areaId, reg){
-    	//test db param
-    	//areaId = "1057";
-		getData({url: '/getArea.do', contentType: 'application/json', params: {"analsAreaId": areaId } }).done(function(data){
-			
-			if(data.length > 0){
-				
-				$('#popupOverlay').show();
-				$('#popup-content').show();
-				
-				//$('#cellRemeveBtn').attr('flag', data[0].GRID_INTRST_SE_CODE);
-				$('#cellRemeveBtn').attr('indexId', data[0].ANALS_AREA_ID);
-				$('#cellRemeveBtn').attr('reg', reg);
-				if(reg == "1"){
-					$('#cellRemeveBtn').val('격자해제');
-					
-				}else{
-					$('#cellRemeveBtn').val('격자추가');
-				}
-				
-				$('#intrstAreaNm').val(data[0].INTRST_AREA_NM);
-				$('#tpgrphAl').val(data[0].TPGRPH_AL);
-				$('#predictAl').val(data[0].PREDICT_AL);
-				
-			}
-			
-		});
-	}
     
     var excelDwonLoad = function(){
     	

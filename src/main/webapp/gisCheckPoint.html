@@ -22,7 +22,7 @@
 <script type="text/javascript" src="/map/resources/js/westCondition.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/jquery-ui.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/zoomSlider.js"></script>
-<script type="text/javascript" src="/map/resources/js/smellMapBiz.js"></script>
+<!-- <script type="text/javascript" src="/map/resources/js/smellMapBiz.js"></script> -->
 <link rel="stylesheet" href="/css/jquery-ui-1.12.1.css"></link>
 <link type="text/css" rel="stylesheet" href="/css/jsgrid.min-1.5.3.css" />
 <link type="text/css" rel="stylesheet" href="/css/jsgrid-theme.min-1.5.3.css" />
@@ -35,7 +35,6 @@
 		
 		_CoreMap.init('mapCheckPoint');
 		_WestCondition.init();
-		_SmellMapBiz.init();
 
 		$(window).on('resize', function() {
 			var ww = $(window).width();
@@ -65,12 +64,9 @@
 		            opener.postMessage(data,'http://localhost:8080/cms/dataManage/cvplDataManag/regForm');
 		            window.close();
 	            }
-	            
 	         }else{
 	            alert("지점을 선택하세요");
 	         }
-			
-			
 		})
 
 		//임시

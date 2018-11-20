@@ -152,4 +152,8 @@ public class MapBiz {
 		} 
 		return mapMapper.getCoursModel(param);
 	}
+	@SuppressWarnings("unchecked")
+	public int updateSensor(HashMap param) {
+		return mapMapper.updateSensor(param);
+	}
 }

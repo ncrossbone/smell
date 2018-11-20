@@ -106,5 +106,9 @@ public class MapController {
 	public List<Map<String, Object>> getCoursModel(@RequestBody HashMap param){
 		return mapBiz.getCoursModel(param);
 	}
+	@RequestMapping("/updateSensor")
+	public int updateSensor(@RequestBody HashMap param) {
+		return mapBiz.updateSensor(param);
+	}
 	
 }
