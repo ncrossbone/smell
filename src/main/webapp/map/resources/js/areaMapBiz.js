@@ -89,6 +89,10 @@ var _AreaMapBiz = function () {
 				$('#sensorMoveBtn').show();
 			}
 			editMode = !editMode;
+			
+			if(!editMode){
+				$('input[name="mapType"]').trigger('click');
+			}
 		});
 		$('input[name="mapType"]').on('click', function(){
 			
@@ -172,6 +176,10 @@ var _AreaMapBiz = function () {
 			$('#popupOverlay').hide();
 			$('#popup-content').hide();
 			sensorEditMode = true;
+			
+			var center = _CoreMap.getMap().getView().getCenter();
+			center[0] = center[0]+1; 
+			_CoreMap.centerMap(center[0], center[1]);
 		});
 		
 		$('#popup-closer').on('click', function(){
@@ -297,6 +305,8 @@ var _AreaMapBiz = function () {
 					$('#sensorNm').html(feature.getProperties().properties.sensorNm);
 //					$('#popupOverlay').css('width', '180px');
 					$('#popupOverlay').css('height', '90px');
+					feature.getProperties().properties.isEdit = true;
+					
 					$('#sensorMoveBtn').attr('spotCode',feature.getProperties().properties.spotCode);
 					
 					if(editMode){
@@ -343,14 +353,18 @@ var _AreaMapBiz = function () {
 	        })
 	};
 	var sensorPointStyle = function(feature){
-    	var style = new ol.style.Style({
+		var src = '/images/sensor_blue.png';
+		
+		if(feature.getProperties().properties.isEdit){
+			src = '/images/sensor_red.png';
+		}
+    	
+    	return new ol.style.Style({
 			image: new ol.style.Icon(({
-		          src: '/images/sensor.png',
+		          src: src,
 		          anchor: [0.5,0.5] 
 		        }))
-  		});
-    	
-    	return style;
+		});;
     };
 	
     // public functions
