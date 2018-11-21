@@ -361,7 +361,11 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	
 	<select id="odorOriginGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  SELECT BPLC_ID,
-			 BSML_TRGNPT_SE_CODE,
+			  CASE WHEN BSML_TRGNPT_SE_CODE = 'BSL01001' THEN '산업단지' 
+				  WHEN BSML_TRGNPT_SE_CODE = 'BSL01002' THEN '양돈장' 
+                  WHEN BSML_TRGNPT_SE_CODE = 'BSL01003' THEN '환경시설' 
+                  WHEN BSML_TRGNPT_SE_CODE = 'BSL01004' THEN '양계장' 
+             ELSE '-' END AS BSML_TRGNPT_SE_CODE,
              CMPNY_NM,
              LEGALDONG_ETC,
              TELNO,INDUTY,
@@ -411,10 +415,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	<select id="environmentCorporationGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  	   SELECT CODE,
 		          NAME,
-		          DATE_FORMAT(MESURE_DT,'%Y%m%d%H') AS DATE,
 			      DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시') AS MESURE_DT,
-				  POINT_X,
-				  POINT_Y,
 				  SO2_DNSTY,
 				  CMO_DNSTY,
 				  OZ_DNSTY,
@@ -432,8 +433,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 				  PM10_HOUR24_GRAD,
 				  PM25_HOUR24_GRAD,
 				  PM10_HOUR1_GRAD,
-				  PM25_HOUR1_GRAD,
-				  NTWK_NM
+				  PM25_HOUR1_GRAD
   		FROM SHP_AIRKOREA_MSRSTN A
 	LEFT OUTER JOIN AIRKOREA_MESURE_INFO B
   		  ON A.CODE = B.MSRSTN_ID
@@ -480,8 +480,6 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 			   C.OPR_STTUS_CODE,
 			   B.SENSOR_NM,
-			   B.LA AS POINT_Y,
-			   B.LO AS POINT_X,
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
 			   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='1' THEN MESURE_DNSTY END),3) AS 'VOCS',
@@ -519,7 +517,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
      	    <if test="branchName != ''">
     			AND B.SENSOR_NM LIKE CONCAT('%', #{branchName}, '%')
   			</if>
-           GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY, POINT_Y,POINT_X,MESURE_DT,SENSOR_NM
+           GROUP BY CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE),OPR_STTUS_CODE,MESURE_DNSTY,MESURE_DT,SENSOR_NM
 	</select>
 	
 	<select id="unmannedOdorClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -541,10 +539,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	
 	<select id="observatoryGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	SELECT STATION_ID, 
-		  POS, 
 		  NAME, 
-          POINT_X, 
-          POINT_Y, 
           CONCAT(SUBSTR(OBSR_TIME,1,4),'년 ',SUBSTR(OBSR_TIME,5,2),'월 ',SUBSTR(OBSR_TIME,7,2),'일 ',SUBSTR(OBSR_TIME,9,2),'시') AS OBSR_TIME, 
           CASE WHEN TRUNCATE(MIN60_ACCMLT_RAINFL,1) =-99.9 THEN 0 ELSE MIN60_ACCMLT_RAINFL END AS MIN60_ACCMLT_RAINFL,
           CASE WHEN TRUNCATE(DE_RAINFL,1) =-99.9 THEN 0 ELSE DE_RAINFL END AS DE_RAINFL,
@@ -558,6 +553,8 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
              bdsm.AWS_OBSR_INFO B
 	   WHERE A.STATION_ID = B.OBSR_SPOT_ID
          AND STATION_ID = '131'
+         AND CONCAT(SUBSTR(OBSR_TIME,1,4),SUBSTR(OBSR_TIME,5,2),SUBSTR(OBSR_TIME,7,2),SUBSTR(OBSR_TIME,9,2)) <![CDATA[>=]]> CONCAT(#{startDate},#{startTime})
+  		 AND CONCAT(SUBSTR(OBSR_TIME,1,4),SUBSTR(OBSR_TIME,5,2),SUBSTR(OBSR_TIME,7,2),SUBSTR(OBSR_TIME,9,2)) <![CDATA[<=]]> CONCAT(#{endDate},#{endTime})
 	</select>
 	
 	<select id="observatoryClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
