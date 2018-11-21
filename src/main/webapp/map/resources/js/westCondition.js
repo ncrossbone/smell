@@ -679,14 +679,14 @@ var _WestCondition = function () {
             	    					}),
             	    					style : new ol.style.Style({
             	    		    			image: new ol.style.Circle({
-            	    		    				radius: 7,
+            	    		    				radius: 15,
             	    		    				stroke: new ol.style.Stroke({
-            	    		    					color: '#595959',
-            	    		    					width: 2
-            	    		    				}),
+            	    		    			    	color: '#313942',
+            	    		    			    	width: 5
+            	    		    			    }),
             	    		    				fill: new ol.style.Fill({
             	    		        		        color: '#f56ee9'
-            	    		        		    }),
+            	    		        		    })
             	    		    			})
             	    		    		}),
             	    					visible: true,
