@@ -26,6 +26,7 @@ public interface MapMapper {
 	public List<Map<String, Object>> observatoryGrid(HashMap param);
 	public List<Map<String, Object>> odorReductionGrid(HashMap param);
 	public List<Map<String, Object>> reductionMonitoringGrid(HashMap param);
+	public List<Map<String, Object>> sensoryEvaluationGrid(HashMap param);
 	
 	public List<Map<String, Object>> portableMeasurementClick(HashMap param);
 	public List<Map<String, Object>> fixedMeasurementClick(HashMap param);
