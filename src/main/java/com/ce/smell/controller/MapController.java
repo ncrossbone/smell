@@ -35,12 +35,10 @@ public class MapController {
 		return mapBiz.putFlag(param);
 	}
 	
-	@RequestMapping("/insertAnals")
-	public int insertAnals(@RequestParam String indexId) {
-		HashMap<String, String> param = new HashMap<String, String>();
-		param.put("indexId", indexId);
+	@RequestMapping(value = "/insertAnals" , method = RequestMethod.POST)
+	public int insertAnals(@RequestBody HashMap param) {
 		return mapBiz.insertAnals(param);
-	}
+	} 
 	
 	@RequestMapping("/deleteAnals")
 	public int deleteAnals(@RequestParam String indexId) {

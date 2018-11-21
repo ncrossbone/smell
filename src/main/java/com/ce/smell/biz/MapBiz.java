@@ -31,6 +31,7 @@ public class MapBiz {
 	
 	@SuppressWarnings("unchecked")
 	public int insertAnals(HashMap param) {
+		mapMapper.updateAnals(param);
 		return mapMapper.insertAnals(param);
 	}
 	
