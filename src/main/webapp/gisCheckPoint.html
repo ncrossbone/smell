@@ -129,6 +129,9 @@
 			
 			var convertCoord = _CoreMap.convertLonLatCoord(intParam,true);
 			var data = {'coordinate':[convertCoord[0],convertCoord[1]]};
+			
+			_CoreMap.getMap().getView().setCenter(convertCoord);
+			
 			_WestCondition.checkPointMarker("checkPoint",data);
 			
 		}
