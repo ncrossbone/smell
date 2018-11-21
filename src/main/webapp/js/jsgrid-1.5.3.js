@@ -1180,36 +1180,38 @@
                 if (fields.length > 0){
                     
                     var field = fields[index];
-                    
                     //Field may be excluded from data export
-                    if ("includeInDataExport" in field){
-                        
-                        if (field.includeInDataExport){
+                    try{
+                    	if ("includeInDataExport" in field){
                             
-                            //Field may be a select, which requires additional logic
-                            if (field.type === "select"){
+                            if (field.includeInDataExport){
                                 
-                                var selectedItem = getItem(item, field);
-                                
-                                var resultItem = $.grep(field.items, function(item, index) {
-                                    return item[field.valueField] === selectedItem;
-                                })[0] || "";
-                                
-                                entry = resultItem[field.textField];
+                                //Field may be a select, which requires additional logic
+                                if (field.type === "select"){
+                                    
+                                    var selectedItem = getItem(item, field);
+                                    
+                                    var resultItem = $.grep(field.items, function(item, index) {
+                                        return item[field.valueField] === selectedItem;
+                                    })[0] || "";
+                                    
+                                    entry = resultItem[field.textField];
+                                }
+                                else{
+                                    entry = getItem(item, field);
+                                }
                             }
                             else{
-                                entry = getItem(item, field);
+                                return;
                             }
+                                
                         }
                         else{
-                            return;
+                            entry = getItem(item, field);
                         }
-                            
+                    }catch(e){
+                    	debugger;
                     }
-                    else{
-                        entry = getItem(item, field);
-                    }
-                    
                     if (transforms.hasOwnProperty(field.name)){
                         entry = transforms[field.name](entry);
                     }

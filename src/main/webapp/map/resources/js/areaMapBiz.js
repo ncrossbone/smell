@@ -37,6 +37,12 @@ var _AreaMapBiz = function () {
 			_MapEventBus.trigger(_MapEvents.map_removeLayer, sensorLayer);
 			sensorLayer = null;
 		}
+		var garbageLayer = _CoreMap.getMap().getLayerForName('sensorLayer');
+		if(garbageLayer){
+			debugger;
+			
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, garbageLayer);
+		} 
 		$.ajax({
             url: '/getSensorList.do'
         }).done(function(result){
@@ -54,7 +60,8 @@ var _AreaMapBiz = function () {
 				}),
 				style : sensorPointStyle,
 				zIndex: 3000,
-				id:'sensorLayer'
+				id:'sensorLayer',
+				name:'sensorLayer'
 			});
 			
 			_MapEventBus.trigger(_MapEvents.map_addLayer, sensorLayer);
@@ -91,64 +98,27 @@ var _AreaMapBiz = function () {
 			editMode = !editMode;
 			
 			if(!editMode){
-				$('input[name="mapType"]').trigger('click');
+				initLayers($('input[name="mapType"]:checked').val());
 			}
 		});
 		$('input[name="mapType"]').on('click', function(){
 			
-			var mapType = $('input[name="mapType"]:checked').val();
+			initLayers($('input[name="mapType"]:checked').val());
 			
-			$('#popup-closer').trigger('click');
-			 
-			if(mapType == 'sensor'){
-				if(cellLayer){
-					_MapEventBus.trigger(_MapEvents.map_removeLayer, cellLayer);
-					cellLayer = null;
-					
-					if(highlightVectorLayer){
-						_MapEventBus.trigger(_MapEvents.map_removeLayer, highlightVectorLayer);
-						highlightVectorLayer = null;
-					}
-				}
-				
-				if(sensorLayer){
-					_MapEventBus.trigger(_MapEvents.map_removeLayer, sensorLayer);
-					sensorLayer = null;
-				}
-				
-				drawSensorLayer();
-			}else{
-				if(sensorLayer){
-					_MapEventBus.trigger(_MapEvents.map_removeLayer, sensorLayer);
-					sensorLayer = null;
-				}
-				
-				if(cellLayer){
-					_MapEventBus.trigger(_MapEvents.map_removeLayer, cellLayer);
-					cellLayer = null;
-					
-					if(highlightVectorLayer){
-						_MapEventBus.trigger(_MapEvents.map_removeLayer, highlightVectorLayer);
-						highlightVectorLayer = null;
-					}
-				}	
-				
-				drawCell();
-			}
 		});
 		
 		$('#cellRemeveBtn').on('click', function(){
 			if(highlightVectorLayer){
 				var indexId = $(this).attr('indexId');
 				var flag = $(this).attr('reg');
+				var predictAl = $('#predictAl').val();
 				
 				if(flag == "0"){
 					$.ajax({
-			            url : bizUrl+'/insertAnals.do?indexId='+indexId,
-			            type : 'GET',
-			            contentType : 'application/json'
+			            url : bizUrl+'/insertAnals.do',
+			            data: JSON.stringify({indexId:indexId, predictAl:predictAl})
 			    	}).done(function(result){
-			    		
+			    		  
 			    		var wmsSource = cellLayer.getSource();
 			    		wmsSource.updateParams({"time":Date.now()});
 			    		
@@ -180,9 +150,9 @@ var _AreaMapBiz = function () {
 			sensorSelectedFeature.getProperties().properties.isEdit = true;
 			setTimeout(function(){
 				var center = _CoreMap.getMap().getView().getCenter();
-				center[0] = center[0]+1; 
+				center[0] = center[0]+10; 
 				_CoreMap.centerMap(center[0], center[1]);	
-			}, 100);
+			}, 300);
 		});
 		
 		$('#popup-closer').on('click', function(){
@@ -344,6 +314,46 @@ var _AreaMapBiz = function () {
 			}
 		});
 	};
+	
+	var initLayers = function(mapType){
+		$('#popup-closer').trigger('click');
+		 
+		if(mapType == 'sensor'){
+			if(cellLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, cellLayer);
+				cellLayer = null;
+				
+				if(highlightVectorLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, highlightVectorLayer);
+					highlightVectorLayer = null;
+				}
+			}
+			
+			if(sensorLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, sensorLayer);
+				sensorLayer = null;
+			}
+			
+			drawSensorLayer();
+		}else{
+			if(sensorLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, sensorLayer);
+				sensorLayer = null;
+			}
+			
+			if(cellLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, cellLayer);
+				cellLayer = null;
+				
+				if(highlightVectorLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, highlightVectorLayer);
+					highlightVectorLayer = null;
+				}
+			}	
+			
+			drawCell();
+		}
+	}
 	
 	var highlightVectorStyle = function(){
 		return new ol.style.Style({
