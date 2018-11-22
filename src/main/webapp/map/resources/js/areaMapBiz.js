@@ -39,8 +39,6 @@ var _AreaMapBiz = function () {
 		}
 		var garbageLayer = _CoreMap.getMap().getLayerForName('sensorLayer');
 		if(garbageLayer){
-			debugger;
-			
 			_MapEventBus.trigger(_MapEvents.map_removeLayer, garbageLayer);
 		} 
 		$.ajax({
@@ -181,6 +179,7 @@ var _AreaMapBiz = function () {
 		            url : bizUrl+'/updateSensor.do',
 		            data:JSON.stringify({spotCode:selectedSpotCode, la:coord[1], lo:coord[0]})
 		    	}).done(function(result){
+		    		alert('이동된 위치로 저장되었습니다.');
 		    		selectedSpotCode = null;
 		    		sensorSelectedFeature = null;
 		    		drawSensorLayer();
