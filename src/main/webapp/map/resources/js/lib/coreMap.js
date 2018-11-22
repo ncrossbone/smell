@@ -37,7 +37,7 @@ var _CoreMap = function() {
 
 	var featureDragTag = DRAG_MODE_NONE;
 	
-	var requestParam = false;
+	var requestParams = false;
 
 	var initParam = {
 		worldProjection : 'EPSG:4326',
@@ -274,7 +274,7 @@ var _CoreMap = function() {
 			});
 			
 			if(_CoreMap.getMap().getTarget() == "mapCheckPoint"){
-				if(!requestParam){
+				if(!requestParams){
 					_WestCondition.checkPointMarker("checkPoint",event);
 				}
 			}
@@ -669,7 +669,7 @@ var _CoreMap = function() {
 	
 	var requestParam = function(flag){
 		//관리자 화면에서 x,y 좌표 넘겼을때
-		requestParam = flag;
+		requestParams = flag;
 		
 		if(flag){
 			$('#checkPointEvent').css('display','none');
