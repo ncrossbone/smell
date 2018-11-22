@@ -36,6 +36,8 @@ var _CoreMap = function() {
 	var featureInfoCallback;
 
 	var featureDragTag = DRAG_MODE_NONE;
+	
+	var requestParam = false;
 
 	var initParam = {
 		worldProjection : 'EPSG:4326',
@@ -272,7 +274,9 @@ var _CoreMap = function() {
 			});
 			
 			if(_CoreMap.getMap().getTarget() == "mapCheckPoint"){
-				_WestCondition.checkPointMarker("checkPoint",event);
+				if(!requestParam){
+					_WestCondition.checkPointMarker("checkPoint",event);
+				}
 			}
 			
 		});
@@ -663,6 +667,19 @@ var _CoreMap = function() {
 		return layer.getSource().getFeatures()[0].getGeometry().getCoordinates();
 	};
 	
+	var requestParam = function(flag){
+		//관리자 화면에서 x,y 좌표 넘겼을때
+		requestParam = flag;
+		
+		if(flag){
+			$('#checkPointEvent').css('display','none');
+		}else{
+			$('#checkPointEvent').css('display','');
+		}
+		
+		
+	};
+	
 	// public functions
 	return {
 
@@ -729,6 +746,9 @@ var _CoreMap = function() {
 		},
 		getCoordinates : function(layer){
 			return getCoordinates(layer);
+		},
+		requestParam:function(flag){
+			requestParam(flag);
 		}
 	};
 }();

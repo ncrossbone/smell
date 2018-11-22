@@ -88,6 +88,8 @@
 		// selectbox design
 		//$('.comm_sel').jqTransform();
 		
+		var sendParam = false;
+		
 		_CoreMap.init('mapCheckPoint');
 		_WestCondition.init();
 
@@ -145,6 +147,9 @@
 			_CoreMap.getMap().getView().setCenter(convertCoord);
 			
 			_WestCondition.checkPointMarker("checkPoint",data);
+			
+			//관리자화면에서 위치이동 하였을경우
+			_CoreMap.requestParam(true);
 			
 		}
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
