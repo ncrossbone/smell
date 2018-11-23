@@ -233,3 +233,10 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .guide04 { background: #0072bc; border: 1px solid #0061a0; }
 
 .txt11 { font-size: 11px; font-family: 'Dotum'; margin-top: 5px; color: #333; }
+
+/*20181122*/
+.minwon1 { background: url(../images/minwon_1.png) left top no-repeat; }
+.minwon2 { background: url(../images/minwon_2.png) left top no-repeat; }
+.minwon3 { background: url(../images/minwon_3.png) left top no-repeat; }
+.minwon1, .minwon2, .minwon3 { height: 20px; padding-left: 23px; display: inline-block; vertical-align: middle; margin-right: 20px; }
+.minwon1 span, .minwon2 span, .minwon3 span { margin-top: 4px; display: block; }
