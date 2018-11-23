@@ -69,12 +69,26 @@
       .ol-popup-closer:after {
         content: "✖";
       }
+      
+	#popupOverlay {
+		bottom: 34px !important;
+	}
+	
+	.ol-popup:after {
+		display: none;
+	}
+	
+	.ol-popup:after, .ol-popup:before{
+		display: none;
+	}
 </style>
 <script type="text/javascript">
 	var popupOverlay;
 	$(function() {
 		// selectbox design
 		//$('.comm_sel').jqTransform();
+		
+		var sendParam = false;
 		
 		_CoreMap.init('mapCheckPoint');
 		_WestCondition.init();
@@ -110,7 +124,7 @@
 	            var data = {"data":[parseFloat($('#lo').val()), parseFloat($('#la').val())]};
 	             
 	            if(opener != null){
-		            opener.postMessage(data,'http://112.218.1.243:48001/cms/dataManage/cvplDataManag/regForm');
+		            opener.postMessage(data,'http://112.217.167.123:60001/cms/dataManage/cvplDataManag/regForm');
 		            window.close();
 	            }
 	         }else{
@@ -124,15 +138,21 @@
 			
 			param = param.split('&');
 			var intParam = [];
-			intParam.push(parseFloat(param[0]));
-			intParam.push(parseFloat(param[1]));
+			if(param[0] != "" && param[1] != ""){
+				intParam.push(parseFloat(param[0]));
+				intParam.push(parseFloat(param[1]));
+				
+				var convertCoord = _CoreMap.convertLonLatCoord(intParam,true);
+				var data = {'coordinate':[convertCoord[0],convertCoord[1]]};
+				
+				_CoreMap.getMap().getView().setCenter(convertCoord);
+				
+				_WestCondition.checkPointMarker("checkPoint",data);
+				
+				//관리자화면에서 위치이동 하였을경우
+				_CoreMap.requestParam(true);	
+			}
 			
-			var convertCoord = _CoreMap.convertLonLatCoord(intParam,true);
-			var data = {'coordinate':[convertCoord[0],convertCoord[1]]};
-			
-			_CoreMap.getMap().getView().setCenter(convertCoord);
-			
-			_WestCondition.checkPointMarker("checkPoint",data);
 			
 		}
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
