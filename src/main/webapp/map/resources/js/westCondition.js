@@ -13,6 +13,11 @@ var _WestCondition = function () {
 	var defaultHeight = 0;
 	var labelViewLevel = 16;
 	
+	var cityArr = [];
+	var dateArr = [];
+	var sensoryInitTownCode ='43114';
+	var initTownCode = '4311';
+	
     var westLayerObj = {
     		CVPL_POINT : ':CVPL_POINT',
     		SHP_BDONG : ':SHP_BDONG',
@@ -345,7 +350,7 @@ var _WestCondition = function () {
     };
     
     var init = function () {
-    	var cityArr = setCommonCombo({
+    	cityArr = setCommonCombo({
 			type:'select',
 			parentTypeId:'CityDistrict',
 			childTypeId:'Town',
@@ -358,9 +363,6 @@ var _WestCondition = function () {
     		if(data.features.length == 0){
     			return;
     		}
-    		
-    		var sensoryInitTownCode ='43114';
-    		var initTownCode = '4311';
     		
     		for(var i = 0; i < data.features.length; i++){
     			var properties = data.features[i].properties;
@@ -411,7 +413,7 @@ var _WestCondition = function () {
     		writeItem('environmentCorporation',data);
     	});
         
-        var dateArr = setCommonCombo({
+        dateArr = setCommonCombo({
         	type:'input',
         	parentTypeId:'StartDate',
         	childTypeId:'EndDate',
@@ -711,6 +713,61 @@ var _WestCondition = function () {
     			checkSearchCondition(id.split('CheckBox')[0]);
     		}
     	});*/
+    	
+    	$('#initAll').off('click').on('click',function(){
+    		var toDay = new Date();
+    		var hour = toDay.getHours()+1;
+    		
+    		for(var i = 0; i < cityArr.length; i++){
+    			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityArr[i] =='sensoryEvaluationTown'?cityTownObj[sensoryInitTownCode].child:cityTownObj[initTownCode].child;
+        		writeCity(data, cityArr[i]);
+    		}
+    		
+    		for(var i = 0; i < dateArr.length; i++){
+    			$('#' + dateArr[i]).datepicker('setDate', toDay);
+    		}
+    		
+    		$('#sensoryEvaluationCityDistrict').val(sensoryInitTownCode);
+    		
+    		
+    		$('#iotSensorInfoStartTime, #reductionMonitoringStartTime, #observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').val((hour<10 ? ('0'+hour): hour)+'');
+    		$('#iotSensorInfoStartMinute, #reductionMonitoringStartMinute ,#fixedMeasurementStartMinute, #unmannedOdorStartMinute, #unmannedOdorEndMinute').val('00');
+    		
+    		$('#complaintStatusCheckBox01').attr('checked',true);
+    		$('#complaintStatusCheckBox02').attr('checked',false);
+    		$('#complaintStatusCheckBox03').attr('checked',false);
+    		$('#portableMeasurementRadio1').attr('checked',true);
+    		$('#iotSensorInfoRadio01').attr('checked',true);
+    		$('#sensoryEvaluationStartOU').val(0);
+    		$('#sensoryEvaluationEndOU').val(100);
+    		
+    		for(var i = 0; i<$('input[id$=BranchName]').length; i++){
+    			$($('input[id$=BranchName]')[i]).val('');
+    		}
+    		
+    		$('#portableMeasurementItem, #fixedMeasurementItem, #reductionMonitoringItem').val('VOCS');
+    		$('#environmentCorporationItem').val('대기중금속');
+    		
+    		for(var i = 0; i < $('.iotGrid').find('input').length; i++){
+    			i==0?$($('.iotGrid').find('input')[i]).attr('checked',true):$($('.iotGrid').find('input')[i]).attr('checked',false);
+    		}
+    		
+    		_CoreMap.getMap().getView().setCenter([14189913.25028815, 4401138.987746553]);
+    		_CoreMap.getMap().getView().setZoom(13);
+    		
+    		for(key in contentsConfig){
+    			clearTab('place'+key);
+    		}
+    		
+    		$('#popup').hide();
+    		$('#poiPopup').hide();
+    		var getPOILayer = _CoreMap.getMap().getLayerForName('poi');
+    		if(getPOILayer){
+    			_MapEventBus.trigger(_MapEvents.map_removeLayer, getPOILayer);
+    		}
+    		
+    	});
+    	
     	$('#gridMinimize, #gridMaximize, #gridRestore, #gridClose').off('click').on('click',function(){
     		gridBtnClickEvent($(this).attr('id'));
     	});
@@ -1460,7 +1517,12 @@ var _WestCondition = function () {
     var clearTab = function(tabId){
     	$('li[aria-controls="'+tabId+'"]').remove();
     	$('#' + tabId ).remove();
-    	$('#tabs').tabs('refresh');
+    	try {
+    		$('#tabs').tabs('refresh');
+		} catch (e) {
+			// TODO: handle exception
+		}
+    	
 
     	if($('ul[role="tablist"]').find('li').length==0){
     		$('#gridArea').hide();
@@ -1693,7 +1755,6 @@ var _WestCondition = function () {
             data[0].text = "전체";
         }
         
-        
         for (var key in data) {
         	/*if(comboId.toLowerCase().indexOf('town') > -1){
         		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
@@ -1814,6 +1875,7 @@ var _WestCondition = function () {
 		var value = $('#tabOpeners');
 		//$('#tab').find('li').parent().find('li')
 		if(value.attr('class') == "on"){
+			$('.instanceArea').hide();
 			$('.lnb').css('display', 'none');
 			$('#tab').css('left',0);
 			$('#tabOpener').css('left',0);
@@ -1830,6 +1892,7 @@ var _WestCondition = function () {
 			}
 			
 		}else{
+			$('.instanceArea').show();
 			//$('#tab').find('.on')
 			for(var i = 0 ; i  < $('.lnb').length; i++){
 				if($('#tab').find('.on').attr('tabtype') == $($('.lnb')[i]).attr('id')){
