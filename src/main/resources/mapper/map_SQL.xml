@@ -302,12 +302,13 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	</select>
 	
 	<select id="getTown" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		   SELECT EMD_NM AS NAME, SUBSTR(LEGALDONG_CODE,1,8) AS CODE
-    		 FROM LEGALDONG_CODE
-   			WHERE EMD_NM != ''
-	 		  AND LEGALDONG_CODE LIKE CONCAT(#{code},'%')
-		 GROUP BY EMD_NM
-		 ORDER BY EMD_NM
+		     SELECT SUBSTR(SIGNGU_NM,4,3) AS SIGNGU_NM,EMD_NM AS NAME, SUBSTR(LEGALDONG_CODE,1,8) AS CODE
+    		 FROM bdsm.LEGALDONG_CODE
+			WHERE LEGALDONG_CODE LIKE '4311%'
+              AND EMD_NM != ''
+              AND SIGNGU_NM != ''
+		 GROUP BY EMD_NM, SUBSTR(SIGNGU_NM,4,3)
+		 ORDER BY SUBSTR(SIGNGU_NM,4,3), EMD_NM
 	</select>
 	
 	<select id="getPOISelect" parameterType="java.util.HashMap" resultType="java.util.HashMap">

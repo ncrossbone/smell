@@ -68,7 +68,6 @@ var _ui = (function () {
 			$(this).parent().parent().fadeOut();
 		});
 		
-
 		/*주제도2dep떠라떠라*/
 		$("#around_info> li").click(function (event) {
 			var eleNm = event.target.tagName.toLowerCase();
@@ -85,12 +84,8 @@ var _ui = (function () {
 			}
 		});
 		
-		
-
 		var ww = $(window).width();
 		$('#gridArea').css('width', ww - 360);
-		
-		
     };
 
     return {
