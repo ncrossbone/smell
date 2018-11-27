@@ -13,20 +13,32 @@ var _ComplaintStatusInsert = function () {
 	};
 	var setEvent = function(){
 		Object.defineProperty(currentDate, 'date', {
+			get: function(){
+				return this._date;
+			},
 			set: function(date) {
 		    	this._date = date;
+		    	$('#workSpace2').html(currentDate.date + currentDate.time);
 		    	_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 		    }
 		});
 		Object.defineProperty(currentDate, 'time', {
+			get: function(){
+				return this._time;
+			},
 			set: function(time) {
 		    	this._time = time;
+		    	$('#workSpace2').html(currentDate.date + currentDate.time);
 		    	_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 		    }
 		});
 		
-		$('#workStep1').on('click', function(){
-			complaintStatusPopup.show();
+		$('.workStep').on('click', function(){
+			var mode = $(this).attr('mode');
+			if(complaintStatusMode == mode){
+				return;
+			}
+			
 		});
 	}
 	
@@ -34,6 +46,11 @@ var _ComplaintStatusInsert = function () {
 		
 		complaintStatusMode = mode;
 		
+	}
+	
+	var setProcMsg = function(msg){
+		if(msg.type == 'selectedCvpl'){
+		}
 	}
 	
 	return {
@@ -48,13 +65,16 @@ var _ComplaintStatusInsert = function () {
 				currentDate.time = time;	
 			}
 		},
+		getCurrentDate: function(){
+			return currentDate;
+		},
 		setMode: function(mode){
 			if(mode){
 				complaintStatus.mode = mode;	
 			}
 		},
-		setPopupMassge: function(msg){
-			
+		setProcMsg: function(msg){
+			setProcMsg(msg);
 		}
     };
 }();
