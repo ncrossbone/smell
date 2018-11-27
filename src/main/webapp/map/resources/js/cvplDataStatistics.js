@@ -2,7 +2,7 @@ var _CvplDataStatistics = function () {
 	
 	var init = function(){
 		 
-		    getData({url:'/getCvplTyCode.do', contentType: 'application/json', params: {} }).done(function(data){
+		    Common.getData({url:'/getCvplTyCode.do', contentType: 'application/json', params: {} }).done(function(data){
 				if(data.length == 0){
 					return;
 				}
@@ -14,16 +14,7 @@ var _CvplDataStatistics = function () {
 				$("#cvplTyCode").html(selectTag);
 			});
     };
-   
-    var getData = function (options) {
-        return $.ajax({
-            url: options.url,
-            data:  JSON.stringify(options.params),
-            type: 'POST',
-            contentType: options.contentType
-        })
-    };
-
+    
     return {
         init: function(){
         	init();
