@@ -15,7 +15,10 @@
 <script type="text/javascript" src="/map/resources/js/lib/proj4.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/jsts/jsts.min.js"></script>
 
+<script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
+
 <script type="text/javascript" src="/map/resources/js/mapService.js"></script>
+
 <script type="text/javascript" src="/map/resources/js/lib/vworldLayer.js"></script>
 <script type="text/javascript" src="/map/resources/js/lib/coreMap.js"></script>
 <script type="text/javascript" src="/map/resources/js/ui.js"></script>
@@ -31,6 +34,8 @@
 
 <script type="text/javascript" src="/map/resources/js/complaintStatusInsert.js"></script>
 <script type="text/javascript" src="/map/resources/js/chartMode.js"></script>
+
+<script src="/map/resources/js/lib/highcharts-6.2.js"></script>
 
 <style type="text/css">
       .ol-popup {
@@ -989,7 +994,9 @@
 				<div id="originTel"></div>
 			</div>
 	    </div>
-			    
+		<div id="chartDiv" style="display: none;">
+		
+		</div>
         <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute; display: none;">
                 <a id="testBtn0" >풍향</a>
                 <a id="testBtn1" style="margin-left: -4px;">격자</a>

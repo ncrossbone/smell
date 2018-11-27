@@ -25,6 +25,14 @@ _MapEvents.clickLayerOnOff = 'clickLayerOnOff';
 
 _MapEvents.addWriteLayerForUseGeoserver = 'addWriteLayerForUseGeoserver';
 
+_MapEvents.init = 'init';
+
+_MapEvents.complaintStatusMode = 'complaintStatusMode';
+_MapEvents.chartMode = 'chartMode';
+_MapEvents.getChartData = 'getChartData';
+_MapEvents.getChartFeature = 'getChartFeature';
+_MapEvents.writeChart = 'writeChart';
+
 var _MapEventBus = $({});
 
 // sample 

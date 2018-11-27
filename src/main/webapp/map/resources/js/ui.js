@@ -3,6 +3,22 @@ var _ui = (function () {
         setEvent();
     };
     var setEvent = function () {
+    	
+    	$('#putComplaintStatus').off().on('click',function(){
+    		_MapEventBus.trigger(_MapEvents.init, {});
+    		_MapEventBus.trigger(_MapEvents.complaintStatusMode, {});
+    		
+    	});
+    	
+    	$('#chartMode').off().on('click',function(){
+    		_MapEventBus.trigger(_MapEvents.init, {});
+    		_MapEventBus.trigger(_MapEvents.chartMode, {});
+    	});
+    	
+    	$('#initAll').off('click').on('click',function(){
+    		_MapEventBus.trigger(_MapEvents.init, {});
+    	});
+    	
         $('.accordion').on('click', function () {
             var me = this;
             var isDisplay = 'block';
