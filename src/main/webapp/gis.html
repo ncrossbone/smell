@@ -82,6 +82,9 @@
 </style>
 
 <script type="text/javascript">
+
+	var _MessagePipe = {};
+	
 	$(function() {
 		$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 			
@@ -89,6 +92,7 @@
 		_ui.init();
 		_WestCondition.init();
 		_SmellMapBiz.init();
+		_ComplaintStatusInsert.init(); 
 
 		$(window).on('resize', function() {
 			var ww = $(window).width();
@@ -98,7 +102,6 @@
 
 			$('#map').width(ww - 340);
 			$('#map').height(wh - 92);
-			//$('#westContainer').height(wh-50); 
 			if (map) {
 				map.setSize([ ww - 340, wh - 92 ]);
 			}
@@ -107,13 +110,24 @@
 			_WestCondition.setMaxHeight();
 		});
 		$('#popup').draggable({ containment: '#map' });
+		
+		$('#complaintStatusPopup').draggable({ containment: '#map' });
+		
 		$(window).trigger('resize');
 		
 		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
 		
-		/* document.location.href
-		$('li[tabtype="smellReport"]').trigger('click'); */
 		
+		// msg = {type:''}
+		_MessagePipe.send = function(msg){
+			if(msg.type == ''){
+				_ComplaintStatusInsert.setPopupMassge(msg);
+			} else if(msg.type == ''){
+				
+			} else{
+				
+			}
+		};
 	});
 	
 </script>
@@ -144,16 +158,12 @@
             </span>
         </div>
         <a class="btn02 fl" href="javascript:void(0)" id="poiView">POI 보기</a>
-        
-        <!-- <div class="fr">오른쪽 항목 공간 비워놓기</div> -->
-        
-        <!--
-        <ul>
-        	<li>청주시</li>
-            <li>청원구</li>
-            <li>오창읍</li>
-        </ul>
-        -->
+        <div class="fl" style=" float: right !important;">
+	        <ul id="workSpace" style="position: relative !important; right: 0px !important; top: 0px !important;">
+	        	<li id="putComplaintStatus"><a href="javascript:void(0)">민원등록</a></li>
+	            <li id="chartMode"><a href="javascript:void(0)">차트모드</a></li>
+	        </ul>
+        </div>
     </div>
     <div id="container">
     	<ul id="tabOpener">
@@ -975,10 +985,14 @@
                 </div>
             </li>
 		</ul>
-		<ul id="workSpace">
-        	<li id="putComplaintStatus"><a href="javascript:void(0)">민원등록</a></li>
-            <li id="chartMode"><a href="javascript:void(0)">차트모드</a></li>
-        </ul>
+        <ul id="workSpace">
+        	<li id="workStep1"><a href="javascript:void(0)">01 접수민원 선택</a></li>
+            <li id=""><a href="javascript:void(0)">02 공간좌표 획득</a></li>
+            <li id=""><a href="javascript:void(0)">03 인근민원 확인</a></li>
+            <li id=""><a href="javascript:void(0)">04 악취분포 확인</a></li>
+            <li id=""><a href="javascript:void(0)">05 악취원점 분석</a></li>
+            <li id=""><a href="javascript:void(0)">06 악취저감 조치</a></li>
+        </ul> 
      	<ul id="map_type">
         	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li>
             <li id="airMaps"><a href="javascript:void(0)">위성</a></li>
@@ -993,16 +1007,6 @@
 			</div>
 	    </div>
 			    
-        <div id="testMenu" style="z-index: 402; left: 350px; top:15px; position: absolute; display: none;">
-                <a id="testBtn0" >풍향</a>
-                <a id="testBtn1" style="margin-left: -4px;">격자</a>
-                <a id="testBtn2" style="margin-left: -4px;">버퍼</a>
-                <a id="testBtn3" style="margin-left: -4px;">포인트 버퍼</a>
-                <a id="testBtn4" style="margin-left: -4px;">포인트 버퍼 Play</a>
-                <a id="testBtn5" style="margin-left: -4px;">클러스터</a>
-                <a id="testBtn6" style="margin-left: -4px;">탭 최소화</a>
-                <a id="testBtn7" style="margin-left: -4px;">검색결과 최소화</a>
-            </div>
         <div id="popup" style="right: 150px; top: 250px; display: none;">
         	<p class="pop_tit"><span class="pop_tit_text">API 제공 레이어</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
             <div class="pop_conts">
@@ -1027,7 +1031,19 @@
             <div class="pop_bot">
             	<a href="javascript:void(0)" class="btn04">닫기</a>
             </div>
-        </div>           
+        </div>  
+        <div id="complaintStatusPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;">
+        	<p class="pop_tit"><span class="pop_tit_text">민원 조회</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
+            <div class="pop_conts" style="background: #fff;">
+            	<iframe src="./gisCheckPoint.html" style="width:100%; height:100%;"></iframe>
+            </div>
+        </div>     
+        <div id="complaintStatusRegPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;">
+        	<p class="pop_tit"><span class="pop_tit_text">민원 조회</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
+            <div class="pop_conts" style="background: #fff;">
+            	<iframe src="./gisCheckPoint.html" style="width:100%; height:100%;"></iframe>
+            </div>
+        </div>    
      </div>
      
     </div>

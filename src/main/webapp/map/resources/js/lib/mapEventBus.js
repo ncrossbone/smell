@@ -30,6 +30,8 @@ _MapEvents.init = 'init';
 _MapEvents.complaintStatusMode = 'complaintStatusMode';
 _MapEvents.chartMode = 'chartMode';
 
+_MapEvents.setCurrentDate = 'setCurrentDate';
+
 var _MapEventBus = $({});
 
 // sample 
