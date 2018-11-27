@@ -1,17 +1,22 @@
 var _ChartMode = function () {
-	var init = function(){
-		if($('#tabOpeners').attr('class').indexOf('on') > -1){
-			$('#tabOpeners').trigger('click');
-		}
+	
+	var setEvent = function(){
 		
-		if(!$('#airMaps').attr('class')){
-			$('#airMaps').trigger('click');
-		}
-		
-		_WestCondition.checkSearchCondition('environmentCorporation',true);
+		_MapEventBus.on(_MapEvents.chartMode, function(){
+			if($('#tabOpeners').attr('class').indexOf('on') > -1){
+				$('#tabOpeners').trigger('click');
+			}
+			
+			if(!$('#airMaps').attr('class')){
+				$('#airMaps').trigger('click');
+			}
+			
+			_WestCondition.checkSearchCondition('environmentCorporation',true);
+		});
 	};
 	
+	setEvent();
+	
 	return {
-        init: init
     };
-}
+}();

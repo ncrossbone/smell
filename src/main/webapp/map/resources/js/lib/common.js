@@ -38,7 +38,16 @@ var Common = _Common = new function() {
 	this.COMMON_PARAM = {};
 	this.sysinfoFlag = false;
 	this.logintype = '';
-
+	
+	this.getData = function (options) {
+        return $.ajax({
+            url: options.url,
+            data:  JSON.stringify(options.params),
+            type: 'POST',
+            contentType: options.contentType
+        })
+    };
+    
 	this.post = function(url, accept_type, param, successCallback, failCallback) {
 		if (param == null)
 			param = {};
@@ -109,7 +118,7 @@ var Common = _Common = new function() {
 		return data.code;
 	};
 
-	this.getData = function(data) {
+	this.getResultData = function(data) {
 		return data.result;
 	};
 	
@@ -238,7 +247,7 @@ var Common = _Common = new function() {
 		storage.setItem(cname, cvalue);
 	};
 
-	this.getData = function(cname) {
+	this.getLocalStorageData = function(cname) {
 		var data = undefined;
 		var storage = window.localStorage;
 		if (storage.getItem(cname) != null) {

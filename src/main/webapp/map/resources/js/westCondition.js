@@ -406,7 +406,7 @@ var _WestCondition = function () {
     		$('#sensoryEvaluationCityDistrict').val(sensoryInitTownCode);
     	});
     	
-    	getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
+    	Common.getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
     		if(data.length == 0){
     			return;
     		}
@@ -561,7 +561,7 @@ var _WestCondition = function () {
             	});
     		}
     	}else{
-    		getData({url:'/getPOISelect.do', contentType: 'application/json', params: {} }).done(function(data){
+    		Common.getData({url:'/getPOISelect.do', contentType: 'application/json', params: {} }).done(function(data){
             	$('#poiPopup').show();
             	$('#poiGrid').jsGrid({
             		width: '565px',
@@ -650,7 +650,7 @@ var _WestCondition = function () {
             			return;
             		}
             		
-            		getData({url:'/getPOISearch.do', contentType: 'application/json', params: paramObj }).done(function(data){
+            		Common.getData({url:'/getPOISearch.do', contentType: 'application/json', params: paramObj }).done(function(data){
             			$('#poiGrid').jsGrid({
             	    		width: '565px',
             	    		height: '220px',
@@ -765,19 +765,6 @@ var _WestCondition = function () {
     			checkSearchCondition(id.split('CheckBox')[0]);
     		}
     	});*/
-    	$('#putComplaintStatus').off().on('click',function(){
-    		initAll();
-    		_ComplaintStatusInsert().init();
-    	});
-    	
-    	$('#chartMode').off().on('click',function(){
-    		initAll();
-    		_ChartMode().init();
-    	});
-    	
-    	$('#initAll').off('click').on('click',function(){
-    		initAll();
-    	});
     	
     	$('#gridMinimize, #gridMaximize, #gridRestore, #gridClose').off('click').on('click',function(){
     		gridBtnClickEvent($(this).attr('id'));
@@ -839,6 +826,8 @@ var _WestCondition = function () {
         		}
     		}
     	});
+    	
+    	_MapEventBus.on(_MapEvents.init, initAll);
     };
     
     var gridBtnClickEvent = function(id){
@@ -964,15 +953,15 @@ var _WestCondition = function () {
     	}
 		
 		if(contentsConfig[placeId].isUseGeoserver){
-			$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
+			$.when(Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
 					_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
 						writeGrid(placeId,gridData[0]);
 						writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
 					});
 		}else{
-			getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
+			Common.getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
 				if(contentsConfig[placeId].isWriteGrid && !chartMode){
-					getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
+					Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
 						writeGrid(placeId,gridData);
 					})
 				}
@@ -1634,7 +1623,7 @@ var _WestCondition = function () {
     		});
     	}else{
     		if(paramObj.chartMode){
-    			getData({
+    			Common.getData({
         			url: '/getChart.do',
         			contentType: 'application/json',
         			params: paramObj
@@ -1643,7 +1632,7 @@ var _WestCondition = function () {
         		});
     		}
     		
-    		getData({
+    		Common.getData({
     			url: '/getClick.do',
     			contentType: 'application/json',
     			params: paramObj
@@ -1655,7 +1644,6 @@ var _WestCondition = function () {
     			writeFocusLayer(data[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}
-			
     };
     
     var getCenterOfExtent = function(Extent){
@@ -1813,14 +1801,6 @@ var _WestCondition = function () {
         $('#' + comboId).html(html);
     };
 
-    var getData = function (options) {
-        return $.ajax({
-            url: options.url,
-            data:  JSON.stringify(options.params),
-            type: 'POST',
-            contentType: options.contentType
-        })
-    };
     
     var onClickLayer = function(feature, name){
     	switch (contentsConfig[name].layerType) {
