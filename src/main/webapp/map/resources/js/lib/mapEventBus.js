@@ -29,6 +29,9 @@ _MapEvents.init = 'init';
 
 _MapEvents.complaintStatusMode = 'complaintStatusMode';
 _MapEvents.chartMode = 'chartMode';
+_MapEvents.getChartData = 'getChartData';
+_MapEvents.getChartFeature = 'getChartFeature';
+_MapEvents.writeChart = 'writeChart';
 
 var _MapEventBus = $({});
 

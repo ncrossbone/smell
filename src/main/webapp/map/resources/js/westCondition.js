@@ -883,93 +883,90 @@ var _WestCondition = function () {
     };
     
     var checkSearchCondition = function(placeId, chartMode){
-		if(!contentsConfig[placeId]){
-			return alert('레이어 정의 필요');
-		}
-		
+    	if(!contentsConfig[placeId]){
+    		return alert('레이어 정의 필요');
+    	}
+
     	var searchPlace = $('#' + placeId).find('*');
     	var paramObj = {contentsId:placeId};
-    	
+
     	var cqlString = '';
-		
-    	if(!chartMode){
-    		for(var i = 0; i < searchPlace.length; i++){
-    			var searchPlaceId = $(searchPlace[i]).attr('id');
-    			var searchPlaceName = $(searchPlace[i]).attr('name');
 
-    			if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
-    				if(searchPlaceName){
-    					var splitName = searchPlaceName.split(placeId)[1];
-    					var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
+    	for(var i = 0; i < searchPlace.length; i++){
+    		var searchPlaceId = $(searchPlace[i]).attr('id');
+    		var searchPlaceName = $(searchPlace[i]).attr('name');
 
-    					if(!paramObj[replaceName]){
-    						if($($('input[name="' + searchPlaceName + '"]')[0]).attr('type')=='checkbox'){
-    							if(typeof(paramObj[replaceName])!='Array'){
-    								paramObj[replaceName] = [];
-    							}
-    							var checkboxArr = $('input[name="' + searchPlaceName + '"]:checked');
+    		if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
+    			if(searchPlaceName){
+    				var splitName = searchPlaceName.split(placeId)[1];
+    				var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
 
-    							if(checkboxArr.length == 0){
-    								return alert('항목을 선택하세요.');
-    							}else if(checkboxArr.length > 4){
-    								return alert('항목이 5개 이상 선택되었습니다.');
-    							}
-    							//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
-    							for(var k=0; k<checkboxArr.length; k++){
-    								paramObj[replaceName].push($(checkboxArr[k]).val());
-    								//checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
-    							}
-
-    							//cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
-    						}else{
-    							paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+    				if(!paramObj[replaceName]){
+    					if($($('input[name="' + searchPlaceName + '"]')[0]).attr('type')=='checkbox'){
+    						if(typeof(paramObj[replaceName])!='Array'){
+    							paramObj[replaceName] = [];
     						}
-    					}
-    				}else if(searchPlaceId){
-    					var splitId = searchPlaceId.split(placeId)[1];
-    					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
+    						var checkboxArr = $('input[name="' + searchPlaceName + '"]:checked');
 
-    					if(replaceId=='startDate' || replaceId=='endDate'){
-    						var oper = replaceId=='startDate'?'>=':'<=';
-    						var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
-    						paramObj[replaceId] = dateValue;
-
-    						if(contentsConfig[placeId].cqlForMappingObj){
-    							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
+    						if(checkboxArr.length == 0){
+    							return alert('항목을 선택하세요.');
+    						}else if(checkboxArr.length > 4){
+    							return alert('항목이 5개 이상 선택되었습니다.');
     						}
+    						//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
+    						for(var k=0; k<checkboxArr.length; k++){
+    							paramObj[replaceName].push($(checkboxArr[k]).val());
+    							//checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
+    						}
+
+    						//cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
     					}else{
-    						paramObj[replaceId] = $(searchPlace[i]).val();
-    						if(replaceId != 'cityDistrict'){
-    							if(contentsConfig[placeId].cqlForMappingObj){
-    								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
-    							}
+    						paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+    					}
+    				}
+    			}else if(searchPlaceId){
+    				var splitId = searchPlaceId.split(placeId)[1];
+    				var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
+
+    				if(replaceId=='startDate' || replaceId=='endDate'){
+    					var oper = replaceId=='startDate'?'>=':'<=';
+    					var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
+    					paramObj[replaceId] = dateValue;
+
+    					if(contentsConfig[placeId].cqlForMappingObj){
+    						cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
+    					}
+    				}else{
+    					paramObj[replaceId] = $(searchPlace[i]).val();
+    					if(replaceId != 'cityDistrict'){
+    						if(contentsConfig[placeId].cqlForMappingObj){
+    							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
     						}
     					}
     				}
     			}
     		}
-    	}else{
-    		paramObj.chartMode = 1;
     	}
-		
-		if(contentsConfig[placeId].isUseGeoserver){
-			$.when(Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
-					_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
-						writeGrid(placeId,gridData[0]);
-						writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
-					});
-		}else{
-			Common.getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
-				if(contentsConfig[placeId].isWriteGrid && !chartMode){
-					Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
-						writeGrid(placeId,gridData);
-					})
-				}
-				
-				writeLayer(placeId,featureData,contentsConfig[placeId].isUseGeoserver);
-			});
-		}
-		
+
+
+    	if(contentsConfig[placeId].isUseGeoserver){
+    		$.when(Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
+    				_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
+    					writeGrid(placeId,gridData[0]);
+    					writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
+    				});
+    	}else{
+    		Common.getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
+    			if(contentsConfig[placeId].isWriteGrid && !chartMode){
+    				Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
+    					writeGrid(placeId,gridData);
+    				})
+    			}
+
+    			writeLayer(placeId,featureData,contentsConfig[placeId].isUseGeoserver);
+    		});
+    	}
+
     };
     
     var clearFocusLayer = function(){
@@ -981,7 +978,7 @@ var _WestCondition = function () {
     	}
     };
     
-    var writeLayer = function(id, data, isUseGeoserver, labelParentId){
+    var writeLayer = function(id, data, isUseGeoserver){
     	var getLayerForName = _CoreMap.getMap().getLayerForName(id);
 		if(getLayerForName){
 			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
@@ -1055,7 +1052,7 @@ var _WestCondition = function () {
 	        name:id,
 	        style:styleFunction,
 	        zIndex:2,
-	        visible:contentsConfig[id]?contentsConfig[id].isVisible:contentsConfig[labelParentId].isVisible
+	        visible:contentsConfig[id].isVisible
 		});
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
@@ -1469,8 +1466,9 @@ var _WestCondition = function () {
     	}
     	
     	if(feature.getProperties().CHART_MODE){
-    		paramObj.chartMode = 1;
+    		_MapEventBus.trigger(_MapEvents.getChartData, paramObj);
     	}
+    	
     	clickSyncGridNVector(name,paramObj);
     };
     
@@ -1622,16 +1620,6 @@ var _WestCondition = function () {
     			writeFocusLayer(result.features[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}else{
-    		if(paramObj.chartMode){
-    			Common.getData({
-        			url: '/getChart.do',
-        			contentType: 'application/json',
-        			params: paramObj
-        		}).done(function(data){
-        			debugger;
-        		});
-    		}
-    		
     		Common.getData({
     			url: '/getClick.do',
     			contentType: 'application/json',
@@ -1994,8 +1982,8 @@ var _WestCondition = function () {
         setMaxHeight: function(){
         	setMaxHeight();
         },
-        checkSearchCondition: function(id,isChartMode){
-        	checkSearchCondition(id,isChartMode);
+        writeLayer: function(id, data, isUseGeoserver){
+        	writeLayer(id, data, isUseGeoserver);
         }
     };
 }();
