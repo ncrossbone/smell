@@ -1,0 +1,61 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/*모듈화*/
+.sty02 #menu { background: #213152; }
+.sty02 #gnb> li> a { border-left: 1px solid #435170; }
+.sty02 #gnb>li:last-child { border-right : 1px solid #435170; }
+.sty02 #gnb> li.on> a, #gnb> li> a:hover { background: #596173; }
+.sty02 .depth2.on { background: #213152;}
+.sty02 .subtit { color:#1e3253; }
+
+.sty02 #topmenu { border-top: 3px solid #1a498f; }
+
+/*내용*/
+.sty01 .btn_1 { background:#003c84; }
+.sty01 .btn_2 { background:#373946; }
+.sty01 .btn_3 { background:#8e8e8e; }
+.sty01 .tit { background:url(../__images/bullet.gif) no-repeat left center; color:#1a498f; }
+.sty01 .table03 ,.sty01 table, .sty01 .table02 { border-top: 2px solid #1a498f }
+.sty01 .cont_top:before { background:#003c84; }
+.sty01 .pagebtn> .select { border:1px solid #002a72; background:#002a72; }
+.sty01 .pagebtn> a:hover { border:1px solid #002a72; }
+
+.sty02 .btn_1 { background:#213152; }
+.sty02 .btn_2 { background:#555555; }
+.sty02 .btn_3 { background:#949db2; }
+.sty02 .tit { background:url(../_images/bullet.png) no-repeat left center; color:#1a498f; }
+.sty02 .table03 ,.sty02 table, .sty02 .table02 { border-top: 2px solid #1a498f }
+.sty02 .cont_top:before { background:#003c84; }
+.sty02 .pagebtn> .select { border:1px solid #002a72; background:#002a72; }
+.sty02 .pagebtn> a:hover { border:1px solid #002a72; }
+
+.sty03 .btn_1 { background:#007b68; }
+.sty03 .btn_2 { background:#45495b; }
+.sty03 .btn_3 { background:#a09f9f; }
+.sty03 .tit { background:url(../_images/bullet_sty03.png) no-repeat left center; color:#004418; }
+.sty03 .table03 ,.sty03 table, .sty03 .table02 { border-top: 2px solid #2b2e3a }
+.sty03 .cont_top:before { background:#167306; }
+.sty03 .pagebtn> .select { border:1px solid #007b68; background:#007b68; }
+.sty03 .pagebtn> a:hover { border:1px solid #007b68; }
+
+.sty04 .btn_1 { background:#4d617a; }
+.sty04 .btn_2 { background:#45495b; }
+.sty04 .btn_3 { background:#a09f9f; }
+.sty04 .tit { background:url(../_images/bullet.gif) no-repeat left center; color:#4d617a; }
+.sty04 .table02 { border-top: 2px solid #2b2e3a }
+.sty04 .cont_top:before { background:#5280a2; }
+.sty04 .pagebtn> .select { border:1px solid #4d617a; background:#4d617a; }
+.sty04 .pagebtn> a:hover { border:1px solid #4d617a; }
+
+
+.sty05 .btn_1 { background:#4d617a; }
+.sty05 .btn_2 { background:#45495b; }
+.sty05 .btn_3 { background:#a09f9f; }
+.sty05 .tit { background:url(../_images/bullet2.gif) no-repeat left center; color:#000; }
+.sty05 .table02 { border-top: 2px solid #2b2e3a }
+.sty05 .cont_top:before { background:#00c43b; }
+.sty05 .pagebtn> .select { border:1px solid #4d617a; background:#4d617a; }
+.sty05 .pagebtn> a:hover { border:1px solid #4d617a; }
+
