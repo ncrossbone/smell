@@ -13,6 +13,11 @@ var _WestCondition = function () {
 	var defaultHeight = 0;
 	var labelViewLevel = 16;
 	
+	var cityArr = [];
+	var dateArr = [];
+	var sensoryInitTownCode ='43114';
+	var initTownCode = '4311';
+	
     var westLayerObj = {
     		CVPL_POINT : ':CVPL_POINT',
     		SHP_BDONG : ':SHP_BDONG',
@@ -345,7 +350,7 @@ var _WestCondition = function () {
     };
     
     var init = function () {
-    	var cityArr = setCommonCombo({
+    	cityArr = setCommonCombo({
 			type:'select',
 			parentTypeId:'CityDistrict',
 			childTypeId:'Town',
@@ -358,9 +363,6 @@ var _WestCondition = function () {
     		if(data.features.length == 0){
     			return;
     		}
-    		
-    		var sensoryInitTownCode ='43114';
-    		var initTownCode = '4311';
     		
     		for(var i = 0; i < data.features.length; i++){
     			var properties = data.features[i].properties;
@@ -411,7 +413,7 @@ var _WestCondition = function () {
     		writeItem('environmentCorporation',data);
     	});
         
-        var dateArr = setCommonCombo({
+        dateArr = setCommonCombo({
         	type:'input',
         	parentTypeId:'StartDate',
         	childTypeId:'EndDate',
@@ -703,7 +705,59 @@ var _WestCondition = function () {
             });
     	}
     };
-
+    var initAll = function(){
+    	var toDay = new Date();
+		var hour = toDay.getHours()+1;
+		
+		for(var i = 0; i < cityArr.length; i++){
+			var data = cityArr[i].indexOf('CityDistrict') > -1 ? cityTownObj : cityArr[i] =='sensoryEvaluationTown'?cityTownObj[sensoryInitTownCode].child:cityTownObj[initTownCode].child;
+    		writeCity(data, cityArr[i]);
+		}
+		
+		for(var i = 0; i < dateArr.length; i++){
+			$('#' + dateArr[i]).datepicker('setDate', toDay);
+		}
+		
+		$('#sensoryEvaluationCityDistrict').val(sensoryInitTownCode);
+		
+		
+		$('#iotSensorInfoStartTime, #reductionMonitoringStartTime, #observatoryStartTime, #observatoryEndTime, #portableMeasurementStartTime, #portableMeasurementEndTime, #fixedMeasurementStartTime, #environmentCorporationStartTime, #environmentCorporationEndTime, #unmannedOdorStartTime, #unmannedOdorEndTime').val((hour<10 ? ('0'+hour): hour)+'');
+		$('#iotSensorInfoStartMinute, #reductionMonitoringStartMinute ,#fixedMeasurementStartMinute, #unmannedOdorStartMinute, #unmannedOdorEndMinute').val('00');
+		
+		$('#complaintStatusCheckBox01').attr('checked',true);
+		$('#complaintStatusCheckBox02').attr('checked',false);
+		$('#complaintStatusCheckBox03').attr('checked',false);
+		$('#portableMeasurementRadio1').attr('checked',true);
+		$('#iotSensorInfoRadio01').attr('checked',true);
+		$('#sensoryEvaluationStartOU').val(0);
+		$('#sensoryEvaluationEndOU').val(100);
+		
+		for(var i = 0; i<$('input[id$=BranchName]').length; i++){
+			$($('input[id$=BranchName]')[i]).val('');
+		}
+		
+		$('#portableMeasurementItem, #fixedMeasurementItem, #reductionMonitoringItem').val('VOCS');
+		$('#environmentCorporationItem').val('대기중금속');
+		
+		for(var i = 0; i < $('.iotGrid').find('input').length; i++){
+			i==0?$($('.iotGrid').find('input')[i]).attr('checked',true):$($('.iotGrid').find('input')[i]).attr('checked',false);
+		}
+		
+		_CoreMap.getMap().getView().setCenter([14189913.25028815, 4401138.987746553]);
+		_CoreMap.getMap().getView().setZoom(13);
+		
+		for(key in contentsConfig){
+			clearTab('place'+key);
+		}
+		
+		$('#popup').hide();
+		$('#poiPopup').hide();
+		var getPOILayer = _CoreMap.getMap().getLayerForName('poi');
+		if(getPOILayer){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, getPOILayer);
+		}
+    };
+    
     var setEvent = function(){
     	/*$('input[name$="CheckBox"]').off('change').on('change',function(){
     		var id = $(this).attr('id');
@@ -711,6 +765,20 @@ var _WestCondition = function () {
     			checkSearchCondition(id.split('CheckBox')[0]);
     		}
     	});*/
+    	$('#putComplaintStatus').off().on('click',function(){
+    		initAll();
+    		_ComplaintStatusInsert().init();
+    	});
+    	
+    	$('#chartMode').off().on('click',function(){
+    		initAll();
+    		_ChartMode().init();
+    	});
+    	
+    	$('#initAll').off('click').on('click',function(){
+    		initAll();
+    	});
+    	
     	$('#gridMinimize, #gridMaximize, #gridRestore, #gridClose').off('click').on('click',function(){
     		gridBtnClickEvent($(this).attr('id'));
     	});
@@ -825,7 +893,7 @@ var _WestCondition = function () {
 		}
     };
     
-    var checkSearchCondition = function(placeId){
+    var checkSearchCondition = function(placeId, chartMode){
 		if(!contentsConfig[placeId]){
 			return alert('레이어 정의 필요');
 		}
@@ -835,61 +903,65 @@ var _WestCondition = function () {
     	
     	var cqlString = '';
 		
-		for(var i = 0; i < searchPlace.length; i++){
-			var searchPlaceId = $(searchPlace[i]).attr('id');
-			var searchPlaceName = $(searchPlace[i]).attr('name');
-			
-			if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
-				if(searchPlaceName){
-					var splitName = searchPlaceName.split(placeId)[1];
-					var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
-					
-					if(!paramObj[replaceName]){
-						if($($('input[name="' + searchPlaceName + '"]')[0]).attr('type')=='checkbox'){
-							if(typeof(paramObj[replaceName])!='Array'){
-								paramObj[replaceName] = [];
-							}
-							var checkboxArr = $('input[name="' + searchPlaceName + '"]:checked');
-							
-							if(checkboxArr.length == 0){
-								return alert('항목을 선택하세요.');
-							}else if(checkboxArr.length > 4){
-								return alert('항목이 5개 이상 선택되었습니다.');
-							}
-							//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
-							for(var k=0; k<checkboxArr.length; k++){
-								paramObj[replaceName].push($(checkboxArr[k]).val());
-								//checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
-							}
-							
-							//cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
-						}else{
-							paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
-						}
-					}
-				}else if(searchPlaceId){
-					var splitId = searchPlaceId.split(placeId)[1];
-					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
+    	if(!chartMode){
+    		for(var i = 0; i < searchPlace.length; i++){
+    			var searchPlaceId = $(searchPlace[i]).attr('id');
+    			var searchPlaceName = $(searchPlace[i]).attr('name');
 
-					if(replaceId=='startDate' || replaceId=='endDate'){
-						var oper = replaceId=='startDate'?'>=':'<=';
-						var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
-						paramObj[replaceId] = dateValue;
+    			if($(searchPlace[i]).is('input') || $(searchPlace[i]).is('select')){
+    				if(searchPlaceName){
+    					var splitName = searchPlaceName.split(placeId)[1];
+    					var replaceName = splitName.replace(splitName.substr(0,1),splitName.substr(0,1).toLowerCase());
 
-						if(contentsConfig[placeId].cqlForMappingObj){
-							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
-						}
-					}else{
-						paramObj[replaceId] = $(searchPlace[i]).val();
-						if(replaceId != 'cityDistrict'){
-							if(contentsConfig[placeId].cqlForMappingObj){
-								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
-							}
-						}
-					}
-				}
-			}
-		}
+    					if(!paramObj[replaceName]){
+    						if($($('input[name="' + searchPlaceName + '"]')[0]).attr('type')=='checkbox'){
+    							if(typeof(paramObj[replaceName])!='Array'){
+    								paramObj[replaceName] = [];
+    							}
+    							var checkboxArr = $('input[name="' + searchPlaceName + '"]:checked');
+
+    							if(checkboxArr.length == 0){
+    								return alert('항목을 선택하세요.');
+    							}else if(checkboxArr.length > 4){
+    								return alert('항목이 5개 이상 선택되었습니다.');
+    							}
+    							//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
+    							for(var k=0; k<checkboxArr.length; k++){
+    								paramObj[replaceName].push($(checkboxArr[k]).val());
+    								//checkBoxCqlString += '\'' + $(checkboxArr[k]).val() + '\',';
+    							}
+
+    							//cqlString += checkBoxCqlString.substr(0,checkBoxCqlString.length-1) + ') AND ';
+    						}else{
+    							paramObj[replaceName] = $('input[name="' + searchPlaceName + '"]:checked').val();
+    						}
+    					}
+    				}else if(searchPlaceId){
+    					var splitId = searchPlaceId.split(placeId)[1];
+    					var replaceId = splitId.replace(splitId.substr(0,1),splitId.substr(0,1).toLowerCase());
+
+    					if(replaceId=='startDate' || replaceId=='endDate'){
+    						var oper = replaceId=='startDate'?'>=':'<=';
+    						var dateValue = $(searchPlace[i]).val().replace('.','').replace('.','');
+    						paramObj[replaceId] = dateValue;
+
+    						if(contentsConfig[placeId].cqlForMappingObj){
+    							cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + oper + '\'' + dateValue + '\' AND ';
+    						}
+    					}else{
+    						paramObj[replaceId] = $(searchPlace[i]).val();
+    						if(replaceId != 'cityDistrict'){
+    							if(contentsConfig[placeId].cqlForMappingObj){
+    								cqlString += contentsConfig[placeId].cqlForMappingObj[replaceId] + ' LIKE \'%' + $(searchPlace[i]).val() + '%\' AND ';
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    	}else{
+    		paramObj.chartMode = 1;
+    	}
 		
 		if(contentsConfig[placeId].isUseGeoserver){
 			$.when(getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
@@ -899,7 +971,7 @@ var _WestCondition = function () {
 					});
 		}else{
 			getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
-				if(contentsConfig[placeId].isWriteGrid){
+				if(contentsConfig[placeId].isWriteGrid && !chartMode){
 					getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
 						writeGrid(placeId,gridData);
 					})
@@ -1406,6 +1478,10 @@ var _WestCondition = function () {
     	for(var i = 0; i < contentsConfig[name].keyColumn.length; i++){
     		paramObj[contentsConfig[name].keyColumn[i]] = feature.getProperties()[contentsConfig[name].keyColumn[i]];
     	}
+    	
+    	if(feature.getProperties().CHART_MODE){
+    		paramObj.chartMode = 1;
+    	}
     	clickSyncGridNVector(name,paramObj);
     };
     
@@ -1460,7 +1536,12 @@ var _WestCondition = function () {
     var clearTab = function(tabId){
     	$('li[aria-controls="'+tabId+'"]').remove();
     	$('#' + tabId ).remove();
-    	$('#tabs').tabs('refresh');
+    	try {
+    		$('#tabs').tabs('refresh');
+		} catch (e) {
+			// TODO: handle exception
+		}
+    	
 
     	if($('ul[role="tablist"]').find('li').length==0){
     		$('#gridArea').hide();
@@ -1552,6 +1633,16 @@ var _WestCondition = function () {
     			writeFocusLayer(result.features[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}else{
+    		if(paramObj.chartMode){
+    			getData({
+        			url: '/getChart.do',
+        			contentType: 'application/json',
+        			params: paramObj
+        		}).done(function(data){
+        			debugger;
+        		});
+    		}
+    		
     		getData({
     			url: '/getClick.do',
     			contentType: 'application/json',
@@ -1560,6 +1651,7 @@ var _WestCondition = function () {
     			if(data.length == 0){
     				return;
     			}
+    			
     			writeFocusLayer(data[0],contentsConfig[id],contentsConfig[id].title);
     		});
     	}
@@ -1693,7 +1785,6 @@ var _WestCondition = function () {
             data[0].text = "전체";
         }
         
-        
         for (var key in data) {
         	/*if(comboId.toLowerCase().indexOf('town') > -1){
         		allHtml = '<option value=\'' + key.substr(0,5) + '\'>전체</option>';
@@ -1814,6 +1905,7 @@ var _WestCondition = function () {
 		var value = $('#tabOpeners');
 		//$('#tab').find('li').parent().find('li')
 		if(value.attr('class') == "on"){
+			$('.instanceArea').hide();
 			$('.lnb').css('display', 'none');
 			$('#tab').css('left',0);
 			$('#tabOpener').css('left',0);
@@ -1830,6 +1922,7 @@ var _WestCondition = function () {
 			}
 			
 		}else{
+			$('.instanceArea').show();
 			//$('#tab').find('.on')
 			for(var i = 0 ; i  < $('.lnb').length; i++){
 				if($('#tab').find('.on').attr('tabtype') == $($('.lnb')[i]).attr('id')){
@@ -1920,6 +2013,9 @@ var _WestCondition = function () {
         },
         setMaxHeight: function(){
         	setMaxHeight();
+        },
+        checkSearchCondition: function(id,isChartMode){
+        	checkSearchCondition(id,isChartMode);
         }
     };
 }();

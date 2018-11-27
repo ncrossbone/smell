@@ -658,6 +658,12 @@ var _CoreMap = function() {
 		for(var i = 0; i<mapLayers.length; i++){
 			var baseMapType = mapTypeObj[mapLayers[i].getProperties().name]; 
 			if(baseMapType){
+				if(mapType == 'airMaps'){
+					mapLayers[2].setVisible(true);
+				}else{
+					mapLayers[2].setVisible(false);
+				}
+				
 				mapLayers[i].setVisible(baseMapType==mapType?true:false);
 			}
 		}
