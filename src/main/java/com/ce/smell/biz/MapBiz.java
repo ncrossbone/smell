@@ -172,4 +172,10 @@ public class MapBiz {
 	public int updateSensor(HashMap param) {
 		return mapMapper.updateSensor(param);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getCvplTyCode(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getCvplTyCode(param);
+	}
 }
