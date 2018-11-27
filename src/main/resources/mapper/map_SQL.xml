@@ -449,12 +449,42 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
    	   	   </if>
 	</select>
 	
+	<select id="environmentCorporationChart" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	  	   SELECT CODE,
+		          NAME,
+			      DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시') AS MESURE_DT,
+				  SO2_DNSTY,
+				  CMO_DNSTY,
+				  OZ_DNSTY,
+				  NO2_DNSTY,
+				  PM10_DNSTY,
+				  PM10_HOUR24_PREDICT_MVMN_DNSTY,
+				  PM25_DNSTY,
+				  PM25_HOUR24_PREDICT_MVMN_DNSTY,
+				  UNITY_AIR_ENVRN_NCL,
+				  UNITY_AIR_ENVRN_IDEX,
+				  SO2_IDEX,
+				  CMO_IDEX,
+				  OZ_IDEX,
+				  NO2_IDEX,
+				  PM10_HOUR24_GRAD,
+				  PM25_HOUR24_GRAD,
+				  PM10_HOUR1_GRAD,
+				  PM25_HOUR1_GRAD
+  		FROM bdsm.SHP_AIRKOREA_MSRSTN A
+	LEFT OUTER JOIN bdsm.AIRKOREA_MESURE_INFO B
+  		  ON A.CODE = B.MSRSTN_ID
+		   where DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[>=]]> CONCAT('20181001')
+  		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[<=]]> CONCAT('20181001')
+           AND CODE = #{CODE}
+	</select>
+	
 	<select id="environmentCorporationClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  	   SELECT NAME,
 	  	   		  CODE,
 	    		  CONCAT(ADDR,' ',ADDR_DETAI) AS ADDR,
 			      POINT_X,
-			      POINT_Y 
+			      POINT_Y
  		     FROM bdsm.SHP_AIRKOREA_MSRSTN
 		  	WHERE CODE = #{CODE}
 	</select>
@@ -463,12 +493,18 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 				  NAME,
 				  POINT_X,
 				  POINT_Y
+				   <if test="chartMode == 1">
+			       ,1 AS CHART_MODE
+			        </if>
 			 FROM bdsm.SHP_AIRKOREA_MSRSTN
 		    WHERE ADM_CODE LIKE CONCAT('4311','%')
-		    <if test="branchName != ''">
-              AND NAME LIKE CONCAT('%', #{branchName}, '%')
-            </if>
-              AND ADM_CODE LIKE CONCAT(#{town},'%')
+		    
+		    <if test="chartMode != 1">
+			    <if test="branchName != ''">
+	              AND NAME LIKE CONCAT('%', #{branchName}, '%')
+	            </if>
+	              AND ADM_CODE LIKE CONCAT(#{town},'%')
+             </if>
 	</select>
 	<select id="unmannedOdorFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  	 SELECT CONCAT(LEGALDONG_CODE,SPOT_CODE) AS CODE,LO AS POINT_X,LA AS POINT_Y, SENSOR_NM
@@ -698,7 +734,7 @@ WHERE TAB.POINT_X IS NOT NULL
           FROM bdsm.BSML_REDUC_EQP_INFO A,
                bdsm.BPLC_INFO C
 		 WHERE A.BPLC_ID = C.bplc_id
-		   AND LEGALDONG_CODE LIKE CONCAT(#{town},'%')
+		   AND C.LEGALDONG_CODE LIKE CONCAT(#{town},'%')
 		   <if test="branchName != ''">
     			AND CMPNY_NM LIKE CONCAT('%', #{branchName}, '%')
   			</if>

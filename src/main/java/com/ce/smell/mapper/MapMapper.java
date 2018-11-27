@@ -64,4 +64,6 @@ public interface MapMapper {
 	public List<Map<String, Object>> getCoursModelBySensor(HashMap param);
 	
 	public int updateSensor(HashMap param);
+	
+	public List<Map<String, Object>> environmentCorporationChart(HashMap param);
 }

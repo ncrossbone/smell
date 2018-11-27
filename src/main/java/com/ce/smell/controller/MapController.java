@@ -52,6 +52,11 @@ public class MapController {
 		return mapBiz.getGrid(param);
 	}
 	
+	@RequestMapping(value = "/getChart", method = RequestMethod.POST)
+	public List<Map<String, Object>> getChart(@RequestBody HashMap param){
+		return mapBiz.getChart(param);
+	}
+	
 	@RequestMapping(value = "/getCity", method = RequestMethod.POST)
 	public List<Map<String, Object>> getCity(){
 		return mapBiz.getCity();
