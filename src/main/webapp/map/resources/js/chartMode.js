@@ -1,6 +1,6 @@
 var _ChartMode = function () {
 	var itemConfig = {
-			'environmentCorporation':[{col:'NO2_DNSTY',title:'먼지'},{col:'OZ_DNSTY',title:'OZ'},{col:'PM10_DNSTY',title:'미세먼지'}]
+			'environmentCorporation':[{col:'NO2_DNSTY',title:'먼지'},{col:'OZ_DNSTY',title:'OZ'},{col:'PM10_DNSTY',title:'미세먼지'},{col:'SO2_DNSTY',title:'so2'}]
 	}
 	var setEvent = function(){
 		
@@ -13,13 +13,14 @@ var _ChartMode = function () {
 				$('#airMaps').trigger('click');
 			}
 			
-			var eventParam = {
-					layerArr: ['environmentCorporation']
-			};
+			var layerArr = [];
+			for(key in itemConfig){
+				layerArr.push(key);
+			}
 			
 			$('#chartDiv').show();
 			
-			_MapEventBus.trigger(_MapEvents.getChartFeature, eventParam);
+			_MapEventBus.trigger(_MapEvents.getChartFeature, {layerArr:layerArr});
 		});
 		
 		_MapEventBus.on(_MapEvents.getChartData, function(evt, param){
@@ -43,13 +44,16 @@ var _ChartMode = function () {
 			
 			$('#chartDiv').html('');
 			
-			
 			var chartObj = {
 					chart: {
-						backgroundColor: '#00ff0000'
+						backgroundColor: '#00ff0000',
+						height: 220
 					},
 					title: {
-						text: ''
+						text: '',
+						style: {
+							color: '#fff'
+						}
 					},
 					subtitle: {
 						text: ''
@@ -74,16 +78,7 @@ var _ChartMode = function () {
 					},
 					legend: false,
 					credits:false,
-					plotOptions: {
-						series: {
-							label: {
-								connectorAllowed: false
-							},
-							pointStart: 2010
-						}
-					},
 					series: [{
-						name: 'Installation',
 						data: [],
 						color:'#01e0e6'
 					}],
@@ -103,19 +98,24 @@ var _ChartMode = function () {
 					},
 					height: 100
 			};
+			var dataObj = {};
+			
+			for(var i = 0; i < data.length; i++){
+				for(key in data[i]){
+					if(!dataObj[key]){
+						dataObj[key] = [];
+					}
+					dataObj[key].push(data[i][key]);
+				}
+			}
 			
 			for(var i = 0; i < item.length; i++){
 				$('#chartDiv').append('<div id="chart' + i + '"></div>');
-				chartObj.series[0].data = randomSeriesValue();
+				chartObj.series[0].data = dataObj[item[i].col];
+				chartObj.series[0].name = item[i].title;
+				chartObj.xAxis.categories = dataObj.MESURE_DT;
+				chartObj.title.text = item[i].title + ' (' + item[i].col + ')';
 				Highcharts.chart('chart'+ i,chartObj);
-			}
-			
-			function randomSeriesValue(){
-				var arr = [];
-				for(var i = 0; i < 11; i++){
-					arr.push(parseInt(Math.random()*10));
-				}
-				return arr;
 			}
 		});
 		

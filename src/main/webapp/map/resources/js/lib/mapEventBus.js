@@ -33,6 +33,8 @@ _MapEvents.getChartData = 'getChartData';
 _MapEvents.getChartFeature = 'getChartFeature';
 _MapEvents.writeChart = 'writeChart';
 
+_MapEvents.setCurrentDate = 'setCurrentDate';
+
 var _MapEventBus = $({});
 
 // sample 
