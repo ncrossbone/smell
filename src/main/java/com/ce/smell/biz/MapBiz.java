@@ -62,17 +62,7 @@ public class MapBiz {
 	
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getChart(HashMap param){
-		List resultList = null;
-		HashMap result = new HashMap();
-		
-		try {
-			Method method = mapMapper.getClass().getDeclaredMethod(param.get("contentsId") + "Chart",param.getClass());
-			resultList = (List) method.invoke(mapMapper, param);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return resultList;
+		return mapMapper.getChart(param);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -237,6 +237,11 @@ var _SmellMapBiz = function () {
 					if(_CoreMap.getMap().getLayerForName(lyrNm)){
 						_WestCondition.onClickLayer(feature,lyrNm);
 					}
+				}else if(layer.get('name')=='chartModeLayer'){
+					
+					_MapEventBus.trigger(_MapEvents.getChartData, {
+						code:feature.getProperties().CODE
+					});
 				}
 			});
 			
@@ -268,6 +273,8 @@ var _SmellMapBiz = function () {
 			var pixel = coreMap.getEventPixel(data.result.originalEvent);
 			var hit = coreMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
 				if(_WestCondition.getContentsConfig()[layer.get('name')] && layer.get('name') != 'iotSensorInfo'){
+					return true;
+				}else if(layer.get('name')=='chartModeLayer'){
 					return true;
 				}else{
 					return false;
