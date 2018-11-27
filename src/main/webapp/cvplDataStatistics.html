@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<title>청주시 지능형 도농복합도시 악취관리시스템(개발)</title>
+
+<link href="/cms/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/common.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/sub.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/st.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/cms/js/jquery.min.js"></script>
+<script type="text/javascript" src="/cms/js/common.js"></script>
+<script type="text/javascript" src="/cms/js/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/map/resources/js/cvplDataStatistics.js"></script>
+
+<!-- 달력 -->
+<link rel="stylesheet" href="/cms/js/cal/themes/base/jquery.ui.all.css">
+<script src="/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
+<script src="/cms/js/cal/ui/jquery.ui.core.js"></script>
+
+<script type="text/javascript">
+	$(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
+			
+		_CvplDataStatistics.init();		
+		
+	})
+	
+	//변수 선언
+var tTime = new Date();
+var getDiffTime1 = tTime.getTime();
+getDiffTime1 = getDiffTime1 - (1000 * 60 * 15);
+tTime.setTime(getDiffTime1);
+
+//초기
+$(function(){
+	addDatePicker('#from_date');
+	addDatePicker('#to_date');
+    if($("#from_date").val().length == 0){
+        $("#from_date").val($.datepicker.formatDate('yy-mm-dd', tTime));
+    }
+    if($("#to_date").val().length == 0){
+    	$("#to_date").val($.datepicker.formatDate('yy-mm-dd', tTime));
+    }
+
+	//초기 조회
+	//goSearch();
+});
+
+//상태 조회
+function goSearch(page) {
+	$("#page").val(gfnCheckNull(page));
+	if($("#pageRow").length==0){
+		$("#pageLine").val("10");
+	}else {
+		$("#pageLine").val($("#pageRow").val());
+	}
+	
+    if(toDateCheck() == "N" ) return;
+	
+	var url = "/cms/dataManage/cvplDataManageAjax";
+	var params = $("#dataSearch").serialize();
+	var sucessFunc = function(data) {
+		$("#ajaxTable").html("");
+		$("#ajaxTable").html(data);
+		$('.pagebtn > a').on('click' ,function(e){
+			var page = $(this).attr("id").replace("page","");
+			$("#page").val(page);
+			goSearch(page);
+			e.preventDefault();
+		});
+	};
+	ajaxCallHtml(url, params, sucessFunc);
+}
+
+//조회기간 역전 제어로직
+function toDateCheck() {
+  var date1 = $("#to_date").val();
+  var date2 = $("#from_date").val();
+
+  var arrDate1 = date1.split("-");
+  var getDate1 = new Date(parseInt(arrDate1[0]),parseInt(arrDate1[1])-1,parseInt(arrDate1[2]));
+  var arrDate2 = date2.split("-");
+  var getDate2 = new Date(parseInt(arrDate2[0]),parseInt(arrDate2[1])-1,parseInt(arrDate2[2]));
+  
+  var getDiffTime = getDate2.getTime() - getDate1.getTime();
+  getDiffTime = getDiffTime / (1000 * 60 * 60 * 24);
+  
+  if( getDiffTime*1 >= 1 ){
+      alert("조회기간은 역전될수 없습니다.");
+      $("#to_date").val($.datepicker.formatDate('yy-mm-dd', tTime));
+      return "N";
+  }
+  return "Y";
+}
+
+//삭제
+function goDelete(){
+	if($('input:checkbox[name=CVPL_NO]:checked').length == 0){
+    	alert('선택된 데이터가 없습니다.');
+    	return;
+	}
+	if(!confirm('선택한 데이터를 삭제하시겠습니까?\n삭제 데이터 건수 : '+$('input:checkbox[name=CVPL_NO]:checked').length+'건')){
+    	return;
+	}
+	$("#mode").val("delete");
+	var url = "/cms/dataManage/cvplDataManage/cud";
+	var params = $("#dataSearch").serialize();
+	var sucessFunc = function(data) {
+		alert(data.returnMsg);
+		if(data.returnCode == 0){
+			 goSearch();
+		}else{
+			//alert(data.returnMsg);
+		}
+	};
+	ajaxCall(url, params, sucessFunc,"",true);
+	
+}
+
+//등록/수정 팝업창
+function goForm(mode){
+	if(mode == 'write'){
+		gfnPopup("/cms/dataManage/cvplDataManag/regForm", 800, 505, "N", "dataForm");
+	}else{
+		//체크박스가 체크되어있는지 확인한다.
+		var count = $('input:checkbox[name=CVPL_NO]:checked').length;
+		//2개 이상의 체크 박스가 체크되어있으면 수정 못하게 return 한다.
+		if(count == 0){
+			alert("수정 할 데이터를 선택해 주시길 바랍니다.");
+			return;
+		}else if(count > 1){
+			alert("수정은 하나의 데이터만 가능합니다.");
+			$("input:checkbox[name=CVPL_NO]").prop("checked", false);
+			return;
+		}else if(count == 1){
+			var cvplNo = $('input:checkbox[name=CVPL_NO]:checked').val();
+			gfnPopup("/cms/dataManage/cvplDataManag/regForm?CVPL_NO="+cvplNo, 800, 505, "N", "dataRegForm");
+		}
+	}
+}
+
+</script>
+</head>
+<body>
+<form name="dataSearch" id="dataSearch" method="post">
+	<input type="hidden" name="mode" id="mode" />
+	<!-- 검색 영역 시작 -->
+    <div class="search_box">
+        <div class="searchLine">
+        	<span class="s_tit">조회기간(<em class="chk_txt">*</em>)</span>
+                <input type="text" class="W70" name="from_date" value='' id="from_date" title="조회기간 시작일" readonly="readonly"/> &nbsp; ~ &nbsp;
+                <input type="text" class="W70 MgL10" name="to_date" value='' id="to_date" title="조회기간 종료일" readonly="readonly"/>
+                <span class="s_tit MgL20">민원분류</span>
+				<select title="민원분류 선택" name="cvplTyCode" id="cvplTyCode">
+  					<option value="">전체</option>
+  				</select>
+                <span class="s_tit MgL20">민원인</span>
+                <input type="text" name="cpttr"/>
+            <span class="btnCnt"><a href="" class="btn_1" onclick="goSearch();return false;">조회</a></span>
+        </div>
+    </div>
+<!-- 검색 영역 끝 -->
+<div id="ajaxTable"></div>
+</form>
+</body>
+</html>

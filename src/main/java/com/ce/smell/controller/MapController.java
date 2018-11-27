@@ -113,5 +113,9 @@ public class MapController {
 	public int updateSensor(@RequestBody HashMap param) {
 		return mapBiz.updateSensor(param);
 	}
+	@RequestMapping(value = "/getCvplTyCode", method = RequestMethod.POST)
+	public List<Map<String, Object>> getCvplTyCode(@RequestBody HashMap param){
+		return mapBiz.getCvplTyCode(param);
+	}
 	
 }

@@ -66,4 +66,6 @@ public interface MapMapper {
 	public int updateSensor(HashMap param);
 	
 	public List<Map<String, Object>> environmentCorporationChart(HashMap param);
+	
+	public List<Map<String, Object>> getCvplTyCode(HashMap param);
 }
