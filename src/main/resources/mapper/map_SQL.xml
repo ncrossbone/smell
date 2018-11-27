@@ -40,18 +40,24 @@
 			   LO AS POINT_Y,
 			   CVPL_TY_CODE,
 			   CVPL_LC
+			    <if test="flag == 1">
+			    
+			    </if>
   		  FROM CVPL_MANAGE
-  		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
-     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
-     	   AND LA IS NOT NULL
-     	   <if test="branchName != ''">
-    			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
-  			</if>
-  			AND CVPL_TY_CODE IN
-  			<foreach collection="checkBox" item="type" index="index" open="(" separator="," close=")">
-				#{type}
-  			</foreach>	
-     	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
+  		 WHERE LA IS NOT NULL
+           AND LO IS NOT NULL
+  		  <if test="flag != 1">
+	  		   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
+	     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
+	     	   <if test="branchName != ''">
+	    			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
+	  			</if>
+	  			AND CVPL_TY_CODE IN
+	  			<foreach collection="checkBox" item="type" index="index" open="(" separator="," close=")">
+					#{type}
+	  			</foreach>	
+	     	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
+     	   </if>
 	</select>
 	
 	<select id="complaintStatusGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">

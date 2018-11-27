@@ -1984,6 +1984,9 @@ var _WestCondition = function () {
         },
         writeLayer: function(id, data, isUseGeoserver){
         	writeLayer(id, data, isUseGeoserver);
+        },
+        createLastPoint:function(feature){
+        	return createLastPoint(feature);
         }
     };
 }();
