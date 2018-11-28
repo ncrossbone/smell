@@ -275,7 +275,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .legend { position:absolute; }
 
 /*181127*/
-.process { position:absolute; z-index:999; left:50%; transform:translateX(-30%);  top:0; width:870px;}
+.process { position:absolute; z-index:999; left:45%; transform:translateX(-30%);  top:0; width:870px; cursor: pointer;}
 .p_f { background:url(../images/p_bg_first_off.png) no-repeat left center;  width:158px;}
 .p_l { background:url(../images/p_bg_last_off.png) no-repeat left center;  width:158px; }
 .p_a { background:url(../images/p_bg_off.png) no-repeat left center;  width:140px; }

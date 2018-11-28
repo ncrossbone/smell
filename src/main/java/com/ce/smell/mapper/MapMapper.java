@@ -66,6 +66,7 @@ public interface MapMapper {
 	public int updateSensor(HashMap param);
 	public List<Map<String, Object>> chartFeature(HashMap param);
 	public List<Map<String, Object>> getChart(HashMap param);
+	public List<Map<String, Object>> getAnalsAreaId(HashMap param);
 	
 	/**
 	 * 개발팀 csw

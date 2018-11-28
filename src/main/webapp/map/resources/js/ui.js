@@ -23,6 +23,12 @@ var _ui = (function () {
 			$('#titleDate').html('<span>'+data.date+' ' +data.time+'시</span>');
 		});
     	
+    	_MapEventBus.on(_MapEvents.alertShow, function(event, data){
+    		$('#alertDiv').show();
+    		$('#alertDiv').text(data.text);
+    		$('#alertDiv').fadeOut(5000);
+    	});
+    	
         $('.accordion').on('click', function () {
             var me = this;
             var isDisplay = 'block';

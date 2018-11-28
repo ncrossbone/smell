@@ -163,6 +163,11 @@ public class MapBiz {
 		return mapMapper.updateSensor(param);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getAnalsAreaId(HashMap param) {
+		return mapMapper.getAnalsAreaId(param);
+	}
+	
 	/**
 	 * 개발팀 csw
 	 * @param param

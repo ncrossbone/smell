@@ -21,6 +21,7 @@ _MapEvents.show_odorSpread_layer = 'show_odorSpread_layer';
 _MapEvents.show_odorMovement_layer = 'show_odorMovement_layer';
 
 
+
 _MapEvents.onresizeall_end = 'onresizeall_end';
 
 _MapEvents.setZoom = 'setzoom';
@@ -39,7 +40,7 @@ _MapEvents.writeChart = 'writeChart';
 
 _MapEvents.setCurrentDate = 'setCurrentDate';
 
-_MapEvents.cvplModeChange = 'cvplModeChange';
+_MapEvents.alertShow = 'alertShow';
 
 var _MapEventBus = $({});
 
