@@ -50,7 +50,7 @@ h4 { font-size: 18px !important; margin-bottom: 10px !important; padding-left: 1
 .table02 tbody tr td select, 
 .table02 tbody tr td input[type=text],
 .table02 tbody tr td input[type=select] { width:96%; }
-.table02 tbody tr td textarea { width:96%;border:1px solid #d9d9d9;}
+.table02 tbody tr td textarea { width:98%;border:1px solid #d9d9d9;}
 .table02 .smsMode{ border:1px solid #ccc; background:#f2f2f2; padding:10px;}
 
 .table02.dataVer tr td { text-align:center; font-size:12px;}
@@ -94,7 +94,7 @@ h4 { font-size: 18px !important; margin-bottom: 10px !important; padding-left: 1
 .pagebtn> .arrowbtn { color:#c8c8c8; font-weight:bold; letter-spacing:-2px; }
 
 /*btn*/
-.btn_1 { padding:5px 15px;  }
+.btn_1 { padding:5px 15px; background:#213152; }
 .btn_2 { border: none !important;  padding:5px 15px !important; font-family: notokr-regular; }
 .btn_3 { padding:5px 12px; font-weight:normal !important; }
 .btn_1, .btn_2, .btn_3 { font-size: 13px; letter-spacing:-1px; display:inline-block; color:#FFF; font-family: notokr-regular; }

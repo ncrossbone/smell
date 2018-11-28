@@ -67,5 +67,17 @@ public interface MapMapper {
 	
 	public List<Map<String, Object>> environmentCorporationChart(HashMap param);
 	
+	/**
+	 * 개발팀 csw
+	 * @param param
+	 * @return
+	 */
+	//민원분류
 	public List<Map<String, Object>> getCvplTyCode(HashMap param);
+	//청주시군구
+	public List<Map<String, Object>> getSigunguCode(HashMap param);
+	//민원데이터 list
+	public List<Map<String, Object>> getCvplDataManageList(HashMap param);
+	//민원등록
+	public int insertCvplData(HashMap param);
 }

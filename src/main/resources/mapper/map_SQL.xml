@@ -856,10 +856,64 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 		UPDATE IOT_SENSOR_INFO SET LO = #{lo}, LA = #{la} WHERE SPOT_CODE = #{spotCode} AND SENSOR_TY_CODE = 'SEN01001'
 	</update>
 	
+	<!-- 개발팀 csw -->
+	<!-- 민원분류 -->
 	<select id="getCvplTyCode" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CODE, CODE_NM
 		  FROM COM_CODE
 		WHERE UPPER_CODE_NO=201
 		ORDER BY SORT_ORDR
 	</select>
+	
+	<!-- 청주시군구 조회 -->
+	<select id="getSigunguCode" parameterType="Map" resultType="hashMap">
+		SELECT SIGNGU_NM, LEGALDONG_CODE
+		  FROM LEGALDONG_CODE
+		 WHERE LEGALDONG_CODE LIKE CONCAT('4311','%')
+		   AND EMD_NM = ''
+		 ORDER BY LEGALDONG_CODE
+	</select>
+	
+	<!-- 민원데이터 list -->
+    <select id="getCvplDataManageList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+            SELECT DATE_FORMAT(CVPL_DT,'%Y-%m-%d') AS CVPL_DE,
+			       CPTTR,
+			       CPTTR_CTTPC,
+			       CVPL_LC,
+			       CVPL_CN,
+			       LA,
+			       LO,
+			       (SELECT CODE_NM FROM COM_CODE C WHERE C.UPPER_CODE_NO=201 AND CODE=CVPL_TY_CODE) AS CVPL_TY_NM,
+			       CVPL_NO,
+			       COUNT(1)OVER() AS DTA_CO
+			  FROM (SELECT #{from_date} AS PARAMETER_1,
+                           #{to_date} AS PARAMETER_2,
+                           <choose>
+                            <when test="cpttr !=null and cpttr !=''">
+                            #{cpttr} AS PARAMETER_3,
+                            </when>
+                            <otherwise>
+                            '' AS PARAMETER_3,
+                            </otherwise>
+                           </choose>
+                           #{cvplTyCode} AS PARAMETER_4
+			       ) A,
+			       CVPL_MANAGE B
+			 WHERE B.CVPL_DT BETWEEN DATE_FORMAT(CONCAT(RPAD(PARAMETER_1,8,'01'),'000000'),'%Y-%m-%d %T') AND IF(LENGTH(PARAMETER_2)=8,DATE_FORMAT(CONCAT(PARAMETER_2,'235959'),'%Y-%m-%d %T'),DATE_ADD(DATE_ADD(DATE_FORMAT(CONCAT(PARAMETER_2,'01'),'%Y-%m-%d %T'),INTERVAL 1 MONTH),INTERVAL -1 SECOND))
+			   AND B.CPTTR LIKE CONCAT('%',PARAMETER_3,'%')
+			   AND B.CVPL_TY_CODE = IF(A.PARAMETER_4='',B.CVPL_TY_CODE,A.PARAMETER_4)
+			 ORDER BY CVPL_DT, CVPL_NO
+    </select>
+    
+    <!-- 민원등록 -->
+    <insert id="insertCvplData" parameterType="java.util.HashMap">
+		INSERT INTO CVPL_MANAGE
+        (
+            CVPL_DT, CPTTR, CPTTR_CTTPC, LEGALDONG_CODE, CVPL_LC, CVPL_CN, REGIST_DT, REGISTER_ID, CHANGE_DT, CHANGER_ID, LA, LO, CVPL_TY_CODE
+        )
+        VALUES
+        (
+            #{CVPL_DT}, #{CPTTR}, #{CPTTR_CTTPC}, #{LEGALDONG_CODE}, #{CVPL_LC}, #{CVPL_CN}, SYSDATE(), 'cetech', SYSDATE(), 'cetech', #{LA}, #{LO}, #{CVPL_TY_CODE}
+        )
+	</insert>
 </mapper>
