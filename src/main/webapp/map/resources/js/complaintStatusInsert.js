@@ -96,8 +96,11 @@ var _ComplaintStatusInsert = function () {
 						var featureExtent = geometry.getExtent();
 						var featureCenter = ol.extent.getCenter(featureExtent);
 						if(cvplPopupOverlay){
+							var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );
+							bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );
+							
 							cvplPopupOverlay.setPosition(featureCenter);
-							cvplPopupOverlay.html();
+							cvplPopupOverlay.html(bsmlPopupHtmlTemplate);
 						}
 					}
 				}
