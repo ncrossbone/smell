@@ -61,32 +61,28 @@ function goAction(){
 	if(!validate(frm)){
         return ;
     }
-	if(!confirm("저장 하시겠습니까?")) {
-		return;
-	}else{
 		
-		var formArr = $('#dataSearch').serializeArray();
-		
-		var keyConfig = {
-					'CVPL_CN':'contents',
-					'CVPL_DT':'date',
-					'CVPL_LC':'direct',
-					'CVPL_TY_CODE':'flag',
-					'CPTTR':'man',
-					'CPTTR_CTTPC':'phone',
-					'LEGALDONG_CODE':'addr'
-		};
-		
-		var paramObj = {type:'putCvpl'};
-		for(var i = 0; i<formArr.length; i++){
-			paramObj[keyConfig[formArr[i].name]] = formArr[i].value;
-		}
-		
-		//url- /insertCvplData.do
-		parent.$('#complaintStatusRegPopup').hide();
-		parent.$('#complaintStatusPopup').hide();
-		parent._MessagePipe.send(paramObj);
+	var formArr = $('#dataSearch').serializeArray();
+	
+	var keyConfig = {
+				'CVPL_CN':'contents',
+				'CVPL_DT':'date',
+				'CVPL_LC':'direct',
+				'CVPL_TY_CODE':'flag',
+				'CPTTR':'man',
+				'CPTTR_CTTPC':'phone',
+				'LEGALDONG_CODE':'addr'
+	};
+	
+	var paramObj = {type:'putCvpl'};
+	for(var i = 0; i<formArr.length; i++){
+		paramObj[keyConfig[formArr[i].name]] = formArr[i].value;
 	}
+	
+	//url- /insertCvplData.do
+	parent.$('#complaintStatusRegPopup').hide();
+	parent.$('#complaintStatusPopup').hide();
+	parent._MessagePipe.send(paramObj);
 }
 </script>
 </head>

@@ -88,10 +88,12 @@ var _ComplaintStatusInsert = function () {
 			if(complaintStatusMode == 1){
 				
 			}else if(complaintStatusMode == 2){
-				var trans = new ol.proj.transform(data.result.coordinate, 'EPSG:3857','EPSG:4326');
-				selectedObj.x = trans[0];
-				selectedObj.y = trans[1];
-				writePopup(true);
+				if(selectedObj.type=="putCvpl"){
+					var trans = new ol.proj.transform(data.result.coordinate, 'EPSG:3857','EPSG:4326');
+					selectedObj.x = trans[0];
+					selectedObj.y = trans[1];
+					writePopup(true);
+				}
 			}else if(complaintStatusMode == 3){
 				
 			}else if(complaintStatusMode == 4){
@@ -274,6 +276,26 @@ var _ComplaintStatusInsert = function () {
 			var buffered = jstsGeom.buffer(bufferMeter);
 			var bufferedGeometry = parser.write(buffered);
 			
+			var bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{}});
+			var source = new ol.source.Vector();
+			source.addFeatures([bufferOriginFeature]);
+			bufferOriginLayer = new ol.layer.Vector({ 
+				source: source,
+				zIndex:1001,
+				name:layerName[2],
+				opacity: 0.5,
+				style:new ol.style.Style({
+					stroke: new ol.style.Stroke({
+						color: '#AFABAB',
+						width: 3
+					}),
+					fill: new ol.style.Fill({
+						color: 'yellow'
+					})
+				})
+			});
+			_MapEventBus.trigger(_MapEvents.map_addLayer, bufferOriginLayer);
+			
 			for(var i=0; i<data.length; i++){
 				var coord = _CoreMap.convertLonLatCoord([data[i].POINT_X,data[i].POINT_Y],true);
 				var feature = new ol.Feature({geometry:new ol.geom.Point(coord)});
@@ -303,26 +325,6 @@ var _ComplaintStatusInsert = function () {
 			});
 			
 			_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
-			
-			var bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{}});
-			var source = new ol.source.Vector();
-			source.addFeatures([bufferOriginFeature]);
-			bufferOriginLayer = new ol.layer.Vector({ 
-				source: source,
-				zIndex:1001,
-				name:layerName[2],
-				opacity: 0.5,
-				style:new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: '#AFABAB',
-						width: 3
-					}),
-					fill: new ol.style.Fill({
-						color: 'yellow'
-					})
-				})
-			});
-			_MapEventBus.trigger(_MapEvents.map_addLayer, bufferOriginLayer);
 		});
 	};
 	
@@ -401,6 +403,15 @@ var _ComplaintStatusInsert = function () {
 		cvplPopupOverlay.show();
 		
 		$('#putCvpl').off().on('click',function(){
+			$.ajax({
+		        url : '/insertCvplData.do',
+		        data: JSON.stringify(selectedObj),
+		        type:'POST',
+		        contentType: 'application/json'
+			}).done(function(result){
+				  $('.process').find('li[mode="3"]').trigger('click');
+				  _MapEventBus.trigger(_MapEvents.alertShow, {text:'지점이 등록 되었습니다.'});
+			});
 		})
 	};
 	
