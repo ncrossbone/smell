@@ -19,6 +19,10 @@ var _ui = (function () {
     		_MapEventBus.trigger(_MapEvents.init, {});
     	});
     	
+    	_MapEventBus.on(_MapEvents.setCurrentDate, function(event, data){
+			$('#titleDate').html('<span>'+data.date+' ' +data.time+'시</span>');
+		});
+    	
         $('.accordion').on('click', function () {
             var me = this;
             var isDisplay = 'block';

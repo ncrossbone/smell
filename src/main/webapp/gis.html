@@ -87,7 +87,7 @@
 
 	var _MessagePipe = {};
 	
-	var _BizMode = 0; // 0= 기본 1 = 민원
+	var _BizMode = 1; // 0= 기본 1 = 민원
 	
 	$(function() {
 		$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
@@ -185,6 +185,7 @@
     	
     <div class="instanceArea">
     	<a href="javascript:void(0)" id="initAll">초기화</a>
+    	<h3 id="titleDate"><span></span></h3>
     </div>
 	<ul class="lnb" id="smellMap">
 		<li>
@@ -993,11 +994,11 @@
 		</ul>
         <ul id="workSpace">
         	<li id="" class="workStep" mode="1" ><a href="javascript:void(0)">01 접수민원 선택</a></li>
-            <li id=""><a href="javascript:void(0)">02 공간좌표 획득</a></li>
-            <li id=""><a href="javascript:void(0)">03 인근민원 확인</a></li>
-            <li id=""><a href="javascript:void(0)">04 악취분포 확인</a></li>
-            <li id=""><a href="javascript:void(0)">05 악취원점 분석</a></li>
-            <li id=""><a href="javascript:void(0)">06 악취저감 조치</a></li>
+            <li id="" class="workStep" mode="2" ><a href="javascript:void(0)">02 공간좌표 획득</a></li>
+            <li id="" class="workStep" mode="3" ><a href="javascript:void(0)">03 인근민원 확인</a></li>
+            <li id="" class="workStep" mode="4" ><a href="javascript:void(0)">04 악취분포 확인</a></li>
+            <li id="" class="workStep" mode="5" ><a href="javascript:void(0)">05 악취원점 분석</a></li>
+            <li id="" class="workStep" mode="6" ><a href="javascript:void(0)">06 악취저감 조치</a></li>
         </ul> 
         <ul id="workSpace2" style="width: 100px;
 		    height: 40px;

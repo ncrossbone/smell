@@ -163,9 +163,35 @@ public class MapBiz {
 		return mapMapper.updateSensor(param);
 	}
 	
+	/**
+	 * 개발팀 csw
+	 * @param param
+	 * @return
+	 */
+	//민원분류
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getCvplTyCode(HashMap param) {
 		// TODO Auto-generated method stub
 		return mapMapper.getCvplTyCode(param);
+	}
+
+	//청주시군구
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getSigunguCode(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getSigunguCode(param);
+	}
+	
+	//민원데이터 list
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getCvplDataManageList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getCvplDataManageList(param);
+	}
+	
+	//민원등록
+	@SuppressWarnings("unchecked")
+	public int insertCvplData(HashMap param) {
+		return mapMapper.insertCvplData(param);
 	}
 }
