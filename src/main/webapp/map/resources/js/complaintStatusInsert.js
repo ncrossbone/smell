@@ -89,17 +89,25 @@ var _ComplaintStatusInsert = function () {
 			$(".cvpl_pop_close").off().on('click',function(){
 				$(this).parent().parent().fadeOut();
 			});
-		});
-		
-		_MapEventBus.on(_MapEvents.cvplModeChange, function(event, data){
-			changeMode(data.mode);
+			
+			$('.process').find('li').removeClass('on');
+			for(var i = 0; i<$('.process').find('li').length; i++){
+				var li = $($('.process').find('li')[i]);
+				li.attr('style', 'background-image:' + 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
+			}
+			changeMode(1);
 		});
 	}
 	
 	var changeMode = function(mode){
 		complaintStatusMode = mode;
 		
-		process.find('li[mode="'+mode+'"]').addClass('on');
+		for(var i = 0; i<mode; i++){
+			var li = $($('.process').find('li')[i]);
+			li.addClass('on');
+			li.attr('style', 'background-image:' + 'url("../images'+li.css('background-image').split('images')[1].replace('_off','_on'));
+		}
+		
 		if(mode == 1){
 			
 		}else if(mode == 3){
@@ -145,8 +153,10 @@ var _ComplaintStatusInsert = function () {
 	var setProcMsg = function(msg){
 		if(msg.type == 'selectedCvpl'){
 			selectedObj = msg;
+			selectedObj.x = parseFloat(msg.x); 
+			selectedObj.y = parseFloat(msg.y); 
 			
-			writePopup([msg.x,msg.y],msg.direct,msg.contents);
+			writePopup([selectedObj.x,selectedObj.y],msg.direct,msg.contents);
 			
 			currentDate.date = msg.date;
 			currentDate.time = msg.time;
@@ -239,7 +249,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var writePopup = function(coord, title, addr, isInsert){
 
-		var centerPoint =_CoreMap.convertLonLatCoord([parseFloat(coord[0]),parseFloat(coord[1])],true);
+		var centerPoint =_CoreMap.convertLonLatCoord([coord[0],coord[1]],true);
 		popupOverlay.setPosition(centerPoint);
 
 		var cvplHtml = '<div class="tooltip2">';
