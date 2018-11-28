@@ -127,6 +127,9 @@
 		//        regCvpl = 등록 팝업
 		//        regCvplPoint = 지도에서 클릭해서 등록
 		_MessagePipe.send = function(msg){
+			
+			_BizMode = 1;
+			
 			if(_BizMode == 1){
 				_ComplaintStatusInsert.setProcMsg(msg);
 			}
@@ -1018,6 +1021,9 @@
 				<div id="originTel"></div>
 			</div>
 	    </div>
+	    
+	    <div id="cvplPopupOverlay"></div>
+	    
 		<div id="chartDiv" style="display: none;">
 		</div>
         <div id="popup" style="right: 150px; top: 250px; display: none;">

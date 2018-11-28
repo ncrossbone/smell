@@ -40,18 +40,24 @@
 			   LO AS POINT_Y,
 			   CVPL_TY_CODE,
 			   CVPL_LC
+			    <if test="flag == 1">
+			    
+			    </if>
   		  FROM CVPL_MANAGE
-  		 WHERE DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
-     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
-     	   AND LA IS NOT NULL
-     	   <if test="branchName != ''">
-    			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
-  			</if>
-  			AND CVPL_TY_CODE IN
-  			<foreach collection="checkBox" item="type" index="index" open="(" separator="," close=")">
-				#{type}
-  			</foreach>	
-     	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
+  		 WHERE LA IS NOT NULL
+           AND LO IS NOT NULL
+  		  <if test="flag != 1">
+	  		   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[>=]]> #{startDate}
+	     	   AND DATE_FORMAT(CVPL_DT,'%Y%m%d') <![CDATA[<=]]> #{endDate}
+	     	   <if test="branchName != ''">
+	    			AND CVPL_CN LIKE CONCAT('%', #{branchName}, '%')
+	  			</if>
+	  			AND CVPL_TY_CODE IN
+	  			<foreach collection="checkBox" item="type" index="index" open="(" separator="," close=")">
+					#{type}
+	  			</foreach>	
+	     	   AND LEGALDONG_CODE LIKE CONCAT('%', #{town}, '%')
+     	   </if>
 	</select>
 	
 	<select id="complaintStatusGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
@@ -203,7 +209,11 @@
   			</if>
   	  GROUP BY CODE,B.SENSOR_NM,OPR_STTUS_CODE,DATE,MESURE_DT
 	</select>
-	
+	<select id="chartFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 SELECT CONCAT(LEGALDONG_CODE,SPOT_CODE) AS CODE,SENSOR_NM,SENSOR_TY_CODE,LO,LA
+               FROM bdsm.IOT_SENSOR_INFO
+			  WHERE LO IS NOT NULL
+	</select>
 	<select id="fixedMeasurementFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
                 OPR_STTUS_CODE,
@@ -449,34 +459,6 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
    	   	   </if>
 	</select>
 	
-	<select id="environmentCorporationChart" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-	  	   SELECT DISTINCT DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시') AS MESURE_DT,
-				  SO2_DNSTY,
-				  CMO_DNSTY,
-				  OZ_DNSTY,
-				  NO2_DNSTY,
-				  PM10_DNSTY,
-				  PM10_HOUR24_PREDICT_MVMN_DNSTY,
-				  PM25_DNSTY,
-				  PM25_HOUR24_PREDICT_MVMN_DNSTY,
-				  UNITY_AIR_ENVRN_NCL,
-				  UNITY_AIR_ENVRN_IDEX,
-				  SO2_IDEX,
-				  CMO_IDEX,
-				  OZ_IDEX,
-				  NO2_IDEX,
-				  PM10_HOUR24_GRAD,
-				  PM25_HOUR24_GRAD,
-				  PM10_HOUR1_GRAD,
-				  PM25_HOUR1_GRAD
-  		FROM bdsm.SHP_AIRKOREA_MSRSTN A
-	LEFT OUTER JOIN bdsm.AIRKOREA_MESURE_INFO B
-  		  ON A.CODE = B.MSRSTN_ID
-		   where DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[>=]]> CONCAT('20181001')
-  		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d') <![CDATA[<=]]> CONCAT('20181001')
-           AND CODE = #{CODE}
-	</select>
-	
 	<select id="environmentCorporationClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  	   SELECT NAME,
 	  	   		  CODE,
@@ -491,18 +473,13 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 				  NAME,
 				  POINT_X,
 				  POINT_Y
-				   <if test="chartMode == 1">
-			       ,1 AS CHART_MODE
-			        </if>
 			 FROM bdsm.SHP_AIRKOREA_MSRSTN
 		    WHERE ADM_CODE LIKE CONCAT('4311','%')
 		    
-		    <if test="chartMode != 1">
-			    <if test="branchName != ''">
-	              AND NAME LIKE CONCAT('%', #{branchName}, '%')
-	            </if>
-	              AND ADM_CODE LIKE CONCAT(#{town},'%')
-             </if>
+		    <if test="branchName != ''">
+              AND NAME LIKE CONCAT('%', #{branchName}, '%')
+            </if>
+              AND ADM_CODE LIKE CONCAT(#{town},'%')
 	</select>
 	<select id="unmannedOdorFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  	 SELECT CONCAT(LEGALDONG_CODE,SPOT_CODE) AS CODE,LO AS POINT_X,LA AS POINT_Y, SENSOR_NM
@@ -738,7 +715,41 @@ WHERE TAB.POINT_X IS NOT NULL
     			AND CMPNY_NM LIKE CONCAT('%', #{branchName}, '%')
   			</if>
 	</select>
-	
+	<select id="getChart" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
+			   B.SENSOR_NM,
+               OPR_STTUS_CODE,
+			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
+			   DATE_FORMAT(MESURE_DT,'%Y년 %m월 %d일 %H시 %i분') AS MESURE_DT,
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='1' THEN MESURE_DNSTY END),3) AS 'VOCS',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='2' THEN MESURE_DNSTY END),3) AS 'CCNT',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='3' THEN MESURE_DNSTY END),3) AS 'NH3',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='4' THEN MESURE_DNSTY END),3) AS 'ERCRT',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='5' THEN MESURE_DNSTY END),3) AS 'H2S',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='6' THEN MESURE_DNSTY END),3) AS 'ARCSR',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='7' THEN MESURE_DNSTY END),3) AS 'OU',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='8' THEN MESURE_DNSTY END),3) AS 'SOLRAD',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='9' THEN MESURE_DNSTY END),3) AS 'HD',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='10' THEN MESURE_DNSTY END),3) AS 'TMPRT',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='11' THEN MESURE_DNSTY END),3) AS 'WD',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='12' THEN MESURE_DNSTY END),3) AS 'WS',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='13' THEN MESURE_DNSTY END),3) AS 'NO2',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='14' THEN MESURE_DNSTY END),3) AS 'SO2',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='15' THEN MESURE_DNSTY END),3) AS 'PM10',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='16' THEN MESURE_DNSTY END),3) AS 'PM2_5',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='17' THEN MESURE_DNSTY END),3) AS 'CFC',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='18' THEN MESURE_DNSTY END),3) AS 'CH3SH',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='19' THEN MESURE_DNSTY END),3) AS 'TMA',
+			   TRUNCATE(SUM(CASE WHEN A.SENSOR_SPCS_NO='20' THEN MESURE_DNSTY END),3) AS 'ETHANOL'
+  		  FROM bdsm.IOT_SENSOR_MESURE_INFO A,
+	   		   bdsm.IOT_SENSOR_INFO B
+  		   WHERE CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
+  		   AND B.LA IS NOT NULL
+           AND B.LO IS NOT NULL
+   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = '2018100110'
+     	   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = #{code}
+  		   GROUP BY CODE,B.SENSOR_NM,OPR_STTUS_CODE,DATE,MESURE_DT
+	</select>
 	<select id="reductionMonitoringGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 			   B.SENSOR_NM,
