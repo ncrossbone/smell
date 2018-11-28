@@ -43,6 +43,10 @@ var _ComplaintStatusInsert = function () {
 		
 		$('.workStep').on('click', function(){
 			var mode = $(this).attr('mode');
+			if(complaintStatusMode < (parseInt(mode)-1)){
+				alert('못가');
+				return;
+			}
 			if(complaintStatusMode == mode){
 				return;
 			}
@@ -72,19 +76,16 @@ var _ComplaintStatusInsert = function () {
 		_MapEventBus.on(_MapEvents.complaintStatusMode, function(event, data){
 			complaintStatusPopup.show();
 			
-			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {mode:1});
-			
 			cvplPopupOverlay.hide();
 			process.show();
 			
-			complaintStatusPopup.html('<p class="pop_tit"><span class="pop_tit_text">민원 조회</span><a href="javascript:void(0)" class="btn03 cvpl_pop_close"></a></p> <div class="pop_conts" style="background: #fff; width:880px; height:440px; overflow: hidden;"> <iframe src="./cvplDataStatistics.html" style="width:100%; height:100%;"></iframe></div>');
 			if($('#tabOpeners').attr('class').indexOf('on') > -1){
 				$('#tabOpeners').trigger('click');
 			}
 			
-			if(!$('#airMaps').attr('class')){
-				$('#airMaps').trigger('click');
-			}
+//			if(!$('#airMaps').attr('class')){
+//				$('#airMaps').trigger('click');
+//			}
 			
 			$(".cvpl_pop_close").off().on('click',function(){
 				$(this).parent().parent().fadeOut();
@@ -95,6 +96,7 @@ var _ComplaintStatusInsert = function () {
 				var li = $($('.process').find('li')[i]);
 				li.attr('style', 'background-image:' + 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
 			}
+			
 			changeMode(1);
 		});
 	}
