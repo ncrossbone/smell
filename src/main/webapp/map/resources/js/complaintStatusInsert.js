@@ -38,14 +38,19 @@ var _ComplaintStatusInsert = function () {
 			if(complaintStatusMode == mode){
 				return;
 			}
-			
+			changeMode(mode);
 		});
 	}
 	
+	var setOdorSpread = function(){
+		
+	}
+	
 	var changeMode = function(mode){
-		
 		complaintStatusMode = mode;
-		
+		if(mode == 3){
+			setOdorSpread();
+		}
 	}
 	
 	var setProcMsg = function(msg){
