@@ -5,7 +5,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process;
 	
-	var selectedObj = {};
+	var selectedObj;
 	var popupOverlay;
 	
 	var init = function(){
@@ -85,6 +85,8 @@ var _ComplaintStatusInsert = function () {
 		process.find('li[mode="'+mode+'"]').addClass('on');
 		if(mode == 1){
 			
+		}else if(mode == 3){
+			setBuffer();
 		}else if(mode == 4){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
 		}else if(mode == 5){
@@ -97,7 +99,6 @@ var _ComplaintStatusInsert = function () {
 			selectedObj = msg;
 			
 			writePopup([msg.x,msg.y],msg.direct,msg.contents);
-			//setBuffer(msg.x,msg.y);
 			
 			currentDate.date = msg.date;
 			currentDate.time = msg.time;
@@ -106,7 +107,10 @@ var _ComplaintStatusInsert = function () {
 		}
 	};
 	
-	var setBuffer = function(x,y,bufferMeter){
+	var setBuffer = function(){
+		var x = selectedObj.x;
+		var y = selectedObj.y;
+		
 		if(!bufferMeter){
 			bufferMeter = 200;
 		}
