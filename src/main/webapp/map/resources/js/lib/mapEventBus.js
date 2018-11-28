@@ -21,6 +21,7 @@ _MapEvents.show_odorSpread_layer = 'show_odorSpread_layer';
 _MapEvents.show_odorMovement_layer = 'show_odorMovement_layer';
 
 
+
 _MapEvents.onresizeall_end = 'onresizeall_end';
 
 _MapEvents.setZoom = 'setzoom';
