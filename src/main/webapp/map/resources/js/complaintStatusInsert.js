@@ -165,7 +165,7 @@ var _ComplaintStatusInsert = function () {
 		}
 	};
 	
-	var setBuffer = function(){
+	var setBuffer = function(bufferMeter){
 		var x = selectedObj.x;
 		var y = selectedObj.y;
 		
