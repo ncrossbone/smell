@@ -87,6 +87,8 @@
 
 	var _MessagePipe = {};
 	
+	var _BizMode = 1; // 0= 기본 1 = 민원
+	
 	$(function() {
 		$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 			
@@ -121,13 +123,15 @@
 		
 		
 		// msg = {type:''}
+		// type = selectedCvpl 민원위치
+		//        regCvpl = 등록 팝업
+		//        regCvplPoint = 지도에서 클릭해서 등록
 		_MessagePipe.send = function(msg){
-			if(msg.type == ''){
-				_ComplaintStatusInsert.setPopupMassge(msg);
-			} else if(msg.type == ''){
-				
-			} else{
-				
+			
+			_BizMode = 1;
+			
+			if(_BizMode == 1){
+				_ComplaintStatusInsert.setProcMsg(msg);
 			}
 		};
 	});
@@ -181,6 +185,7 @@
     	
     <div class="instanceArea">
     	<a href="javascript:void(0)" id="initAll">초기화</a>
+    	<h3 id="titleDate"><span></span></h3>
     </div>
 	<ul class="lnb" id="smellMap">
 		<li>
@@ -988,13 +993,22 @@
             </li>
 		</ul>
         <ul id="workSpace">
-        	<li id="workStep1"><a href="javascript:void(0)">01 접수민원 선택</a></li>
-            <li id=""><a href="javascript:void(0)">02 공간좌표 획득</a></li>
-            <li id=""><a href="javascript:void(0)">03 인근민원 확인</a></li>
-            <li id=""><a href="javascript:void(0)">04 악취분포 확인</a></li>
-            <li id=""><a href="javascript:void(0)">05 악취원점 분석</a></li>
-            <li id=""><a href="javascript:void(0)">06 악취저감 조치</a></li>
+        	<li id="" class="workStep" mode="1" ><a href="javascript:void(0)">01 접수민원 선택</a></li>
+            <li id="" class="workStep" mode="2" ><a href="javascript:void(0)">02 공간좌표 획득</a></li>
+            <li id="" class="workStep" mode="3" ><a href="javascript:void(0)">03 인근민원 확인</a></li>
+            <li id="" class="workStep" mode="4" ><a href="javascript:void(0)">04 악취분포 확인</a></li>
+            <li id="" class="workStep" mode="5" ><a href="javascript:void(0)">05 악취원점 분석</a></li>
+            <li id="" class="workStep" mode="6" ><a href="javascript:void(0)">06 악취저감 조치</a></li>
         </ul> 
+        <ul id="workSpace2" style="width: 100px;
+		    height: 40px;
+		    right: 200px;
+		    top: 200px;
+		    background-color: #fff;
+		    z-index: 1000;
+		    position: absolute;">
+        </ul> 
+        
      	<ul id="map_type">
         	<li id="defaultMaps" class="on"><a href="javascript:void(0)">기본</a></li>
             <li id="airMaps"><a href="javascript:void(0)">위성</a></li>
@@ -1008,6 +1022,9 @@
 				<div id="originTel"></div>
 			</div>
 	    </div>
+	    
+	    <div id="cvplPopupOverlay"></div>
+	    
 		<div id="chartDiv" style="display: none;">
 		</div>
         <div id="popup" style="right: 150px; top: 250px; display: none;">

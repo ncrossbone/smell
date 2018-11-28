@@ -16,6 +16,10 @@ _MapEvents.map_removeLayer = 'map_removeLayer';
 _MapEvents.map_pointermove = 'map_pointermove';
 _MapEvents.map_mousemove = 'map_mousemove';
 
+_MapEvents.map_move = 'map_move';
+_MapEvents.show_odorSpread_layer = 'show_odorSpread_layer';
+_MapEvents.show_odorMovement_layer = 'show_odorMovement_layer';
+
 
 _MapEvents.onresizeall_end = 'onresizeall_end';
 

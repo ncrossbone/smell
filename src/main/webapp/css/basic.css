@@ -240,3 +240,26 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .minwon3 { background: url(../images/minwon_3.png) left top no-repeat; }
 .minwon1, .minwon2, .minwon3 { height: 20px; padding-left: 23px; display: inline-block; vertical-align: middle; margin-right: 20px; }
 .minwon1 span, .minwon2 span, .minwon3 span { margin-top: 4px; display: block; }
+
+
+
+
+
+
+.tt_tit2 { padding: 7px 13px; background: #f2f4f4; color: #000; letter-spacing: -1px; font-size: 17px; position: relative; }
+.tt_tit2 span { background: url(../images/titbg.png) no-repeat left center; padding-left:15px; display: inline-block; }
+.plus_btn { background:url(../images/plus_btn.png) no-repeat left center; width:20px; height:20px; display:block; position:absolute; right:40px; top:10px;}
+.pop_conts3 { padding: 10px; }
+#cvplPopupOverlay { 
+		border:1px solid #313942; 
+		background:#ffffff; 
+		width:320px; 
+		display: none;
+        position: absolute;
+        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        bottom: 45px;
+    	left: -150px;
+}
+#cvplPopupOverlay:after { content:url(../images/bg_tool_tip_bg.png); width:29px; height:43px; left:50%; position:absolute; bottom:-43px; transform:translateX(-50%); } 

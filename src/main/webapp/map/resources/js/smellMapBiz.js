@@ -183,6 +183,30 @@ var _SmellMapBiz = function () {
 		_CoreMap.getMap().addOverlay(popupOverlay);
 	}
 	
+	var setCurrentDateTime = function(dateObj){
+		
+		var date = new Date(dateObj.date.substring(0,4),parseInt(dateObj.date.substring(4,6))-1, dateObj.date.substring(6,8));
+		
+		// 기상장
+		$('#weatherAnalysisStartTime').val(dateObj.time);
+		$('#weatherAnalysisEndTime').val(dateObj.time);
+		 
+		$('#weatherAnalysisStartDate').datepicker('setDate', date);
+		$('#weatherAnalysisEndDate').datepicker('setDate', date);
+		
+		// 확산
+		$('#odorSpreadStartDate').datepicker('setDate', date);
+		$('#odorSpreadEndDate').datepicker('setDate', date);
+		
+		$('#odorSpreadStartTime').val(dateObj.time);
+		$('#odorSpreadEndTime').val(dateObj.time);
+		
+		// 이동경로
+		$('#odorMovementStartDate').datepicker('setDate', date);
+		$('#odorMovementStartTime').val(dateObj.time)
+		
+	}
+	
 	var setEvent = function(){
 		
 		$('#tabOpeners').on('click', function(){
@@ -198,7 +222,15 @@ var _SmellMapBiz = function () {
 				 highlightVectorLayer = null;
 			 }
 		});
-		
+		_MapEventBus.on(_MapEvents.setCurrentDate, function(event, data){
+			setCurrentDateTime(data);
+		});
+		_MapEventBus.on(_MapEvents.show_odorSpread_layer, function(event, data){
+			$('#odorSpreadPlay').trigger('click');
+		});		
+		_MapEventBus.on(_MapEvents.show_odorMovement_layer, function(event, data){
+			$('#odorMovementPlay').trigger('click');
+		});
 		_MapEventBus.on(_MapEvents.clickLayerOnOff, function(event, data){
 			if(data.target == 'weatherAnalysis'){
 				if(weatherAnalysisLayer){
@@ -237,6 +269,11 @@ var _SmellMapBiz = function () {
 					if(_CoreMap.getMap().getLayerForName(lyrNm)){
 						_WestCondition.onClickLayer(feature,lyrNm);
 					}
+				}else if(layer.get('name')=='chartModeLayer'){
+					
+					_MapEventBus.trigger(_MapEvents.getChartData, {
+						code:feature.getProperties().CODE
+					});
 				}
 			});
 			
@@ -268,6 +305,8 @@ var _SmellMapBiz = function () {
 			var pixel = coreMap.getEventPixel(data.result.originalEvent);
 			var hit = coreMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
 				if(_WestCondition.getContentsConfig()[layer.get('name')] && layer.get('name') != 'iotSensorInfo'){
+					return true;
+				}else if(layer.get('name')=='chartModeLayer'){
 					return true;
 				}else{
 					return false;
