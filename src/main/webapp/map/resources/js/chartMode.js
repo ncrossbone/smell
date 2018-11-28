@@ -34,7 +34,7 @@ var _ChartMode = function () {
 			var data = param.data;
 			var item = ['VOCS','CCNT','NH3','ERCRT','H2S','ARCSR','OU','SOLRAD','HD','TMPRT','WD','WS','NO2','SO2','PM10','PM2_5','CFC','CH3SH','TMA','ETHANOL','MESURE_DT'];
 			
-			$('#chartDiv').html('');
+			$('#chartArea').html('');
 			
 			if(!data){
 				return;
@@ -106,12 +106,14 @@ var _ChartMode = function () {
 				}
 			}
 			for(var i = 0; i < item.length; i++){
-				$('#chartDiv').append('<div id="chart' + i + '"></div>');
-				chartObj.series[0].data = dataObj[item[i]];
-				chartObj.series[0].name = item[i];
-				chartObj.xAxis.categories = dataObj.MESURE_DT;
-				chartObj.title.text = item[i] + ' (' + item[i] + ')';
-				Highcharts.chart('chart'+ i,chartObj);
+				if(item[i] != 'MESURE_DT'){
+					$('#chartArea').append('<div id="chart' + i + '"></div>');
+					chartObj.series[0].data = dataObj[item[i]];
+					chartObj.series[0].name = item[i];
+					chartObj.xAxis.categories = dataObj.MESURE_DT;
+					chartObj.title.text = item[i] + ' (' + item[i] + ')';
+					Highcharts.chart('chart'+ i,chartObj);
+				}
 			}
 		});
 		
