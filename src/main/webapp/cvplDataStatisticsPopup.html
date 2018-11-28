@@ -67,9 +67,19 @@ function goAction(){
 		
 		var formArr = $('#dataSearch').serializeArray();
 		
+		var keyConfig = {
+					'CVPL_CN':'contents',
+					'CVPL_DT':'date',
+					'CVPL_LC':'direct',
+					'CVPL_TY_CODE':'flag',
+					'CPTTR':'man',
+					'CPTTR_CTTPC':'phone',
+					'LEGALDONG_CODE':'addr'
+		};
+		
 		var paramObj = {type:'putCvpl'};
 		for(var i = 0; i<formArr.length; i++){
-			paramObj[formArr[i].name] = formArr[i].value;
+			paramObj[keyConfig[formArr[i].name]] = formArr[i].value;
 		}
 		
 		//url- /insertCvplData.do

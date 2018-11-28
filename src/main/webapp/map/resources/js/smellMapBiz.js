@@ -274,8 +274,6 @@ var _SmellMapBiz = function () {
 		});
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
-			if(_ComplaintStatusInsert.getMode()==2){
-			}
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
 				var lyrNm = layer.get('name');
 				
