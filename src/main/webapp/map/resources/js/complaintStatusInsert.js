@@ -23,6 +23,13 @@ var _ComplaintStatusInsert = function () {
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
 		complaintStatusPopup = $('#complaintStatusPopup');
+		
+		var ww = $(window).width();
+		var wh = $(window).height();
+		complaintStatusPopup.css('left', parseInt(ww/2)-parseInt($('#complaintStatusPopup').width()/2));
+		complaintStatusPopup.css('top', (parseInt(wh/2)-parseInt($('#complaintStatusPopup').height()/2)) + 20);
+		
+		
 		bsmlPopup = $('#bsmlPopup');
 		
 		complaintStatusRegPopup.draggable({ containment: '#map' });
@@ -221,7 +228,7 @@ var _ComplaintStatusInsert = function () {
 			
 			writePopup();
 			
-			currentDate.date = msg.date.replace(regExp, '');;
+			currentDate.date = msg.date.replace(regExp, '');
 			currentDate.time = msg.time;
 			
 			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
