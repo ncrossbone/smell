@@ -223,3 +223,17 @@ ul[role="tablist"]{
     overflow-y:auto;
     margin-top: 50px;
 }
+
+#cvplPopupOverlay { 
+		border:1px solid #313942; 
+		background:#ffffff; 
+		width:320px; 
+		display: none;
+        position: absolute;
+        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        bottom: 45px;
+    	left: -150px;
+}
+#cvplPopupOverlay:after { content:url(../images/bg_tool_tip_bg.png); width:29px; height:43px; left:50%; position:absolute; bottom:-43px; transform:translateX(-50%); } 

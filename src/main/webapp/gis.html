@@ -147,6 +147,12 @@
         	<li><a class="map1 on" href="javascript:void(0)"></a></li>
             <li><a class="map2" href="javascript:void(0)"></a></li>
         </ul> -->
+        <ul class="topmenu">
+			<li><a href="javascript:void(0)" class="tm01" id="putComplaintStatus">민원처리</a></li>      	
+			<li><a href="javascript:void(0)" class="tm02">현장민원</a></li>      	
+			<li><a href="javascript:void(0)" class="tm03">악취예보처리</a></li>      	
+			<li><a href="javascript:void(0)" class="tm04" id="chartMode">그래프</a></li>      	
+        </ul>
     </div>
     	
     <div id="nav">
@@ -164,12 +170,6 @@
             </span>
         </div>
         <a class="btn02 fl" href="javascript:void(0)" id="poiView">POI 보기</a>
-        <div class="fl" style=" float: right !important;">
-	        <ul id="workSpace" style="position: relative !important; right: 0px !important; top: 0px !important;">
-	        	<li id="putComplaintStatus"><a href="javascript:void(0)">민원등록</a></li>
-	            <li id="chartMode"><a href="javascript:void(0)">차트모드</a></li>
-	        </ul>
-        </div>
     </div>
     <div id="container">
     	<ul id="tabOpener">
@@ -978,6 +978,32 @@
         </li>
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
+     	<ul class="process">
+        	<li class="p_f workStep" mode="1">
+            	<span class="step">STEP.1</span>
+                <span class="p_text">접수민원 선택</span>
+            </li>
+        	<li class="p_a workStep" mode="2">
+            	<span class="step">STEP.2</span>
+                <span class="p_text">공간좌표 획득</span>
+            </li>
+        	<li class="p_a workStep" mode="3">
+            	<span class="step">STEP.3</span>
+                <span class="p_text">인근민원 확인</span>
+            </li>
+        	<li class="p_a workStep" mode="4">
+            	<span class="step">STEP.4</span>
+                <span class="p_text">악취분포 확인</span>
+            </li>
+        	<li class="p_a workStep" mode="5">
+            	<span class="step">STEP.5</span>
+                <span class="p_text">악취원점 분석</span>
+            </li>
+        	<li class="p_l workStep" mode="6">
+            	<span class="step">STEP.6</span>
+                <span class="p_text">악취저감 조치</span>
+            </li>
+        </ul>
      	<ul id="around_info">
 			<li>
                 <span class="pic_school">학교</span>
@@ -992,14 +1018,6 @@
                 </div>
             </li>
 		</ul>
-        <ul id="workSpace">
-        	<li id="" class="workStep" mode="1" ><a href="javascript:void(0)">01 접수민원 선택</a></li>
-            <li id="" class="workStep" mode="2" ><a href="javascript:void(0)">02 공간좌표 획득</a></li>
-            <li id="" class="workStep" mode="3" ><a href="javascript:void(0)">03 인근민원 확인</a></li>
-            <li id="" class="workStep" mode="4" ><a href="javascript:void(0)">04 악취분포 확인</a></li>
-            <li id="" class="workStep" mode="5" ><a href="javascript:void(0)">05 악취원점 분석</a></li>
-            <li id="" class="workStep" mode="6" ><a href="javascript:void(0)">06 악취저감 조치</a></li>
-        </ul> 
         <ul id="workSpace2" style="width: 100px;
 		    height: 40px;
 		    right: 200px;
@@ -1055,10 +1073,6 @@
             </div>
         </div>  
         <div id="complaintStatusPopup" style="right: 150px; top: 250px; display: none; width: 900px; height:500px; position: absolute; z-index: 999;">
-        	<p class="pop_tit"><span class="pop_tit_text">민원 조회</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
-            <div class="pop_conts" style="background: #fff; width:880px; height:440px; overflow: hidden;">
-            	<iframe src="./cvplDataStatistics.html" style="width:100%; height:100%;"></iframe>
-            </div>
         </div>     
         <div id="complaintStatusRegPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;">
         	<p class="pop_tit"><span class="pop_tit_text">민원 조회</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>

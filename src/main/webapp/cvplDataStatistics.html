@@ -14,7 +14,6 @@
 <script type="text/javascript" src="/cms/js/jquery-1.11.3.min.js"></script>
 
 <script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
-<!-- <script type="text/javascript" src="/map/resources/js/cvplDataStatistics.js"></script> -->
 
 <!-- 달력 -->
 <link href="/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
@@ -76,14 +75,14 @@ function goSearch() {
 		for (var i = 0; i < data.length; i++) {
 			selectTag += "<tr>";
 			selectTag += "<td style='text-align:center;'><input type='radio' name='cvplSel' value='"+data[i].CVPL_NO+"' /></td>";
-			selectTag += "<td>"+data[i].CVPL_DE+"</td>";
-			selectTag += "<td>"+data[i].CPTTR+"</td>";
-			selectTag += "<td>"+data[i].CPTTR_CTTPC+"</td>";
-			selectTag += "<td>"+data[i].LA+"</td>";
-			selectTag += "<td>"+data[i].LO+"</td>";
-			selectTag += "<td>"+data[i].CVPL_LC+"</td>";
-			selectTag += "<td>"+data[i].CVPL_TY_NM+"</td>";
-			selectTag += "<td>"+data[i].CVPL_CN+"</td>";
+			selectTag += "<td class='cvplDate'>"+data[i].CVPL_DE+"</td>";
+			selectTag += "<td class='cvplMan'>"+data[i].CPTTR+"</td>";
+			selectTag += "<td class='cvplPhone'>"+data[i].CPTTR_CTTPC+"</td>";
+			selectTag += "<td class='cvplX'>"+data[i].LA+"</td>";
+			selectTag += "<td class='cvplY'>"+data[i].LO+"</td>";
+			selectTag += "<td class='cvplDirect'>"+data[i].CVPL_LC+"</td>";
+			selectTag += "<td class='cvplFlag'>"+data[i].CVPL_TY_NM+"</td>";
+			selectTag += "<td class='cvplContents'>"+data[i].CVPL_CN+"</td>";
 			selectTag += "<td class='AC'><a href='' onclick='gisView(\""+data[i].LA+"\",\""+data[i].LO+"\");return false;' class='btn_gis'>GIS</a></td>";
 			selectTag += "</tr>";
 		}
@@ -127,7 +126,22 @@ function cvplDataInsert(){
 //민원 선택
 function cvplDataSel(){
 	var val = $(":input:radio[name=cvplSel]:checked").val();
-	alert(val);
+	if(!val){
+		return;
+	}
+	var tdArr = $($(":input:radio[name=cvplSel]:checked").parent().parent()).find('td');
+	var paramObj = {type:'selectedCvpl'};
+	
+	for(var i = 0; i<tdArr.length; i++){
+		var classNm = $(tdArr[i]).attr('class');
+		if(classNm){
+			if(classNm.indexOf('cvpl') > -1){
+				paramObj[classNm.split('cvpl')[1].toLowerCase()] = $(tdArr[i]).text();
+			}	
+		}
+	}
+	parent.$('#complaintStatusPopup').hide();
+	parent._MessagePipe.send(paramObj);
 }
 
 //위치좌표gis

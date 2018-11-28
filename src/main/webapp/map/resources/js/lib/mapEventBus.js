@@ -39,6 +39,8 @@ _MapEvents.writeChart = 'writeChart';
 
 _MapEvents.setCurrentDate = 'setCurrentDate';
 
+_MapEvents.cvplModeChange = 'cvplModeChange';
+
 var _MapEventBus = $({});
 
 // sample 
