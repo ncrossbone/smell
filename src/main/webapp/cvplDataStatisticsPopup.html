@@ -64,8 +64,18 @@ function goAction(){
 	if(!confirm("저장 하시겠습니까?")) {
 		return;
 	}else{
+		
+		var formArr = $('#dataSearch').serializeArray();
+		
+		var paramObj = {type:'putCvpl'};
+		for(var i = 0; i<formArr.length; i++){
+			paramObj[formArr[i].name] = formArr[i].value;
+		}
+		
 		//url- /insertCvplData.do
-			alert("저장");
+		parent.$('#complaintStatusRegPopup').hide();
+		parent.$('#complaintStatusPopup').hide();
+		parent._MessagePipe.send(paramObj);
 	}
 }
 </script>
