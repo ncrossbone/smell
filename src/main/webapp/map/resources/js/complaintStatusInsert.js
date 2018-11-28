@@ -27,7 +27,6 @@ var _ComplaintStatusInsert = function () {
 			set: function(date) {
 		    	this._date = date;
 		    	$('#workSpace2').html(currentDate.date + currentDate.time);
-		    	_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 		    }
 		});
 		Object.defineProperty(currentDate, 'time', {
@@ -37,7 +36,6 @@ var _ComplaintStatusInsert = function () {
 			set: function(time) {
 		    	this._time = time;
 		    	$('#workSpace2').html(currentDate.date + currentDate.time);
-		    	_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 		    }
 		});
 		
@@ -48,6 +46,26 @@ var _ComplaintStatusInsert = function () {
 			}
 			changeMode(mode);
 		});
+		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
+			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
+				return feature;
+			});
+			
+			if(complaintStatusMode == 1){
+				
+			}else if(complaintStatusMode == 2){
+				
+			}else if(complaintStatusMode == 3){
+				
+			}else if(complaintStatusMode == 4){
+				
+			}else if(complaintStatusMode == 5){
+				
+			}else if(complaintStatusMode == 6){
+				
+			}
+		});
+		
 	}
 	
 	var changeMode = function(mode){
@@ -55,10 +73,41 @@ var _ComplaintStatusInsert = function () {
 		if(mode == 4){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
 		}else if(mode == 5){
-			_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {});
+			
+			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
+			checkAnalsArea();
+			// 2. 관심지역이 등록되어 있으면 이동경로 표시
+			// 2-1. 관심지역으로 등록되어 있지 않으면 등록할지 물어 보고 등록  후에 3번부터  등록 안하면  끝
+			// 3. 이동경로 표시 후 사업장 표시
+			// 4. 저감시절 레이어 on
+			// 5. 저감 시설, 시설물 클릭시 팝업 처리
+//			_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {});
 		}
 	};
 	
+	var checkAnalsArea = function(){
+		var coord = ol.proj.transform([selectedObj.x, selectedObj.y], 'EPSG:4326', 'EPSG:3857');
+		
+		var analsAreaRequest = new ol.format.WFS().writeGetFeature({
+	        srsName: 'EPSG:3857',
+	        featureNS: 'http://112.218.1.243:44002',
+	        featurePrefix: 'CE-TECH',
+	        featureTypes: ['shp_anals_area_new'],
+	        outputFormat: 'application/json',
+	        filter : new ol.format.filter.Contains('SHAPE', new ol.geom.Point(coord), 'EPSG:3857')
+//	        filter : new ol.format.filter.and(new ol.format.filter.Contains('SHAPE', new ol.geom.Point([selectedObj.x, selectedObj.y]), 'EPSG:4326'),new ol.format.filter.EqualTo('REG', 1))
+// 	        filter: new ol.format.filter.GreaterThanOrEqualTo('REG', '1')
+		});
+		 
+		$.ajax({
+			  url: 'http://112.218.1.243:44002/geoserver/CE-TECH/ows',
+			  type:'POST',
+			  data: new XMLSerializer().serializeToString(analsAreaRequest)
+			}).done(function(result) {
+			  	console.log(result);
+			});
+		
+	}
 	var setProcMsg = function(msg){
 		if(msg.type == 'selectedCvpl'){
 			if(!msg.x){
