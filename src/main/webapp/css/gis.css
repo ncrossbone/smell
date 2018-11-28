@@ -204,13 +204,36 @@ ul[role="tablist"]{
 #workSpace li.on a { background: #1688e8; border-color: #175d99; color: #fff; }
 
 
-#chartDiv{
+#chartTitle{
+	width: 490px;
+    position: absolute;
+    background: #fff;
+    height: 50px;
+    z-index: 3;
+    border-right: 1px solid #fff;
+}
+#chartArea{
 	position: absolute; 
 	width: 490px;
     z-index: 3;
+    height: 500px;
     border-right: 1px solid #fff;
-    height: 877px;
     background: #0c2641;
     opacity:0.7;
     overflow-y:auto;
+    margin-top: 50px;
 }
+
+#cvplPopupOverlay { 
+		border:1px solid #313942; 
+		background:#ffffff; 
+		width:320px; 
+		display: none;
+        position: absolute;
+        -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        bottom: 45px;
+    	left: -150px;
+}
+#cvplPopupOverlay:after { content:url(../images/bg_tool_tip_bg.png); width:29px; height:43px; left:50%; position:absolute; bottom:-43px; transform:translateX(-50%); } 

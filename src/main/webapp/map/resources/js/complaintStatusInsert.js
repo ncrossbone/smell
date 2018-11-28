@@ -3,7 +3,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process;
 	
 	var selectedObj = {};
 	var popupOverlay;
@@ -11,6 +11,8 @@ var _ComplaintStatusInsert = function () {
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
 		complaintStatusPopup = $('#complaintStatusPopup');
+		cvplPopupOverlay = $('#cvplPopupOverlay');
+		process = $('.process');
 		
 		setEvent();
 		
@@ -46,6 +48,7 @@ var _ComplaintStatusInsert = function () {
 			}
 			changeMode(mode);
 		});
+		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
 				return feature;
@@ -66,11 +69,40 @@ var _ComplaintStatusInsert = function () {
 			}
 		});
 		
+		_MapEventBus.on(_MapEvents.complaintStatusMode, function(event, data){
+			complaintStatusPopup.show();
+			
+			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {mode:1});
+			
+			cvplPopupOverlay.hide();
+			process.show();
+			
+			complaintStatusPopup.html('<p class="pop_tit"><span class="pop_tit_text">민원 조회</span><a href="javascript:void(0)" class="btn03 cvpl_pop_close"></a></p> <div class="pop_conts" style="background: #fff; width:880px; height:440px; overflow: hidden;"> <iframe src="./cvplDataStatistics.html" style="width:100%; height:100%;"></iframe></div>');
+			if($('#tabOpeners').attr('class').indexOf('on') > -1){
+				$('#tabOpeners').trigger('click');
+			}
+			
+			if(!$('#airMaps').attr('class')){
+				$('#airMaps').trigger('click');
+			}
+			
+			$(".cvpl_pop_close").off().on('click',function(){
+				$(this).parent().parent().fadeOut();
+			});
+		});
+		
+		_MapEventBus.on(_MapEvents.cvplModeChange, function(event, data){
+			changeMode(data.mode);
+		});
 	}
 	
 	var changeMode = function(mode){
 		complaintStatusMode = mode;
-		if(mode == 4){ 
+		
+		process.find('li[mode="'+mode+'"]').addClass('on');
+		if(mode == 1){
+			
+		}else if(mode == 4){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
 		}else if(mode == 5){
 			
@@ -110,19 +142,10 @@ var _ComplaintStatusInsert = function () {
 	}
 	var setProcMsg = function(msg){
 		if(msg.type == 'selectedCvpl'){
-			if(!msg.x){
-				msg.x = 127.417229;
-				msg.y = 36.7002829999999;
-				msg.title = '테스트';
-				msg.addr = '청주시 청원구 오창읍';
-				msg.date = '20181108';
-				msg.time = '02'
-			}
-			
 			selectedObj = msg;
 			
-			writePopup([msg.x,msg.y],msg.title,msg.addr);
-			setBuffer(msg.x,msg.y);
+			writePopup([msg.x,msg.y],msg.direct,msg.contents);
+			//setBuffer(msg.x,msg.y);
 			
 			currentDate.date = msg.date;
 			currentDate.time = msg.time;
@@ -212,7 +235,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var writePopup = function(coord, title, addr, isInsert){
 
-		var centerPoint =_CoreMap.convertLonLatCoord(coord,true);
+		var centerPoint =_CoreMap.convertLonLatCoord([parseFloat(coord[0]),parseFloat(coord[1])],true);
 		popupOverlay.setPosition(centerPoint);
 
 		var cvplHtml = '<div class="tooltip2">';
@@ -226,9 +249,9 @@ var _ComplaintStatusInsert = function () {
 		cvplHtml += '</div>';
 		cvplHtml += '</div>';
 		
-		$('#cvplPopupOverlay').html(cvplHtml);
+		cvplPopupOverlay.html(cvplHtml);
 
-		$('#cvplPopupOverlay').show();
+		cvplPopupOverlay.show();
 	};
 	
 	return {

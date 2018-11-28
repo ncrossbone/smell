@@ -8,35 +8,28 @@
 <link href="/cms/css/BasicSet.css" rel="stylesheet" type="text/css" />
 <link href="/cms/css/common.css" rel="stylesheet" type="text/css" />
 <link href="/cms/css/sub.css" rel="stylesheet" type="text/css" />
-<!-- <link href="/cms/css/st.css" rel="stylesheet" type="text/css" /> -->
+<link href="/cms/css/st.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="/cms/js/jquery.min.js"></script>
 <script type="text/javascript" src="/cms/js/common.js"></script>
-<script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
 <script type="text/javascript" src="/cms/js/jquery-1.11.3.min.js"></script>
 
 <script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
-<script type="text/javascript" src="/map/resources/js/cvplDataStatistics.js"></script>
 
 <!-- 달력 -->
-<link rel="stylesheet" href="/cms/js/cal/themes/base/jquery.ui.all.css">
+<link href="/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
 <script src="/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
 <script src="/cms/js/cal/ui/jquery.ui.core.js"></script>
 
 <script type="text/javascript">
-	$(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
-			
-		_CvplDataStatistics.init();		
-		
-	})
-	
-//변수 선언
+//날짜변수 선언
 var tTime = new Date();
 var getDiffTime1 = tTime.getTime();
 getDiffTime1 = getDiffTime1 - (1000 * 60 * 15);
 tTime.setTime(getDiffTime1);
+	
+$(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
+// 	_CvplDataStatistics.init();		
 
-//초기
-$(function(){
 	addDatePicker('#from_date');
 	addDatePicker('#to_date');
     if($("#from_date").val().length == 0){
@@ -45,35 +38,63 @@ $(function(){
     if($("#to_date").val().length == 0){
     	$("#to_date").val($.datepicker.formatDate('yy-mm-dd', tTime));
     }
+    
+    Common.getData({url:'/getCvplTyCode.do', contentType: 'application/json', params: {} }).done(function(data){
+		if(data.length == 0){
+			return;
+		}
+		var selectTag = "";
+		selectTag += "<option value='' >전체</option>";
+		for (var i = 0; i < data.length; i++) {
+			selectTag += "<option value='"+data[i].CODE+"' >"+ data[i].CODE_NM + "</option>";
+		}
+		$("#cvplTyCode").html(selectTag);
+	});
 
 	//초기 조회
-	//goSearch();
-});
-
-//상태 조회
-function goSearch(page) {
-	$("#page").val(gfnCheckNull(page));
-	if($("#pageRow").length==0){
-		$("#pageLine").val("10");
-	}else {
-		$("#pageLine").val($("#pageRow").val());
-	}
+	goSearch();
+})
 	
-    if(toDateCheck() == "N" ) return;
+//민원데이터관리 조회
+function goSearch() {
+	if(toDateCheck() == "N" ) return;
 	
-	var url = "/cms/dataManage/cvplDataManageAjax";
-	var params = $("#dataSearch").serialize();
-	var sucessFunc = function(data) {
-		$("#ajaxTable").html("");
-		$("#ajaxTable").html(data);
-		$('.pagebtn > a').on('click' ,function(e){
-			var page = $(this).attr("id").replace("page","");
-			$("#page").val(page);
-			goSearch(page);
-			e.preventDefault();
-		});
-	};
-	ajaxCallHtml(url, params, sucessFunc);
+	Common.getData({
+		url:'/getCvplDataManageList.do', 
+		contentType: 'application/json', 
+		params: {
+			from_date: $("#from_date").val().replace(/-/gi,""), 
+			to_date: $("#to_date").val().replace(/-/gi,""), 
+			cvplTyCode: $("#cvplTyCode").val(), 
+			cpttr: $("#cpttr").val()
+		}}).done(function(data){
+		
+		var count = "0";
+		var selectTag = "";
+		var blank = "<tr><td colspan='10' style='text-align:center;'>조회된 데이터가 없습니다.</td></tr>";
+		for (var i = 0; i < data.length; i++) {
+			selectTag += "<tr>";
+			selectTag += "<td style='text-align:center;'><input type='radio' name='cvplSel' value='"+data[i].CVPL_NO+"' /></td>";
+			selectTag += "<td class='cvplDate'>"+data[i].CVPL_DE+"</td>";
+			selectTag += "<td class='cvplMan'>"+data[i].CPTTR+"</td>";
+			selectTag += "<td class='cvplPhone'>"+data[i].CPTTR_CTTPC+"</td>";
+			selectTag += "<td class='cvplX'>"+data[i].LA+"</td>";
+			selectTag += "<td class='cvplY'>"+data[i].LO+"</td>";
+			selectTag += "<td class='cvplDirect'>"+data[i].CVPL_LC+"</td>";
+			selectTag += "<td class='cvplFlag'>"+data[i].CVPL_TY_NM+"</td>";
+			selectTag += "<td class='cvplContents'>"+data[i].CVPL_CN+"</td>";
+			selectTag += "<td class='AC'><a href='' onclick='gisView(\""+data[i].LA+"\",\""+data[i].LO+"\");return false;' class='btn_gis'>GIS</a></td>";
+			selectTag += "</tr>";
+		}
+		
+		if(data.length==0){
+			$("#tblist").html(blank);
+			$("#cnt").html("0");
+		}else {
+			$("#tblist").html(selectTag);
+			$("#cnt").html(data[0].DTA_CO);
+		}
+	});
 }
 
 //조회기간 역전 제어로직
@@ -97,57 +118,40 @@ function toDateCheck() {
   return "Y";
 }
 
-//삭제
-function goDelete(){
-	if($('input:checkbox[name=CVPL_NO]:checked').length == 0){
-    	alert('선택된 데이터가 없습니다.');
-    	return;
+//등록 팝업창
+function cvplDataInsert(){
+	gfnPopup("cvplDataStatisticsPopup.html", 550, 460, "N", "dataForm");
+}
+
+//민원 선택
+function cvplDataSel(){
+	var val = $(":input:radio[name=cvplSel]:checked").val();
+	if(!val){
+		return;
 	}
-	if(!confirm('선택한 데이터를 삭제하시겠습니까?\n삭제 데이터 건수 : '+$('input:checkbox[name=CVPL_NO]:checked').length+'건')){
-    	return;
-	}
-	$("#mode").val("delete");
-	var url = "/cms/dataManage/cvplDataManage/cud";
-	var params = $("#dataSearch").serialize();
-	var sucessFunc = function(data) {
-		alert(data.returnMsg);
-		if(data.returnCode == 0){
-			 goSearch();
-		}else{
-			//alert(data.returnMsg);
-		}
-	};
-	ajaxCall(url, params, sucessFunc,"",true);
+	var tdArr = $($(":input:radio[name=cvplSel]:checked").parent().parent()).find('td');
+	var paramObj = {type:'selectedCvpl'};
 	
-}
-
-//등록/수정 팝업창
-function goForm(mode){
-	if(mode == 'write'){
-		gfnPopup("/cms/dataManage/cvplDataManag/regForm", 800, 505, "N", "dataForm");
-	}else{
-		//체크박스가 체크되어있는지 확인한다.
-		var count = $('input:checkbox[name=CVPL_NO]:checked').length;
-		//2개 이상의 체크 박스가 체크되어있으면 수정 못하게 return 한다.
-		if(count == 0){
-			alert("수정 할 데이터를 선택해 주시길 바랍니다.");
-			return;
-		}else if(count > 1){
-			alert("수정은 하나의 데이터만 가능합니다.");
-			$("input:checkbox[name=CVPL_NO]").prop("checked", false);
-			return;
-		}else if(count == 1){
-			var cvplNo = $('input:checkbox[name=CVPL_NO]:checked').val();
-			gfnPopup("/cms/dataManage/cvplDataManag/regForm?CVPL_NO="+cvplNo, 800, 505, "N", "dataRegForm");
+	for(var i = 0; i<tdArr.length; i++){
+		var classNm = $(tdArr[i]).attr('class');
+		if(classNm){
+			if(classNm.indexOf('cvpl') > -1){
+				paramObj[classNm.split('cvpl')[1].toLowerCase()] = $(tdArr[i]).text();
+			}	
 		}
 	}
+	parent.$('#complaintStatusPopup').hide();
+	parent._MessagePipe.send(paramObj);
 }
 
+//위치좌표gis
+function gisView(la,lo){
+	alert(la+"--"+lo);	
+}
 </script>
 </head>
 <body>
 <form name="dataSearch" id="dataSearch" method="post">
-	<input type="hidden" name="mode" id="mode" />
 	<!-- 검색 영역 시작 -->
     <div class="search_box">
         <div class="searchLine">
@@ -159,12 +163,50 @@ function goForm(mode){
   					<option value="">전체</option>
   				</select>
                 <span class="s_tit MgL20">민원인</span>
-                <input type="text" name="cpttr"/>
+                <input type="text" name="cpttr" id="cpttr"/>
             <span class="btnCnt"><a href="" class="btn_1" onclick="goSearch();return false;">조회</a></span>
         </div>
     </div>
-<!-- 검색 영역 끝 -->
-<div id="ajaxTable"></div>
+    
+<div class="teTop">
+    <span class="allCount">전체 : <em><span id="cnt"></span></em>건</span>
+    <span class="fr">
+        <a href="" class="btn_1" onclick="cvplDataSel();return false;">민원 선택</a>
+        <a href="" class="btn_1 MgL10" onclick="cvplDataInsert();return false;">민원 등록</a>
+    </span>
+</div>
+<table class="table02 dataPix">
+    <colgroup>
+        <col width="45px" />
+        <col width="90px" />
+        <col width="60px" />
+        <col width="90px" />
+        <col width="60px"/>
+        <col width="60px"/>
+        <col width="150px" />
+        <col width="50px"/>
+        <col />
+        <col width="70px" />
+    </colgroup>
+    <thead>
+        <tr>
+            <th>선택</th>
+            <th>민원일자</th>
+            <th>민원인</th>
+            <th>연락처</th>
+            <th>위도</th>
+            <th>경도</th>
+            <th>위치</th>
+            <th>민원<br />분류</th>
+            <th>민원내용</th>
+            <th>위치좌표</th>
+        </tr>
+    </thead>
+    <tbody id="tblist">
+        <tr>
+        </tr>
+    </tbody>
+</table>
 </form>
 </body>
 </html>

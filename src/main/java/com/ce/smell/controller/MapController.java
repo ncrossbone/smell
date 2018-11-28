@@ -113,9 +113,34 @@ public class MapController {
 	public int updateSensor(@RequestBody HashMap param) {
 		return mapBiz.updateSensor(param);
 	}
+
+	/**
+	 * 개발팀 csw
+	 * @param param
+	 * @return
+	 */
+	//민원분류
 	@RequestMapping(value = "/getCvplTyCode", method = RequestMethod.POST)
 	public List<Map<String, Object>> getCvplTyCode(@RequestBody HashMap param){
 		return mapBiz.getCvplTyCode(param);
 	}
+	
+	//청주시군구
+	@RequestMapping(value = "/getSigunguCode", method = RequestMethod.POST)
+	public List<Map<String, Object>> getSigunguCode(@RequestBody HashMap param){
+		return mapBiz.getSigunguCode(param);
+	}
+	
+	//민원데이터 list
+	@RequestMapping(value = "/getCvplDataManageList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getCvplDataManageList(@RequestBody HashMap param){
+		return mapBiz.getCvplDataManageList(param);
+	}
+	
+	//민원등록
+	@RequestMapping(value = "/insertCvplData" , method = RequestMethod.POST)
+	public int insertCvplData(@RequestBody HashMap param) {
+		return mapBiz.insertCvplData(param);
+	} 
 	
 }
