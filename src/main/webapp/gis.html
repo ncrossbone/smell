@@ -115,21 +115,15 @@
 		});
 		$('#popup').draggable({ containment: '#map' });
 		
-		$('#complaintStatusPopup').draggable({ containment: '#map' });
-		
 		$(window).trigger('resize');
-		
 		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
-		
 		
 		// msg = {type:''}
 		// type = selectedCvpl 민원위치
 		//        regCvpl = 등록 팝업
 		//        regCvplPoint = 지도에서 클릭해서 등록
 		_MessagePipe.send = function(msg){
-			
 			_BizMode = 1;
-			
 			if(_BizMode == 1){
 				_ComplaintStatusInsert.setProcMsg(msg);
 			}
@@ -1086,7 +1080,19 @@
             <div class="pop_conts" style="background: #fff;">
             	<iframe src="./gisCheckPoint.html" style="width:100%; height:100%;"></iframe>
             </div>
-        </div>    
+        </div>  
+        <div id="bsmlPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;">
+        	<p class="pop_tit"><span class="pop_tit_text">저감시설</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
+            <div class="pop_conts" style="background: #fff;">
+            	저감 시설
+            </div>
+        </div>  
+<!--         <div id="bsmlPopupRest" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;"> -->
+<!--         	<p class="pop_tit"><span class="pop_tit_text">악취원점</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p> -->
+<!--             <div class="pop_conts" style="background: #fff;"> -->
+<!--             	악취원점 -->
+<!--             </div> -->
+<!--         </div>   -->
      </div>
      
     </div>

@@ -113,7 +113,12 @@ public class MapController {
 	public int updateSensor(@RequestBody HashMap param) {
 		return mapBiz.updateSensor(param);
 	}
-
+	
+	@RequestMapping(value = "/getAnalsAreaId" , method = RequestMethod.POST)
+	public List<Map<String, Object>> getAnalsAreaId(@RequestBody HashMap param) {
+		return mapBiz.getAnalsAreaId(param);
+	}
+	
 	/**
 	 * 개발팀 csw
 	 * @param param
@@ -141,6 +146,7 @@ public class MapController {
 	@RequestMapping(value = "/insertCvplData" , method = RequestMethod.POST)
 	public int insertCvplData(@RequestBody HashMap param) {
 		return mapBiz.insertCvplData(param);
-	} 
+	}
+	
 	
 }

@@ -188,22 +188,21 @@ var _SmellMapBiz = function () {
 		var date = new Date(dateObj.date.substring(0,4),parseInt(dateObj.date.substring(4,6))-1, dateObj.date.substring(6,8));
 		
 		// 기상장
-		$('#weatherAnalysisStartTime').val(dateObj.time);
-		$('#weatherAnalysisEndTime').val(dateObj.time);
-		 
+		if(dateObj.time){
+			$('#weatherAnalysisStartTime').val(dateObj.time);
+			$('#weatherAnalysisEndTime').val(dateObj.time);
+			$('#odorSpreadStartTime').val(dateObj.time);
+			$('#odorSpreadEndTime').val(dateObj.time);
+			$('#odorMovementStartTime').val(dateObj.time)
+		}
+		
 		$('#weatherAnalysisStartDate').datepicker('setDate', date);
 		$('#weatherAnalysisEndDate').datepicker('setDate', date);
-		
 		// 확산
 		$('#odorSpreadStartDate').datepicker('setDate', date);
 		$('#odorSpreadEndDate').datepicker('setDate', date);
-		
-		$('#odorSpreadStartTime').val(dateObj.time);
-		$('#odorSpreadEndTime').val(dateObj.time);
-		
 		// 이동경로
 		$('#odorMovementStartDate').datepicker('setDate', date);
-		$('#odorMovementStartTime').val(dateObj.time)
 		
 	}
 	
@@ -229,8 +228,22 @@ var _SmellMapBiz = function () {
 			$('#odorSpreadPlay').trigger('click');
 		});		
 		_MapEventBus.on(_MapEvents.show_odorMovement_layer, function(event, data){
-			$('#odorMovementPlay').trigger('click');
+			var analsAreaId = data.analsAreaId;
+			$.ajax({
+	            url: '/getAnalsAreaId.do',
+	            data:JSON.stringify({analsAreaId:analsAreaId})
+	        }).done(function(result){
+	        	if(result==null || result.length <= 0){
+	        		alert('관심지역 등록정보가 없습니다.');
+	        		return;
+	        	}
+	        	var analsId = result[0].analsAreaId;
+	        	var gridAreaId = result[0].gridAreaId;
+	        	analsId = '2930'
+	        	startTracking(analsId);
+	        });
 		});
+		
 		_MapEventBus.on(_MapEvents.clickLayerOnOff, function(event, data){
 			if(data.target == 'weatherAnalysis'){
 				if(weatherAnalysisLayer){
@@ -786,76 +799,8 @@ var _SmellMapBiz = function () {
 		$('#odorMovementPlay').on('click', function(){
 			
 			if(trackingPlayType == 0){
-				var layerNm = $('a[name="odorMovementType"][class="on"]').attr('value');
-				
-				var odorMovementStartDate = $('#odorMovementStartDate').val().replace(regExp, '');
-				var odorMovementStartTime = $('#odorMovementStartTime').val();
-				
-				var odorMovementItem = $('#odorMovementItem').val();
-				
-				if(trackingInterval){
-					clearInterval(trackingInterval);
-					trackingInterval = null;
-				}
-				if(odorMovementLayer){
-					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorMovementLayer);
-					if(originLayer){
-						_MapEventBus.trigger(_MapEvents.map_removeLayer, originLayer);	
-					}
-					if(bufferOriginLayer){
-						_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);	
-					}
-					odorMovementLayer = null;
-					originLayer = null;
-					bufferOriginLayer = null;
-					$('#bufferBtn').hide();
-				}
-				
-				var params = {"type":layerNm, "analsAreaId":odorMovementItem, "dtaDt":odorMovementStartDate+odorMovementStartTime};
-				$.ajax({
-		            url: '/getCoursModel.do',
-		            data:JSON.stringify(params)
-		        }).done(function(result){
-		        	if(result == null || result.length <= 0){
-						alert('모델링 데이터가 없습니다.');
-						return;
-					}
-		        	trackingFeatures = [];
-					
-					for(var i=0; i<result.length; i++){
-						var coord = ol.proj.transform([parseInt(result[i].utmx), parseInt(result[i].utmy)], 'EPSG:32652', 'EPSG:3857');
-						if(i>0){
-							if(parseInt(result[i].utmx) ==parseInt(result[i-1].utmx) && parseInt(result[i].utmy) == parseInt(result[i-1].utmy)){
-								continue;
-							}
-						}
-						var feature = new ol.Feature({geometry:new ol.geom.Point(coord), properties:result[i]});
-//						feature.setId(result.features[i].id);
-						trackingFeatures.push(feature);
-					}
-					
-					odorMovementLayer = new ol.layer.Vector({
-						source : new ol.source.Vector({
-							features : [trackingFeatures[0]]
-						}),
-						style : odorMovementStyleFunction,
-						zIndex: 3000,
-						id:'odorMovementLayer'
-					});
-					
-					_MapEventBus.trigger(_MapEvents.map_addLayer, odorMovementLayer);
-					
-					var centerCoord = trackingFeatures[0].getGeometry().getCoordinates();
-					_CoreMap.centerMap(centerCoord[0], centerCoord[1]);
-					
-					trackingIdx = 0;
-					trackingIntervalTime = 1000;
-					tracking();
-					trackingPlayType = 1;
-					setControlButton('odorMovementPlay', trackingPlayType);
-		        });
+				startTracking();
 			}else if(trackingPlayType == 1){
-				
 				clearInterval(trackingInterval);
 				trackingInterval = null; 
 				
@@ -1019,6 +964,85 @@ var _SmellMapBiz = function () {
 		
 	};
 	
+	var startTracking = function(analsId){
+		
+		var layerNm = $('a[name="odorMovementType"][class="on"]').attr('value');
+		
+		var odorMovementStartDate = $('#odorMovementStartDate').val().replace(regExp, '');
+		var odorMovementStartTime = $('#odorMovementStartTime').val();
+		
+		var odorMovementItem = $('#odorMovementItem').val();
+		
+		if(analsId){
+			odorMovementItem = analsId;
+		}
+		if(trackingInterval){
+			clearInterval(trackingInterval);
+			trackingInterval = null;
+		}
+		if(odorMovementLayer){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, odorMovementLayer);
+			if(originLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, originLayer);	
+			}
+			if(bufferOriginLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);	
+			}
+			odorMovementLayer = null;
+			originLayer = null;
+			bufferOriginLayer = null;
+			$('#bufferBtn').hide();
+		}
+		
+		var params = {"type":layerNm, "analsAreaId":odorMovementItem, "dtaDt":odorMovementStartDate+odorMovementStartTime};
+		$.ajax({
+            url: '/getCoursModel.do',
+            data:JSON.stringify(params)
+        }).done(function(result){
+        	if(result == null || result.length <= 0){
+				alert('모델링 데이터가 없습니다.');
+				return;
+			}
+        	trackingFeatures = [];
+			
+			for(var i=0; i<result.length; i++){
+				var coord = ol.proj.transform([parseInt(result[i].utmx), parseInt(result[i].utmy)], 'EPSG:32652', 'EPSG:3857');
+				if(i>0){
+					if(parseInt(result[i].utmx) ==parseInt(result[i-1].utmx) && parseInt(result[i].utmy) == parseInt(result[i-1].utmy)){
+						continue;
+					}
+				}
+				var feature = new ol.Feature({geometry:new ol.geom.Point(coord), properties:result[i]});
+//				feature.setId(result.features[i].id);
+				trackingFeatures.push(feature);
+			}
+			
+			odorMovementLayer = new ol.layer.Vector({
+				source : new ol.source.Vector({
+					features : [trackingFeatures[0]]
+				}),
+				style : odorMovementStyleFunction,
+				zIndex: 3000,
+				id:'odorMovementLayer'
+			});
+			
+			_MapEventBus.trigger(_MapEvents.map_addLayer, odorMovementLayer);
+			
+			var centerCoord = trackingFeatures[0].getGeometry().getCoordinates();
+			_CoreMap.centerMap(centerCoord[0], centerCoord[1]);
+			
+			trackingIdx = 0;
+			trackingIntervalTime = 1000;
+			tracking();
+			trackingPlayType = 1;
+			setControlButton('odorMovementPlay', trackingPlayType);
+			
+			// 민원 업무일때
+			if(analsId){
+				$('#odorMovementBufferBtn').trigger('click');	
+			}
+        });
+	}
 	var setControlButton = function(targetId, type){
 		$('#'+targetId).removeClass('ctrl_play');
 		$('#'+targetId).removeClass('ctrl_pause');

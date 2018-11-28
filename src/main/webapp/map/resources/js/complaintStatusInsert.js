@@ -1,16 +1,35 @@
 var _ComplaintStatusInsert = function () {
+	var bizUrl = window.location.protocol+'//'+window.location.host;
 	var currentDate = {};
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup;
 	
 	var selectedObj;
 	var popupOverlay;
 	
+	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+	
+	var bsmlPopupHtmlTemplate = '<div class="tooltip2">'+
+	 								'<p class="tt_tit2">'+
+	 								'<span>#name#</span>'+
+	 								'<a href="javascript:void(0);" class="btn06 pop_close"></a>'+
+	 								'</p>'+
+	 								'<div class="pop_conts3"></div>'+
+	 							'</div>';
+	
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
 		complaintStatusPopup = $('#complaintStatusPopup');
+		bsmlPopup = $('#bsmlPopup');
+		
+		complaintStatusRegPopup.draggable({ containment: '#map' });
+		complaintStatusPopup.draggable({ containment: '#map' });
+
+		bsmlPopup.draggable({ containment: '#map' });
+		
+		
 		cvplPopupOverlay = $('#cvplPopupOverlay');
 		process = $('.process');
 		
@@ -67,7 +86,21 @@ var _ComplaintStatusInsert = function () {
 			}else if(complaintStatusMode == 4){
 				
 			}else if(complaintStatusMode == 5){
+				var featureInfo = feature.getProperties();
 				
+				if(featureInfo.BSML_TRGNPT_SE_CODE){
+					if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01002'){
+						bsmlPopup.show();
+					}else {
+						var geometry = feature.getGeometry();
+						var featureExtent = geometry.getExtent();
+						var featureCenter = ol.extent.getCenter(featureExtent);
+						if(cvplPopupOverlay){
+							cvplPopupOverlay.setPosition(featureCenter);
+							cvplPopupOverlay.html();
+						}
+					}
+				}
 			}else if(complaintStatusMode == 6){
 				
 			}
@@ -144,13 +177,32 @@ var _ComplaintStatusInsert = function () {
 		});
 		 
 		$.ajax({
-			  url: 'http://112.218.1.243:44002/geoserver/CE-TECH/ows',
+			  url: _MapServiceInfo.serviceUrl+'/geoserver/CE-TECH/ows',
 			  type:'POST',
 			  data: new XMLSerializer().serializeToString(analsAreaRequest)
 			}).done(function(result) {
-			  	console.log(result);
+				if(result.features.length <= 0){
+					alert('악취확산 격자 영역 밖입니다.');
+					return;
+				}
+				var analsAreaInfo = result.features[0].properties;
+					
+				if(analsAreaInfo.REG == '0'){
+					var regFlag = confirm('해당지역은 관심저점 등록이 되어있지 않습니다. 등록하시겠습니까?');
+					if(regFlag){
+						$.ajax({
+				            url : bizUrl+'/insertAnals.do',
+				            data: JSON.stringify({indexId:analsAreaInfo.ANALS_AREA_ID, predictAl:'0'})
+				    	}).done(function(result){
+				    		_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {analsAreaId:analsAreaInfo.ANALS_AREA_ID});
+				    	});
+					}else{
+						return;
+					}
+				}else{
+					_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {analsAreaId:analsAreaInfo.ANALS_AREA_ID});
+				}
 			});
-		
 	}
 	var setProcMsg = function(msg){
 		if(msg.type == 'selectedCvpl'){
@@ -160,8 +212,9 @@ var _ComplaintStatusInsert = function () {
 			
 			writePopup([selectedObj.x,selectedObj.y],msg.direct,msg.contents);
 			
-			currentDate.date = msg.date;
+			currentDate.date = msg.date.replace(regExp, '');;
 			currentDate.time = msg.time;
+			
 			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 			_MapEventBus.trigger(_MapEvents.map_move, msg);
 		}
@@ -249,6 +302,25 @@ var _ComplaintStatusInsert = function () {
 		});
 	};
 	
+	var writeBsmlPopup = function(){
+		
+		var centerPoint =_CoreMap.convertLonLatCoord([coord[0],coord[1]],true);
+		popupOverlay.setPosition(centerPoint);
+
+		var cvplHtml = '<div class="tooltip2">';
+		cvplHtml += '<p class="tt_tit2">';
+		cvplHtml += '<span>'+title+'</span>';
+		cvplHtml += '<a href="javascript:void(0);" class="btn06 pop_close"></a>';
+		cvplHtml += '</p>';
+		cvplHtml += '<div class="pop_conts3">';
+		cvplHtml += addr;
+		cvplHtml += '</div>';
+		cvplHtml += '</div>';
+		
+		cvplPopupOverlay.html(cvplHtml);
+
+		cvplPopupOverlay.show();
+	}
 	var writePopup = function(coord, title, addr, isInsert){
 
 		var centerPoint =_CoreMap.convertLonLatCoord([coord[0],coord[1]],true);
@@ -258,7 +330,7 @@ var _ComplaintStatusInsert = function () {
 		cvplHtml += '<p class="tt_tit2">';
 		cvplHtml += '<span>'+title+'</span>';
 		//cvplHtml += '<a href="#" class="plus_btn"></a>';
-		cvplHtml += '<a href="#" class="btn06 pop_close"></a>';
+		cvplHtml += '<a href="javascript:void(0);" class="btn06 pop_close"></a>';
 		cvplHtml += '</p>';
 		cvplHtml += '<div class="pop_conts3">';
 		cvplHtml += addr;
