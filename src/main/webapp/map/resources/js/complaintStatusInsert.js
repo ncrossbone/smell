@@ -50,14 +50,12 @@ var _ComplaintStatusInsert = function () {
 		});
 	}
 	
-	var setOdorSpread = function(){
-		
-	}
-	
 	var changeMode = function(mode){
 		complaintStatusMode = mode;
-		if(mode == 3){
-			setOdorSpread();
+		if(mode == 4){ 
+			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
+		}else if(mode == 5){
+			_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {});
 		}
 	};
 	
@@ -67,19 +65,20 @@ var _ComplaintStatusInsert = function () {
 				msg.x = 127.417229;
 				msg.y = 36.7002829999999;
 				msg.title = '테스트';
-				msg.addr = '청주시 청원구 오창읍'
+				msg.addr = '청주시 청원구 오창읍';
+				msg.date = '20181108';
+				msg.time = '02'
 			}
 			
-			selectedObj = {
-					x:msg.x,
-					y:msg.y,
-					cvplCode:msg.cvplCode,
-					title:msg.title,
-					addr:msg.addr
-			};
+			selectedObj = msg;
 			
 			writePopup([msg.x,msg.y],msg.title,msg.addr);
 			setBuffer(msg.x,msg.y);
+			
+			currentDate.date = msg.date;
+			currentDate.time = msg.time;
+			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
+			_MapEventBus.trigger(_MapEvents.map_move, msg);
 		}
 	};
 	

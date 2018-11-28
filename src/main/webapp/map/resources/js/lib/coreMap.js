@@ -224,10 +224,11 @@ var _CoreMap = function() {
 	var setEventListener = function(){
 		_MapEventBus.on(_MapEvents.map_addLayer, addLayer);
 		
-		
 		_MapEventBus.on(_MapEvents.map_removeLayer, removeLayer);
 		
 		_MapEventBus.on(_MapEvents.setZoom , setZoom);
+		_MapEventBus.on(_MapEvents.map_move , mapMove);
+		
 		
 	};
 	var setMapEvent = function() {
@@ -407,6 +408,9 @@ var _CoreMap = function() {
 		}
 		return layers;
 	};
+	var mapMove = function(event, data){
+		centerMap(data.x, data.y, data.zoom);
+	}
 	var centerMap = function(long, lat, zoomLavel , type) {
 		var centerPoint;
 
