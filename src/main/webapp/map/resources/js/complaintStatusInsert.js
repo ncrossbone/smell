@@ -9,9 +9,7 @@ var _ComplaintStatusInsert = function () {
 	var selectedObj;
 	var popupOverlay;
 	
-<<<<<<< HEAD
 	var layerName = ['cvplOnePoint','complaintStatusBuffer','bufferTarget'];
-=======
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
 	var bsmlPopupHtmlTemplate = '<div class="tooltip2">'+
@@ -21,7 +19,6 @@ var _ComplaintStatusInsert = function () {
 	 								'</p>'+
 	 								'<div class="pop_conts3"></div>'+
 	 							'</div>';
->>>>>>> 6ca8b6c60e3a6ccc1535c418612477d60beeba5a
 	
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
@@ -372,15 +369,10 @@ var _ComplaintStatusInsert = function () {
 		var cvplHtml = '<div class="tooltip2">';
 		cvplHtml += '<p class="tt_tit2">';
 		cvplHtml += '<span>'+title+'</span>';
-<<<<<<< HEAD
 		if(isInsert){
 			cvplHtml += '<a href="javascript:void(0)" class="plus_btn"></a>';
 		}
 		cvplHtml += '<a href="javascript:void(0)" class="btn06 pop_close"></a>';
-=======
-		//cvplHtml += '<a href="#" class="plus_btn"></a>';
-		cvplHtml += '<a href="javascript:void(0);" class="btn06 pop_close"></a>';
->>>>>>> 6ca8b6c60e3a6ccc1535c418612477d60beeba5a
 		cvplHtml += '</p>';
 		cvplHtml += '<div class="pop_conts3">';
 		cvplHtml += addr;
