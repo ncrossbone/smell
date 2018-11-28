@@ -233,7 +233,22 @@ ul[role="tablist"]{
         -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
         -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
         filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-        bottom: 45px;
+        bottom: 120px;
     	left: -150px;
 }
 #cvplPopupOverlay:after { content:url(../images/bg_tool_tip_bg.png); width:29px; height:43px; left:50%; position:absolute; bottom:-43px; transform:translateX(-50%); } 
+
+
+#alertDiv{
+	position: absolute;
+	z-index: 3;
+	display: none;
+	top: 50%;
+    color: white;
+    background: black;
+    left: 45%;
+    padding: 10px 75px;
+    letter-spacing: -1px;
+    opacity: 0.8;
+    font-size: 20px;
+}

@@ -9,6 +9,9 @@ var _ComplaintStatusInsert = function () {
 	var selectedObj;
 	var popupOverlay;
 	
+<<<<<<< HEAD
+	var layerName = ['cvplOnePoint','complaintStatusBuffer','bufferTarget'];
+=======
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
 	var bsmlPopupHtmlTemplate = '<div class="tooltip2">'+
@@ -18,6 +21,7 @@ var _ComplaintStatusInsert = function () {
 	 								'</p>'+
 	 								'<div class="pop_conts3"></div>'+
 	 							'</div>';
+>>>>>>> 6ca8b6c60e3a6ccc1535c418612477d60beeba5a
 	
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
@@ -213,26 +217,19 @@ var _ComplaintStatusInsert = function () {
 			selectedObj.x = parseFloat(msg.x); 
 			selectedObj.y = parseFloat(msg.y); 
 			
-			writePopup([selectedObj.x,selectedObj.y],msg.direct,msg.contents);
+			writePopup();
 			
 			currentDate.date = msg.date.replace(regExp, '');;
 			currentDate.time = msg.time;
 			
 			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 			_MapEventBus.trigger(_MapEvents.map_move, msg);
+		}else if(msg.type == 'putCvpl'){
+			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
 		}
 	};
 	
-	var setBuffer = function(bufferMeter){
-		var x = selectedObj.x;
-		var y = selectedObj.y;
-		
-		if(!bufferMeter){
-			bufferMeter = 200;
-		}
-		
-		var layerName = ['complaintStatusBuffer','bufferTarget'];
-		
+	var clearLayer = function(){
 		for(var i = 0; i<layerName.length; i++){
 			var layerForName = _CoreMap.getMap().getLayerForName(layerName[i]);
 
@@ -240,7 +237,21 @@ var _ComplaintStatusInsert = function () {
 	    		_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
 	    	}
 		}
+	}
+	
+	var setBuffer = function(bufferMeter){
+		var x = selectedObj.x;
+		var y = selectedObj.y;
+		_CoreMap.getMap().getView().setZoom(17);
+		_MapEventBus.trigger(_MapEvents.map_move, {x:x,y:y});
+		
+		if(!bufferMeter){
+			bufferMeter = 200;
+		}
     	
+		clearLayer();
+		cvplPopupOverlay.hide();
+		
 		Common.getData({url: '/getFeature.do', contentType: 'application/json', params: {contentsId:'complaintStatus',flag:1} }).done(function(data){
 			
 			var parser = new jsts.io.OL3Parser();
@@ -275,7 +286,7 @@ var _ComplaintStatusInsert = function () {
 			var originLayer = new ol.layer.Vector({
 				source: source,
 				zIndex:1000,
-				name:layerName[0],
+				name:layerName[1],
 				style:function(feature){
 					return _WestCondition.createLastPoint(feature);
 				}
@@ -289,7 +300,7 @@ var _ComplaintStatusInsert = function () {
 			bufferOriginLayer = new ol.layer.Vector({ 
 				source: source,
 				zIndex:1001,
-				name:layerName[1],
+				name:layerName[2],
 				opacity: 0.5,
 				style:new ol.style.Style({
 					stroke: new ol.style.Stroke({
@@ -305,6 +316,7 @@ var _ComplaintStatusInsert = function () {
 		});
 	};
 	
+
 	var writeBsmlPopup = function(){
 		
 		var centerPoint =_CoreMap.convertLonLatCoord([coord[0],coord[1]],true);
@@ -324,16 +336,51 @@ var _ComplaintStatusInsert = function () {
 
 		cvplPopupOverlay.show();
 	}
+	
 	var writePopup = function(coord, title, addr, isInsert){
 
 		var centerPoint =_CoreMap.convertLonLatCoord([coord[0],coord[1]],true);
 		popupOverlay.setPosition(centerPoint);
-
+		
+		var typeConfig = {
+				'네이버앱':'CVP02002',
+				'오창지킴이':'CVP02003',
+				'시도':'CVP02001'
+		}
+		
+		clearLayer();
+		var resultFeature = new ol.Feature();
+		
+		resultFeature.setGeometry(new ol.geom.Point(centerPoint));
+		resultFeature.setProperties({CVPL_TY_CODE:typeConfig[selectedObj.flag],CVPL_LC:title});
+		
+		var source = new ol.source.Vector({
+			features: [resultFeature]
+		});
+		
+		var originLayer = new ol.layer.Vector({
+			source: source,
+			zIndex:1000,
+			name:layerName[0],
+			style:function(feature){
+				return _WestCondition.createLastPoint(feature);
+			}
+		});
+		
+		_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
+		
 		var cvplHtml = '<div class="tooltip2">';
 		cvplHtml += '<p class="tt_tit2">';
 		cvplHtml += '<span>'+title+'</span>';
+<<<<<<< HEAD
+		if(isInsert){
+			cvplHtml += '<a href="javascript:void(0)" class="plus_btn"></a>';
+		}
+		cvplHtml += '<a href="javascript:void(0)" class="btn06 pop_close"></a>';
+=======
 		//cvplHtml += '<a href="#" class="plus_btn"></a>';
 		cvplHtml += '<a href="javascript:void(0);" class="btn06 pop_close"></a>';
+>>>>>>> 6ca8b6c60e3a6ccc1535c418612477d60beeba5a
 		cvplHtml += '</p>';
 		cvplHtml += '<div class="pop_conts3">';
 		cvplHtml += addr;
