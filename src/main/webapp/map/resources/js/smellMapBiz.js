@@ -1302,15 +1302,12 @@ var _SmellMapBiz = function () {
     }
 	
 	var pointStyle = function(feature){
-		
 		 
 		return new ol.style.Style({
 	        image: new ol.style.Icon({
 	        	opacity: 1.0,
 	            src: '/map/resources/images/icon/c1.png'
 	        })
-//		, 
-//	        text: trackingTextStyle(label)
 		});
 	}
 	var trackingTextStyle = function(label) {
@@ -1357,6 +1354,7 @@ var _SmellMapBiz = function () {
 		});
 	}
 	
+	var styleFunctions = {'1': pointBufferStyle, '2': pointStyle}
 	
     // public functions
     return {
