@@ -97,8 +97,8 @@ var _ComplaintStatusInsert = function () {
 						var featureExtent = geometry.getExtent();
 						var featureCenter = ol.extent.getCenter(featureExtent);
 						if(cvplPopupOverlay){
-							var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );
-							bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );
+							/*var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );
+							bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );*/
 							
 							cvplPopupOverlay.setPosition(featureCenter);
 							cvplPopupOverlay.html(bsmlPopupHtmlTemplate);
@@ -209,6 +209,8 @@ var _ComplaintStatusInsert = function () {
 			});
 	}
 	var setProcMsg = function(msg){
+		changeMode(2);
+		
 		if(msg.type == 'selectedCvpl'){
 			selectedObj = msg;
 			selectedObj.x = parseFloat(msg.x); 
@@ -222,6 +224,7 @@ var _ComplaintStatusInsert = function () {
 			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 			_MapEventBus.trigger(_MapEvents.map_move, msg);
 		}else if(msg.type == 'putCvpl'){
+			selectedObj = msg
 			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
 		}
 	};
@@ -334,9 +337,13 @@ var _ComplaintStatusInsert = function () {
 		cvplPopupOverlay.show();
 	}
 	
-	var writePopup = function(coord, title, addr, isInsert){
-
-		var centerPoint =_CoreMap.convertLonLatCoord([coord[0],coord[1]],true);
+	var writePopup = function(isInsert){
+		var x = selectedObj.x;
+		var y = selectedObj.y;
+		var title = selectedObj.direct;
+		var addr = selectedObj.contents;
+		
+		var centerPoint =_CoreMap.convertLonLatCoord([x,y],true);
 		popupOverlay.setPosition(centerPoint);
 		
 		var typeConfig = {
@@ -406,6 +413,10 @@ var _ComplaintStatusInsert = function () {
 		},
 		setProcMsg: function(msg){
 			setProcMsg(msg);
+		},
+		
+		getMode: function(){
+			return complaintStatusMode;
 		}
     };
 }();
