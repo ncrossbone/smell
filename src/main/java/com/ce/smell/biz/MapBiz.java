@@ -194,4 +194,17 @@ public class MapBiz {
 	public int insertCvplData(HashMap param) {
 		return mapMapper.insertCvplData(param);
 	}
+	
+	//악취저감설비 정보
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getBsmlReduceqpInfo(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getBsmlReduceqpInfo(param);
+	}
+	
+	//악취저감설비 제어
+	@SuppressWarnings("unchecked")
+	public int insertOnOff(HashMap param) {
+		return mapMapper.insertOnOff(param);
+	}
 }
