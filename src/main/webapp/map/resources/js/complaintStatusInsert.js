@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bufferRadius;
 	
 	var selectedObj;
 	var popupOverlay;
@@ -30,6 +30,7 @@ var _ComplaintStatusInsert = function () {
 		complaintStatusPopup.css('top', (parseInt(wh/2)-parseInt(complaintStatusPopup.height()/2)));
 		
 		bsmlPopup = $('#bsmlPopup');
+		bufferRadius = $('#bufferRadius');
 		
 		complaintStatusRegPopup.draggable({ containment: '#map' });
 		complaintStatusPopup.draggable({ containment: '#map' });
@@ -79,6 +80,10 @@ var _ComplaintStatusInsert = function () {
 			changeMode(mode);
 		});
 		
+		$('#bufferRadiusSelect').off().on('change',function(){
+			setBuffer($(this).val());
+		});
+		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
 				return feature;
@@ -87,7 +92,12 @@ var _ComplaintStatusInsert = function () {
 			if(complaintStatusMode == 1){
 				
 			}else if(complaintStatusMode == 2){
-				
+				if(selectedObj.type=="putCvpl"){
+					var trans = new ol.proj.transform(data.result.coordinate, 'EPSG:3857','EPSG:4326');
+					selectedObj.x = trans[0];
+					selectedObj.y = trans[1];
+					writePopup(true);
+				}
 			}else if(complaintStatusMode == 3){
 				
 			}else if(complaintStatusMode == 4){
@@ -229,7 +239,7 @@ var _ComplaintStatusInsert = function () {
 			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 			_MapEventBus.trigger(_MapEvents.map_move, msg);
 		}else if(msg.type == 'putCvpl'){
-			selectedObj = msg
+			selectedObj = msg;
 			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
 		}
 	};
@@ -245,6 +255,8 @@ var _ComplaintStatusInsert = function () {
 	}
 	
 	var setBuffer = function(bufferMeter){
+		bufferRadius.show();
+		
 		var x = selectedObj.x;
 		var y = selectedObj.y;
 		_CoreMap.getMap().getView().setZoom(17);
@@ -268,6 +280,26 @@ var _ComplaintStatusInsert = function () {
 			var jstsGeom = parser.read(originFeature.getGeometry());
 			var buffered = jstsGeom.buffer(bufferMeter);
 			var bufferedGeometry = parser.write(buffered);
+			
+			var bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{}});
+			var source = new ol.source.Vector();
+			source.addFeatures([bufferOriginFeature]);
+			bufferOriginLayer = new ol.layer.Vector({ 
+				source: source,
+				zIndex:1001,
+				name:layerName[2],
+				opacity: 0.5,
+				style:new ol.style.Style({
+					stroke: new ol.style.Stroke({
+						color: '#AFABAB',
+						width: 3
+					}),
+					fill: new ol.style.Fill({
+						color: 'yellow'
+					})
+				})
+			});
+			_MapEventBus.trigger(_MapEvents.map_addLayer, bufferOriginLayer);
 			
 			for(var i=0; i<data.length; i++){
 				var coord = _CoreMap.convertLonLatCoord([data[i].POINT_X,data[i].POINT_Y],true);
@@ -298,26 +330,6 @@ var _ComplaintStatusInsert = function () {
 			});
 			
 			_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
-			
-			var bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{}});
-			var source = new ol.source.Vector();
-			source.addFeatures([bufferOriginFeature]);
-			bufferOriginLayer = new ol.layer.Vector({ 
-				source: source,
-				zIndex:1001,
-				name:layerName[2],
-				opacity: 0.5,
-				style:new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: '#AFABAB',
-						width: 3
-					}),
-					fill: new ol.style.Fill({
-						color: 'yellow'
-					})
-				})
-			});
-			_MapEventBus.trigger(_MapEvents.map_addLayer, bufferOriginLayer);
 		});
 	};
 	
@@ -347,26 +359,27 @@ var _ComplaintStatusInsert = function () {
 		var y = selectedObj.y;
 		var title = selectedObj.direct;
 		var addr = selectedObj.contents;
-		
+
 		var centerPoint =_CoreMap.convertLonLatCoord([x,y],true);
 		popupOverlay.setPosition(centerPoint);
-		
+
 		var typeConfig = {
 				'네이버앱':'CVP02002',
 				'오창지킴이':'CVP02003',
 				'시도':'CVP02001'
 		}
-		
+
 		clearLayer();
+
 		var resultFeature = new ol.Feature();
-		
+
 		resultFeature.setGeometry(new ol.geom.Point(centerPoint));
-		resultFeature.setProperties({CVPL_TY_CODE:typeConfig[selectedObj.flag],CVPL_LC:title});
-		
+		resultFeature.setProperties({CVPL_TY_CODE:isInsert?selectedObj.flag:typeConfig[selectedObj.flag],CVPL_LC:title});
+
 		var source = new ol.source.Vector({
 			features: [resultFeature]
 		});
-		
+
 		var originLayer = new ol.layer.Vector({
 			source: source,
 			zIndex:1000,
@@ -375,14 +388,13 @@ var _ComplaintStatusInsert = function () {
 				return _WestCondition.createLastPoint(feature);
 			}
 		});
-		
+
 		_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
-		
 		var cvplHtml = '<div class="tooltip2">';
 		cvplHtml += '<p class="tt_tit2">';
 		cvplHtml += '<span>'+title+'</span>';
 		if(isInsert){
-			cvplHtml += '<a href="javascript:void(0)" class="plus_btn"></a>';
+			cvplHtml += '<a href="javascript:void(0)" class="plus_btn" id="putCvpl"></a>';
 		}
 		cvplHtml += '<a href="javascript:void(0)" class="btn06 pop_close"></a>';
 		cvplHtml += '</p>';
@@ -390,10 +402,22 @@ var _ComplaintStatusInsert = function () {
 		cvplHtml += addr;
 		cvplHtml += '</div>';
 		cvplHtml += '</div>';
-		
+
 		cvplPopupOverlay.html(cvplHtml);
 
 		cvplPopupOverlay.show();
+		
+		$('#putCvpl').off().on('click',function(){
+			$.ajax({
+		        url : '/insertCvplData.do',
+		        data: JSON.stringify(selectedObj),
+		        type:'POST',
+		        contentType: 'application/json'
+			}).done(function(result){
+				  $('.process').find('li[mode="3"]').trigger('click');
+				  _MapEventBus.trigger(_MapEvents.alertShow, {text:'지점이 등록 되었습니다.'});
+			});
+		})
 	};
 	
 	return {

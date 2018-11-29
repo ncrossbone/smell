@@ -149,4 +149,15 @@ public class MapController {
 	}
 	
 	
+	//악취저감설비 정보
+	@RequestMapping(value = "/getBsmlReduceqpInfo", method = RequestMethod.POST)
+	public Map<String, Object> getBsmlReduceqpInfo(@RequestBody HashMap param){
+		return mapBiz.getBsmlReduceqpInfo(param);
+	}
+	
+	//악취저감설비 제어
+	@RequestMapping(value = "/insertOnOff" , method = RequestMethod.POST)
+	public int insertOnOff(@RequestBody HashMap param) {
+		return mapBiz.insertOnOff(param);
+	} 
 }

@@ -40,9 +40,6 @@
 			   LO AS POINT_Y,
 			   CVPL_TY_CODE,
 			   CVPL_LC
-			    <if test="flag == 1">
-			    
-			    </if>
   		  FROM CVPL_MANAGE
   		 WHERE LA IS NOT NULL
            AND LO IS NOT NULL
@@ -931,7 +928,96 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
         )
         VALUES
         (
-            #{CVPL_DT}, #{CPTTR}, #{CPTTR_CTTPC}, #{LEGALDONG_CODE}, #{CVPL_LC}, #{CVPL_CN}, SYSDATE(), 'cetech', SYSDATE(), 'cetech', #{LA}, #{LO}, #{CVPL_TY_CODE}
+            #{date}, #{man}, #{phone}, #{addr}, #{direct}, #{contents}, SYSDATE(), 'cetech', SYSDATE(), 'cetech', #{y}, #{x}, #{flag}
         )
+	</insert>
+	
+	<!-- 악취저감설비 정보 -->
+	<select id="getBsmlReduceqpInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		WITH BASE AS
+			(
+			 SELECT A.BPLC_ID, A.REDUC_EQP_NO, A.REDUC_EQP_NM, B.BSML_TRGNPT_NM, PARAMETER_3
+			   FROM (
+			         SELECT B.BPLC_ID, B.REDUC_EQP_NO, B.REDUC_EQP_NM, PARAMETER_3
+			           FROM (SELECT #{bplcId} AS PARAMETER_1, -- 돈사ID
+			                        '' AS PARAMETER_2, -- 저감설비NO
+			                        '' AS PARAMETER_3  -- 상태
+			                ) A,
+			                BSML_REDUC_EQP_INFO B
+			          WHERE B.BPLC_ID=IF(PARAMETER_1='',B.BPLC_ID,PARAMETER_1)
+			            AND B.REDUC_EQP_NO=IF(PARAMETER_2='',B.REDUC_EQP_NO,PARAMETER_2)
+			        ) A,
+			        BPLC_INFO B
+			  WHERE B.BPLC_ID=A.BPLC_ID
+			)
+			SELECT
+			       BPLC_ID, BSML_TRGNPT_NM, REDUC_EQP_NM, OPR_STTUS_NM, REDUC_EQP_NO, DTA_CO, CTRL_CN_CODE, BUTTON_USEABLE_AT
+			  FROM (
+			        SELECT A.BPLC_ID, A.BSML_TRGNPT_NM, A.REDUC_EQP_NM, B.OPR_STTUS_NM,
+			               A.REDUC_EQP_NO,
+			               COUNT(1)OVER() AS DTA_CO,
+			               CASE WHEN B.OPR_STTUS_NM='ON' THEN 'COM08002 '
+			                    WHEN B.OPR_STTUS_NM='OFF' THEN 'COM08001'
+			                END AS CTRL_CN_CODE,
+			               IF((SELECT COUNT(BPLC_ID) FROM BSML_REDUC_EQP_CTRL_HIST C WHERE C.BPLC_ID=A.BPLC_ID AND C.REDUC_EQP_NO=A.REDUC_EQP_NO AND C.CTRL_RESULT_CODE IS NULL)=0,'Y','N') AS BUTTON_USEABLE_AT,
+			               CASE WHEN A.PARAMETER_3='' THEN ''
+			                    WHEN A.PARAMETER_3='COM08001' THEN 'ON'
+			                    WHEN A.PARAMETER_3='COM08002' THEN 'OFF'
+			                END AS PARAMETER_3
+			          FROM BASE A
+			               LEFT JOIN
+			               (SELECT BPLC_ID, REDUC_EQP_NO, 
+			                       CASE WHEN OPR_STTUS_CODE IN ('COM02000','COM08001') THEN 'ON'
+			                            WHEN OPR_STTUS_CODE IN ('COM02003','COM08002') THEN 'OFF'
+			                        END AS OPR_STTUS_NM
+			                  FROM (
+			                        SELECT BPLC_ID, REDUC_EQP_NO, OPR_STTUS_CODE,
+			                               ROW_NUMBER()OVER(PARTITION BY BPLC_ID, REDUC_EQP_NO ORDER BY DTA_DT DESC) AS RN
+			                          FROM (
+			                                SELECT DISTINCT B.BPLC_ID, B.REDUC_EQP_NO, B.DTA_DT, B.OPR_STTUS_CODE
+			                                  FROM (
+			                                        SELECT B.BPLC_ID, B.REDUC_EQP_NO,
+			                                               MAX(DTA_DT) AS MAX_DATE
+			                                          FROM BASE A,
+			                                               BSML_REDUC_EQP_OPR_STTUS B
+			                                         WHERE B.BPLC_ID=A.BPLC_ID
+			                                           AND B.REDUC_EQP_NO=A.REDUC_EQP_NO
+			                                         GROUP BY B.BPLC_ID, B.REDUC_EQP_NO
+			                                       ) A,
+			                                       BSML_REDUC_EQP_OPR_STTUS B
+			                                 WHERE B.BPLC_ID=A.BPLC_ID
+			                                   AND B.REDUC_EQP_NO=A.REDUC_EQP_NO
+			                                   AND B.DTA_DT=A.MAX_DATE
+			                                UNION
+			                                SELECT DISTINCT B.BPLC_ID, B.REDUC_EQP_NO, B.EQP_CTRL_DT, B.CTRL_CN_CODE
+			                                  FROM (
+			                                        SELECT B.BPLC_ID, B.REDUC_EQP_NO,
+			                                               MAX(EQP_CTRL_DT) AS MAX_DATE
+			                                          FROM BASE A,
+			                                               BSML_REDUC_EQP_CTRL_HIST B
+			                                         WHERE B.BPLC_ID=A.BPLC_ID
+			                                           AND B.REDUC_EQP_NO=A.REDUC_EQP_NO
+			                                           AND B.CTRL_RESULT_CODE='COM05000'
+			                                         GROUP BY B.BPLC_ID, B.REDUC_EQP_NO
+			                                       ) A,
+			                                       BSML_REDUC_EQP_CTRL_HIST B
+			                                 WHERE B.BPLC_ID=A.BPLC_ID
+			                                   AND B.REDUC_EQP_NO=A.REDUC_EQP_NO
+			                                   AND B.EQP_CTRL_DT=A.MAX_DATE
+			                               ) A
+			                       ) A
+			                 WHERE RN=1
+			               ) B
+			               ON (B.BPLC_ID=A.BPLC_ID
+			               AND B.REDUC_EQP_NO=A.REDUC_EQP_NO
+			                  )
+			       ) A
+			 WHERE OPR_STTUS_NM=IF(PARAMETER_3='',OPR_STTUS_NM,PARAMETER_3)
+			 ORDER BY BPLC_ID, BSML_TRGNPT_NM, REDUC_EQP_NM, REDUC_EQP_NO
+	</select>
+	
+	<insert id="insertOnOff" parameterType="java.util.HashMap">
+		INSERT INTO BSML_REDUC_EQP_CTRL_HIST (BPLC_ID, REDUC_EQP_NO, CTRL_SE_CODE, CTRL_REQUST_DT, CTRL_CN_CODE, CNTLR_ID)
+		VALUES (#{bplcId}, #{reducEqpNo}, 'COM04003',SYSDATE(),#{ctrlCnCode},'cetech');
 	</insert>
 </mapper>

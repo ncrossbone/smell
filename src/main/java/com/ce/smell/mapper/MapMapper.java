@@ -81,4 +81,8 @@ public interface MapMapper {
 	public List<Map<String, Object>> getCvplDataManageList(HashMap param);
 	//민원등록
 	public int insertCvplData(HashMap param);
+	//악취저감설비 정보
+	public Map<String, Object> getBsmlReduceqpInfo(HashMap param);
+	//악취저감설비 제어
+	public int insertOnOff(HashMap param);
 }
