@@ -507,7 +507,7 @@ var _WestCondition = function () {
     			var feature = new ol.Feature();
 
     			//point, line...
-    			if(options.type == 1){
+    			if(options.type == 1 || options.type == 2){
     				feature.setGeometry(new ol.geom.Polygon(data[i].geometry.coordinates));
     				var coord = ol.extent.getCenter(feature.getGeometry().getExtent());
     				feature.setGeometry(new ol.geom.Point(coord));
@@ -1175,19 +1175,34 @@ var _WestCondition = function () {
     	return styleFunction;
     };
     var odorReductionForSvgFunction = function(feature){
+    	var prop = feature.getProperties();
+    	//sttus_nm 1 : 가동중, 4 : 중지 x : 통신장애
+    	var imageConfig = {
+    			'4':'operate_off',
+    			'1':'operate_on',
+    			'X':'btn_close2',
+    	};
+    	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 10,
+    		image: new ol.style.Icon(({
+    			src: '/images/' + imageConfig[prop.STTUS_NM] + '.png',
+    			scale:1.3
+    		})),
+    		text: new ol.style.Text({
+    			text: prop.BPLC_ID,
     			fill: new ol.style.Fill({
-    		        color: '#ED7D31'
-    		    }),
-    		    stroke: new ol.style.Stroke({
-    		    	color: '#AFABAB',
-    		    	width: 3
-    		    })
+    				color: '#000'
+    			}),
+    			stroke : new ol.style.Stroke({
+    				color : '#fff',
+    				width : 3
+    			}),
+    			offsetY: 22,
+    			offsetX: 1,
+    			font: 'bold 13px Arial'
     		})
-  		});
+    	});
     	
     	return style;
     };
