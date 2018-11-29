@@ -480,6 +480,7 @@ var _ComplaintStatusInsert = function () {
 		        type:'POST',
 		        contentType: 'application/json'
 			}).done(function(result){
+				  selectedObj.type = 'selectedCvpl';
 				  process.find('li[mode="3"]').trigger('click');
 				  _MapEventBus.trigger(_MapEvents.alertShow, {text:'지점이 등록 되었습니다.'});
 			});
