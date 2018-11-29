@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv;
 	
 	var selectedObj;
 	var popupOverlay;
@@ -25,6 +25,9 @@ var _ComplaintStatusInsert = function () {
 		bsmlPopup = $('#bsmlPopup');
 		bsmlPopup2 = $('#bsmlPopup2');
 		bufferRadius = $('#bufferRadius');
+		gridArea = $('#gridArea');
+		legendDiv = $('#legendDiv');
+		
 		clock = $('#clock');
 		
 		complaintStatusRegPopup.draggable({ containment: '#map' });
@@ -56,8 +59,8 @@ var _ComplaintStatusInsert = function () {
 			},
 			set: function(date) {
 		    	this._date = date;
-		    	clock.find('.day').text(currentDate.date);
-		    	clock.find('.time').text(currentDate.time + '시');
+		    	clock.find('.day').text(currentDate.date.substring(0,4)+'년 '+parseInt(currentDate.date.substring(4,6))+'월 '+parseInt(currentDate.date.substring(6,8))+'일');
+		    	clock.find('.time').text(parseInt(currentDate.time) + '시');
 		    }
 		});
 		Object.defineProperty(currentDate, 'time', {
@@ -66,8 +69,8 @@ var _ComplaintStatusInsert = function () {
 			},
 			set: function(time) {
 		    	this._time = time;
-		    	clock.find('.day').text(currentDate.date);
-		    	clock.find('.time').text(currentDate.time + '시');
+		    	clock.find('.day').text(currentDate.date.substring(0,4)+'년 '+parseInt(currentDate.date.substring(4,6))+'월 '+parseInt(currentDate.date.substring(6,8))+'일');
+		    	clock.find('.time').text(parseInt(currentDate.time) + '시');
 		    }
 		});
 		
@@ -165,7 +168,7 @@ var _ComplaintStatusInsert = function () {
 				}else{
 					return;
 				}
-				$('.bsmlPopupClose').on('click', function(){
+				$('.bsmlPopupClose').off('click').on('click', function(){
 					changeMode(5);
 				}); 
 			}
@@ -218,6 +221,8 @@ var _ComplaintStatusInsert = function () {
 			setBuffer();
 		}else if(mode == 4 && preFlag){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
+			gridArea.hide();
+			bufferRadius.hide();
 		}else if(mode == 5 && preFlag){
 			
 			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
@@ -244,10 +249,10 @@ var _ComplaintStatusInsert = function () {
 		    	clearLayerByName(layerName[2]);
 		    	clearLayerByName(layerName[1]);
 		    	bufferRadius.hide();
-		    	$('#gridArea').hide();
+		    	gridArea.hide();
 		    case 3: // 악취 확산 격자
 		    	_MapEventBus.trigger(_MapEvents.hide_odorSpread_layer, {});
-		    	$('#legendDiv').hide();
+		    	legendDiv.hide();
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
 		    	clearLayerByName('odorOrigin');

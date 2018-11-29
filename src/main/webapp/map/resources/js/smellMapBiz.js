@@ -238,6 +238,7 @@ var _SmellMapBiz = function () {
 			}
 		});
 		_MapEventBus.on(_MapEvents.show_odorSpread_layer, function(event, data){
+			$('#odorSpreadStop').trigger('click');
 			$('#odorSpreadPlay').trigger('click');
 		});		
 		

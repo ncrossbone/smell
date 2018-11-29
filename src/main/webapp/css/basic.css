@@ -296,8 +296,9 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .smscont textarea { height:100%; border:1px solid #d8d8d8; width:100%; font-size:13px; font-family: 'Dotum'; padding:5px; box-sizing:border-box; } 
 .btn08 { padding:3px 15px; letter-spacing:-1px; font-size: 14px; display:inline-block; background:#494949; color:#fff; position:absolute; left:50%; bottom:12px; transform:translateX(-50%); border-radius: 6px;}
 
-#clock { background:#272e38; padding:10px; position:absolute; right: 20px; bottom: 130px; z-index: 1000; display: none;}
-.c_cont { background:#0f1620; padding:5px 40px; border-radius: 6px; }
+#clock { background:#272e38; padding:5px; position:absolute; right: 10px; bottom: 120px; z-index: 1000; display: none;}
+    
+.c_cont { background:#0f1620; padding:5px 20px; border-radius: 6px; }
 .c_cont> span { display:block; color:#cacaca; text-align:center;}
 .day { font-size:15px; font-family:Verdana, Geneva, sans-serif; }
 .time { font-family:'RussellSquare'; font-size:20px; margin-top:2px; }
