@@ -4,16 +4,19 @@ var _ui = (function () {
     };
     var setEvent = function () {
     	
-    	$('#putComplaintStatus').off().on('click',function(){
-    		_MapEventBus.trigger(_MapEvents.init, {});
-    		_MapEventBus.trigger(_MapEvents.complaintStatusMode, {});
+    	$('.taskTypeBtn').off().on('click',function(){
+    		var taskType = $(this).attr('mode');
+    		if(_SmellMapBiz.taskMode == taskType){
+				return;
+			}
     		
+    		_MapEventBus.trigger(_MapEvents.task_mode_changed, {mode:taskType});
     	});
     	
-    	$('#chartMode').off().on('click',function(){
-    		_MapEventBus.trigger(_MapEvents.init, {});
-    		_MapEventBus.trigger(_MapEvents.chartMode, {});
-    	});
+//    	$('#chartMode').off().on('click',function(){
+//    		_MapEventBus.trigger(_MapEvents.init, {});
+//    		_MapEventBus.trigger(_MapEvents.chartMode, {});
+//    	});
     	
     	$('#initAll').off('click').on('click',function(){
     		_MapEventBus.trigger(_MapEvents.init, {});
@@ -116,5 +119,6 @@ var _ui = (function () {
 
     return {
         init: init
+        
     };
 })();
