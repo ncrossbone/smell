@@ -268,7 +268,7 @@ var _SmellMapBiz = function () {
 	            data:JSON.stringify({analsAreaId:analsAreaId})
 	        }).done(function(result){
 	        	if(result==null || result.length <= 0){
-	        		alert('관심지역 등록정보가 없습니다.');
+	        		_MapEventBus.trigger(_MapEvents.alertShow, {text:'관심지역 등록정보가 없습니다.'});
 	        		return;
 	        	}
 	        	var analsId = result[0].analsAreaId;
@@ -478,7 +478,7 @@ var _SmellMapBiz = function () {
 				
 				if(weatherAnalysisStartDate == weatherAnalysisEndDate){
 					if(parseInt(weatherAnalysisStartTime) > parseInt(weatherAnalysisEndTime)){
-						alert('같은 날짜일때 두번째 시간이 더 빠를 수 없습니다.');
+						_MapEventBus.trigger(_MapEvents.alertShow, {text:'같은 날짜일때 두번째 시간이 더 빠를 수 없습니다.'});
 						return;
 					}	
 				}
@@ -581,7 +581,7 @@ var _SmellMapBiz = function () {
 				
 				if(odorSpreadStartDate == odorSpreadEndDate){
 					if(parseInt(odorSpreadStartTime) > parseInt(odorSpreadEndTime)){
-						alert('같은 날짜일때 두번째 시간이 더 빠를 수 없습니다.');
+						_MapEventBus.trigger(_MapEvents.alertShow, {text:'같은 날짜일때 두번째 시간이 더 빠를 수 없습니다.'});
 						return;
 					}	
 				}
@@ -950,7 +950,7 @@ var _SmellMapBiz = function () {
 				bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{}});
 				
 				if(interFeatures.length <= 0){
-					alert('오염원점이 없습니다.');
+					_MapEventBus.trigger(_MapEvents.alertShow, {text:'오염원점이 없습니다.'});
 					return;
 				}
 				
@@ -1009,7 +1009,7 @@ var _SmellMapBiz = function () {
             data:JSON.stringify(params)
         }).done(function(result){
         	if(result == null || result.length <= 0){
-				alert('모델링 데이터가 없습니다.');
+				_MapEventBus.trigger(_MapEvents.alertShow, {text:'모델링 데이터가 없습니다.'});
 				return;
 			}
         	trackingFeatures = [];

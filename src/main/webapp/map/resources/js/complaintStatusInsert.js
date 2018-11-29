@@ -80,7 +80,7 @@ var _ComplaintStatusInsert = function () {
 				return;
 			}
 			if(mode == 3  && selectedObj.type == 'putCvpl'){
-				alert('등록을 하셔야 합니다.');
+				_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
 				return;
 			}
 			
@@ -310,7 +310,7 @@ var _ComplaintStatusInsert = function () {
 			  data: new XMLSerializer().serializeToString(analsAreaRequest)
 			}).done(function(result) {
 				if(result.features.length <= 0){
-					alert('악취확산 격자 영역 밖입니다.');
+					_MapEventBus.trigger(_MapEvents.alertShow, {text:'악취확산 격자 영역 밖입니다.'});
 					return;
 				}
 				var analsAreaInfo = result.features[0].properties;

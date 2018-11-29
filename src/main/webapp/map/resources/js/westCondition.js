@@ -657,12 +657,12 @@ var _WestCondition = function () {
             		}
             		
             		if(paramObj[poiSearchArr[0]] == "전체"){
-            			alert("대분류를 선택하세요.");
+            			_MapEventBus.trigger(_MapEvents.alertShow, {text:'대분류를 선택하세요.'});
             			return;
             		}
             		
             		if(paramObj.poiText == ""){
-            			alert("명칭을 입력하세요.");
+            			_MapEventBus.trigger(_MapEvents.alertShow, {text:'명칭을 입력하세요.'});
             			return;
             		}
             		
@@ -926,7 +926,8 @@ var _WestCondition = function () {
     
     var checkSearchCondition = function(placeId, chartMode){
     	if(!contentsConfig[placeId]){
-    		return alert('레이어 정의 필요');
+    		_MapEventBus.trigger(_MapEvents.alertShow, {text:'레이어 정의 필요.'});
+    		return;
     	}
 
     	var searchPlace = $('#' + placeId).find('*');
@@ -951,9 +952,11 @@ var _WestCondition = function () {
     						var checkboxArr = $('input[name="' + searchPlaceName + '"]:checked');
 
     						if(checkboxArr.length == 0){
-    							return alert('항목을 선택하세요.');
+    							_MapEventBus.trigger(_MapEvents.alertShow, {text:'항목을 선택하세요.'});
+    							return;
     						}else if(checkboxArr.length > 4){
-    							return alert('항목이 5개 이상 선택되었습니다.');
+    							_MapEventBus.trigger(_MapEvents.alertShow, {text:'항목이 5개 이상 선택되었습니다.'});
+    							return;
     						}
     						//var checkBoxCqlString = contentsConfig[placeId].cqlForMappingObj[replaceName] +' IN (';
     						for(var k=0; k<checkboxArr.length; k++){
