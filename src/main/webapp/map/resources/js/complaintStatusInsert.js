@@ -339,20 +339,12 @@ var _ComplaintStatusInsert = function () {
 	
 	var clearLayer = function(){
 		for(var i = 0; i<layerName.length; i++){
-			var layerForName = _CoreMap.getMap().getLayerForName(layerName[i]);
-
-	    	if(layerForName){
-	    		_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
-	    	}
+			_MapEventBus.trigger(_MapEvents.map_removeLayerByName, layerName[i]);
 		}
 	}
 	
 	var clearLayerByName = function(layerNm){
-		var layer = _CoreMap.getMap().getLayerForName(layerNm);
-
-    	if(layer){
-    		_MapEventBus.trigger(_MapEvents.map_removeLayer, layer);
-    	}
+		_MapEventBus.trigger(_MapEvents.map_removeLayerByName, layerNm);
 	}
 	
 	var setBuffer = function(bufferMeter){

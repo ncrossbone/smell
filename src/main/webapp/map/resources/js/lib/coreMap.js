@@ -229,7 +229,7 @@ var _CoreMap = function() {
 		_MapEventBus.on(_MapEvents.setZoom , setZoom);
 		_MapEventBus.on(_MapEvents.map_move , mapMove);
 		
-		
+		_MapEventBus.on(_MapEvents.map_removeLayerByName, removeLayerByName);
 	};
 	var setMapEvent = function() {
 
@@ -479,8 +479,17 @@ var _CoreMap = function() {
 			return;
 		coreMap.removeLayer(layer);
 	}
+	
+	var removeLayerByName = function(event, layerNm) {
+		if (coreMap == null)
+			return;
+		
+		var layer = _CoreMap.getMap().getLayerForName(layerNm);
 
-
+    	if(layer){
+    		coreMap.removeLayer(layer);
+    	}
+	}
 	// 배경맵 지우기
 	var hideBaseMap = function() {
 		for (var i = 1; i < 5; i++) {
