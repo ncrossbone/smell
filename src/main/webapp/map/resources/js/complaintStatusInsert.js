@@ -140,21 +140,24 @@ var _ComplaintStatusInsert = function () {
 				complaintStatusPopup.show();
 				cvplPopupOverlay.hide();
 				process.show();
-				if($('#tabOpeners').attr('class').indexOf('on') > -1){
-					$('#tabOpeners').trigger('click');
-				}
+				
 				$(".cvpl_pop_close").off().on('click',function(){
 					$(this).parent().parent().fadeOut();
 				});
 				
-				$('.process').find('li').removeClass('on');
-				for(var i = 0; i<$('.process').find('li').length; i++){
-					var li = $($('.process').find('li')[i]);
+				process.find('li').removeClass('on');
+				
+				for(var i = 0; i<process.find('li').length; i++){
+					var li = $(process.find('li')[i]);
 					li.css('background-image', 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
 				}
 				changeMode(1);
 			}else{
 				// 초기화
+				process.hide();
+				setProcessBtn(1);
+				resetPreMode(1);
+				complaintStatusPopup.hide();
 			}
 		});
 	}
@@ -211,6 +214,9 @@ var _ComplaintStatusInsert = function () {
 		}
 	}
 	var setProcessBtn = function(mode){
+		$('.workStep[mode='+mode+']').addClass('on');
+		$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
+		
 		if(complaintStatusMode < mode){
 			for(var i = 1; i<=mode; i++){
 				$('.workStep[mode='+i+']').addClass('on');
@@ -228,7 +234,7 @@ var _ComplaintStatusInsert = function () {
 		
 		var analsAreaRequest = new ol.format.WFS().writeGetFeature({
 	        srsName: 'EPSG:3857',
-	        featureNS: 'http://112.218.1.243:44002',
+	        featureNS: _MapServiceInfo.serviceUrl,
 	        featurePrefix: 'CE-TECH',
 	        featureTypes: ['shp_anals_area_new'],
 	        outputFormat: 'application/json',
@@ -474,7 +480,7 @@ var _ComplaintStatusInsert = function () {
 		        type:'POST',
 		        contentType: 'application/json'
 			}).done(function(result){
-				  $('.process').find('li[mode="3"]').trigger('click');
+				  process.find('li[mode="3"]').trigger('click');
 				  _MapEventBus.trigger(_MapEvents.alertShow, {text:'지점이 등록 되었습니다.'});
 			});
 		})

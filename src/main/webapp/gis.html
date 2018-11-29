@@ -143,16 +143,12 @@
 <div id="warp">
     <div id="top">
         <h1></h1>
-        <!-- <ul id="map_sel">
-        	<li><a class="map1 on" href="javascript:void(0)"></a></li>
-            <li><a class="map2" href="javascript:void(0)"></a></li>
-        </ul> -->
         <ul class="topmenu">
-        	<li><a href="javascript:void(0)" class="tm01 taskTypeBtn" mode="0">GIS</a></li>      
+        	<li><a href="javascript:void(0)" class="tm01 taskTypeBtn" mode="0">GIS업무</a></li>      
 			<li><a href="javascript:void(0)" class="tm01 taskTypeBtn" mode="1">민원처리</a></li>      	
 			<li><a href="javascript:void(0)" class="tm02 taskTypeBtn" mode="2">현장민원</a></li>      	
 			<li><a href="javascript:void(0)" class="tm03 taskTypeBtn" mode="3">악취예보처리</a></li>      	
-			<li><a href="javascript:void(0)" class="tm04 taskTypeBtn" mode="4">그래프</a></li>      	
+			<li><a href="javascript:void(0)" class="tm04 taskTypeBtn" mode="4">그래프</a></li>    	
         </ul>
     </div>
     	
@@ -173,11 +169,11 @@
         <a class="btn02 fl" href="javascript:void(0)" id="poiView">POI 보기</a>
     </div>
     <div id="container">
-    	<ul id="tabOpener">
+    	<ul id="tabOpener" class="gisTaskMenu">
     		<li class="on" id="tabOpeners"></li>
     	</ul>
     
-		<ul id="tab" value="on">
+		<ul id="tab" value="on" class="gisTaskMenu">
         	<li class="on" tabType="smellMap">악취지도</li>
             <li tabType="smellInfo">악취정보</li>
             <li tabType="smellMeasure" style="line-height: 25px;">측정소</li> 
@@ -188,7 +184,7 @@
     	<a href="javascript:void(0)" id="initAll">초기화</a>
     	<h3 id="titleDate"><span></span></h3>
     </div>
-	<ul class="lnb" id="smellMap">
+	<ul class="lnb gisTaskMenu" id="smellMap">
 		<li>
 			<div class="layerOnOff"></div>
 			<h2 class="ov accordion">민원현황<span></span></h2>

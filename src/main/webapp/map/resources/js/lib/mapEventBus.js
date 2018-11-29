@@ -18,7 +18,7 @@ _MapEvents.map_mousemove = 'map_mousemove';
 
 _MapEvents.map_move = 'map_move';
 _MapEvents.show_odorSpread_layer = 'show_odorSpread_layer';
-_MapEvents.hide_odorSpread_layer = 'show_odorSpread_layer';
+_MapEvents.hide_odorSpread_layer = 'hide_odorSpread_layer';
 _MapEvents.show_odorMovement_layer = 'show_odorMovement_layer';
 _MapEvents.hide_odorMovement_layer = 'hide_odorMovement_layer';
 

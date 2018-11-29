@@ -766,6 +766,21 @@ var _WestCondition = function () {
     		}
     	});*/
     	
+    	_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
+			// GIS 모드
+    		if(data.mode == 0){
+    			$('.gisTaskMenu').show();
+    			$('#tabOpeners').addClass('off');
+    			$('#tabOpeners').removeClass('on');
+    			tabCloseOpen($('#tabOpeners'));
+    		}else{
+    			$('.gisTaskMenu').hide();
+    			$('#tabOpeners').addClass('on');
+    			$('#tabOpeners').removeClass('off');
+    			tabCloseOpen($('#tabOpeners'));
+    		}
+		});
+    	
     	$('#tabOpeners').on('click', function(){
 			tabCloseOpen($(this));
 		});
@@ -1873,9 +1888,6 @@ var _WestCondition = function () {
 	var tabCloseOpen = function(value){
 		
 		var ww = $(window).width();
-		
-		var value = $('#tabOpeners');
-		//$('#tab').find('li').parent().find('li')
 		if(value.attr('class') == "on"){
 			$('.instanceArea').hide();
 			$('.lnb').css('display', 'none');
@@ -1914,9 +1926,7 @@ var _WestCondition = function () {
 			$('#gridArea').css('width', ww - 360 );
 			
 		}
-		
 		reSizeMap(reW,reH);
-		
 	}
 	
 	var reSizeMap = function(width,height){
