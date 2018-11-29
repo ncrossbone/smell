@@ -36,8 +36,8 @@
 	
 	<select id="complaintStatusFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CVPL_NO,
-			   LA AS POINT_X,
-			   LO AS POINT_Y,
+			   LO AS POINT_X,
+			   LA AS POINT_Y,
 			   CVPL_TY_CODE,
 			   CVPL_LC
   		  FROM CVPL_MANAGE
