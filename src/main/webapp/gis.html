@@ -119,6 +119,7 @@
 		
 		$('#complaintStatusPopup').draggable({ containment: '#map' });
 		$('#complaintStatusRegPopup').draggable({ containment: '#map' });
+		$('#bufferRadius').draggable({ containment: '#map' });
 		
 		$(window).trigger('resize');
 		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
@@ -978,6 +979,16 @@
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
      	<div id="alertDiv">메세지를 입력 하세요.</div>
+     	<div id="bufferRadius">
+     		<label for="bufferRadiusSelect" />반경 선택 :
+     		<select id="bufferRadiusSelect" style="margin-left: 10px;">
+     			<option value="100">100m</option>
+     			<option value="200" selected="selected">200m</option>
+     			<option value="300">300m</option>
+     			<option value="400">400m</option>
+     			<option value="500">500m</option>
+     		</select>
+     	</div>
      	<ul class="process" style="display: none;">
         	<li class="p_f workStep" mode="1">
             	<span class="step">STEP.1</span>

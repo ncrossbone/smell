@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bufferRadius;
 	
 	var selectedObj;
 	var popupOverlay;
@@ -31,6 +31,7 @@ var _ComplaintStatusInsert = function () {
 		
 		
 		bsmlPopup = $('#bsmlPopup');
+		bufferRadius = $('#bufferRadius');
 		
 		complaintStatusRegPopup.draggable({ containment: '#map' });
 		complaintStatusPopup.draggable({ containment: '#map' });
@@ -78,6 +79,10 @@ var _ComplaintStatusInsert = function () {
 				return;
 			}
 			changeMode(mode);
+		});
+		
+		$('#bufferRadiusSelect').off().on('change',function(){
+			setBuffer($(this).val());
 		});
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
@@ -252,6 +257,8 @@ var _ComplaintStatusInsert = function () {
 	}
 	
 	var setBuffer = function(bufferMeter){
+		bufferRadius.show();
+		
 		var x = selectedObj.x;
 		var y = selectedObj.y;
 		_CoreMap.getMap().getView().setZoom(17);
