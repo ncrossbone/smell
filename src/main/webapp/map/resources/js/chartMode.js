@@ -8,6 +8,7 @@ var _ChartMode = function () {
 			// GIS 모드
     		if(data.mode == 4){
     			$('#chartDiv').show();
+    			getChartData({code:'43114000000202'});
     			getChartFeature();
     		}else{
     			$('#chartDiv').hide();
@@ -134,8 +135,27 @@ var _ChartMode = function () {
 	
 	var writeChart = function(param){
 		var data = param.data;
-		var item = ['VOCS','CCNT','NH3','ERCRT','H2S','ARCSR','OU','SOLRAD','HD','TMPRT','WD','WS','NO2','SO2','PM10','PM2_5','CFC','CH3SH','TMA','ETHANOL','MESURE_DT'];
-		
+		var item =[{name:'VOCS',title:'휘발성유기물'},
+			     {name:'CCNT',title:'접점센서'},
+			     {name:'NH3',title:'암모니아'},
+			     {name:'ERCRT',title:'전류센서'},
+			     {name:'H2S',title:'황화수소'},
+			     {name:'ARCSR',title:'기압'},
+			     {name:'OU',title:'복합 악취'},
+			     {name:'SOLRAD',title:'일사'},
+			     {name:'HD',title:'습도'},
+			     {name:'TMPRT',title:'기온'},
+			     {name:'WD',title:'풍향'},
+			     {name:'WS',title:'풍속'},
+			     {name:'NO2',title:'이산화질소'},
+			     {name:'SO2',title:'이산화황'},
+			     {name:'PM10',title:'미세먼지10'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
+			     {name:'CFC',title:'염소'},
+			     {name:'CH3SH',title:'메틸메르캅탄'},
+			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'ETHANOL',title:'에탄올'},
+			     {name:'MESURE_DT',title:'날짜'}]
 		$('#chartArea').html('');
 		
 		if(!data){
@@ -201,19 +221,19 @@ var _ChartMode = function () {
 		
 		for(var i = 0; i < data.length; i++){
 			for(var j = 0; j < item.length; j++){
-				if(!dataObj[item[j]]){
-					dataObj[item[j]] = [];
+				if(!dataObj[item[j].name]){
+					dataObj[item[j].name] = [];
 				}
-				dataObj[item[j]].push(data[i][item[j]]);
+				dataObj[item[j].name].push(data[i][item[j].name]);
 			}
 		}
 		for(var i = 0; i < item.length; i++){
-			if(item[i] != 'MESURE_DT'){
+			if(item[i].name != 'MESURE_DT'){
 				$('#chartArea').append('<div id="chart' + i + '"></div>');
-				chartObj.series[0].data = dataObj[item[i]];
-				chartObj.series[0].name = item[i];
+				chartObj.series[0].data = dataObj[item[i].name];
+				chartObj.series[0].name = item[i].title;
 				chartObj.xAxis.categories = dataObj.MESURE_DT;
-				chartObj.title.text = item[i] + ' (' + item[i] + ')';
+				chartObj.title.text = item[i].title + ' (' + item[i].name + ')';
 				Highcharts.chart('chart'+ i,chartObj);
 			}
 		}
