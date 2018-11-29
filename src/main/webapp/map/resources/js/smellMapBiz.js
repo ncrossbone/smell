@@ -307,6 +307,10 @@ var _SmellMapBiz = function () {
 		});
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
+			if(_SmellMapBiz.taskMode > 0){
+				return;
+			}
+			
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
 				var lyrNm = layer.get('name');
 				
@@ -906,13 +910,8 @@ var _SmellMapBiz = function () {
 					}
 				}
 			})
-			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {
-		          cqlString:'1=1',
-		          geoserverLayerId:_WestCondition.getWestLayerName().SHP_BPLC_FOR_WESTCONDITION,
-		          layerId:'odorOrigin',
-		          layerType:'polygon'
-			});
-			
+			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});
+			 
 			$('#bufferOnOffBtn').attr('value', 'on');
 			$('#bufferOnOffBtn').trigger('click');
 			
