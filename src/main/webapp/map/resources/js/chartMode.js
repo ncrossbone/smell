@@ -1,14 +1,30 @@
 var _ChartMode = function () {
+	
 	var setEvent = function(){
+		_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
+			// GIS 모드
+    		if(data.mode == 4){
+    			_MapEventBus.trigger(_MapEvents.chartMode,{});
+    		}else{
+    			$('#chartDiv').hide();
+    			$('#chartSpotId').text('');
+				$('#chartSpotNm').text('');
+				$('#chartArea').html('');
+    		}
+		});
+		
+		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
+			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
+				if(layer.get('name')=='chartModeLayer'){
+					_MapEventBus.trigger(_MapEvents.getChartData, {
+						code:feature.getProperties().CODE
+					});
+				}
+			});
+		});
+		
 		
 		_MapEventBus.on(_MapEvents.chartMode, function(){
-			if($('#tabOpeners').attr('class').indexOf('on') > -1){
-				$('#tabOpeners').trigger('click');
-			}
-			
-			if(!$('#airMaps').attr('class')){
-				$('#airMaps').trigger('click');
-			}
 			
 			$('#chartDiv').show();
 			
@@ -27,6 +43,15 @@ var _ChartMode = function () {
 				};
 
 				_MapEventBus.trigger(_MapEvents.writeChart, eventParam);
+				
+				Common.getData({
+	    			url: '/getClick.do',
+	    			contentType: 'application/json',
+	    			params: {contentsId:'chart',code:param.code}
+				}).done(function(data){
+					$('#chartSpotId').text(data[0].CODE);
+					$('#chartSpotNm').text(data[0].SENSOR_NM);
+				});
 			});
 		});
 		
@@ -195,6 +220,8 @@ var _ChartMode = function () {
 				});
 				
 				_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
+				
+				_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:1});
     		});
 		});
 	};

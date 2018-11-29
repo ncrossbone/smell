@@ -207,11 +207,18 @@ ul[role="tablist"]{
 #chartTitle{
 	width: 490px;
     position: absolute;
-    background: #fff;
-    height: 50px;
+    background: #003379;
+    height: 60px;
     z-index: 3;
     border-right: 1px solid #fff;
 }
+
+#chartTitle > div{
+	font-size: 14px;
+    color: #fff;
+    margin: 5px;
+}
+
 #chartArea{
 	position: absolute; 
 	width: 490px;
@@ -221,7 +228,7 @@ ul[role="tablist"]{
     background: #0c2641;
     opacity:0.7;
     overflow-y:auto;
-    margin-top: 50px;
+    margin-top: 60px;
 }
 
 #cvplPopupOverlay { 

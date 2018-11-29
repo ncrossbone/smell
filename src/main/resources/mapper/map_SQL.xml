@@ -214,7 +214,8 @@
 	<select id="chartFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		 SELECT CONCAT(LEGALDONG_CODE,SPOT_CODE) AS CODE,SENSOR_NM,SENSOR_TY_CODE,LO,LA
                FROM bdsm.IOT_SENSOR_INFO
-			  WHERE LO IS NOT NULL
+			  WHERE LO IS NOT NULL 
+                AND SENSOR_TY_CODE != 'SEN01004'
 	</select>
 	<select id="fixedMeasurementFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
@@ -797,6 +798,12 @@ WHERE TAB.POINT_X IS NOT NULL
 		          WHERE A.LEGALDONG_CODE = B.LEGALDONG_CODE
                     AND SENSOR_TY_CODE = 'SEN01004'
                     AND CONCAT(A.LEGALDONG_CODE,SPOT_CODE) = #{CODE}
+	</select>
+	
+	<select id="chartClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 SELECT CONCAT(LEGALDONG_CODE,SPOT_CODE) AS CODE,SENSOR_NM
+               FROM bdsm.IOT_SENSOR_INFO
+			 WHERE CONCAT(LEGALDONG_CODE,SPOT_CODE) = #{code}
 	</select>
 	
 	<select id="reductionMonitoringFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">

@@ -106,6 +106,7 @@
 
 			$('#map').width(ww - 340);
 			$('#map').height(wh - 92);
+			$('#chartArea').height(wh - 170);
 			if (map) {
 				map.setSize([ ww - 340, wh - 92 ]);
 			}
@@ -1051,7 +1052,15 @@
 	    <div id="cvplPopupOverlay"></div>
 	    
 		<div id="chartDiv" style="display: none;">
-			<div id="chartTitle">테스트</div>
+			<div id="chartTitle">
+				<div style="margin-bottom: -3px;">
+					<span>Station ID : </span>
+					<span id="chartSpotId" style="color: #ed7d31;"></span>
+				</div>
+				<div>
+					<span id="chartSpotNm" style="font-size: 20px;"></span>
+				</div>
+			</div>
 			<div id="chartArea"></div>
 		</div>
         <div id="popup" style="right: 150px; top: 250px; display: none;">

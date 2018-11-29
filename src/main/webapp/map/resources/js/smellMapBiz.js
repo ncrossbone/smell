@@ -318,11 +318,6 @@ var _SmellMapBiz = function () {
 					if(_CoreMap.getMap().getLayerForName(lyrNm)){
 						_WestCondition.onClickLayer(feature,lyrNm);
 					}
-				}else if(layer.get('name')=='chartModeLayer'){
-					
-					_MapEventBus.trigger(_MapEvents.getChartData, {
-						code:feature.getProperties().CODE
-					});
 				}
 			});
 		});

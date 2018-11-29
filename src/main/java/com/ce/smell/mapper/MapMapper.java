@@ -37,6 +37,7 @@ public interface MapMapper {
 	public List<Map<String, Object>> observatoryClick(HashMap param);
 	public List<Map<String, Object>> complaintStatusClick(HashMap param);
 	public List<Map<String, Object>> reductionMonitoringClick(HashMap param);
+	public List<Map<String, Object>> chartClick(HashMap param);
 	
 	public List<Map<String, Object>> getCity();
 	public List<Map<String, Object>> getTown(HashMap param);
