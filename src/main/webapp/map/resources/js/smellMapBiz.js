@@ -905,9 +905,11 @@ var _SmellMapBiz = function () {
 						_MapEventBus.trigger(_MapEvents.map_addLayer, bufferOriginLayer);
 					}
 				}
-			})
-			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});
-			 
+			});
+			
+//			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:_SmellMapBiz.taskMode});	
+
+			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});	
 			$('#bufferOnOffBtn').attr('value', 'on');
 			$('#bufferOnOffBtn').trigger('click');
 			
@@ -1046,7 +1048,7 @@ var _SmellMapBiz = function () {
 			
 			// 민원 업무일때
 			if(analsId){
-				$('#odorMovementBufferBtn').trigger('click');	
+				$('#odorMovementBufferBtn').trigger('click');
 			}
         });
 	}

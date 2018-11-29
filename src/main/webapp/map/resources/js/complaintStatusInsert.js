@@ -236,6 +236,8 @@ var _ComplaintStatusInsert = function () {
 			checkAnalsArea();
 			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:1});
 			
+			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:2});
+			
 			// 2. 관심지역이 등록되어 있으면 이동경로 표시
 			// 2-1. 관심지역으로 등록되어 있지 않으면 등록할지 물어 보고 등록  후에 3번부터  등록 안하면  끝
 			// 3. 이동경로 표시 후 사업장 표시
@@ -263,10 +265,11 @@ var _ComplaintStatusInsert = function () {
 		    	legendDiv.hide();
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
-		    	clearLayerByName('odorOrigin');
+		    	 
 		    	clearLayerByName('odorReductionForPoint');
+		    	clearLayerByName('odorReductionForSvg');
 		    case 5:  // 저감시설 및 악취원점 팝업 닫기
-		    	bsmlPopup.hide();
+		    	bsmlPopup.hide(); 
 		    	bsmlPopup2.hide();
 		    case 6: 
 		}
