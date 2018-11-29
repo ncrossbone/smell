@@ -136,7 +136,14 @@ function cvplDataSel(){
 		var classNm = $(tdArr[i]).attr('class');
 		if(classNm){
 			if(classNm.indexOf('cvpl') > -1){
-				paramObj[classNm.split('cvpl')[1].toLowerCase()] = $(tdArr[i]).text();
+				if(classNm.indexOf('Date') > -1){
+					var text = $(tdArr[i]).text().split(' ');					
+					paramObj[classNm.split('cvpl')[1].toLowerCase()] = text[0];
+					paramObj['time'] = text[1].split('시')[0];
+				}else{
+					paramObj[classNm.split('cvpl')[1].toLowerCase()] = $(tdArr[i]).text();	
+				}
+				
 			}	
 		}
 	}
@@ -178,7 +185,7 @@ function gisView(la,lo){
 <table class="table02 dataPix">
     <colgroup>
         <col width="45px" />
-        <col width="90px" />
+        <col width="110px" />
         <col width="60px" />
         <col width="90px" />
         <col width="60px"/>
@@ -191,7 +198,7 @@ function gisView(la,lo){
     <thead>
         <tr>
             <th>선택</th>
-            <th>민원일자</th>
+            <th>민원일시</th>
             <th>민원인</th>
             <th>연락처</th>
             <th>위도</th>

@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bufferRadius;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bufferRadius, clock;
 	
 	var selectedObj;
 	var popupOverlay;
@@ -31,6 +31,7 @@ var _ComplaintStatusInsert = function () {
 		
 		bsmlPopup = $('#bsmlPopup');
 		bufferRadius = $('#bufferRadius');
+		clock = $('#clock');
 		
 		complaintStatusRegPopup.draggable({ containment: '#map' });
 		complaintStatusPopup.draggable({ containment: '#map' });
@@ -55,7 +56,8 @@ var _ComplaintStatusInsert = function () {
 			},
 			set: function(date) {
 		    	this._date = date;
-		    	$('#workSpace2').html(currentDate.date + currentDate.time);
+		    	clock.find('.day').text(currentDate.date);
+		    	clock.find('.time').text(currentDate.time + '시');
 		    }
 		});
 		Object.defineProperty(currentDate, 'time', {
@@ -64,7 +66,8 @@ var _ComplaintStatusInsert = function () {
 			},
 			set: function(time) {
 		    	this._time = time;
-		    	$('#workSpace2').html(currentDate.date + currentDate.time);
+		    	clock.find('.day').text(currentDate.date);
+		    	clock.find('.time').text(currentDate.time + '시');
 		    }
 		});
 		
@@ -74,6 +77,11 @@ var _ComplaintStatusInsert = function () {
 				alert('못가');
 				return;
 			}
+			if(mode == 3  && selectedObj.type == 'putCvpl'){
+				alert('등록을 하셔야 합니다.');
+				return;
+			}
+			
 			if(complaintStatusMode == mode){
 				return;
 			}
@@ -226,17 +234,16 @@ var _ComplaintStatusInsert = function () {
 	var setProcMsg = function(msg){
 		changeMode(2);
 		
+		currentDate.date = msg.date.replace(regExp, '');
+		currentDate.time = msg.time;
+		_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
+		
 		if(msg.type == 'selectedCvpl'){
 			selectedObj = msg;
 			selectedObj.x = parseFloat(msg.x); 
 			selectedObj.y = parseFloat(msg.y); 
 			
 			writePopup();
-			
-			currentDate.date = msg.date.replace(regExp, '');
-			currentDate.time = msg.time;
-			
-			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
 			_MapEventBus.trigger(_MapEvents.map_move, msg);
 		}else if(msg.type == 'putCvpl'){
 			selectedObj = msg;
@@ -359,7 +366,8 @@ var _ComplaintStatusInsert = function () {
 		var y = selectedObj.y;
 		var title = selectedObj.direct;
 		var addr = selectedObj.contents;
-
+		clock.show();
+		
 		var centerPoint =_CoreMap.convertLonLatCoord([x,y],true);
 		popupOverlay.setPosition(centerPoint);
 
@@ -406,6 +414,7 @@ var _ComplaintStatusInsert = function () {
 		cvplPopupOverlay.html(cvplHtml);
 
 		cvplPopupOverlay.show();
+		selectedObj.date = selectedObj.date + ' ' + selectedObj.time;
 		
 		$('#putCvpl').off().on('click',function(){
 			$.ajax({
