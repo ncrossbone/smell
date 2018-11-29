@@ -44,6 +44,9 @@ _MapEvents.writeChart = 'writeChart';
 _MapEvents.setCurrentDate = 'setCurrentDate';
 
 _MapEvents.alertShow = 'alertShow';
+_MapEvents.show_cvplPopup = 'show_cvplPopup';
+_MapEvents.hide_cvplPopup = 'hide_cvplPopup';
+
 
 var _MapEventBus = $({});
 

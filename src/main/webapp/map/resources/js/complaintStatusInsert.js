@@ -218,11 +218,18 @@ var _ComplaintStatusInsert = function () {
 		}else if(mode == 2){
 			writePopup();
 		}else if(mode == 3){
-			setBuffer();
+			if(preFlag){
+				setBuffer();	
+			}else{
+				gridArea.show();
+				bufferRadius.show();
+				_MapEventBus.trigger(_MapEvents.show_cvplPopup, {});
+			}
 		}else if(mode == 4 && preFlag){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
 			gridArea.hide();
 			bufferRadius.hide();
+			_MapEventBus.trigger(_MapEvents.hide_cvplPopup, {});
 		}else if(mode == 5 && preFlag){
 			
 			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
@@ -250,6 +257,7 @@ var _ComplaintStatusInsert = function () {
 		    	clearLayerByName(layerName[1]);
 		    	bufferRadius.hide();
 		    	gridArea.hide();
+		    	_MapEventBus.trigger(_MapEvents.hide_cvplPopup, {});
 		    case 3: // 악취 확산 격자
 		    	_MapEventBus.trigger(_MapEvents.hide_odorSpread_layer, {});
 		    	legendDiv.hide();
