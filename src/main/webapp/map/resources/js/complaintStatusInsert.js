@@ -71,12 +71,14 @@ var _ComplaintStatusInsert = function () {
 		$('.workStep').on('click', function(){
 			var mode = $(this).attr('mode');
 			if(complaintStatusMode < (parseInt(mode)-1)){
-				alert('못가');
 				return;
 			}
 			if(complaintStatusMode == mode){
 				return;
 			}
+			if(mode > 1 && !selectedObj){
+				return;
+			} 
 			changeMode(mode);
 		});
 		
@@ -125,50 +127,50 @@ var _ComplaintStatusInsert = function () {
 			}
 		});
 		
-		_MapEventBus.on(_MapEvents.complaintStatusMode, function(event, data){
-			complaintStatusPopup.show();
-			
-			cvplPopupOverlay.hide();
-			process.show();
-			
-			if($('#tabOpeners').attr('class').indexOf('on') > -1){
-				$('#tabOpeners').trigger('click');
+		_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
+			if(data.mode == 1){
+				complaintStatusPopup.show();
+				cvplPopupOverlay.hide();
+				process.show();
+				if($('#tabOpeners').attr('class').indexOf('on') > -1){
+					$('#tabOpeners').trigger('click');
+				}
+				$(".cvpl_pop_close").off().on('click',function(){
+					$(this).parent().parent().fadeOut();
+				});
+				
+				$('.process').find('li').removeClass('on');
+				for(var i = 0; i<$('.process').find('li').length; i++){
+					var li = $($('.process').find('li')[i]);
+					li.css('background-image', 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
+				}
+				changeMode(1);
+			}else{
+				// 초기화
 			}
-			
-//			if(!$('#airMaps').attr('class')){
-//				$('#airMaps').trigger('click');
-//			}
-			
-			$(".cvpl_pop_close").off().on('click',function(){
-				$(this).parent().parent().fadeOut();
-			});
-			
-			$('.process').find('li').removeClass('on');
-			for(var i = 0; i<$('.process').find('li').length; i++){
-				var li = $($('.process').find('li')[i]);
-				li.attr('style', 'background-image:' + 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
-			}
-			
-			changeMode(1);
 		});
 	}
 	
 	var changeMode = function(mode){
-		complaintStatusMode = mode;
+		setProcessBtn(mode);
 		
-		for(var i = 0; i<mode; i++){
-			var li = $($('.process').find('li')[i]);
-			li.addClass('on');
-			li.attr('style', 'background-image:' + 'url("../images'+li.css('background-image').split('images')[1].replace('_off','_on'));
+		var preFlag = true;
+		
+		if(complaintStatusMode > parseInt(mode)){
+			resetPreMode(parseInt(mode));
+			preFlag = false;
 		}
+		complaintStatusMode = parseInt(mode);
 		
 		if(mode == 1){
-			
+			complaintStatusPopup.show();
+		}else if(mode == 2){
+			writePopup();
 		}else if(mode == 3){
 			setBuffer();
-		}else if(mode == 4){ 
+		}else if(mode == 4 && preFlag){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
-		}else if(mode == 5){
+		}else if(mode == 5 && preFlag){
 			
 			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
 			checkAnalsArea();
@@ -180,7 +182,39 @@ var _ComplaintStatusInsert = function () {
 //			_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {});
 		}
 	};
-	
+	var resetPreMode = function(mode){
+		switch(mode) {
+		    case 1:
+//		    	complaintStatusPopup.show();
+				cvplPopupOverlay.hide();
+				selectedObj = null; 
+		    case 2:
+		    	clearLayerByName(layerName[2]);
+		    	clearLayerByName(layerName[1]);
+		    	bufferRadius.hide();
+		    case 3: // 악취 확산 격자
+		    	_MapEventBus.trigger(_MapEvents.hide_odorSpread_layer, {});
+		    case 4: // 악취원점 저감시설, 이동경로 닫기
+		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
+		    case 5:  // 저감시설 및 악취원점 팝업 닫기
+		    	cvplPopupOverlay.hide();
+		    	bsmlPopup.hide();
+		    case 6: 
+		}
+	}
+	var setProcessBtn = function(mode){
+		if(complaintStatusMode < mode){
+			for(var i = 1; i<=mode; i++){
+				$('.workStep[mode='+i+']').addClass('on');
+				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+			}
+		}else{
+			for(var i = 6; i>mode; i--){
+				$('.workStep[mode='+i+']').removeClass('on');
+				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
+			}  
+		}
+	}
 	var checkAnalsArea = function(){
 		var coord = ol.proj.transform([selectedObj.x, selectedObj.y], 'EPSG:4326', 'EPSG:3857');
 		
@@ -224,7 +258,8 @@ var _ComplaintStatusInsert = function () {
 			});
 	}
 	var setProcMsg = function(msg){
-		changeMode(2);
+		setProcessBtn(2);
+		complaintStatusMode = 2;
 		
 		if(msg.type == 'selectedCvpl'){
 			selectedObj = msg;
@@ -252,6 +287,14 @@ var _ComplaintStatusInsert = function () {
 	    		_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
 	    	}
 		}
+	}
+	
+	var clearLayerByName = function(layerNm){
+		var layer = _CoreMap.getMap().getLayerForName(layerNm);
+
+    	if(layer){
+    		_MapEventBus.trigger(_MapEvents.map_removeLayer, layer);
+    	}
 	}
 	
 	var setBuffer = function(bufferMeter){
