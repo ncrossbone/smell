@@ -238,6 +238,7 @@ var _ComplaintStatusInsert = function () {
 //		    	complaintStatusPopup.show();
 		    	clearLayerByName('cvplOnePoint');
 				cvplPopupOverlay.hide();
+				clock.hide();
 				selectedObj = null; 
 		    case 2:
 		    	clearLayerByName(layerName[2]);
@@ -246,6 +247,7 @@ var _ComplaintStatusInsert = function () {
 		    	$('#gridArea').hide();
 		    case 3: // 악취 확산 격자
 		    	_MapEventBus.trigger(_MapEvents.hide_odorSpread_layer, {});
+		    	$('#legendDiv').hide();
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
 		    	clearLayerByName('odorOrigin');
