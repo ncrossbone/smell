@@ -23,7 +23,7 @@ var _ChartMode = function () {
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
 				if(layer.get('name') == chartFeatureLayerName){
-					getChartData();
+					getChartData({code:feature.getProperties().CODE});
 				}
 			});
 		});
@@ -112,18 +112,14 @@ var _ChartMode = function () {
 		});
 	};
 	
-	var getChartData = function(){
+	var getChartData = function(param){
 		Common.getData({
 			url: '/getChart.do',
 			contentType: 'application/json',
 			params: param
 		}).done(function(data){
-			var eventParam = {
-					data:data,
-					id:param.contentsId
-			};
 
-			writeChart(eventParam);
+			writeChart({data:data});
 			
 			Common.getData({
     			url: '/getClick.do',
@@ -136,7 +132,7 @@ var _ChartMode = function () {
 		});
 	};
 	
-	var writeChart = function(eventParam){
+	var writeChart = function(param){
 		var data = param.data;
 		var item = ['VOCS','CCNT','NH3','ERCRT','H2S','ARCSR','OU','SOLRAD','HD','TMPRT','WD','WS','NO2','SO2','PM10','PM2_5','CFC','CH3SH','TMA','ETHANOL','MESURE_DT'];
 		

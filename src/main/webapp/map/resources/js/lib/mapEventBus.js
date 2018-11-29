@@ -31,6 +31,7 @@ _MapEvents.setZoom = 'setzoom';
 _MapEvents.clickLayerOnOff = 'clickLayerOnOff';
 
 _MapEvents.addWriteLayerForUseGeoserver = 'addWriteLayerForUseGeoserver';
+_MapEvents.map_removeLayerByName = 'mapRemoveLayerByName';
 
 _MapEvents.init = 'init';
 
