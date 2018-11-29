@@ -207,12 +207,6 @@ var _SmellMapBiz = function () {
 	}
 	
 	var setEvent = function(){
-		
-		$('#tabOpeners').on('click', function(){
-			var me = $(this);
-			_WestCondition.tabCloseOpen(me);
-		});
-		
 		$('#popup-closer').on('click', function(){
 			 $('#popupOverlay').hide();
 			 $('#popup-content').hide();
@@ -221,6 +215,39 @@ var _SmellMapBiz = function () {
 				 highlightVectorLayer = null;
 			 }
 		});
+		_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
+			// GIS 모드
+			_SmellMapBiz.taskMode = data.mode;
+			if(weatherAnalysisLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, weatherAnalysisLayer);
+				weatherAnalysisLayer = null;	
+			}
+			if(odorSpreadLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadLayer);
+				odorSpreadLayer = null;	
+			}
+			if(odorSpreadHeatMapLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+				odorSpreadHeatMapLayer = null;	
+			}
+			if(odorMovementLayer){
+				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorMovementLayer);
+				odorMovementLayer = null;
+				if(originLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, originLayer);
+					originLayer = null;	
+				}
+				if(bufferOriginLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);
+					bufferOriginLayer = null;	
+				}
+				if(trackingInterval){
+					clearInterval(trackingInterval);	
+					trackingInterval = null;
+				}
+			}
+		});
+		
 		_MapEventBus.on(_MapEvents.setCurrentDate, function(event, data){
 			setCurrentDateTime(data);
 		});
@@ -288,28 +315,6 @@ var _SmellMapBiz = function () {
 					});
 				}
 			});
-			
-//			if(originLayer){
-//				var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer) {
-//					if(layer.get('id') == 'originLayer'){
-//						return feature;	
-//					}
-//					return null;
-//				});
-//			    if (feature) {
-//			    	var geometry = feature.getGeometry();
-//			    	var properties = feature.getProperties().properties;
-//					var featureExtent = geometry.getExtent();
-//					var featureCenter = ol.extent.getCenter(featureExtent);
-//					if(popupOverlay){
-//						$('#popupOverlay').show();
-//						$('#popup-content').show();
-//						popupOverlay.setPosition(featureCenter);
-//						$('#originTitle').html(properties.CMPNY_NM);
-//						$('#originTel').html(properties.TELNO);
-//					}
-//			    }
-//			}
 		});
 		
 		_MapEventBus.on(_MapEvents.map_mousemove, function(event, data){
@@ -1357,7 +1362,7 @@ var _SmellMapBiz = function () {
 	
     // public functions
     return {
-    	  
+    	taskMode : 0,
         init: function () {
         	var me = this;
         	init();

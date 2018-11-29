@@ -766,6 +766,10 @@ var _WestCondition = function () {
     		}
     	});*/
     	
+    	$('#tabOpeners').on('click', function(){
+			tabCloseOpen($(this));
+		});
+    	
     	$('#gridMinimize, #gridMaximize, #gridRestore, #gridClose').off('click').on('click',function(){
     		gridBtnClickEvent($(this).attr('id'));
     	});
