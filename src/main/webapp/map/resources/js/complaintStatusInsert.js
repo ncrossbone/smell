@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bufferRadius, clock;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock;
 	
 	var selectedObj;
 	var popupOverlay;
@@ -12,13 +12,6 @@ var _ComplaintStatusInsert = function () {
 	var layerName = ['cvplOnePoint','complaintStatusBuffer','bufferTarget'];
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
-	var bsmlPopupHtmlTemplate = '<div class="tooltip2">'+
-	 								'<p class="tt_tit2">'+
-	 								'<span>#name#</span>'+
-	 								'<a href="javascript:void(0);" class="btn06 pop_close"></a>'+
-	 								'</p>'+
-	 								'<div class="pop_conts3"></div>'+
-	 							'</div>';
 	
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
@@ -30,14 +23,21 @@ var _ComplaintStatusInsert = function () {
 		complaintStatusPopup.css('top', (parseInt(wh/2)-parseInt(complaintStatusPopup.height()/2)-100));
 		
 		bsmlPopup = $('#bsmlPopup');
+		bsmlPopup2 = $('#bsmlPopup2');
 		bufferRadius = $('#bufferRadius');
 		clock = $('#clock');
 		
 		complaintStatusRegPopup.draggable({ containment: '#map' });
 		complaintStatusPopup.draggable({ containment: '#map' });
 
-		bsmlPopup.draggable({ containment: '#map' });
-		
+		bsmlPopup.draggable({ containment: '#map'  ,stop: function() {
+			bsmlPopup2.css('left', bsmlPopup.css('left'));
+			bsmlPopup2.css('top', bsmlPopup.css('top')); 
+		}});
+		bsmlPopup2.draggable({ containment: '#map' ,stop: function() {
+			bsmlPopup.css('left', bsmlPopup2.css('left'));
+			bsmlPopup.css('top', bsmlPopup2.css('top')); 
+		}});
 		
 		cvplPopupOverlay = $('#cvplPopupOverlay');
 		process = $('.process');
@@ -118,27 +118,56 @@ var _ComplaintStatusInsert = function () {
 				
 			}else if(complaintStatusMode == 5){
 				
-			}else if(complaintStatusMode == 6){
+			}else if(complaintStatusMode == 6 && feature){
 				var featureInfo = feature.getProperties();
 				if(featureInfo.properties){
 					featureInfo = featureInfo.properties;
 				}
+				if(featureInfo.BSML_TRGNP){
+					featureInfo.BSML_TRGNPT_SE_CODE = featureInfo.BSML_TRGNP;
+				}
 				
 				if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01002'){
-					bsmlPopup.show();
-				}else {
-					var geometry = feature.getGeometry();
-					var featureExtent = geometry.getExtent();
-					var featureCenter = ol.extent.getCenter(featureExtent);
-					if(popupOverlay){
-						
-						var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#',featureInfo.CMPNY_NM);
-						popupOverlay.setPosition(featureCenter);
-						 
-						cvplPopupOverlay.html(bsmlHtml);
-						cvplPopupOverlay.show();
-					}
+					bsmlPopup.show(); 
+					bsmlPopup2.hide();
+					$.ajax({
+						url:'/getBsmlReduceqpInfo.do', 
+						data: JSON.stringify({
+							bplcId:featureInfo.BPLC_ID
+						})}).done(function(data){
+							var bplcInfo = {};
+							bplcInfo.bplcId = data.BPLC_ID; 
+							bplcInfo.reducEqpNo = data.REDUC_EQP_NO;
+							bplcInfo.ctrlCnCode = data.CTRL_CN_CODE;
+							
+							$("#bsmlName").html(data.BSML_TRGNPT_NM);
+							$("#reducEqpNm").html(data.REDUC_EQP_NM);
+							$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");
+							if(data.OPR_STTUS_NM != "ON"){
+								$("#operate").html("<img src='/images/operate_off.png' alt='비가동' />비가동");
+							}else{
+								$("#operate").html("<img src='/images/operate_on.png' alt='가동' />가동");
+							} 
+							 
+							$('#bsmlCtrlBtn').off('click').on('click', function(){
+								$.ajax({
+							        url : '/insertOnOff.do',
+							        data: JSON.stringify(bplcInfo)
+								}).done(function(result){
+									  _MapEventBus.trigger(_MapEvents.alertShow, {text:'저감시설원격제어가 완료되었습니다.'});
+								});
+							});
+						});
+				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003'){
+					bsmlPopup.hide();
+					bsmlPopup2.show(); 
+					$('#bsmlName2').html(featureInfo.CMPNY_NM);
+				}else{
+					return;
 				}
+				$('.bsmlPopupClose').on('click', function(){
+					changeMode(5);
+				}); 
 			}
 		});
 		
@@ -165,6 +194,7 @@ var _ComplaintStatusInsert = function () {
 				setProcessBtn(1);
 				resetPreMode(1);
 				complaintStatusPopup.hide();
+//				clearLayer();
 			}
 		});
 	}
@@ -206,19 +236,23 @@ var _ComplaintStatusInsert = function () {
 		switch(mode) {
 		    case 1:
 //		    	complaintStatusPopup.show();
+		    	clearLayerByName('cvplOnePoint');
 				cvplPopupOverlay.hide();
 				selectedObj = null; 
 		    case 2:
 		    	clearLayerByName(layerName[2]);
 		    	clearLayerByName(layerName[1]);
 		    	bufferRadius.hide();
+		    	$('#gridArea').hide();
 		    case 3: // 악취 확산 격자
 		    	_MapEventBus.trigger(_MapEvents.hide_odorSpread_layer, {});
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
+		    	clearLayerByName('odorOrigin');
+		    	clearLayerByName('odorReduction');
 		    case 5:  // 저감시설 및 악취원점 팝업 닫기
-		    	cvplPopupOverlay.hide();
 		    	bsmlPopup.hide();
+		    	bsmlPopup2.hide();
 		    case 6: 
 		}
 	}
