@@ -480,30 +480,42 @@ var _WestCondition = function () {
     };
     
     var addWriteLayerForUseGeoserver = function(event, options){
-    	
-    	var getLayerForName = _CoreMap.getMap().getLayerForName(options.layerId);
+    	var geoserverLayerId = westLayerObj.SHP_BPLC_FOR_WESTCONDITION;
+		var layerId = 'odorOrigin';
+		var zindex = 999;
+		
+    	if(options.type == 1){
+    		geoserverLayerId = westLayerObj.ODORREDUCTION;
+    		layerId = 'odorReduction';
+    		zindex = 9999;
+    	}
+        	
+    	var getLayerForName = _CoreMap.getMap().getLayerForName(layerId);
 		if(getLayerForName){
-			_MapEventBus.trigger(_MapEvents.map_removeLayer, getLayerForName);
+			return;
 		}
 		
-    	_MapService.getWfs(options.geoserverLayerId,'*',encodeURIComponent(options.cqlString), '').done(function (d) {
+    	_MapService.getWfs(geoserverLayerId,'*',encodeURIComponent('1=1'), '').done(function (d) {
         	var featureArray = [];
         	var data = d.features;
         	
     		for(var i=0; i<data.length; i++){
     			var feature = new ol.Feature();
 
-    			if(options.layerType=='polygon'){
+    			//point, line...
+    			if(options.type == 1){
     				feature.setGeometry(new ol.geom.Polygon(data[i].geometry.coordinates));
+    				var coord = ol.extent.getCenter(feature.getGeometry().getExtent());
+    				feature.setGeometry(new ol.geom.Point(coord));
     			}else{
-    				//point, line...
+    				feature.setGeometry(new ol.geom.Polygon(data[i].geometry.coordinates));
     			}
     			feature.setProperties(data[i].properties);
 
     			featureArray.push(feature);
     		}
     		
-    		var styleFunction = selectStyleFunction(options.layerId);
+    		var styleFunction = selectStyleFunction(layerId);
     		
     		var source = new ol.source.Vector({
 				features: featureArray
@@ -511,11 +523,11 @@ var _WestCondition = function () {
     		
     		var vectorLayer = new ol.layer.Vector({
     	        source: source,
-    	        id:options.layerId,
-    	        name:options.layerId,
+    	        id:layerId,
+    	        name:layerId,
     	        style:styleFunction,
-    	        zIndex:2,
-    	        visible:contentsConfig[options.layerId].isVisible
+    	        zIndex:zindex,
+    	        visible:contentsConfig[layerId].isVisible
     		});
     		
     		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
@@ -1134,8 +1146,10 @@ var _WestCondition = function () {
 			styleFunction = unmannedOdorStyleFunction;
 			break;
 		case 'odorOrigin':
-		case 'odorReduction':
 			styleFunction = odorOriginFunction;
+			break;
+		case 'odorReduction':
+			styleFunction = odorReductionFunction;
 			break;
 		case 'observatory':
 			styleFunction = observatoryFunction;
@@ -1296,6 +1310,23 @@ var _WestCondition = function () {
 		    	font: 'bold 12px Arial',
 		    	overflow:true
 		    })
+  		});
+    	
+    	return style;
+    };
+    var odorReductionFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 10,
+    			fill: new ol.style.Fill({
+    		        color: '#ED7D31'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
   		});
     	
     	return style;

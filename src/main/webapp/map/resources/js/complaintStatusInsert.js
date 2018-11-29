@@ -27,7 +27,7 @@ var _ComplaintStatusInsert = function () {
 		var ww = $(window).width();
 		var wh = $(window).height();
 		complaintStatusPopup.css('left', parseInt(ww/2)-parseInt(complaintStatusPopup.width()/2));
-		complaintStatusPopup.css('top', (parseInt(wh/2)-parseInt(complaintStatusPopup.height()/2)));
+		complaintStatusPopup.css('top', (parseInt(wh/2)-parseInt(complaintStatusPopup.height()/2)-100));
 		
 		bsmlPopup = $('#bsmlPopup');
 		bufferRadius = $('#bufferRadius');
@@ -95,6 +95,10 @@ var _ComplaintStatusInsert = function () {
 		});
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
+			if(complaintStatusMode == 5){
+				changeMode(6);
+			}
+			
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
 				return feature;
 			});
@@ -113,7 +117,12 @@ var _ComplaintStatusInsert = function () {
 			}else if(complaintStatusMode == 4){
 				
 			}else if(complaintStatusMode == 5){
+				
+			}else if(complaintStatusMode == 6){
 				var featureInfo = feature.getProperties();
+				if(featureInfo.properties){
+					featureInfo = featureInfo.properties;
+				}
 				
 				if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01002'){
 					bsmlPopup.show();
@@ -122,16 +131,14 @@ var _ComplaintStatusInsert = function () {
 					var featureExtent = geometry.getExtent();
 					var featureCenter = ol.extent.getCenter(featureExtent);
 					if(popupOverlay){
-						var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#',featureInfo.BSML_TRGNPT_NM);
 						
+						var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#',featureInfo.CMPNY_NM);
 						popupOverlay.setPosition(featureCenter);
-						
+						 
 						cvplPopupOverlay.html(bsmlHtml);
 						cvplPopupOverlay.show();
 					}
 				}
-			}else if(complaintStatusMode == 6){
-				
 			}
 		});
 		
@@ -185,6 +192,8 @@ var _ComplaintStatusInsert = function () {
 			
 			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
 			checkAnalsArea();
+			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:1});
+			
 			// 2. 관심지역이 등록되어 있으면 이동경로 표시
 			// 2-1. 관심지역으로 등록되어 있지 않으면 등록할지 물어 보고 등록  후에 3번부터  등록 안하면  끝
 			// 3. 이동경로 표시 후 사업장 표시
