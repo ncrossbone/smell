@@ -486,7 +486,11 @@ var _WestCondition = function () {
 		
     	if(options.type == 1){
     		geoserverLayerId = westLayerObj.ODORREDUCTION;
-    		layerId = 'odorReduction';
+    		layerId = 'odorReductionForPoint';
+    		zindex = 9999;
+    	}else if(options.type == 2){
+    		geoserverLayerId = westLayerObj.ODORREDUCTION;
+    		layerId = 'odorReductionForSvg';
     		zindex = 9999;
     	}
         	
@@ -527,7 +531,7 @@ var _WestCondition = function () {
     	        name:layerId,
     	        style:styleFunction,
     	        zIndex:zindex,
-    	        visible:contentsConfig[layerId].isVisible
+    	        visible:true
     		});
     		
     		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
@@ -1146,10 +1150,14 @@ var _WestCondition = function () {
 			styleFunction = unmannedOdorStyleFunction;
 			break;
 		case 'odorOrigin':
+		case 'odorReduction':
 			styleFunction = odorOriginFunction;
 			break;
-		case 'odorReduction':
-			styleFunction = odorReductionFunction;
+		case 'odorReductionForPoint':
+			styleFunction = odorReductionForPointFunction;
+			break;
+		case 'odorReductionForSvg':
+			styleFunction = odorReductionForSvgFunction;
 			break;
 		case 'observatory':
 			styleFunction = observatoryFunction;
@@ -1166,7 +1174,23 @@ var _WestCondition = function () {
     	
     	return styleFunction;
     };
-    
+    var odorReductionForSvgFunction = function(feature){
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Circle({
+    			radius: 10,
+    			fill: new ol.style.Fill({
+    		        color: '#ED7D31'
+    		    }),
+    		    stroke: new ol.style.Stroke({
+    		    	color: '#AFABAB',
+    		    	width: 3
+    		    })
+    		})
+  		});
+    	
+    	return style;
+    };
     var reductionMonitoringStyleFunction = function(feature){
     	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
     	var offsetY = 0;
@@ -1314,7 +1338,7 @@ var _WestCondition = function () {
     	
     	return style;
     };
-    var odorReductionFunction = function(feature){
+    var odorReductionForPointFunction = function(feature){
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Circle({

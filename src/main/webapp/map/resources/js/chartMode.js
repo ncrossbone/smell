@@ -1,7 +1,7 @@
 var _ChartMode = function () {
 	
 	var chartFeatureLayerName = 'chartModeLayer';
-	var odorReduction = 'odorReduction';
+	var odorReductionForSvg = 'odorReductionForSvg';
 	
 	var setEvent = function(){
 		_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
@@ -16,7 +16,7 @@ var _ChartMode = function () {
 				$('#chartArea').html('');
 				
 				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, chartFeatureLayerName);
-				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, odorReduction);
+				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, odorReductionForSvg);
     		}
 		});
 		
@@ -108,7 +108,7 @@ var _ChartMode = function () {
 			
 			_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
 			
-			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:1});
+			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:2});
 		});
 	};
 	

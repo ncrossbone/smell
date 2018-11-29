@@ -251,7 +251,7 @@ var _ComplaintStatusInsert = function () {
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
 		    	clearLayerByName('odorOrigin');
-		    	clearLayerByName('odorReduction');
+		    	clearLayerByName('odorReductionForPoint');
 		    case 5:  // 저감시설 및 악취원점 팝업 닫기
 		    	bsmlPopup.hide();
 		    	bsmlPopup2.hide();
