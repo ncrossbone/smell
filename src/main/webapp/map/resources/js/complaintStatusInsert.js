@@ -26,9 +26,8 @@ var _ComplaintStatusInsert = function () {
 		
 		var ww = $(window).width();
 		var wh = $(window).height();
-		complaintStatusPopup.css('left', parseInt(ww/2)-parseInt($('#complaintStatusPopup').width()/2));
-		complaintStatusPopup.css('top', (parseInt(wh/2)-parseInt($('#complaintStatusPopup').height()/2)) + 20);
-		
+		complaintStatusPopup.css('left', parseInt(ww/2)-parseInt(complaintStatusPopup.width()/2));
+		complaintStatusPopup.css('top', (parseInt(wh/2)-parseInt(complaintStatusPopup.height()/2)));
 		
 		bsmlPopup = $('#bsmlPopup');
 		bufferRadius = $('#bufferRadius');
@@ -106,20 +105,19 @@ var _ComplaintStatusInsert = function () {
 			}else if(complaintStatusMode == 5){
 				var featureInfo = feature.getProperties();
 				
-				if(featureInfo.BSML_TRGNPT_SE_CODE){
-					if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01002'){
-						bsmlPopup.show();
-					}else {
-						var geometry = feature.getGeometry();
-						var featureExtent = geometry.getExtent();
-						var featureCenter = ol.extent.getCenter(featureExtent);
-						if(cvplPopupOverlay){
-							/*var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );
-							bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#', );*/
-							
-							cvplPopupOverlay.setPosition(featureCenter);
-							cvplPopupOverlay.html(bsmlPopupHtmlTemplate);
-						}
+				if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01002'){
+					bsmlPopup.show();
+				}else {
+					var geometry = feature.getGeometry();
+					var featureExtent = geometry.getExtent();
+					var featureCenter = ol.extent.getCenter(featureExtent);
+					if(popupOverlay){
+						var bsmlHtml = bsmlPopupHtmlTemplate.replace('#name#',featureInfo.BSML_TRGNPT_NM);
+						
+						popupOverlay.setPosition(featureCenter);
+						
+						cvplPopupOverlay.html(bsmlHtml);
+						cvplPopupOverlay.show();
 					}
 				}
 			}else if(complaintStatusMode == 6){
