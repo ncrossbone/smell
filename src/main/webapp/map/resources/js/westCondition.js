@@ -1888,11 +1888,8 @@ var _WestCondition = function () {
 			
 			reW = 0;
 						
-			if($('#gridArea').css('display') != 'none'){
-				$('#gridArea').css('left','0');
-				$('#gridArea').css('width', ww );
-			}
-			
+			$('#gridArea').css('left','0');
+			$('#gridArea').css('width', ww );
 		}else{
 			$('.instanceArea').show();
 			//$('#tab').find('.on')
@@ -1913,10 +1910,8 @@ var _WestCondition = function () {
 			
 			reW = 340;
 			
-			if($('#gridArea').css('display') != 'none'){
-				$('#gridArea').css('left','361px');
-				$('#gridArea').css('width', ww - 360 );
-			}
+			$('#gridArea').css('left','361px');
+			$('#gridArea').css('width', ww - 360 );
 			
 		}
 		
@@ -1991,6 +1986,9 @@ var _WestCondition = function () {
         },
         createLastPoint:function(feature){
         	return createLastPoint(feature);
+        },
+        writeGrid:function(id, data){
+        	writeGrid(id, data);
         }
     };
 }();

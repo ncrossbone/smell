@@ -350,6 +350,7 @@ var _ComplaintStatusInsert = function () {
 				})
 			});
 			_MapEventBus.trigger(_MapEvents.map_addLayer, bufferOriginLayer);
+			var cvplNo = '';
 			
 			for(var i=0; i<data.length; i++){
 				var coord = _CoreMap.convertLonLatCoord([data[i].POINT_X,data[i].POINT_Y],true);
@@ -364,8 +365,15 @@ var _ComplaintStatusInsert = function () {
 					resultFeature.setGeometry(new ol.geom.Point(parseFeature.getCoordinates()));
 					resultFeature.setProperties(data[i]);
 					interFeatures.push(resultFeature);
+					
+					cvplNo += '\''+data[i].CVPL_NO + '\',';
 				}
 			}
+			
+			Common.getData({url:'/getGrid.do', contentType: 'application/json', params: {contentsId:'complaintStatus',flag:1, code:cvplNo.substr(0,cvplNo.length-1)} }).done(function(data){
+				_WestCondition.writeGrid('complaintStatus',data);
+	    	});
+			
 			var source = new ol.source.Vector({
 				features: interFeatures
 			});
