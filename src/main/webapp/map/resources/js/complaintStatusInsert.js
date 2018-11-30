@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv, smsPopup;
 	
 	var selectedObj;
 	var popupOverlay;
@@ -30,16 +30,24 @@ var _ComplaintStatusInsert = function () {
 		
 		clock = $('#clock');
 		
+		smsPopup = $('#smsPopup');
+		
 		complaintStatusRegPopup.draggable({ containment: '#map' });
 		complaintStatusPopup.draggable({ containment: '#map' });
+		smsPopup.draggable({ containment: '#map' });
 
 		bsmlPopup.draggable({ containment: '#map'  ,stop: function() {
 			bsmlPopup2.css('left', bsmlPopup.css('left'));
 			bsmlPopup2.css('top', bsmlPopup.css('top')); 
+			smsPopup.css('left', (parseInt(bsmlPopup.css('left'))+210)+'px');
+			smsPopup.css('top', bsmlPopup.css('top')); 
 		}});
 		bsmlPopup2.draggable({ containment: '#map' ,stop: function() {
 			bsmlPopup.css('left', bsmlPopup2.css('left'));
 			bsmlPopup.css('top', bsmlPopup2.css('top')); 
+			
+			smsPopup.css('left', (parseInt(bsmlPopup2.css('left'))+210)+'px');
+			smsPopup.css('top', bsmlPopup2.css('top'));
 		}});
 		
 		cvplPopupOverlay = $('#cvplPopupOverlay');
@@ -175,7 +183,17 @@ var _ComplaintStatusInsert = function () {
 				}
 				$('.bsmlPopupClose').off('click').on('click', function(){
 					changeMode(5);
+					$('#smsPopupCloseBtn').trigger('click');
 				}); 
+				
+
+				$('.sms_btn').off('click').on('click', function(){
+					smsPopup.show();
+				});
+				$('#smsPopupCloseBtn').off('click').on('click', function(){
+					smsPopup.hide();
+					$('#smsContent').val('[악취발생 예보 알림]');
+				});
 			}
 		});
 		
@@ -270,6 +288,7 @@ var _ComplaintStatusInsert = function () {
 		    case 5:  // 저감시설 및 악취원점 팝업 닫기
 		    	bsmlPopup.hide(); 
 		    	bsmlPopup2.hide();
+		    	$('#smsPopupCloseBtn').trigger('click');
 		    case 6: 
 		}
 	}
