@@ -67,8 +67,7 @@
 			   DATE_FORMAT(REGIST_DT,'%Y년 %m월 %d일 %h시') AS REGIST_DT,
 			   REGISTER_ID,
 			   CHANGE_DT,
-			   CHANGER_ID,
-			   LEGALDONG_CODE
+			   CHANGER_ID
   		  FROM CVPL_MANAGE
   		  <if test="flag == 1">
   		   	WHERE CVPL_NO IN (${code})
