@@ -907,9 +907,12 @@ var _SmellMapBiz = function () {
 				}
 			});
 			
-//			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:_SmellMapBiz.taskMode});	
-
-			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});	
+			if(_SmellMapBiz.taskMode == 0){
+				_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:_SmellMapBiz.taskMode});	
+			}else{
+				_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:2});
+			}
+			
 			$('#bufferOnOffBtn').attr('value', 'on');
 			$('#bufferOnOffBtn').trigger('click');
 			
