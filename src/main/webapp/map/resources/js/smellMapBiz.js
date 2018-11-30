@@ -602,10 +602,10 @@ var _SmellMapBiz = function () {
 				odorSpreadIndex = 0;
 				
 				if(mapType == 'cell'){
-					var layerInfos = [{layerNm:layerNm,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.7, cql:'DTA_DT=\''+odorSpreadStartDate+odorSpreadStartTime+'\'', zIndex:4}];
+					var layerInfos = [{layerNm:layerNm,style:null,isVisible:true,isTiled:true,cql:null,opacity:0.5, cql:'DTA_DT=\''+odorSpreadStartDate+odorSpreadStartTime+'\'', zIndex:4}];
 					odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
 					_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
-					
+					 
 					setCurrentDate({date:odorSpreadStartDate, time:odorSpreadStartTime}, 'odorSpreadDate');
 					playOdorSpreadLayer();
 					
@@ -907,9 +907,14 @@ var _SmellMapBiz = function () {
 				}
 			});
 			
-//			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:_SmellMapBiz.taskMode});	
-
-			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});	
+			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});
+			
+//			if(_SmellMapBiz.taskMode == 0){
+//					
+//			}else{
+//				_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:2});
+//			}
+			
 			$('#bufferOnOffBtn').attr('value', 'on');
 			$('#bufferOnOffBtn').trigger('click');
 			

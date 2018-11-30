@@ -145,7 +145,12 @@ var _ComplaintStatusInsert = function () {
 							
 							$("#bsmlName").html(data.BSML_TRGNPT_NM);
 							$("#reducEqpNm").html(data.REDUC_EQP_NM);
-							$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");
+							if(data.BPLC_ID){
+								$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");	
+							}else{
+								$("#bsmlImg").attr("src","/images/"+featureInfo.BPLC_ID+".png");
+							}
+							
 							if(data.OPR_STTUS_NM != "ON"){
 								$("#operate").html("<img src='/images/operate_off.png' alt='비가동' />비가동");
 							}else{
@@ -223,7 +228,6 @@ var _ComplaintStatusInsert = function () {
 			}else{
 				gridArea.show();
 				bufferRadius.show();
-				_MapEventBus.trigger(_MapEvents.show_cvplPopup, {});
 			}
 		}else if(mode == 4 && preFlag){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
@@ -234,9 +238,6 @@ var _ComplaintStatusInsert = function () {
 			
 			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
 			checkAnalsArea();
-			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:1});
-			
-			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:2});
 			
 			// 2. 관심지역이 등록되어 있으면 이동경로 표시
 			// 2-1. 관심지역으로 등록되어 있지 않으면 등록할지 물어 보고 등록  후에 3번부터  등록 안하면  끝
@@ -265,9 +266,7 @@ var _ComplaintStatusInsert = function () {
 		    	legendDiv.hide();
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
-		    	 
-		    	clearLayerByName('odorReductionForPoint');
-		    	clearLayerByName('odorReductionForSvg');
+		    	clearLayerByName('odorOrigin');
 		    case 5:  // 저감시설 및 악취원점 팝업 닫기
 		    	bsmlPopup.hide(); 
 		    	bsmlPopup2.hide();
