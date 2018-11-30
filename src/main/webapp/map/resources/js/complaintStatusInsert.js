@@ -524,7 +524,11 @@ var _ComplaintStatusInsert = function () {
 		cvplPopupOverlay.html(cvplHtml);
 
 		cvplPopupOverlay.show();
-		selectedObj.date = selectedObj.date + ' ' + selectedObj.time;
+		
+		if(!selectedObj.date.split(' ')[1]){
+			selectedObj.date = selectedObj.date + ' ' + selectedObj.time;
+		}
+		
 		
 		$('#putCvpl').off().on('click',function(){
 			$.ajax({

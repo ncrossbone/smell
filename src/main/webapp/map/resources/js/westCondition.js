@@ -1188,28 +1188,22 @@ var _WestCondition = function () {
     	var prop = feature.getProperties();
     	//sttus_nm 1 : 가동중, 4 : 중지 x : 통신장애
     	var imageConfig = {
-    			'4':'operate_off',
-    			'1':'operate_on',
-    			'X':'btn_close2',
+    			'4':'chart_feature_off',
+    			'1':'chart_feature_on',
+    			'X':'chart_feature_x',
     	};
     	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/images/' + imageConfig[prop.STTUS_NM] + '.png',
-    			scale:1.3
+    			src: '/images/' + imageConfig[prop.STTUS_NM] + '.png'
     		})),
     		text: new ol.style.Text({
     			text: prop.BPLC_ID,
     			fill: new ol.style.Fill({
     				color: '#000'
     			}),
-    			stroke : new ol.style.Stroke({
-    				color : '#fff',
-    				width : 3
-    			}),
-    			offsetY: 22,
-    			offsetX: 1,
+    			offsetX: -11,
     			font: 'bold 13px Arial'
     		})
     	});
