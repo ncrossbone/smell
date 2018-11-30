@@ -318,8 +318,6 @@ var _ComplaintStatusInsert = function () {
 	        featureTypes: ['shp_anals_area_new'],
 	        outputFormat: 'application/json',
 	        filter : new ol.format.filter.Contains('SHAPE', new ol.geom.Point(coord), 'EPSG:3857')
-//	        filter : new ol.format.filter.and(new ol.format.filter.Contains('SHAPE', new ol.geom.Point([selectedObj.x, selectedObj.y]), 'EPSG:4326'),new ol.format.filter.EqualTo('REG', 1))
-// 	        filter: new ol.format.filter.GreaterThanOrEqualTo('REG', '1')
 		});
 		 
 		$.ajax({
