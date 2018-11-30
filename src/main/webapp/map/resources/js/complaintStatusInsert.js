@@ -226,9 +226,8 @@ var _ComplaintStatusInsert = function () {
 			if(preFlag){
 				setBuffer();	
 			}else{
-//				gridArea.show();
+				gridArea.show();
 				bufferRadius.show();
-				_MapEventBus.trigger(_MapEvents.show_cvplPopup, {});
 			}
 		}else if(mode == 4 && preFlag){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
