@@ -139,6 +139,8 @@
 				_ComplaintStatusInsert.setProcMsg(msg);
 			}else if(_SmellMapBiz.taskMode == 2){
 				_DeviceManage.setProcMsg(msg);
+			}else if(_SmellMapBiz.taskMode == 3){
+				_OdorForeCast.setProcMsg(msg);
 			}
 		};
 	});
@@ -1029,29 +1031,7 @@
                 <span class="p_text" id="step6Name">악취저감 조치</span>
             </li>
         </ul>
-        <ul class="process" style="display: none;" id="forecastProcess">
-        	<li class="p_f workStep" mode="1">
-            	<span class="step">STEP.1</span>
-                <span class="p_text">악취예보처리 선택</span>
-            </li>
-        	<li class="p_a workStep" mode="2">
-            	<span class="step">STEP.2</span>
-                <span class="p_text">공간좌표 획득</span>
-            </li>
-        	<li class="p_a workStep" mode="3">
-            	<span class="step">STEP.3</span>
-                <span class="p_text">악취분포 확인</span>
-            </li>
-        	<li class="p_a workStep" mode="4">
-            	<span class="step">STEP.4</span>
-                <span class="p_text">악취원점 분석</span>
-            </li>
-        	<li class="p_l workStep" mode="5">
-            	<span class="step">STEP.5</span>
-                <span class="p_text">악취저감 조치</span>
-            </li>
-        </ul>
-        <div id="deviceManagePopup" style="right: 150px; top: 250px; display: none; width:1000px; height:500px; position: absolute; z-index: 999;">
+        <div id="odorForeCastPopup" style="right: 150px; top: 250px; display: none; width:1000px; height:500px; position: absolute; z-index: 999;">
         	<p class="pop_tit">
         		<span class="pop_tit_text">악취발생 예보현황</span>
 <!--         		<a href="javascript:void(0)" class="btn03 cvpl_pop_close"></a> -->

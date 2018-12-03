@@ -268,4 +268,9 @@ public class MapBiz {
 		// TODO Auto-generated method stub
 		return mapMapper.getOccurrenceForecastList(param);
 	}
+
+	public List<Map<String, Object>> getOdorForecastXY(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getOdorForecastXY(param);
+	}
 }

@@ -87,11 +87,16 @@ function goSearch() {
 function areaSel(){
 	var val = $(":input:radio[name=areaSel]:checked").val();
 	if($("input:radio[name='areaSel']").is(":checked") == true){
-		alert("GRID_AREA_ID >> "+val);
+		if(parent){
+    		parent._MessagePipe.send({type:'odorSelected', gridId:val});	
+    	}
 	}else{
-		alert("관심지역을 선택해 주세요.");
+		if(parent){
+			parent._MapEventBus.trigger(_MapEvents.alertShow, {text:'관심지역을 선택해 주세요.'});
+    	}else{
+    		alert("관심지역을 선택해 주세요.");
+    	}
 	}
-
 }
 </script>
 </head>

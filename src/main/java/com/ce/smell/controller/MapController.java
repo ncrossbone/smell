@@ -207,4 +207,9 @@ public class MapController {
 	public List<Map<String, Object>> getOccurrenceForecastList(@RequestBody HashMap param){
 		return mapBiz.getOccurrenceForecastList(param);
 	}
+	@RequestMapping(value = "/getOdorForecastXY", method = RequestMethod.POST)
+	public List<Map<String, Object>> getOdorForecastXY(@RequestBody HashMap param){
+		return mapBiz.getOdorForecastXY(param);
+	}
+	
 }

@@ -202,6 +202,9 @@ var _DeviceManage = function () {
 				}, 100);
 			}else{
 				// 초기화
+				selectedDeviceChart = null;
+				selectedDevice = null;
+				
 				resetPreMode(1);
 				process.hide();
 				setProcessBtn(1);
@@ -429,7 +432,7 @@ var _DeviceManage = function () {
 				return new ol.style.Style({
 		    		image: new ol.style.Icon(({
 		    			src: '../images/portable.png',
-		    			scale:1.5
+		    			scale:1.0
 		    		})) 
 		    	});
 			}

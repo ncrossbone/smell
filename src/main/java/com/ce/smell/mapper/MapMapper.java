@@ -102,4 +102,6 @@ public interface MapMapper {
 	public List<Map<String, Object>> getAnalsAreaList(HashMap param);
 	//악취 발생 예보 현황 목록
 	public List<Map<String, Object>> getOccurrenceForecastList(HashMap param);
+
+	public List<Map<String, Object>> getOdorForecastXY(HashMap param);
 }
