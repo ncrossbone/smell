@@ -59,7 +59,7 @@ var _DeviceManage = function () {
     	legendDiv.hide();
     	
     	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
-    	clearLayerByName('odorOrigin');
+    	//clearLayerByName('odorOrigin');
     	
     	bsmlPopup.hide(); 
     	bsmlPopup2.hide();
