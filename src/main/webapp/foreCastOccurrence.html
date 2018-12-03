@@ -25,7 +25,7 @@ function initInfo() {
 		url:'/getForeCastOccurrence.do', 
 		contentType: 'application/json', 
 		params: {
-			nDate: '20181127'
+			nDate: '20181201'
 		}}).done(function(data){
 		$("#dta_01").html("<a href='' onclick='foreCastList(1);return false;'>"+data.DTA_01_SUM+"</a>");
 		$("#dta_02").html("<a href='' onclick='foreCastList(2);return false;'>"+data.DTA_02_SUM+"</a>");
@@ -37,7 +37,7 @@ function initInfo() {
 		url:'/getReductionFacil.do', 
 		contentType: 'application/json', 
 		params: {
-			nDate: '20181127'
+			nDate: '20181201'
 		}}).done(function(data){
 			var html = "";
 			var imgNm = "";
@@ -99,7 +99,7 @@ function foreCastList(val){
             </table>
         </div>
         <!--저감장치가동현황--> 
-        <div class="r1"  style="top:245px;">
+        <div class="r1"  style="top:246px;">
         	<p class="r1_tit">저감장치가동현황</p>
             <table>
             	<caption>악취발생 예보</caption>

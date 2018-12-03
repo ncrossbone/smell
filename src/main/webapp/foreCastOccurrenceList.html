@@ -5,73 +5,143 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 <title>청주시 지능형 도농복합도시 악취관리시스템(개발)</title>
 
-<link href="/css/BasicSet.css" rel="stylesheet" type="text/css" />
-<link href="/css/basic.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/BasicSet.css" rel="stylesheet" type="text/css" />
 <link href="/cms/css/common.css" rel="stylesheet" type="text/css" />
 <link href="/cms/css/sub.css" rel="stylesheet" type="text/css" />
 <link href="/cms/css/st.css" rel="stylesheet" type="text/css" />
-<script src="/js/jquery.min-1.8.3.js"></script>
+<script type="text/javascript" src="/cms/js/jquery.min.js"></script>
+<script type="text/javascript" src="/cms/js/common.js"></script>
+<script type="text/javascript" src="/cms/js/jquery-1.11.3.min.js"></script>
+
 <script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
 
-<script type="text/javascript">
-$(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
-	//초기 조회
-	foreCastList(2);
-})
+<!-- 달력 -->
+<link href="/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+<script src="/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
+<script src="/cms/js/cal/ui/jquery.ui.core.js"></script>
 
-function foreCastList(val){
+<script type="text/javascript">
+//날짜변수 선언
+var tTime = new Date();
+var getDiffTime1 = tTime.getTime();
+getDiffTime1 = getDiffTime1 - (1000 * 60 * 15);
+tTime.setTime(getDiffTime1);
+	
+$(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
+	addDatePicker('#nDate');
+	if($("#nDate").val().length == 0){
+	    $("#nDate").val($.datepicker.formatDate('yy-mm-dd', tTime));
+	}
+    
+    Common.getData({url:'/getAnalsAreaList.do', contentType: 'application/json', params: {} }).done(function(data){
+		if(data.length == 0){
+			return;
+		}
+		var selectTag = "";
+		selectTag += "<option value='' >전체</option>";
+		for (var i = 0; i < data.length; i++) {
+			selectTag += "<option value='"+data[i].ANALS_AREA_ID+"' >"+ data[i].INTRST_AREA_NM + "</option>";
+		}
+		$("#areaCode").html(selectTag);
+	});
+
+	//초기 조회
+	goSearch();
+})
+	
+//민원데이터관리 조회
+function goSearch() {
 	Common.getData({
-		url:'/getForeCastOccurrenceSel.do', 
+		url:'/getOccurrenceForecastList.do', 
 		contentType: 'application/json', 
 		params: {
-			nDate: '20181127' ,gubun: val
+			area: $("#areaCode").val(), 
+			nDate: $("#nDate").val()
 		}}).done(function(data){
-			var html = "";
-			for (var i = 0; i < data.length; i++) {
-			    html += "<tr>";
-			    html += "<td>"+data[i].ANALS_AREA_ID+"</td>";
-			    html += "<td>"+data[i].INTRST_AREA_NM+"</td>";
-			    html += "<td>"+data[i].INTRST_AREA_AL+"</td>";
-			    html += "<td>"+data[i].DTA_01+"</td>";
-			    html += "<td>"+data[i].DTA_02+"</td>";
-			    html += "<td>"+data[i].DTA_03+"</td>";
-			    html += "<td>"+data[i].DTA_04+"</td>";
-			    html += "</tr>";
-			}
-			if(data.length!=0){
-				$("#tblist").html(html);
-			}
+		
+		var count = "0";
+		var selectTag = "";
+		var blank = "<tr><td colspan='7' style='text-align:center;'>조회된 데이터가 없습니다.</td></tr>";
+		for (var i = 0; i < data.length; i++) {
+			selectTag += "<tr>";
+			selectTag += "<td style='text-align:center;'><input type='radio' name='areaSel' value='"+data[i].GRID_AREA_ID+"' /></td>";
+			selectTag += "<td>"+data[i].ANALS_AREA_ID+"</td>";
+			selectTag += "<td>"+data[i].INTRST_AREA_NM+"</td>";
+			selectTag += "<td>"+data[i].DTA_01+"</td>";
+			selectTag += "<td>"+data[i].DTA_02+"</td>";
+			selectTag += "<td>"+data[i].DTA_03+"</td>";
+			selectTag += "<td>"+data[i].DTA_04+"</td>";
+			selectTag += "</tr>";
+		}
+		
+		if(data.length==0){
+			$("#tblist").html(blank);
+			$("#cnt").html("0");
+		}else {
+			$("#tblist").html(selectTag);
+			$("#cnt").html(data[0].DTA_CO);
+		}
 	});
+}
+
+function areaSel(){
+	var val = $(":input:radio[name=areaSel]:checked").val();
+	if($("input:radio[name='areaSel']").is(":checked") == true){
+		alert("GRID_AREA_ID >> "+val);
+	}else{
+		alert("관심지역을 선택해 주세요.");
+	}
+
 }
 </script>
 </head>
 <body>
 <form name="dataSearch" id="dataSearch" method="post">
-	<div id="map">
-		<table class="table02 scroll_y" id="countList">
-		    <colgroup>
-		        <col width="50px" />
-		        <col />
-		        <col width="70px" />
-		        <col width="80px" />
-		        <col width="80px"/>
-		        <col width="80px" />
-		        <col width="80px" />
-		    </colgroup>
-		    <thead>
-		        <tr>
-		            <th>관심지역코드</th>
-		            <th>관심지역명</th>
-		            <th>예측고도</th>
-		            <th>새벽<br />(00~05)</th>
-		            <th>오전<br />(06~11)</th>
-		            <th>오후<br />(12~17)</th>
-		            <th>저녁<br />(18~23)</th>
-		        </tr>
-		    </thead>
-		    <tbody id="tblist"></tbody>
-		</table>
-	</div>
+	<!-- 검색 영역 시작 -->
+    <div class="search_box">
+        <div class="searchLine">
+	        <span class="s_tit MgL20">예측일시(<em class="chk_txt">*</em>)</span>
+			<input type="text" class="W70" name="nDate" value='' id="nDate" title="조회기간 시작일" readonly="readonly"/>
+        	<span class="s_tit MgL20">관심지역</span>
+            <select title="센서명" name="areaCode" id="areaCode">
+				<option value="">전체</option>
+			</select>
+			<span class="btnCnt"><a href="" class="btn_1" onclick="goSearch();return false;">조회</a></span>
+        </div>
+    </div>
+    
+<div class="teTop">
+    <span class="allCount">전체 : <em><span id="cnt"></span></em>건</span>
+    <span class="fr">
+        <a href="" class="btn_1" onclick="areaSel();return false;">관심지역선택</a>
+    </span>
+</div>
+<table class="table02 dataPix">
+    <colgroup>
+        <col width="45px" />
+        <col width="70px" />
+        <col />
+        <col width="100px" />
+        <col width="100px" />
+        <col width="100px"/>
+        <col width="100px" />
+    </colgroup>
+    <thead>
+        <tr>
+            <th>선택</th>
+            <th>관심지역</th>
+            <th>관심지역명</th>
+            <th>00H ~ 05H</th>
+            <th>06H ~ 11H</th>
+            <th>12H ~ 17H</th>
+            <th>18H ~ 23H</th>
+        </tr>
+    </thead>
+    <tbody id="tblist">
+        <tr>
+        </tr>
+    </tbody>
+</table>
 </form>
 </body>
 </html>

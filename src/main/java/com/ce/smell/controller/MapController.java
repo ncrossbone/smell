@@ -195,4 +195,16 @@ public class MapController {
 	public List<Map<String, Object>> getReductionFacil(@RequestBody HashMap param){
 		return mapBiz.getReductionFacil(param);
 	}
+	
+	//관심지역 목록
+	@RequestMapping(value = "/getAnalsAreaList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getAnalsAreaList(@RequestBody HashMap param){
+		return mapBiz.getAnalsAreaList(param);
+	}
+	
+	//악취 발생 예보 현황 목록
+	@RequestMapping(value = "/getOccurrenceForecastList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getOccurrenceForecastList(@RequestBody HashMap param){
+		return mapBiz.getOccurrenceForecastList(param);
+	}
 }

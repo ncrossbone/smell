@@ -98,4 +98,8 @@ public interface MapMapper {
 	public List<Map<String, Object>> getForeCastOccurrenceSel(HashMap param);
 	//저감장치가동현황
 	public List<Map<String, Object>> getReductionFacil(HashMap param);
+	//관심지역 목록
+	public List<Map<String, Object>> getAnalsAreaList(HashMap param);
+	//악취 발생 예보 현황 목록
+	public List<Map<String, Object>> getOccurrenceForecastList(HashMap param);
 }
