@@ -50,7 +50,7 @@ var _WestCondition = function () {
     	'portableMeasurement':{
 						layerType:'base',
 						title:'이동식 측정 데이터',
-						keyColumn:['CODE','DATE'],
+						keyColumn:['CODE','MESURE_DT'],
 						isVisible:true,
 						isUseGeoserver:false,
 						isWriteGrid:true,
@@ -78,8 +78,7 @@ var _WestCondition = function () {
 						     {name:'CFC',title:'염소'},
 						     {name:'CH3SH',title:'메틸메르캅탄'},
 						     {name:'TMA',title:'트리메틸아민'},
-						     {name:'ETHANOL',title:'에탄올'},
-						     {name:'DATE',title:'날짜',visible:false}]
+						     {name:'ETHANOL',title:'에탄올'}]
     	},
     	'fixedMeasurement':{
 			layerType:'base',
@@ -1719,6 +1718,7 @@ var _WestCondition = function () {
     			params: paramObj
     		}).done(function(data){
     			if(data.length == 0){
+    				_MapEventBus.trigger(_MapEvents.alertShow, {text:'위치정보가 없습니다.'});
     				return;
     			}
     			
