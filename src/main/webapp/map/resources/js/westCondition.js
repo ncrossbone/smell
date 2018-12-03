@@ -1963,7 +1963,7 @@ var _WestCondition = function () {
 		
 		var ww = $(window).width();
 		if(value.attr('class') == "on"){
-			$('.instanceArea').hide();
+			//$('.instanceArea').hide();
 			$('.lnb').css('display', 'none');
 			$('#tab').css('left',0);
 			$('#tabOpener').css('left',0);
@@ -1977,7 +1977,7 @@ var _WestCondition = function () {
 			$('#gridArea').css('left','0');
 			$('#gridArea').css('width', ww );
 		}else{
-			$('.instanceArea').show();
+			//$('.instanceArea').show();
 			//$('#tab').find('.on')
 			for(var i = 0 ; i  < $('.lnb').length; i++){
 				if($('#tab').find('.on').attr('tabtype') == $($('.lnb')[i]).attr('id')){

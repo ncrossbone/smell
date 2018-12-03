@@ -51,7 +51,7 @@ var _ComplaintStatusInsert = function () {
 		}});
 		
 		cvplPopupOverlay = $('#cvplPopupOverlay');
-		process = $('.process');
+		process = $('#cvplProcess');
 		
 		setEvent();
 		

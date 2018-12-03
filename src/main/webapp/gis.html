@@ -35,6 +35,7 @@
 <script type="text/javascript" src="/map/resources/js/complaintStatusInsert.js"></script>
 <script type="text/javascript" src="/map/resources/js/chartMode.js"></script>
 <script type="text/javascript" src="/map/resources/js/deviceManage.js"></script>
+<script type="text/javascript" src="/map/resources/js/odorForeCast.js"></script>
 
 
 <script src="/map/resources/js/lib/highcharts-6.2.js"></script>
@@ -100,6 +101,7 @@
 		_SmellMapBiz.init();
 		_ComplaintStatusInsert.init(); 
 		_DeviceManage.init();
+		_OdorForeCast.init();
 		
 		$(window).on('resize', function() {
 			var ww = $(window).width();
@@ -185,7 +187,7 @@
             <li tabType="smellReport">악취분석</li>
 		</ul>
     	
-    <div class="instanceArea">
+    <div class="instanceArea" style="display: none;">
     	<a href="javascript:void(0)" id="initAll">초기화</a>
     	<h3 id="titleDate"><span></span></h3>
     </div>
@@ -953,13 +955,11 @@
                             <dt style="margin-top:20px; ">인근 사업장</dt>
                              <dd style="width:100px !important;">
                                 <select id="bufferMeter" style="margin-top:10px; width:100px;">
-                                	<option value="100">100m</option>
                                 	<option value="200" selected>200m</option>
-                                	<option value="300">300m</option>
                                 	<option value="400">400m</option>
-                                	<option value="500">500m</option>
+                                	<option value="600">600m</option>
+                                	<option value="800">800m</option>
                                 	<option value="1000">1000m</option>
-                                	<option value="2000">2000m</option>
                                 </select>
                             </dd>
                             <dd style="width:120px !important;">
@@ -1003,7 +1003,7 @@
      			<option value="500">500m</option>
      		</select>
      	</div>
-     	<ul class="process" style="display: none;">
+     	<ul class="process" style="display: none;" id="cvplProcess">
         	<li class="p_f workStep" mode="1">
             	<span class="step" id="step1Title">STEP.1</span>
                 <span class="p_text" id="step1Name">접수민원 선택</span>
@@ -1029,6 +1029,37 @@
                 <span class="p_text" id="step6Name">악취저감 조치</span>
             </li>
         </ul>
+        <ul class="process" style="display: none;" id="forecastProcess">
+        	<li class="p_f workStep" mode="1">
+            	<span class="step">STEP.1</span>
+                <span class="p_text">악취예보처리 선택</span>
+            </li>
+        	<li class="p_a workStep" mode="2">
+            	<span class="step">STEP.2</span>
+                <span class="p_text">공간좌표 획득</span>
+            </li>
+        	<li class="p_a workStep" mode="3">
+            	<span class="step">STEP.3</span>
+                <span class="p_text">악취분포 확인</span>
+            </li>
+        	<li class="p_a workStep" mode="4">
+            	<span class="step">STEP.4</span>
+                <span class="p_text">악취원점 분석</span>
+            </li>
+        	<li class="p_l workStep" mode="5">
+            	<span class="step">STEP.5</span>
+                <span class="p_text">악취저감 조치</span>
+            </li>
+        </ul>
+        <div id="deviceManagePopup" style="right: 150px; top: 250px; display: none; width:1000px; height:500px; position: absolute; z-index: 999;">
+        	<p class="pop_tit">
+        		<span class="pop_tit_text">악취발생 예보현황</span>
+<!--         		<a href="javascript:void(0)" class="btn03 cvpl_pop_close"></a> -->
+        	</p> 
+        	<div class="pop_conts" style="background: #fff; width:980px; height:440px; overflow: hidden;"> 
+	        	<iframe src="./foreCastOccurrenceList.html" style="width:100%; height:100%;"></iframe>
+			</div>
+        </div> 
      	<ul id="around_info">
 			<li>
                 <span class="pic_school">학교</span>
