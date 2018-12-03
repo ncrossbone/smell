@@ -24,7 +24,8 @@ var _ChartMode = function () {
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
 				if(layer.get('name') == chartFeatureLayerName){
-					getChartData({code:feature.getProperties().CODE});
+					var mesureDt = feature.getProperties().MESURE_DT?feature.getProperties().MESURE_DT:1;
+					getChartData({code:feature.getProperties().CODE,mesureDt:mesureDt});
 				}
 			});
 		});

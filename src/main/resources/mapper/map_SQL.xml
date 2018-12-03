@@ -210,10 +210,20 @@
   	  GROUP BY CODE,B.SENSOR_NM,OPR_STTUS_CODE,DATE,MESURE_DT
 	</select>
 	<select id="chartFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		 SELECT CONCAT(LEGALDONG_CODE,SPOT_CODE) AS CODE,SENSOR_NM,SENSOR_TY_CODE,LO,LA
-               FROM bdsm.IOT_SENSOR_INFO
-			  WHERE LO IS NOT NULL 
-                AND SENSOR_TY_CODE != 'SEN01004'
+		 SELECT CODE,SENSOR_NM,SENSOR_TY_CODE,LO,LA,MESURE_DT
+                FROM ( 
+                 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
+                        SENSOR_NM,
+                        SENSOR_TY_CODE,
+						CASE WHEN A.LO IS NULL THEN B.LO ELSE A.LO END AS LO,
+						CASE WHEN A.LA IS NULL THEN B.LA ELSE A.LA END AS LA,
+                        DATE_FORMAT(DTA_DT,'%Y%m%d%H%i') AS MESURE_DT
+				   FROM bdsm.IOT_SENSOR_INFO A
+		LEFT OUTER JOIN bdsm.IOT_SENSOR_MVMN_INFO B
+                     ON CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
+				  WHERE SENSOR_TY_CODE != 'SEN01004' 
+				    AND SENSOR_TY_CODE != 'SEN01002') AA
+				WHERE LO IS NOT NULL
 	</select>
 	<select id="fixedMeasurementFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
@@ -745,9 +755,14 @@ WHERE TAB.POINT_X IS NOT NULL
   		  FROM bdsm.IOT_SENSOR_MESURE_INFO A,
 	   		   bdsm.IOT_SENSOR_INFO B
   		   WHERE CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
-  		   AND B.LA IS NOT NULL
-           AND B.LO IS NOT NULL
-   		   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = ( SELECT DATE_FORMAT(MAX(MESURE_DT),'%Y%m%d%H') FROM bdsm.IOT_SENSOR_MESURE_INFO WHERE CONCAT(LEGALDONG_CODE,SPOT_CODE) = #{code})
+           
+           <if test="mesureDt != 1">
+    			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = #{mesureDt}
+  			</if>
+  			<if test="mesureDt == 1">
+    			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = ( SELECT DATE_FORMAT(MAX(MESURE_DT),'%Y%m%d%H') FROM bdsm.IOT_SENSOR_MESURE_INFO WHERE CONCAT(LEGALDONG_CODE,SPOT_CODE) = #{code})
+  			</if>
+   		   
      	   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = #{code}
   		   GROUP BY CODE,B.SENSOR_NM,OPR_STTUS_CODE,DATE,MESURE_DT
 	</select>
