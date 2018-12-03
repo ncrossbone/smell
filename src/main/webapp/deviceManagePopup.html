@@ -30,15 +30,24 @@
 <script type="text/javascript">
 //document 준비
 $(document).ready(function(){
-	Common.getData({url:'/getDeviceChartList.do', contentType: 'application/json', 
-		params: {
-			legaldongCode:'4311000000',
-			spotCode:'0401',
-			startDt:'2018-12-01 02:00:00',
-			endDt:'2018-12-01 19:00:00',
-			la:'35',
-			lo:'127',
-		} 
+	
+	if(parent){
+		parent._MessagePipe.send({type:'deviceChartPopupReady'});	
+	}
+});
+
+
+function getChartData( param ){
+	Common.getData({url:'/getDeviceChartList.do', contentType: 'application/json',
+		params:param
+// 		params: {
+// 			legaldongCode:'4311000000',
+// 			spotCode:'0401',
+// 			startDt:'2018-12-01 02:00:00',
+// 			endDt:'2018-12-01 19:00:00'
+// 			la:'35',
+// 			lo:'127',
+// 		} 
 	}).done(function(data){
 		if(data.length == 0){
 			return;
@@ -92,7 +101,9 @@ $(document).ready(function(){
 		            point: {
 	                    events: {
 	                        click: function (e){
-	                   			alert(this.category+"--"+la+"--"+lo);     	
+	                        	if(parent){
+	                        		parent._MessagePipe.send({type:'deviceChartSelected', datetime:this.category, x:lo, y:la});	
+	                        	}
 	                        }
 	                    }
 		            }
@@ -122,10 +133,7 @@ $(document).ready(function(){
 		});
 		
 	});
-	
-});
-
-
+}
 </script>
 </head>
 <body>

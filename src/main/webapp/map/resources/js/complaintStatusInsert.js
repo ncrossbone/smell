@@ -325,7 +325,7 @@ var _ComplaintStatusInsert = function () {
 			  type:'POST',
 			  data: new XMLSerializer().serializeToString(analsAreaRequest)
 			}).done(function(result) {
-				if(result.features.length <= 0){
+				if(result == null || result.features == null || result.features.length <= 0){
 					_MapEventBus.trigger(_MapEvents.alertShow, {text:'악취확산 격자 영역 밖입니다.'});
 					return;
 				}

@@ -34,6 +34,8 @@
 
 <script type="text/javascript" src="/map/resources/js/complaintStatusInsert.js"></script>
 <script type="text/javascript" src="/map/resources/js/chartMode.js"></script>
+<script type="text/javascript" src="/map/resources/js/deviceManage.js"></script>
+
 
 <script src="/map/resources/js/lib/highcharts-6.2.js"></script>
  
@@ -97,7 +99,8 @@
 		_WestCondition.init();
 		_SmellMapBiz.init();
 		_ComplaintStatusInsert.init(); 
-
+		_DeviceManage.init();
+		
 		$(window).on('resize', function() {
 			var ww = $(window).width();
 			var wh = $(window).height();
@@ -130,9 +133,10 @@
 		//        regCvpl = 등록 팝업
 		//        regCvplPoint = 지도에서 클릭해서 등록
 		_MessagePipe.send = function(msg){
-			_BizMode = 1;
-			if(_BizMode == 1){
+			if(_SmellMapBiz.taskMode == 1){
 				_ComplaintStatusInsert.setProcMsg(msg);
+			}else if(_SmellMapBiz.taskMode == 2){
+				_DeviceManage.setProcMsg(msg);
 			}
 		};
 	});
@@ -1097,7 +1101,25 @@
             <div class="pop_bot">
             	<a href="javascript:void(0)" class="btn04">닫기</a>
             </div>
-        </div>  
+        </div> 
+        <div id="deviceManagePopup" style="right: 150px; top: 250px; display: none; width:1000px; height:500px; position: absolute; z-index: 999;">
+        	<p class="pop_tit">
+        		<span class="pop_tit_text">장비관리</span>
+<!--         		<a href="javascript:void(0)" class="btn03 cvpl_pop_close"></a> -->
+        	</p> 
+        	<div class="pop_conts" style="background: #fff; width:980px; height:440px; overflow: hidden;"> 
+	        	<iframe src="./deviceManage.html" style="width:100%; height:100%;"></iframe>
+			</div>
+        </div> 
+        <div id="deviceManageChartPopup" style="right: 150px; top: 250px; display: none; width:800px; height:318px; position: absolute; z-index: 999;">
+        	<p class="pop_tit">
+        		<span class="pop_tit_text">악취정보</span>
+<!--         		<a href="javascript:void(0)" class="btn03 cvpl_pop_close"></a> -->
+        	</p> 
+        	<div class="pop_conts" style="background: #fff; width:780px; height:302px; overflow: hidden;"> 
+	        	<iframe id="deviceManagePopupIframe" src="./deviceManagePopup.html" style="width:100%; height:100%;"></iframe>
+			</div>
+        </div>
         <div id="complaintStatusPopup" style="right: 150px; top: 250px; display: none; width:1000px; height:500px; position: absolute; z-index: 999;">
         	<p class="pop_tit">
         		<span class="pop_tit_text">민원 조회</span>

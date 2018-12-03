@@ -273,7 +273,7 @@ var _SmellMapBiz = function () {
 	        	}
 	        	var analsId = result[0].analsAreaId;
 	        	var gridAreaId = result[0].gridAreaId;
-	        	analsId = '2930'
+//	        	analsId = '2930'
 	        	startTracking(analsId);
 	        });
 		});
@@ -404,8 +404,8 @@ var _SmellMapBiz = function () {
 				$('#weatherAnalysisStartDate').datepicker( "option", "maxDate", null );
 				$('#weatherAnalysisEndDate').datepicker( "option", "maxDate", null );
 				
-				$('#weatherAnalysisEndDate').datepicker( "option", "minDate", toDay );
-				$('#weatherAnalysisStartDate').datepicker( "option", "minDate", toDay );
+//				$('#weatherAnalysisEndDate').datepicker( "option", "minDate", toDay );
+//				$('#weatherAnalysisStartDate').datepicker( "option", "minDate", toDay );
 			}
 			if(weatherAnalysisLayer){
 				
@@ -741,8 +741,8 @@ var _SmellMapBiz = function () {
 				$('#odorSpreadStartDate').datepicker( "option", "maxDate", null );
 				$('#odorSpreadEndDate').datepicker( "option", "maxDate", null );
 			
-				$('#odorSpreadStartDate').datepicker( "option", "minDate", toDay );
-				$('#odorSpreadEndDate').datepicker( "option", "minDate", toDay );
+//				$('#odorSpreadStartDate').datepicker( "option", "minDate", toDay );
+//				$('#odorSpreadEndDate').datepicker( "option", "minDate", toDay );
 			}
 			
 			if(odorSpreadLayer){

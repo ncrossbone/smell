@@ -83,7 +83,7 @@ function goSearch() {
 			selectTag += "<td class='cvplDirect'>"+data[i].CVPL_LC+"</td>";
 			selectTag += "<td class='cvplFlag'>"+data[i].CVPL_TY_NM+"</td>";
 			selectTag += "<td class='cvplContents'>"+data[i].CVPL_CN+"</td>";
-			selectTag += "<td class='AC'><a href='' onclick='gisView(\""+data[i].LA+"\",\""+data[i].LO+"\");return false;' class='btn_gis'>GIS</a></td>";
+// 			selectTag += "<td class='AC'><a href='' onclick='gisView(\""+data[i].LA+"\",\""+data[i].LO+"\");return false;' class='btn_gis'>GIS</a></td>";
 			selectTag += "</tr>";
 		}
 		
@@ -111,7 +111,7 @@ function toDateCheck() {
   getDiffTime = getDiffTime / (1000 * 60 * 60 * 24);
   
   if( getDiffTime*1 >= 1 ){
-      _MapEventBus.trigger(_MapEvents.alertShow, {text:'조회기간은 역전될수 없습니다.'});
+	  parent._MapEventBus.trigger(_MapEvents.alertShow, {text:'조회기간은 역전될수 없습니다.'});
       $("#to_date").val($.datepicker.formatDate('yy-mm-dd', tTime));
       return "N";
   }
@@ -194,7 +194,7 @@ function gisView(la,lo){
 	        <col width="150px" />
 	        <col width="50px"/>
 	        <col />
-	        <col width="70px" />
+<!-- 	        <col width="70px" /> -->
 	    </colgroup>
 	    <thead>
 	        <tr>
@@ -207,7 +207,7 @@ function gisView(la,lo){
 	            <th>위치</th>
 	            <th>민원<br />분류</th>
 	            <th>민원내용</th>
-	            <th>위치좌표</th>
+<!-- 	            <th>위치좌표</th> -->
 	        </tr>
 	    </thead>
 	    <tbody id="tblist">
