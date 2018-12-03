@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<title>청주시 지능형 도농복합도시 악취관리시스템(개발)</title>
+
+<link href="/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/css/basic.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/common.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/sub.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/st.css" rel="stylesheet" type="text/css" />
+<script src="/js/jquery.min-1.8.3.js"></script>
+<script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
+
+<script type="text/javascript">
+$(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
+	//초기 조회
+	initInfo();
+})
+	
+//민원데이터관리 조회
+function initInfo() {
+	Common.getData({
+		url:'/getForeCastOccurrence.do', 
+		contentType: 'application/json', 
+		params: {
+			nDate: '20181127'
+		}}).done(function(data){
+		$("#dta_01").html("<a href='' onclick='foreCastList(1);return false;'>"+data.DTA_01_SUM+"</a>");
+		$("#dta_02").html("<a href='' onclick='foreCastList(2);return false;'>"+data.DTA_02_SUM+"</a>");
+		$("#dta_03").html("<a href='' onclick='foreCastList(3);return false;'>"+data.DTA_03_SUM+"</a>");
+		$("#dta_04").html("<a href='' onclick='foreCastList(4);return false;'>"+data.DTA_04_SUM+"</a>");
+	});
+
+	Common.getData({
+		url:'/getReductionFacil.do', 
+		contentType: 'application/json', 
+		params: {
+			nDate: '20181127'
+		}}).done(function(data){
+			var html = "";
+			var imgNm = "";
+			var hday = "";
+			for (var i = 0; i < data.length; i++) {
+				if(data[i].ON_TIME=="미가동"){
+					imgNm = "t_off.png";
+					hday = "0.00";
+				}else{
+					imgNm = "t_on.png";
+					hday = Number(data[i].ON_TIME.substring(0,2))+"."+(Number(data[i].ON_TIME.substring(5,7))/60).toString().substring(2,4);
+				}
+			    html += "<tr>";
+			    html += "<th>"+data[i].BSML_TRGNPT_NM+"<img src='/images/"+imgNm+"' /></td>";
+			    html += "<td>"+hday+" h/day</td>";
+			    html += "</tr>";
+			}
+			if(data.length!=0){
+				$("#tList").html(html);
+			}
+	});
+}
+
+function foreCastList(val){
+	alert(val);
+}
+</script>
+</head>
+<body>
+<form name="dataSearch" id="dataSearch" method="post">
+	<div id="map">
+       <!--악취발생 예보--> 
+        <div class="r1">
+        	<p class="r1_tit">악취발생 예보</p>
+            <table>
+            	<caption>악취발생 예보</caption>
+                <colgroup>
+                    <col width="40%"/>
+                    <col width="60%"/>
+                </colgroup>
+                <tbody>
+                	<tr>
+                    	<th>새벽<br />(00~05)</th>
+                        <td id="dta_01">-</td>
+                    </tr>
+                	<tr>
+                    	<th>오전<br />(06~11)</th>
+                        <td id="dta_02">-</td>
+                    </tr>
+                	<tr>
+                    	<th>오후<br />(12~17)</th>
+                        <td id="dta_03">-</td>
+                    </tr>
+                	<tr>
+                    	<th>저녁<br />(18~23)</th>
+                        <td id="dta_04">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--저감장치가동현황--> 
+        <div class="r1"  style="top:245px;">
+        	<p class="r1_tit">저감장치가동현황</p>
+            <table>
+            	<caption>악취발생 예보</caption>
+                <colgroup>
+                    <col width="40%"/>
+                    <col width="60%"/>
+                </colgroup>
+                <tbody id="tList">
+                	<tr>
+                    	<th>F-01<img src="/images/t_off.png" /></th>
+                        <td>3.0 h/day</td>
+                    </tr>
+                	<tr>
+                    	<th>F-02<img src="/images/t_on.png" /></th>
+                        <td>3.0 h/day</td>
+                    </tr>
+                	<tr>
+                    	<th>F-03<img src="/images/t_off.png" /></th>
+                        <td>3.0 h/day</td>
+                    </tr>
+                	<tr>
+                    	<th>F-04<img src="/images/t_off.png" /></th>
+                        <td>3.0 h/day</td>
+                    </tr>
+                	<tr>
+                    	<th>F-05<img src="/images/t_on.png" /></th>
+                        <td>3.0 h/day</td>
+                    </tr>
+                	<tr>
+                    	<th>F-06<img src="images/t_on.png" /></th>
+                        <td>3.0 h/day</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!--끝-->
+	</div>
+</form>
+</body>
+</html>

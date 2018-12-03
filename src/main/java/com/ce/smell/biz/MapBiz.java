@@ -212,4 +212,46 @@ public class MapBiz {
 	public int insertOnOff(HashMap param) {
 		return mapMapper.insertOnOff(param);
 	}
+	
+	//센서 선택 - 이동식
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getDeviceList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getDeviceList(param);
+	}
+	
+	//센서 조회 - 이동식
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getDeviceInfoList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getDeviceInfoList(param);
+	}
+	
+	//센서 차트 조회 - 이동식
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getDeviceChartList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getDeviceChartList(param);
+	}
+	
+	//악취발생예보
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getForeCastOccurrence(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getForeCastOccurrence(param);
+	}
+	
+	//악취발생예보 - 건수선택
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getForeCastOccurrenceSel(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getForeCastOccurrenceSel(param);
+	}
+	
+	//저감장치가동현황
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getReductionFacil(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getReductionFacil(param);
+	}
 }

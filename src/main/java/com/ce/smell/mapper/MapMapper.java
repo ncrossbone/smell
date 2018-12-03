@@ -86,4 +86,16 @@ public interface MapMapper {
 	public Map<String, Object> getBsmlReduceqpInfo(HashMap param);
 	//악취저감설비 제어
 	public int insertOnOff(HashMap param);
+	//센서 선택 - 이동식
+	public List<Map<String, Object>> getDeviceList(HashMap param);
+	//센서 조회 - 이동식
+	public List<Map<String, Object>> getDeviceInfoList(HashMap param);
+	//센서 차트 조회 - 이동식
+	public List<Map<String, Object>> getDeviceChartList(HashMap param);
+	//악취발생예보
+	public Map<String, Object> getForeCastOccurrence(HashMap param);
+	//악취발생예보 - 건수선택
+	public List<Map<String, Object>> getForeCastOccurrenceSel(HashMap param);
+	//저감장치가동현황
+	public List<Map<String, Object>> getReductionFacil(HashMap param);
 }

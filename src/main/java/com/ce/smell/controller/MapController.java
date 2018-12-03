@@ -136,7 +136,7 @@ public class MapController {
 		return mapBiz.getSigunguCode(param);
 	}
 	
-	//민원데이터 list
+	//민원데이터 조회
 	@RequestMapping(value = "/getCvplDataManageList", method = RequestMethod.POST)
 	public List<Map<String, Object>> getCvplDataManageList(@RequestBody HashMap param){
 		return mapBiz.getCvplDataManageList(param);
@@ -147,7 +147,6 @@ public class MapController {
 	public int insertCvplData(@RequestBody HashMap param) {
 		return mapBiz.insertCvplData(param);
 	}
-	
 	
 	//악취저감설비 정보
 	@RequestMapping(value = "/getBsmlReduceqpInfo", method = RequestMethod.POST)
@@ -160,4 +159,40 @@ public class MapController {
 	public int insertOnOff(@RequestBody HashMap param) {
 		return mapBiz.insertOnOff(param);
 	} 
+	
+	//센서 선택 - 이동식
+	@RequestMapping(value = "/getDeviceList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getDeviceList(@RequestBody HashMap param){
+		return mapBiz.getDeviceList(param);
+	}
+	
+	//센서 조회 - 이동식
+	@RequestMapping(value = "/getDeviceInfoList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getDeviceInfoList(@RequestBody HashMap param){
+		return mapBiz.getDeviceInfoList(param);
+	}
+	
+	//센서 차트 조회 - 이동식
+	@RequestMapping(value = "/getDeviceChartList", method = RequestMethod.POST)
+	public List<Map<String, Object>> getDeviceChartList(@RequestBody HashMap param){
+		return mapBiz.getDeviceChartList(param);
+	}
+	
+	//악취발생예보
+	@RequestMapping(value = "/getForeCastOccurrence", method = RequestMethod.POST)
+	public Map<String, Object> getForeCastOccurrence(@RequestBody HashMap param){
+		return mapBiz.getForeCastOccurrence(param);
+	}
+	
+	//악취발생예보 - 건수선택
+	@RequestMapping(value = "/getForeCastOccurrenceSel", method = RequestMethod.POST)
+	public List<Map<String, Object>> getForeCastOccurrenceSel(@RequestBody HashMap param){
+		return mapBiz.getForeCastOccurrenceSel(param);
+	}
+	
+	//저감장치가동현황
+	@RequestMapping(value = "/getReductionFacil", method = RequestMethod.POST)
+	public List<Map<String, Object>> getReductionFacil(@RequestBody HashMap param){
+		return mapBiz.getReductionFacil(param);
+	}
 }

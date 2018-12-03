@@ -314,6 +314,37 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .tm04 { background:url(../images/tm04.png) no-repeat center top;}
 .tm05 { background:url(../images/tm05.png) no-repeat center top;}
 
+/*181130 차트*/
+#chart { width:380px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; }
+.topwrap { width:100%; position:relative; }
+.topbtn{ position:absolute; right:0; top:50%; transform:translateY(-50%); }
+.station_id { width:80%; border:1px solid #0c0d0d; font-weight:bold; padding:6px 20px;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #cdcdcd));
+	background: -moz-linear-gradient(top, #ffffff 0%, #cdcdcd 100%);
+	background: -webkit-linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	background: -o-linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	background: -ms-linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	background: linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#cdcdcd', gradientType=0);
+	
+	border-top-left-radius: 40px; -webkit-border-top-left-radius: 40px; -moz-border-top-left-radius: 40px; 
+	border-top-right-radius: 40px; -webkit-border-top-right-radius: 40px; -moz-border-top-right-radius: 40px; 
+	border-bottom-left-radius: 40px; -webkit-border-bottom-left-radius: 40px; -moz-border-bottom-left-radius: 40px; 
+	border-bottom-right-radius: 40px; -webkit-border-bottom-right-radius: 40px; -moz-border-bottom-right-radius: 40px; 
+	}
+	
+.station_id> span { color:#ed145b; }
+.c_tit { font-family: 'Dotum'; font-weight:bold; color:#fff; background:url(../images/g_tit_bg.png) no-repeat left center; padding:3px 0 3px 30px; margin-top:5px; letter-spacing:-1px;}
+
+
+/*예보,저감*/
+.r1_tit { text-align:center; padding:8px 0;  background: #4a5164; color: #fff; letter-spacing: -1px; font-size: 17px; position: relative; }
+.r1 { position:absolute; width:220px; }
+.r1> table { width:100%; border-top:2px solid #000; }
+.r1> table> tbody> tr> th { background-color: rgba( 0, 0, 0, 0.7 ); color:#fff; border-bottom:1px solid #d6d6d6; text-align:center; font-size:13px; padding:7px 0; }
+.r1> table> tbody> tr> td { background-color: rgba( 0, 0, 0, 0.7 ); color:#FF0; border-left:1px solid #d6d6d6; border-bottom:1px solid #d6d6d6; text-align:center;  font-size:13px; padding:7px 0; }
+.pt1 { color:#9ee3ff; display:block; }
+.r1> table> tbody> tr> th> img { vertical-align:top; margin-left:5px; }
 
 
 

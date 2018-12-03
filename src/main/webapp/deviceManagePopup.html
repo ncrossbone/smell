@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<title>청주시 지능형 도농복합도시 악취관리시스템(개발)</title>
+
+<link href="/cms/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/common.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/sub.css" rel="stylesheet" type="text/css" />
+<link href="/cms/css/st.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/cms/js/jquery.min.js"></script>
+<script type="text/javascript" src="/cms/js/common.js"></script>
+<script type="text/javascript" src="/cms/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/cms/js/frm.js"></script>
+
+<script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
+
+<!-- 달력 -->
+<link href="/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+<script src="/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
+<script src="/cms/js/cal/ui/jquery.ui.core.js"></script>
+
+<!-- high chart -->
+<script src="/cms/js/highcharts/highcharts.js" /></script>
+<script src="/cms/js/highcharts/highcharts-more.js" /></script>
+<script src="/cms/js/highcharts/modules/exporting.js" /></script>
+<script src="/cms/js/highcharts/modules/no-data-to-display.js" /></script>
+
+<script type="text/javascript">
+//document 준비
+$(document).ready(function(){
+	Common.getData({url:'/getDeviceChartList.do', contentType: 'application/json', 
+		params: {
+			legaldongCode:'4311000000',
+			spotCode:'0401',
+			startDt:'2018-11-22 10:50:00',
+			endDt:'2018-11-22 23:50:00',
+			la:'35.002',
+			lo:'127',
+		} 
+	}).done(function(data){
+		if(data.length == 0){
+			return;
+		}
+		var category=[];
+		var data1=[];
+		var la,lo;
+		la = data[0].LA;
+		lo = data[0].LO;
+		for (var i = 0; i < data.length; i++) {
+			category.push(data[i].MESURE_DT);
+			data1.push(data[i].AVG_VALUE);
+		}
+	
+		Highcharts.chart('container', {
+
+		    title: {
+		        text: '복합악취 (OU)'
+		    },
+
+		    subtitle: {
+		        text: ''
+		    },
+
+		    credits : { 
+                enabled: false
+            },
+            
+		    xAxis: {
+	           categories: category,      //x축 범례(str)
+	           tickInterval: 5       //x축 범례 간격(int)
+	            
+	        },
+		    
+		    yAxis: {
+		        title: {
+		            text: 'OU'
+		        }
+		    },
+
+		    plotOptions: {
+		        series: {
+		            label: {
+		                connectorAllowed: false
+		            },
+		            cursor: 'pointer',
+		            point: {
+	                    events: {
+	                        click: function (e){
+	                   			alert(this.category+"--"+la+"--"+lo);     	
+	                        }
+	                    }
+		            }
+		        }
+		    },
+
+		    series: [{
+		        name: '복합악취',
+		        data: data1
+		    }],
+
+		    responsive: {
+		        rules: [{
+		            condition: {
+		                maxWidth: 500
+		            },
+		            chartOptions: {
+		                legend: {
+		                    layout: 'horizontal',
+		                    align: 'center',
+		                    verticalAlign: 'bottom'
+		                }
+		            }
+		        }]
+		    }
+
+		});
+		
+	});
+	
+});
+
+
+</script>
+</head>
+<body>
+<div class="graphArea H300" id="container"></div>
+</body>
+</html>

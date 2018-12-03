@@ -1027,8 +1027,304 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 			 ORDER BY BPLC_ID, BSML_TRGNPT_NM, REDUC_EQP_NM, REDUC_EQP_NO
 	</select>
 	
+	<!-- 저감설비 원격제어 -->
 	<insert id="insertOnOff" parameterType="java.util.HashMap">
 		INSERT INTO BSML_REDUC_EQP_CTRL_HIST (BPLC_ID, REDUC_EQP_NO, CTRL_SE_CODE, CTRL_REQUST_DT, CTRL_CN_CODE, CNTLR_ID)
 		VALUES (#{bplcId}, #{reducEqpNo}, 'COM04003',SYSDATE(),#{ctrlCnCode},'cetech');
 	</insert>
+	
+	<!-- 센서 선택 - 이동식 -->
+	<select id="getDeviceList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT CONCAT(SENSOR_NM,'(',SUBSTR(LEGALDONG_CODE,1,5),SPOT_CODE,')') AS SENSOR_NM
+		     , LEGALDONG_CODE, SPOT_CODE
+		  FROM IOT_SENSOR_INFO
+		 WHERE SENSOR_TY_CODE='SEN01002'
+		   AND USE_AT='Y'
+		 ORDER BY SENSOR_NM
+	</select>
+	
+	<!-- 센서 조회 - 이동식 -->
+	<select id="getDeviceInfoList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT CONCAT(SUBSTR(A.LEGALDONG_CODE,1,5),A.SPOT_CODE) AS SENSOR_ID
+		     , MAX(C.SENSOR_NM) AS SENSOR_NM
+		     , DATE_FORMAT(MIN(B.MESURE_DT),'%Y-%m-%d %T') AS START_DT -- KEY
+		     , DATE_FORMAT(MAX(B.MESURE_DT),'%Y-%m-%d %T') AS END_DT -- KEY
+		     , A.LA, A.LO 
+		     , A.LEGALDONG_CODE, A.SPOT_CODE -- KEY
+		     , COUNT(1)OVER() AS DTA_CO
+		  FROM (
+		        SELECT LEGALDONG_CODE, SPOT_CODE, DTA_DT, LA, LO
+		             , DATE_ADD(NVL(LEAD(DTA_DT)OVER(PARTITION BY LEGALDONG_CODE, SPOT_CODE ORDER BY DTA_DT),SYSDATE()), INTERVAL -1 SECOND) AS END_DT
+		             , PARAMETER_4
+		          FROM (SELECT #{legaldongCode} AS PARAMETER_1 -- LEGALDONG_CODE
+		                     , #{spotCode} AS PARAMETER_2 -- SPOT_CODE
+		                     , #{from_date} AS PARAMETER_3 -- 조회시작일(필수:YYYYMMDD)
+		                     , #{to_date} AS PARAMETER_4 -- 조회종료일(필수:YYYYMMDD)
+		               ) A
+		             , IOT_SENSOR_MVMN_INFO B
+		         WHERE B.LEGALDONG_CODE=IF(A.PARAMETER_1='',B.LEGALDONG_CODE,A.PARAMETER_1)
+		           AND B.SPOT_CODE=IF(A.PARAMETER_2='',B.SPOT_CODE,A.PARAMETER_2)
+		           AND B.DTA_DT >= DATE_FORMAT(CONCAT(PARAMETER_3,'000000'),'%Y-%m-%d %T')
+		       ) A
+		     , IOT_SENSOR_MESURE_INFO B
+		     , IOT_SENSOR_INFO C
+		 WHERE A.DTA_DT &lt;= DATE_FORMAT(CONCAT(PARAMETER_4,'235959'),'%Y-%m-%d %T')
+		   AND B.LEGALDONG_CODE=A.LEGALDONG_CODE
+		   AND B.SPOT_CODE=A.SPOT_CODE
+		   AND B.IEM_CODE='S0001'
+		   AND B.MESURE_DT BETWEEN A.DTA_DT AND A.END_DT
+		   AND C.LEGALDONG_CODE=B.LEGALDONG_CODE
+		   AND C.SPOT_CODE=B.SPOT_CODE
+		   AND C.USE_AT='Y'
+		 GROUP BY A.LEGALDONG_CODE, A.SPOT_CODE, A.DTA_DT, A.LA, A.LO
+		 ORDER BY C.SENSOR_NM, A.LEGALDONG_CODE, A.SPOT_CODE, A.DTA_DT
+	</select>
+	
+	<!-- 센서 차트 조회 - 이동식 -->
+	<select id="getDeviceChartList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		WITH BASE AS (
+		SELECT PARAMETER_1 AS LEGALDONG_CODE
+		     , PARAMETER_2 AS SPOT_CODE
+		     , DATE_FORMAT(PARAMETER_3,'%Y-%m-%d %T') AS START_DT
+		     , TIMESTAMPDIFF(DAY,DATE_FORMAT(PARAMETER_3,'%Y-%m-%d %T'), DATE_FORMAT(PARAMETER_4,'%Y-%m-%d %T'))+1 AS DE_CO
+		     , PARAMETER_5 AS LA
+		     , PARAMETER_6 AS LO
+		  FROM (SELECT #{legaldongCode} AS PARAMETER_1 -- LEGALDONG_CODE (필수)
+		             , #{spotCode} AS PARAMETER_2 -- SPOT_CODE (필수)
+		             , #{startDt} AS PARAMETER_3 -- START_DT (필수)
+		             , #{endDt} AS PARAMETER_4 -- END_DT (필수)
+		             , #{la} AS PARAMETER_5 -- LA (위도)
+		             , #{lo} AS PARAMETER_6 -- LO (경도)
+		             
+		       ) A
+		)
+		SELECT A.LEGALDONG_CODE, A.SPOT_CODE
+		     , DATE_FORMAT(A.MESURE_START_DT,'%Y-%m-%d %H') AS MESURE_DT
+		     , CAST(ROUND(AVG(B.MESURE_DNSTY),3) AS DOUBLE) AS AVG_VALUE
+		     , DATE_FORMAT(MIN(MESURE_START_DT)OVER(),'%Y-%m-%d %H') AS START_DT
+		     , DATE_FORMAT(MAX(MESURE_START_DT)OVER(),'%Y-%m-%d %H') AS END_DT
+		     , A.LA, A.LO
+		  FROM (
+		        SELECT A.LEGALDONG_CODE, A.SPOT_CODE
+		             , DATE_ADD(DATE_ADD(START_DT,INTERVAL C.NO-1 HOUR),INTERVAL B.NO-1 DAY) AS MESURE_START_DT
+		             , DATE_ADD(DATE_ADD(DATE_ADD(START_DT,INTERVAL C.NO HOUR),INTERVAL B.NO-1 DAY),INTERVAL -1 SECOND) AS MESURE_END_DT
+		             , LA, LO
+		          FROM BASE A
+		             , ROW_CREAT B
+		             , ROW_CREAT C
+		         WHERE B.NO &lt;= DE_CO
+		           AND C.NO &lt;= 24
+		       ) A
+		       LEFT JOIN
+		       IOT_SENSOR_MESURE_INFO B
+		       ON (B.LEGALDONG_CODE=A.LEGALDONG_CODE
+		       AND B.SPOT_CODE=A.SPOT_CODE
+		       AND B.IEM_CODE='S0001'
+		       AND B.MESURE_DT BETWEEN A.MESURE_START_DT AND MESURE_END_DT
+		          )
+		 GROUP BY A.LEGALDONG_CODE, A.SPOT_CODE, A.MESURE_START_DT
+		 ORDER BY A.MESURE_START_DT
+	</select>
+	
+	<!-- 악취발생예보 -->
+	<select id="getForeCastOccurrence" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT SUM(CASE WHEN DTA_01 LIKE 'O%' THEN 1 ELSE 0 END) AS DTA_01_SUM
+		     , SUM(CASE WHEN DTA_02 LIKE 'O%' THEN 1 ELSE 0 END) AS DTA_02_SUM
+		     , SUM(CASE WHEN DTA_03 LIKE 'O%' THEN 1 ELSE 0 END) AS DTA_03_SUM
+		     , SUM(CASE WHEN DTA_04 LIKE 'O%' THEN 1 ELSE 0 END) AS DTA_04_SUM
+		  FROM (
+		        SELECT ANALS_AREA_ID
+		             , MAX(INTRST_AREA_NM) AS INTRST_AREA_NM
+		             , MAX(PREDICT_AL) AS INTRST_AREA_AL
+		             , MAX(IF(NO=1,EX_AT,NULL)) AS DTA_01
+		             , MAX(IF(NO=2,EX_AT,NULL)) AS DTA_02
+		             , MAX(IF(NO=3,EX_AT,NULL)) AS DTA_03
+		             , MAX(IF(NO=4,EX_AT,NULL)) AS DTA_04
+		          FROM (SELECT A.ANALS_AREA_ID, A.INTRST_AREA_NM, A.NO, A.PREDICT_AL,
+		                       A.STDRVALUE, B.BSML_DNSTY,
+		                       CASE WHEN B.BSML_DNSTY IS NULL THEN '-'
+		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY > A.STDRVALUE THEN CONCAT('O(',B.BSML_DNSTY,')')
+		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY &lt;= A.STDRVALUE THEN 'X'
+		                        END AS EX_AT
+		                  FROM (
+		                        SELECT ANALS_AREA_ID, INTRST_AREA_NM, PREDICT_AL
+		                             , CASE WHEN C.NO=1 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'000000'),'%Y-%m-%d %T')
+		                                    WHEN C.NO=2 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'060000'),'%Y-%m-%d %T')
+		                                    WHEN C.NO=3 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'120000'),'%Y-%m-%d %T')
+		                                    WHEN C.NO=4 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'180000'),'%Y-%m-%d %T')
+		                                END AS DTA_DT
+		                             , STDRVALUE, NO
+		                          FROM (
+		                                SELECT #{nDate} AS PARAMETER_1, -- 예보일
+		                                       '' AS PARAMETER_2, -- 시 (사용안함)
+		                                       '' AS PARAMETER_3  -- 관심지역코드
+		                               ) A,
+		                               ANALS_AREA_MANAGE B,
+		                               ROW_CREAT C,
+		                               SMS_STDRVALUE_MANAGE D
+		                         WHERE B.GRID_INTRST_SE_CODE='ANL01002'
+		                           AND B.ANALS_AREA_ID=IF(A.PARAMETER_3='',B.ANALS_AREA_ID,A.PARAMETER_3)
+		                           AND C.NO &lt;= 4
+		                           AND D.SMS_SE_CODE='COM03002'
+		                           AND D.IEM_CODE='S0001'
+		                       ) A
+		                       LEFT JOIN
+		                       LRN_FRCST_AI B
+		                       ON (B.ANALS_AREA_ID=A.ANALS_AREA_ID
+		                       AND B.DTA_DT=A.DTA_DT
+		                          )
+		               ) A
+		         GROUP BY ANALS_AREA_ID
+		       ) A
+	</select>
+	
+	<!-- 악취발생예보 - 건수선택 -->
+	<select id="getForeCastOccurrenceSel" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT ANALS_AREA_ID, INTRST_AREA_NM, INTRST_AREA_AL, DTA_01, DTA_02, DTA_03, DTA_04
+		  FROM (
+		        SELECT ANALS_AREA_ID
+		             , MAX(INTRST_AREA_NM) AS INTRST_AREA_NM
+		             , MAX(PREDICT_AL) AS INTRST_AREA_AL
+		             , MAX(IF(NO=1,EX_AT,NULL)) AS DTA_01
+		             , MAX(IF(NO=2,EX_AT,NULL)) AS DTA_02
+		             , MAX(IF(NO=3,EX_AT,NULL)) AS DTA_03
+		             , MAX(IF(NO=4,EX_AT,NULL)) AS DTA_04
+		          FROM (SELECT A.ANALS_AREA_ID, A.INTRST_AREA_NM, A.NO, A.PREDICT_AL,
+		                       A.STDRVALUE, B.BSML_DNSTY,
+		                       CASE WHEN B.BSML_DNSTY IS NULL THEN '-'
+		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY > A.STDRVALUE THEN CONCAT('O(',B.BSML_DNSTY,')')
+		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY &lt;= A.STDRVALUE THEN 'X'
+		                        END AS EX_AT
+		                  FROM (
+		                        SELECT ANALS_AREA_ID, INTRST_AREA_NM, PREDICT_AL
+		                             , CASE WHEN C.NO=1 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'000000'),'%Y-%m-%d %T')
+		                                    WHEN C.NO=2 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'060000'),'%Y-%m-%d %T')
+		                                    WHEN C.NO=3 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'120000'),'%Y-%m-%d %T')
+		                                    WHEN C.NO=4 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'180000'),'%Y-%m-%d %T')
+		                                END AS DTA_DT
+		                             , STDRVALUE, NO
+		                          FROM (
+		                                SELECT #{nDate} AS PARAMETER_1, -- 예보일
+		                                       '' AS PARAMETER_2, -- 시 (사용안함)
+		                                       '' AS PARAMETER_3  -- 관심지역코드
+		                               ) A,
+		                               ANALS_AREA_MANAGE B,
+		                               ROW_CREAT C,
+		                               SMS_STDRVALUE_MANAGE D
+		                         WHERE B.GRID_INTRST_SE_CODE='ANL01002'
+		                           AND B.ANALS_AREA_ID=IF(A.PARAMETER_3='',B.ANALS_AREA_ID,A.PARAMETER_3)
+		                           AND C.NO &lt;= 4
+		                           AND D.SMS_SE_CODE='COM03002'
+		                           AND D.IEM_CODE='S0001'
+		                       ) A
+		                       LEFT JOIN
+		                       LRN_FRCST_AI B
+		                       ON (B.ANALS_AREA_ID=A.ANALS_AREA_ID
+		                       AND B.DTA_DT=A.DTA_DT
+		                          )
+		               ) A
+		         GROUP BY ANALS_AREA_ID
+		       ) A
+		  <if test="gubun == 1">
+		  WHERE DTA_01 LIKE 'O%'  -- 필요에 따라(00-05)
+		  </if>
+		  <if test="gubun == 2">
+		  WHERE DTA_02 LIKE 'O%'  -- 필요에 따라(06-11)
+		  </if>
+		  <if test="gubun == 3">
+		  WHERE DTA_03 LIKE 'O%'  -- 필요에 따라(12-17)
+		  </if>
+		  <if test="gubun == 4">
+		  WHERE DTA_04 LIKE 'O%'  -- 필요에 따라(18-23)
+		  </if>
+		 ORDER BY INTRST_AREA_NM, ANALS_AREA_ID
+	</select>
+	
+	<!-- 저감장치가동현황 -->
+	<select id="getReductionFacil" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT BPLC_ID,
+		       MAX(BSML_TRGNPT_NM) AS BSML_TRGNPT_NM,
+		       MAX(REDUC_EQP_NM) AS REDUC_EQP_NM,
+		       MAX(B.CODE_NM) AS REDUC_EQP_TY_NM,
+		       NVL(DATE_FORMAT(DATE_ADD(MAX(START_DT),INTERVAL SUM(TIMESTAMPDIFF(SECOND,ON_DT,OFF_DT)) SECOND),'%H시간 %i분'),'미가동') AS ON_TIME,
+		       REDUC_EQP_NO,
+		       DATE_FORMAT(MAX(START_DT),'%Y-%m-%d') AS PARAMETER_1,
+		       COUNT(1)OVER() AS DTA_CO
+		  FROM (
+		        SELECT BPLC_ID, REDUC_EQP_NO,
+		               CTRL_CN_CODE,
+		               CASE WHEN NO_DTA_AT='Y' AND CTRL_CN_CODE='COM08001' THEN START_DT
+		                    WHEN NO_DTA_AT IS NULL AND DTA_FIRST_RN=1 AND CTRL_CN_CODE='COM08002' THEN START_DT
+		                    WHEN NO_DTA_AT IS NULL AND DTA_FIRST_RN &lt;&gt; 1 AND CTRL_CN_CODE='COM08002' THEN LAG(EQP_CTRL_DT)OVER(PARTITION BY BPLC_ID, REDUC_EQP_NO ORDER BY EQP_CTRL_DT)
+		                    WHEN NO_DTA_AT IS NULL AND DTA_LAST_RN=1 AND CTRL_CN_CODE='COM08001' THEN EQP_CTRL_DT
+		                END AS ON_DT,
+		               CASE WHEN NO_DTA_AT='Y' AND CTRL_CN_CODE='COM08001' THEN END_DT
+		                    WHEN NO_DTA_AT IS NULL AND CTRL_CN_CODE='COM08002' THEN EQP_CTRL_DT
+		                    WHEN NO_DTA_AT IS NULL AND DTA_LAST_RN=1 AND CTRL_CN_CODE='COM08001' THEN END_DT
+		                END AS OFF_DT,
+		               BSML_TRGNPT_NM, REDUC_EQP_NM, REDUC_EQP_TY_CODE, DTA_DE,
+		               START_DT
+		          FROM (
+		                SELECT BPLC_ID, REDUC_EQP_NO,
+		                       NVL(CTRL_CN_CODE,(SELECT CTRL_CN_CODE
+		                                           FROM BSML_REDUC_EQP_CTRL_HIST  B
+		                                          WHERE B.BPLC_ID=A.BPLC_ID
+		                                            AND B.REDUC_EQP_NO=A.REDUC_EQP_NO
+		                                            AND B.EQP_CTRL_DT=A.EQP_CTRL_DT
+		                                        )
+		                          ) AS CTRL_CN_CODE,
+		                       IF(CTRL_CN_CODE IS NULL,'Y',NULL) AS NO_DTA_AT,
+		                       EQP_CTRL_DT,
+		                       ROW_NUMBER()OVER(PARTITION BY BPLC_ID, REDUC_EQP_NO ORDER BY EQP_CTRL_DT) AS DTA_FIRST_RN,
+		                       ROW_NUMBER()OVER(PARTITION BY BPLC_ID, REDUC_EQP_NO ORDER BY EQP_CTRL_DT DESC) AS DTA_LAST_RN,
+		                       BSML_TRGNPT_NM, REDUC_EQP_NM, REDUC_EQP_TY_CODE, DTA_DE,
+		                       START_DT, END_DT, LAG_CODE
+		                  FROM (
+		                        SELECT A.*,
+		                               B.CTRL_CN_CODE,
+		                               NVL(B.EQP_CTRL_DT,(SELECT MAX(EQP_CTRL_DT)
+		                                                    FROM BSML_REDUC_EQP_CTRL_HIST C
+		                                                   WHERE C.BPLC_ID=A.BPLC_ID
+		                                                     AND C.REDUC_EQP_NO=A.REDUC_EQP_NO
+		                                                     AND C.EQP_CTRL_DT &lt;= A.START_DT
+		                                                 )
+		                                  ) AS EQP_CTRL_DT,               
+		                               LAG(B.CTRL_CN_CODE)OVER(PARTITION BY B.BPLC_ID, B.REDUC_EQP_NO ORDER BY B.EQP_CTRL_DT) AS LAG_CODE
+		                          FROM (
+		                                SELECT B.BPLC_ID, B.BSML_TRGNPT_NM,
+		                                       C.REDUC_EQP_NO, C.REDUC_EQP_NM, C.REDUC_EQP_TY_CODE,
+		                                       PARAMETER_1 AS DTA_DE,
+		                                       DATE_FORMAT(A.PARAMETER_1,'%Y-%m-%d %T') AS START_DT,
+		                                       DATE_FORMAT(CONCAT(A.PARAMETER_1,'235959'),'%Y-%m-%d %T') AS END_DT
+		                                  FROM (SELECT #{nDate} AS PARAMETER_1, -- 조회일
+		                                               '' AS PARAMETER_2, -- 돈사ID
+		                                               '' AS PARAMETER_3, -- 저감설비NO
+		                                               '' AS PARAMETER_4  -- 설비유형
+		                                       ) A,
+		                                       BPLC_INFO B,
+		                                       BSML_REDUC_EQP_INFO C
+		                                 WHERE B.BSML_TRGNPT_SE_CODE='BSL01002'
+		                                   AND B.BPLC_ID=IF(A.PARAMETER_2='',B.BPLC_ID,A.PARAMETER_2)
+		                                   AND C.BPLC_ID=B.BPLC_ID
+		                                   AND C.REDUC_EQP_NO=IF(A.PARAMETER_3='',C.REDUC_EQP_NO,A.PARAMETER_3)
+		                                   AND C.REDUC_EQP_TY_CODE=IF(A.PARAMETER_4='',C.REDUC_EQP_TY_CODE,A.PARAMETER_4)
+		                               ) A
+		                               LEFT JOIN
+		                               BSML_REDUC_EQP_CTRL_HIST B
+		                               ON (B.BPLC_ID=A.BPLC_ID
+		                               AND B.REDUC_EQP_NO=A.REDUC_EQP_NO
+		                               AND B.EQP_CTRL_DT BETWEEN A.START_DT AND A.END_DT
+		                               AND B.CTRL_RESULT_CODE='COM05000'
+		                                  )
+		                          ) A
+		                 WHERE LAG_CODE IS NULL
+		                    OR CTRL_CN_CODE &lt;&gt; LAG_CODE
+		               ) A
+		       ) A,
+		       COM_CODE B
+		 WHERE B.CODE=A.REDUC_EQP_TY_CODE
+		 GROUP BY BPLC_ID, REDUC_EQP_NO
+		 ORDER BY BPLC_ID, REDUC_EQP_NO
+	</select>
+	
 </mapper>
