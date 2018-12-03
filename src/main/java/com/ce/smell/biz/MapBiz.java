@@ -254,4 +254,18 @@ public class MapBiz {
 		// TODO Auto-generated method stub
 		return mapMapper.getReductionFacil(param);
 	}
+	
+	//관심지역 목록
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getAnalsAreaList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getAnalsAreaList(param);
+	}
+	
+	//악취 발생 예보 현황 목록
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getOccurrenceForecastList(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getOccurrenceForecastList(param);
+	}
 }

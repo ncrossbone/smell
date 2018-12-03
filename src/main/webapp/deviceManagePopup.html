@@ -34,9 +34,9 @@ $(document).ready(function(){
 		params: {
 			legaldongCode:'4311000000',
 			spotCode:'0401',
-			startDt:'2018-11-22 10:50:00',
-			endDt:'2018-11-22 23:50:00',
-			la:'35.002',
+			startDt:'2018-12-01 02:00:00',
+			endDt:'2018-12-01 19:00:00',
+			la:'35',
 			lo:'127',
 		} 
 	}).done(function(data){
@@ -50,7 +50,11 @@ $(document).ready(function(){
 		lo = data[0].LO;
 		for (var i = 0; i < data.length; i++) {
 			category.push(data[i].MESURE_DT);
-			data1.push(data[i].AVG_VALUE);
+			if(data[i].AVG_VALUE!=null){
+				data1.push(data[i].AVG_VALUE);
+			}else{
+				data1.push(null);
+			}
 		}
 	
 		Highcharts.chart('container', {
