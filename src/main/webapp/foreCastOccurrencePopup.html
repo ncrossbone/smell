@@ -14,9 +14,13 @@
 <script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
 
 <script type="text/javascript">
+
+var _MessagePipe = {};
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 	//초기 조회
-	foreCastList(3);
+	_MessagePipe.send = function(msg){
+		foreCastList(msg.val);	
+	};
 })
 
 function foreCastList(val){
@@ -39,11 +43,14 @@ function foreCastList(val){
 			    html += "<td>"+data[i].DTA_04+"</td>";
 			    html += "</tr>";
 			}
+			
 			if(data.length!=0){
 				$("#tblist").html(html);
 			}else{
 				$("#tblist").html(blank);
 			}
+			
+			parent.$('#foreCastOccurrencePopupDiv').show();
 	});
 }
 </script>

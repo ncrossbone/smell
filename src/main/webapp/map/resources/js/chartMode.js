@@ -8,13 +8,16 @@ var _ChartMode = function () {
 			// GIS 모드
     		if(data.mode == 4){
     			$('#chartDiv').show();
-    			getChartData({code:'43114000000202'});
+    			getChartData({code:'43114000000202',mesureDt:1});
     			getChartFeature();
+    			$('#foreCastOccurrenceDiv').show();
     		}else{
     			$('#chartDiv').hide();
     			$('#chartSpotId').text('');
 				$('#chartSpotNm').text('');
 				$('#chartArea').html('');
+				$('#foreCastOccurrenceDiv').hide();
+				$('#foreCastOccurrencePopupDiv').hide();
 				
 				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, chartFeatureLayerName);
 				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, odorReductionForSvg);

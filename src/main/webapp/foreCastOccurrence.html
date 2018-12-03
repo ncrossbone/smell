@@ -62,7 +62,7 @@ function initInfo() {
 }
 
 function foreCastList(val){
-	alert(val);
+	$(parent.$('#foreCastOccurrencePopupDiv').find('iframe')).get(0).contentWindow._MessagePipe.send({val:val})
 }
 </script>
 </head>
