@@ -83,6 +83,10 @@ var _ComplaintStatusInsert = function () {
 		});
 		
 		$('.workStep').on('click', function(){
+			if(_SmellMapBiz.taskMode != 1){
+				return;
+			}
+			
 			var mode = $(this).attr('mode');
 			if(complaintStatusMode < (parseInt(mode)-1)){
 				return;
@@ -106,6 +110,10 @@ var _ComplaintStatusInsert = function () {
 		});
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
+			if(_SmellMapBiz.taskMode != 1){
+				return;
+			}
+			 
 			if(complaintStatusMode == 5){
 				changeMode(6);
 			}
@@ -182,15 +190,24 @@ var _ComplaintStatusInsert = function () {
 					return;
 				}
 				$('.bsmlPopupClose').off('click').on('click', function(){
+					if(_SmellMapBiz.taskMode != 1){
+						return;
+					}
 					changeMode(5);
 					$('#smsPopupCloseBtn').trigger('click');
 				}); 
 				
 
 				$('.sms_btn').off('click').on('click', function(){
+					if(_SmellMapBiz.taskMode != 1){
+						return;
+					} 
 					smsPopup.show();
 				});
 				$('#smsPopupCloseBtn').off('click').on('click', function(){
+					if(_SmellMapBiz.taskMode != 1){
+						return;
+					}
 					smsPopup.hide();
 					$('#smsContent').val('[악취발생 예보 알림]');
 				});
@@ -207,6 +224,13 @@ var _ComplaintStatusInsert = function () {
 					$(this).parent().parent().fadeOut();
 				});
 				
+				$('#step3Li').show();
+				$('#step1Name').html('접수민원 선택');
+				
+				$('#step4Title').html('STEP.4');
+				$('#step5Title').html('STEP.5');
+				$('#step6Title').html('STEP.6');
+				
 				process.find('li').removeClass('on');
 				
 				for(var i = 0; i<process.find('li').length; i++){
@@ -214,6 +238,10 @@ var _ComplaintStatusInsert = function () {
 					li.css('background-image', 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
 				}
 				changeMode(1);
+				
+				setTimeout(function(){
+					process.show();
+				}, 100);
 			}else{
 				// 초기화
 				process.hide();

@@ -66,6 +66,7 @@ var _SmellMapBiz = function () {
 	var trackingInterval = null;
 	var trackingPlayType = 0; // 0 = 정지  1 = 재생  2 = 일시정지
 	var trackingIntervalTime = 1000;
+	var isTask = false;
 	
 	var originLayer  = null; 
 	
@@ -274,6 +275,8 @@ var _SmellMapBiz = function () {
 	        	var analsId = result[0].analsAreaId;
 	        	var gridAreaId = result[0].gridAreaId;
 //	        	analsId = '2930'
+	        	isTask = true;
+	        	 
 	        	startTracking(analsId);
 	        });
 		});
@@ -810,6 +813,8 @@ var _SmellMapBiz = function () {
 		// 악취 이동경로
 		$('#odorMovementPlay').on('click', function(){
 			
+			isTask = false;
+			
 			if(trackingPlayType == 0){
 				startTracking();
 			}else if(trackingPlayType == 1){
@@ -906,6 +911,10 @@ var _SmellMapBiz = function () {
 					}
 				}
 			});
+			
+			if(isTask){
+				$('#bufferOnOffBtn').trigger('click');
+			}
 			
 			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});
 			
@@ -1046,13 +1055,17 @@ var _SmellMapBiz = function () {
 			_CoreMap.centerMap(centerCoord[0], centerCoord[1]);
 			
 			trackingIdx = 0;
-			trackingIntervalTime = 1000;
+			if(isTask){
+				trackingIntervalTime = 10;
+			}else{
+				trackingIntervalTime = 1000;
+			}
 			tracking();
 			trackingPlayType = 1;
 			setControlButton('odorMovementPlay', trackingPlayType);
 			
 			// 민원 업무일때
-			if(analsId){
+			if(isTask){
 				$('#odorMovementBufferBtn').trigger('click');
 			}
         });
