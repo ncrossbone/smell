@@ -346,6 +346,26 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .pt1 { color:#9ee3ff; display:block; }
 .r1> table> tbody> tr> th> img { vertical-align:top; margin-left:5px; }
 
-
+/*181130*/
+#chart { position: absolute; width:453px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; z-index: 100;}
+.topwrap { width:100%; position:relative; }
+.topbtn{ position:absolute; right:0; top:50%; transform:translateY(-50%); }
+.station_id { width:80%; border:1px solid #0c0d0d; font-weight:bold; padding:6px 20px;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #cdcdcd));
+	background: -moz-linear-gradient(top, #ffffff 0%, #cdcdcd 100%);
+	background: -webkit-linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	background: -o-linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	background: -ms-linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	background: linear-gradient(top,  #ffffff 0%, #cdcdcd 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#cdcdcd', gradientType=0);
+	
+	border-top-left-radius: 40px; -webkit-border-top-left-radius: 40px; -moz-border-top-left-radius: 40px; 
+	border-top-right-radius: 40px; -webkit-border-top-right-radius: 40px; -moz-border-top-right-radius: 40px; 
+	border-bottom-left-radius: 40px; -webkit-border-bottom-left-radius: 40px; -moz-border-bottom-left-radius: 40px; 
+	border-bottom-right-radius: 38px; -webkit-border-bottom-right-radius: 38px; -moz-border-bottom-right-radius: 38px; 
+	}
+	
+.station_id> span { color:#ed145b; }
+.c_tit { font-family: 'Dotum'; font-weight:bold; color:#fff; background:url(../images/g_tit_bg.png) no-repeat left center; padding:3px 0 3px 30px; margin-top:5px; letter-spacing:-1px;}
 
 

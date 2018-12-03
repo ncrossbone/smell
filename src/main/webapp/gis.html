@@ -1051,16 +1051,26 @@
 	    
 	    <div id="cvplPopupOverlay"></div>
 	    
+	    
 		<div id="chartDiv" style="display: none;">
-			<div id="chartTitle">
-				<div style="margin-bottom: -3px;">
-					<span>Station ID : </span>
-					<span id="chartSpotId" style="color: #ed7d31;"></span>
-				</div>
-				<div>
-					<span id="chartSpotNm" style="font-size: 20px;"></span>
-				</div>
-			</div>
+<!-- 			<div id="chartTitle"> -->
+<!-- 				<div style="margin-bottom: -3px;"> -->
+<!-- 					<span>Station ID : </span> -->
+<!-- 					<span id="chartSpotId" style="color: #ed7d31;"></span> -->
+<!-- 				</div> -->
+<!-- 				<div> -->
+<!-- 					<span id="chartSpotNm" style="font-size: 20px;"></span> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+			<div id="chart">
+		    	<div class="chart_info" style="margin-bottom: -3px;">
+		        	<div class="topwrap">
+		                <div class="station_id">Station ID : <span id="chartSpotId" ></span></div>
+		            	<a href="#none" class="topbtn"><img src="images/reset.png" /></a>
+		            </div>
+		            <p class="c_tit" id="chartSpotNm"></p>
+		        </div>
+		    </div>
 			<div id="chartArea"></div>
 		</div>
         <div id="popup" style="right: 150px; top: 250px; display: none;">
@@ -1125,7 +1135,17 @@
         </div>  
         <div id="legendDiv" style="display:none; right: 20px; bottom: 200px; position: absolute; z-index: 999;">
         	<img src="../images/legend.png" />
-        </div> 
+        </div>
+        <div id="smsPopup" class="sms" style="z-index: 9000; display:none; left: 610px;   top: 140px;">
+        	<a href="javascript:void(0);" class="btn03" id="smsPopupCloseBtn" style="position:absolute; right:20px; top:25px;"></a>
+        	<div class="smsbox">
+            	<span>sms</span>
+                <div class="smscont">
+                	<textarea id="smsContent">[악취발생 예보 알림]</textarea>
+                </div>    
+        	</div>
+            <a href="javascript:void(0);" class="btn08">전송</a>
+        </div>
      </div>
      
     </div>

@@ -182,38 +182,40 @@ function gisView(la,lo){
         <a href="" class="btn_1 MgL10" onclick="cvplDataInsert();return false;">민원 등록</a>
     </span>
 </div>
-<table class="table02 dataPix">
-    <colgroup>
-        <col width="45px" />
-        <col width="110px" />
-        <col width="60px" />
-        <col width="90px" />
-        <col width="60px"/>
-        <col width="60px"/>
-        <col width="150px" />
-        <col width="50px"/>
-        <col />
-        <col width="70px" />
-    </colgroup>
-    <thead>
-        <tr>
-            <th>선택</th>
-            <th>민원일시</th>
-            <th>민원인</th>
-            <th>연락처</th>
-            <th>위도</th>
-            <th>경도</th>
-            <th>위치</th>
-            <th>민원<br />분류</th>
-            <th>민원내용</th>
-            <th>위치좌표</th>
-        </tr>
-    </thead>
-    <tbody id="tblist">
-        <tr>
-        </tr>
-    </tbody>
-</table>
+<div style="width:100%;  height:315px; overflow: auto;">
+	<table class="table02 dataPix">
+	    <colgroup>
+	        <col width="45px" />
+	        <col width="110px" />
+	        <col width="60px" />
+	        <col width="90px" />
+	        <col width="60px"/>
+	        <col width="60px"/>
+	        <col width="150px" />
+	        <col width="50px"/>
+	        <col />
+	        <col width="70px" />
+	    </colgroup>
+	    <thead>
+	        <tr>
+	            <th>선택</th>
+	            <th>민원일시</th>
+	            <th>민원인</th>
+	            <th>연락처</th>
+	            <th>위도</th>
+	            <th>경도</th>
+	            <th>위치</th>
+	            <th>민원<br />분류</th>
+	            <th>민원내용</th>
+	            <th>위치좌표</th>
+	        </tr>
+	    </thead>
+	    <tbody id="tblist">
+	        <tr>
+	        </tr>
+	    </tbody>
+	</table>
+</div>
 </form>
 </body>
 </html>
