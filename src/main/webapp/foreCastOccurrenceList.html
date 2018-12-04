@@ -63,8 +63,18 @@ function goSearch() {
 		var selectTag = "";
 		var blank = "<tr><td colspan='7' style='text-align:center;'>조회된 데이터가 없습니다.</td></tr>";
 		for (var i = 0; i < data.length; i++) {
+			var a ="";
+			var b ="";
+			var c ="";
+			var d ="";
+			if(data[i].DTA_01.substring(0,1) == 'O') a="00,01,02,03,04,05,";
+			if(data[i].DTA_02.substring(0,1) == 'O') b="06,07,08,09,10,11,";
+			if(data[i].DTA_03.substring(0,1) == 'O') c="12,13,14,15,16,17,";
+			if(data[i].DTA_04.substring(0,1) == 'O') d="18,19,20,21,22,23,";
+			var sum = a+b+c+d
+			sum = sum.substring(0,sum.length-1);
 			selectTag += "<tr>";
-			selectTag += "<td style='text-align:center;'><input type='radio' name='areaSel' value='"+data[i].GRID_AREA_ID+"' /></td>";
+			selectTag += "<td style='text-align:center;'><input type='radio' name='areaSel' value='"+data[i].GRID_AREA_ID+"|"+sum+"' /></td>";
 			selectTag += "<td>"+data[i].ANALS_AREA_ID+"</td>";
 			selectTag += "<td>"+data[i].INTRST_AREA_NM+"</td>";
 			selectTag += "<td>"+data[i].DTA_01+"</td>";
@@ -85,10 +95,14 @@ function goSearch() {
 }
 
 function areaSel(){
-	var val = $(":input:radio[name=areaSel]:checked").val();
+	var arrVal = $(":input:radio[name=areaSel]:checked").val().split("|");
+	var val1 = arrVal[0];	//GRID_AREA_ID
+	var val2 = arrVal[1];	//시간 배열
+	
+
 	if($("input:radio[name='areaSel']").is(":checked") == true){
 		if(parent){
-    		parent._MessagePipe.send({type:'odorSelected', gridId:val});	
+    		parent._MessagePipe.send({type:'odorSelected', gridId:val1});	
     	}
 	}else{
 		if(parent){
