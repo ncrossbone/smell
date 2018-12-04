@@ -52,13 +52,13 @@ var _ChartMode = function () {
 		});
 		
 		$('#chartPlay').off('click').on('click',function(){
-			var me = $(this);
+			var me = $(this).find('img');
 			
-			if(me.attr('class').indexOf('on') > -1){
+			if(me.attr('src').indexOf('pause') > -1){
 				stopPlay();
 			}else{
 				autoPlay();
-				me.addClass('on');
+				$('#chartPlay').find('img').attr('src','images/pause_b.png');
 			}
     	});
 	};
@@ -297,8 +297,7 @@ var _ChartMode = function () {
 	};
 	
 	var stopPlay = function(){
-		$('#chartPlay').removeClass('on');
-		
+		$('#chartPlay').find('img').attr('src','images/reset.png');
 		if(chartInterval){
 			clearInterval(chartInterval);
 			chartInterval = null;	
