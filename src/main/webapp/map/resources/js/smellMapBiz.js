@@ -912,10 +912,6 @@ var _SmellMapBiz = function () {
 				}
 			});
 			
-			if(isTask){
-				$('#bufferOnOffBtn').trigger('click');
-			}
-			
 			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});
 			
 //			if(_SmellMapBiz.taskMode == 0){
@@ -923,9 +919,6 @@ var _SmellMapBiz = function () {
 //			}else{
 //				_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:2});
 //			}
-			
-			$('#bufferOnOffBtn').attr('value', 'on');
-			$('#bufferOnOffBtn').trigger('click');
 			
 			if(trackingFeatures == null || trackingFeatures.length <= 0){
 				return;
@@ -977,6 +970,13 @@ var _SmellMapBiz = function () {
 					style: bufferVectorStyle
 				});
 				_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
+				
+				$('#bufferOnOffBtn').attr('value', 'on');
+				$('#bufferOnOffBtn').trigger('click');
+				
+				if(isTask){
+					$('#bufferOnOffBtn').trigger('click');
+				}
 			});
 		});
 		
