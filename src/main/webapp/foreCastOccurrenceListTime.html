@@ -21,20 +21,33 @@
 <script src="/cms/js/cal/ui/jquery.ui.core.js"></script>
 
 <script type="text/javascript">
+var gridId = '';
+var optionArr;
+var date = '';
+
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
-	var sum = "00,01,02,03,04,05,12,13,14,15,16,17";
+	
+})
+
+function setValue(data){
+	gridId = data.id;
+	date = data.date;
+	
+	var sum = data.optionArr;
     var sumArr = sum.split(",");
     var selectHtml = "<option value=''>선택</option>";
     for (var i = 0; i < sumArr.length; i++) {
 		selectHtml += "<option value='"+sumArr[i]+"'>"+sumArr[i]+" 시</option>";
     }
     $("#time").html(selectHtml);
-})
-
+}	
 
 function goSearch(){
 	var time = $("#time").val();
 	
+	if(parent){
+		parent._MessagePipe.send({type:'odorSelected', gridId:gridId, time:time, date:date});	
+	}
 }
 </script>
 </head>

@@ -95,22 +95,24 @@ function goSearch() {
 }
 
 function areaSel(){
+	
+	if(!$(":input:radio[name=areaSel]:checked").val()){
+		alert('지역을 선택 하세요.');  
+		return
+	}
 	var arrVal = $(":input:radio[name=areaSel]:checked").val().split("|");
 	var val1 = arrVal[0];	//GRID_AREA_ID
 	var val2 = arrVal[1];	//시간 배열
+	var odorForeCastPopupTime = parent.$('#odorForeCastPopupTime');
 	
-
-	if($("input:radio[name='areaSel']").is(":checked") == true){
-		if(parent){
-    		parent._MessagePipe.send({type:'odorSelected', gridId:val1});	
-    	}
+	if(val2!=''){
+		odorForeCastPopupTime.show();
+		odorForeCastPopupTime.find('iframe').get(0).contentWindow.setValue({id:val1,optionArr:val2, date:$('#nDate').val()});	
 	}else{
-		if(parent){
-			parent._MapEventBus.trigger(_MapEvents.alertShow, {text:'관심지역을 선택해 주세요.'});
-    	}else{
-    		alert("관심지역을 선택해 주세요.");
-    	}
+		odorForeCastPopupTime.hide();
+		alert('데이터가 없습니다.');  
 	}
+	
 }
 </script>
 </head>
@@ -125,7 +127,7 @@ function areaSel(){
             <select title="센서명" name="areaCode" id="areaCode">
 				<option value="">전체</option>
 			</select>
-			<span class="btnCnt"><a href="" class="btn_1" onclick="goSearch();return false;">조회</a></span>
+			<span class="btnCnt"><a href="javascript:void(0)" class="btn_1" onclick="goSearch();">조회</a></span>
         </div>
     </div>
     
@@ -135,32 +137,34 @@ function areaSel(){
         <a href="" class="btn_1" onclick="areaSel();return false;">관심지역선택</a>
     </span>
 </div>
-<table class="table02 dataPix">
-    <colgroup>
-        <col width="45px" />
-        <col width="70px" />
-        <col />
-        <col width="100px" />
-        <col width="100px" />
-        <col width="100px"/>
-        <col width="100px" />
-    </colgroup>
-    <thead>
-        <tr>
-            <th>선택</th>
-            <th>관심지역</th>
-            <th>관심지역명</th>
-            <th>00H ~ 05H</th>
-            <th>06H ~ 11H</th>
-            <th>12H ~ 17H</th>
-            <th>18H ~ 23H</th>
-        </tr>
-    </thead>
-    <tbody id="tblist">
-        <tr>
-        </tr>
-    </tbody>
-</table>
+<div style="width:100%;  height:315px; overflow: auto;">
+	<table class="table02 dataPix">
+	    <colgroup>
+	        <col width="45px" />
+	        <col width="70px" />
+	        <col />
+	        <col width="100px" />
+	        <col width="100px" />
+	        <col width="100px"/>
+	        <col width="100px" />
+	    </colgroup>
+	    <thead>
+	        <tr>
+	            <th>선택</th>
+	            <th>관심지역</th>
+	            <th>관심지역명</th>
+	            <th>00H ~ 05H</th>
+	            <th>06H ~ 11H</th>
+	            <th>12H ~ 17H</th>
+	            <th>18H ~ 23H</th>
+	        </tr>
+	    </thead>
+	    <tbody id="tblist">
+	        <tr>
+	        </tr>
+	    </tbody>
+	</table>
+</div>
 </form>
 </body>
 </html>

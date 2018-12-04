@@ -9,6 +9,7 @@ var _DeviceManage = function () {
 	var currentDate = {};
 	
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~ `!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+	var smsText = '[악취발생 예보 알림]\n#date#\n악취확산이 예상되오니\n설비가동을 해주시면\n감사하겠습니다.';
 	
 	var deviceManagePopup, deviceManageChartPopup, bsmlPopup, bsmlPopup2, legendDiv, smsPopup, process;
 
@@ -121,7 +122,8 @@ var _DeviceManage = function () {
 							bplcInfo.ctrlCnCode = data.CTRL_CN_CODE;
 							
 							$("#bsmlName").html(data.BSML_TRGNPT_NM);
-							$("#reducEqpNm").html(data.REDUC_EQP_NM);
+							var reduc = data.REDUC_EQP_NM?data.REDUC_EQP_NM:'분무식';
+							$("#reducEqpNm").html(reduc);
 							if(data.BPLC_ID){
 								$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");	
 							}else{
@@ -134,7 +136,12 @@ var _DeviceManage = function () {
 								$("#operate").html("<img src='/images/operate_on.png' alt='가동' />가동");
 							} 
 							 
-							if(bplcInfo.bplcId){
+							$('#bsmlCtrlBtn').off('click').on('click', function(){
+								if(confirm('원격제어를 하시겠습니까?')){
+									_MapEventBus.trigger(_MapEvents.alertShow, {text:'저감시설원격제어가 완료되었습니다.'});
+								} 
+							});	
+							/*if(bplcInfo.bplcId){
 								$('#bsmlCtrlBtn').off('click').on('click', function(){
 									if(confirm('원격제어를 하시겠습니까?')){
 										$.ajax({
@@ -145,14 +152,12 @@ var _DeviceManage = function () {
 										});
 									}
 								});	
-							}
+							}*/
 						});
-				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003'){
+				} else {
 					bsmlPopup.hide();
 					bsmlPopup2.show(); 
 					$('#bsmlName2').html(featureInfo.CMPNY_NM);
-				}else{
-					return;
 				}
 				
 				$('.bsmlPopupClose').on('click', function(){
@@ -169,13 +174,13 @@ var _DeviceManage = function () {
 						return;
 					}
 					smsPopup.show();
+					$('#smsContent').val(smsText.replace('#date#',currentDate.date.substr(0,4) + '년 ' + currentDate.date.substr(4,2) + '월 ' + currentDate.date.substr(6,2) + '일 ' + currentDate.time + '시'));
 				});
 				$('#smsPopupCloseBtn').on('click', function(){
 					if(_SmellMapBiz.taskMode != 2){
 						return;
 					}
 					smsPopup.hide();
-					$('#smsContent').val('[악취발생 예보 알림]');
 				});
 			}
 		});
@@ -213,6 +218,7 @@ var _DeviceManage = function () {
 				process.hide();
 				setProcessBtn(1);
 				deviceManagePopup.hide();
+				smsPopup.hide();
 			}
 		});
 		
@@ -246,6 +252,11 @@ var _DeviceManage = function () {
 			
 			$(this).parent().parent().fadeOut();
 		});
+		
+		$('#deviceClose').off('click').on('click',function(){
+			$(this).parent().parent().hide();
+			changeMode(deviceStepMode - 1);
+    	});
 	}; 
 	
 	
@@ -311,19 +322,24 @@ var _DeviceManage = function () {
 		}
 	}
 	var setProcessBtn = function(mode){
-		$('.workStep[mode='+mode+']').addClass('on');
-		$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
-		
-		if(deviceStepMode < mode){
-			for(var i = 1; i<=mode; i++){
-				$('.workStep[mode='+i+']').addClass('on');
-				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+		if(mode != 0){
+			$('.workStep[mode='+mode+']').addClass('on');
+			$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
+			
+			if(deviceStepMode < mode){
+				for(var i = 1; i<=mode; i++){
+					$('.workStep[mode='+i+']').addClass('on');
+					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+				}
+			}else{
+				for(var i = 6; i>mode; i--){
+					$('.workStep[mode='+i+']').removeClass('on');
+					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
+				}  
 			}
 		}else{
-			for(var i = 6; i>mode; i--){
-				$('.workStep[mode='+i+']').removeClass('on');
-				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
-			}  
+			$('.workStep[mode="1"]').removeClass('on');
+			$('.workStep[mode="1"]').css('background-image', 'url("../images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
 		}
 	}
 	

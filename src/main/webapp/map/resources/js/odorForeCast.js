@@ -10,7 +10,9 @@ var _OdorForeCast = function () {
 	
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~ `!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
-	var odorForeCastPopup, bsmlPopup, bsmlPopup2, legendDiv, smsPopup, process;
+	var smsText = '[악취발생 예보 알림]\n#date#\n악취확산이 예상되오니\n설비가동을 해주시면\n감사하겠습니다.';
+	
+	var odorForeCastPopup, bsmlPopup, bsmlPopup2, legendDiv, smsPopup, process, odorForeCastPopupTime;
 
 	var locationLayer;
 	
@@ -30,6 +32,7 @@ var _OdorForeCast = function () {
 		bsmlPopup = $('#bsmlPopup'); 
 		bsmlPopup2 = $('#bsmlPopup2');
 		legendDiv = $('#legendDiv');
+		odorForeCastPopupTime = $('#odorForeCastPopupTime');
 		
 		clock = $('#clock');
 		
@@ -54,6 +57,10 @@ var _OdorForeCast = function () {
 		setEvent();
 	};
 	var setEvent = function(){
+		$('#odorClose').off('click').on('click',function(){
+			$(this).parent().parent().hide();
+			changeMode(odorForeCastStepMode - 1);
+    	});
 		
 		Object.defineProperty(currentDate, 'date', {
 			get: function(){
@@ -119,7 +126,8 @@ var _OdorForeCast = function () {
 							bplcInfo.ctrlCnCode = data.CTRL_CN_CODE;
 							
 							$("#bsmlName").html(data.BSML_TRGNPT_NM);
-							$("#reducEqpNm").html(data.REDUC_EQP_NM);
+							var reduc = data.REDUC_EQP_NM?data.REDUC_EQP_NM:'분무식';
+							$("#reducEqpNm").html(reduc);
 							if(data.BPLC_ID){
 								$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");	
 							}else{
@@ -131,8 +139,13 @@ var _OdorForeCast = function () {
 							}else{
 								$("#operate").html("<img src='/images/operate_on.png' alt='가동' />가동");
 							} 
-							 
-							if(bplcInfo.bplcId){
+							
+							$('#bsmlCtrlBtn').off('click').on('click', function(){
+								if(confirm('원격제어를 하시겠습니까?')){
+									_MapEventBus.trigger(_MapEvents.alertShow, {text:'저감시설원격제어가 완료되었습니다.'});
+								} 
+							});	
+							/*if(bplcInfo.bplcId){
 								$('#bsmlCtrlBtn').off('click').on('click', function(){
 									if(confirm('원격제어를 하시겠습니까?')){
 										$.ajax({
@@ -143,14 +156,12 @@ var _OdorForeCast = function () {
 										});
 									}
 								});	
-							}
+							}*/
 						});
-				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003'){
+				} else{
 					bsmlPopup.hide();
 					bsmlPopup2.show(); 
 					$('#bsmlName2').html(featureInfo.CMPNY_NM);
-				}else{
-					return;
 				}
 				
 				$('.bsmlPopupClose').on('click', function(){
@@ -167,13 +178,13 @@ var _OdorForeCast = function () {
 						return;
 					}
 					smsPopup.show();
+					$('#smsContent').val(smsText.replace('#date#',currentDate.date.substr(0,4) + '년 ' + currentDate.date.substr(4,2) + '월 ' + currentDate.date.substr(6,2) + '일 ' + currentDate.time + '시'));
 				});
 				$('#smsPopupCloseBtn').on('click', function(){
 					if(_SmellMapBiz.taskMode != 3){
 						return;
 					}
 					smsPopup.hide(); 
-					$('#smsContent').val('[악취발생 예보 알림]');
 				});
 			}
 		});
@@ -209,6 +220,8 @@ var _OdorForeCast = function () {
 				setProcessBtn(1);
 				resetPreMode(1);
 				odorForeCastPopup.hide();
+				odorForeCastPopupTime.hide();
+				smsPopup.hide();
 			}
 		});
 		
@@ -252,6 +265,7 @@ var _OdorForeCast = function () {
 			odorForeCastPopup.show();
 		}else if(mode == 2){
 			odorForeCastPopup.hide();
+			odorForeCastPopupTime.hide();
 			
 			_MapEventBus.trigger(_MapEvents.map_move, selectedObj);	
 			writePopup();
@@ -288,19 +302,24 @@ var _OdorForeCast = function () {
 		}
 	}
 	var setProcessBtn = function(mode){
-		$('.workStep[mode='+mode+']').addClass('on');
-		$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
-		
-		if(odorForeCastStepMode < mode){
-			for(var i = 1; i<=mode; i++){
-				$('.workStep[mode='+i+']').addClass('on');
-				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+		if(mode != 0){
+			$('.workStep[mode='+mode+']').addClass('on');
+			$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
+			
+			if(odorForeCastStepMode < mode){
+				for(var i = 1; i<=mode; i++){
+					$('.workStep[mode='+i+']').addClass('on');
+					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+				}
+			}else{
+				for(var i = 6; i>mode; i--){
+					$('.workStep[mode='+i+']').removeClass('on');
+					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
+				}  
 			}
 		}else{
-			for(var i = 6; i>mode; i--){
-				$('.workStep[mode='+i+']').removeClass('on');
-				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
-			}  
+			$('.workStep[mode="1"]').removeClass('on');
+			$('.workStep[mode="1"]').css('background-image', 'url("../images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
 		}
 	}
 	
@@ -347,11 +366,8 @@ var _OdorForeCast = function () {
 	
 	var setProcMsg = function(msg){
 		if(msg.type == 'odorSelected'){
-//			var datetime =  msg.datetime.replace(regExp, '');
-			datetime = '2018120111';
-			
-			currentDate.date = datetime.substring(0,8);
-			currentDate.time = datetime.substring(8,10);
+			currentDate.date = msg.date.replace(regExp, '');
+			currentDate.time = msg.time;
 			
 			$.ajax({
 				url:'/getOdorForecastXY.do', 
