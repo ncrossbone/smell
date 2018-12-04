@@ -71,7 +71,7 @@ function goSearch() {
 			if(data[i].DTA_02.substring(0,1) == 'O') b="06,07,08,09,10,11,";
 			if(data[i].DTA_03.substring(0,1) == 'O') c="12,13,14,15,16,17,";
 			if(data[i].DTA_04.substring(0,1) == 'O') d="18,19,20,21,22,23,";
-			var sum = a+b+c+d
+			var sum = a+b+c+d;
 			sum = sum.substring(0,sum.length-1);
 			selectTag += "<tr>";
 			selectTag += "<td style='text-align:center;'><input type='radio' name='areaSel' value='"+data[i].GRID_AREA_ID+"|"+sum+"' /></td>";
