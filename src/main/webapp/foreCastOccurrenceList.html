@@ -95,13 +95,24 @@ function goSearch() {
 }
 
 function areaSel(){
+	
+	if(!$(":input:radio[name=areaSel]:checked").val()){
+		alert('지역을 선택 하세요.');  
+		return
+	}
 	var arrVal = $(":input:radio[name=areaSel]:checked").val().split("|");
 	var val1 = arrVal[0];	//GRID_AREA_ID
 	var val2 = arrVal[1];	//시간 배열
+	var odorForeCastPopupTime = parent.$('#odorForeCastPopupTime');
 	
-	var odorForeCastPopupTime = parent.$('#odorForeCastPopupTime')
-	odorForeCastPopupTime.show();
-	odorForeCastPopupTime.find('iframe').get(0).contentWindow.setValue(val1);
+	if(val2!=''){
+		odorForeCastPopupTime.show();
+		odorForeCastPopupTime.find('iframe').get(0).contentWindow.setValue({id:val1,optionArr:val2});	
+	}else{
+		odorForeCastPopupTime.hide();
+		alert('데이터가 없습니다.');  
+	}
+	
 }
 </script>
 </head>
