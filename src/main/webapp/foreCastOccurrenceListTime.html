@@ -21,6 +21,8 @@
 <script src="/cms/js/cal/ui/jquery.ui.core.js"></script>
 
 <script type="text/javascript">
+var gridId = '';
+
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 	var sum = "00,01,02,03,04,05,12,13,14,15,16,17";
     var sumArr = sum.split(",");
@@ -31,10 +33,16 @@ $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
     $("#time").html(selectHtml);
 })
 
+function setValue(id,date){
+	gridId = id;
+}
 
 function goSearch(){
 	var time = $("#time").val();
 	
+	if(parent){
+		parent._MessagePipe.send({type:'odorSelected', gridId:gridId, time:time});	
+	}
 }
 </script>
 </head>

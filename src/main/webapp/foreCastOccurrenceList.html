@@ -99,18 +99,9 @@ function areaSel(){
 	var val1 = arrVal[0];	//GRID_AREA_ID
 	var val2 = arrVal[1];	//시간 배열
 	
-
-	if($("input:radio[name='areaSel']").is(":checked") == true){
-		if(parent){
-    		parent._MessagePipe.send({type:'odorSelected', gridId:val1});	
-    	}
-	}else{
-		if(parent){
-			parent._MapEventBus.trigger(_MapEvents.alertShow, {text:'관심지역을 선택해 주세요.'});
-    	}else{
-    		alert("관심지역을 선택해 주세요.");
-    	}
-	}
+	var odorForeCastPopupTime = parent.$('#odorForeCastPopupTime')
+	odorForeCastPopupTime.show();
+	odorForeCastPopupTime.find('iframe').get(0).contentWindow.setValue(val1);
 }
 </script>
 </head>
@@ -125,7 +116,7 @@ function areaSel(){
             <select title="센서명" name="areaCode" id="areaCode">
 				<option value="">전체</option>
 			</select>
-			<span class="btnCnt"><a href="" class="btn_1" onclick="goSearch();return false;">조회</a></span>
+			<span class="btnCnt"><a href="javascript:void(0)" class="btn_1" onclick="goSearch();">조회</a></span>
         </div>
     </div>
     

@@ -10,7 +10,7 @@ var _OdorForeCast = function () {
 	
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~ `!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
-	var odorForeCastPopup, bsmlPopup, bsmlPopup2, legendDiv, smsPopup, process;
+	var odorForeCastPopup, bsmlPopup, bsmlPopup2, legendDiv, smsPopup, process, odorForeCastPopupTime;
 
 	var locationLayer;
 	
@@ -30,6 +30,7 @@ var _OdorForeCast = function () {
 		bsmlPopup = $('#bsmlPopup'); 
 		bsmlPopup2 = $('#bsmlPopup2');
 		legendDiv = $('#legendDiv');
+		odorForeCastPopupTime = $('#odorForeCastPopupTime');
 		
 		clock = $('#clock');
 		
@@ -209,6 +210,7 @@ var _OdorForeCast = function () {
 				setProcessBtn(1);
 				resetPreMode(1);
 				odorForeCastPopup.hide();
+				odorForeCastPopupTime.hide();
 			}
 		});
 		
@@ -252,6 +254,7 @@ var _OdorForeCast = function () {
 			odorForeCastPopup.show();
 		}else if(mode == 2){
 			odorForeCastPopup.hide();
+			odorForeCastPopupTime.hide();
 			
 			_MapEventBus.trigger(_MapEvents.map_move, selectedObj);	
 			writePopup();
