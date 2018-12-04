@@ -102,6 +102,7 @@
 		_ComplaintStatusInsert.init(); 
 		_DeviceManage.init();
 		_OdorForeCast.init();
+		_ChartMode.init();
 		
 		$(window).on('resize', function() {
 			var ww = $(window).width();
@@ -141,6 +142,8 @@
 				_DeviceManage.setProcMsg(msg);
 			}else if(_SmellMapBiz.taskMode == 3){
 				_OdorForeCast.setProcMsg(msg);
+			}else if(_SmellMapBiz.taskMode == 4){
+				_ChartMode.setProcMsg(msg);
 			}
 		};
 	});
@@ -1093,7 +1096,7 @@
 		    	<div class="chart_info" style="margin-bottom: -3px;">
 		        	<div class="topwrap">
 		                <div class="station_id">Station ID : <span id="chartSpotId" ></span></div>
-		            	<a href="javascript:void(0)" class="topbtn"><img src="images/reset.png" /></a>
+		            	<a href="javascript:void(0)" class="topbtn" id="chartPlay"><img src="images/reset.png" /></a>
 		            </div>
 		            <p class="c_tit" id="chartSpotNm"></p>
 		        </div>
