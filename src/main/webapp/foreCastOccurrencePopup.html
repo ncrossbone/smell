@@ -34,7 +34,7 @@ function foreCastList(val){
 			var blank = "<tr><td colspan='7' style='text-align:center;'>조회된 데이터가 없습니다.</td></tr>";
 			for (var i = 0; i < data.length; i++) {
 				html += "<tr>";
-			    html += "<td><a href='' onclick='analSel(\""+data[i].GRID_AREA_ID+"\")'>"+data[i].ANALS_AREA_ID+"</a></td>";
+			    html += "<td><a style='color: blue;' href='javascript:void(0)' onclick='analSel(\""+data[i].GRID_AREA_ID+"\")'>"+data[i].ANALS_AREA_ID+"</a></td>";
 			    html += "<td>"+data[i].INTRST_AREA_NM+"</td>";
 			    html += "<td>"+data[i].INTRST_AREA_AL+"</td>";
 			    html += "<td>"+data[i].DTA_01+"</td>";
@@ -55,7 +55,7 @@ function foreCastList(val){
 }
 
 function analSel(val){
-	alert(val);
+	parent._MessagePipe.send({type:'chartMode',id:val});
 }
 </script>
 </head>

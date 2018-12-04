@@ -2,6 +2,16 @@ var _ChartMode = function () {
 	
 	var chartFeatureLayerName = 'chartModeLayer';
 	var odorReductionForSvg = 'odorReductionForSvg';
+	var chartInterval;
+	var playArr;
+	var playIndex = 0;
+	var selectedObj = {};
+	
+	var chartModeOnePoint = 'chartModeOnePoint';
+	
+	var init = function(){
+		setEvent();
+	};
 	
 	var setEvent = function(){
 		_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
@@ -11,6 +21,7 @@ var _ChartMode = function () {
     			getChartData({code:'43114000000202',mesureDt:1});
     			getChartFeature();
     			$('#foreCastOccurrenceDiv').show();
+    			playArr = [];
     		}else{
     			$('#chartDiv').hide();
     			$('#chartSpotId').text('');
@@ -21,6 +32,11 @@ var _ChartMode = function () {
 				
 				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, chartFeatureLayerName);
 				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, odorReductionForSvg);
+				playIndex = 0;
+				
+				stopPlay();
+				
+				clearLayerByName(chartModeOnePoint);
     		}
 		});
 		
@@ -29,9 +45,42 @@ var _ChartMode = function () {
 				if(layer.get('name') == chartFeatureLayerName){
 					var mesureDt = feature.getProperties().MESURE_DT?feature.getProperties().MESURE_DT:1;
 					getChartData({code:feature.getProperties().CODE,mesureDt:mesureDt});
+					
+					stopPlay();
 				}
 			});
 		});
+		
+		$('#chartPlay').off('click').on('click',function(){
+			var me = $(this);
+			
+			if(me.attr('class').indexOf('on') > -1){
+				stopPlay();
+			}else{
+				autoPlay();
+				me.addClass('on');
+			}
+    	});
+	};
+	
+	var autoPlay = function(){
+		if(playArr.length==0){
+			_MapEventBus.trigger(_MapEvents.alertShow, {text:'잠시후에 눌러 주세요.'});
+			return;
+		}
+		
+		chartInterval = setInterval(function(){
+			playIndex++;
+			
+			if(playArr[playIndex]){
+				getChartData({code:playArr[playIndex].id,mesureDt:1});
+				_CoreMap.getMap().getView().setCenter(playArr[playIndex].point);
+				_CoreMap.getMap().getView().setZoom(17);
+			}else{
+				playIndex = 0;
+			}
+		}, 3000);
+		
 	};
 	
 	var getChartFeature = function(){
@@ -44,6 +93,10 @@ var _ChartMode = function () {
 				resultFeature.setGeometry(new ol.geom.Point(_CoreMap.convertLonLatCoord([featureData[i].LO,featureData[i].LA],true)));
 				resultFeature.setProperties(featureData[i]);
 				pointArr.push(resultFeature);
+				
+				if(featureData[i].SENSOR_TY_CODE=='SEN01001'){
+					playArr.push({point:_CoreMap.convertLonLatCoord([featureData[i].LO,featureData[i].LA],true),id:featureData[i].CODE})
+				}
 			}
 			
 			var source = new ol.source.Vector({
@@ -243,8 +296,85 @@ var _ChartMode = function () {
 		}
 	};
 	
-	setEvent();
+	var stopPlay = function(){
+		$('#chartPlay').removeClass('on');
+		
+		if(chartInterval){
+			clearInterval(chartInterval);
+			chartInterval = null;	
+		}
+	};
+	
+	var setProcMsg = function(msg){
+		if(msg.type == 'chartMode'){
+			datetime = '2018120111';
+			
+			$.ajax({
+				url:'/getOdorForecastXY.do', 
+				data: JSON.stringify({
+					gridId:msg.id
+				})}).done(function(data){
+					if(data == null || data.length <= 0){
+						_MapEventBus.trigger(_MapEvents.alertShow, {text:'관심지역 정보가 없습니다.'});
+						return;
+						
+					}
+					
+					var xy = data[0].shape;
+					
+					selectedObj.x  = xy.split(' ')[0].substr(xy.indexOf('(')+1);
+					selectedObj.y  = xy.split(' ')[1].substring(0, xy.split(' ')[1].indexOf(')'));
+					 
+					var coord = ol.proj.transform([parseFloat(selectedObj.x), parseFloat(selectedObj.y)], 'EPSG:4326', 'EPSG:3857');
+					
+					_MapEventBus.trigger(_MapEvents.map_move, selectedObj);
+					
+					clearLayerByName(chartModeOnePoint);
+
+					var resultFeature = new ol.Feature();
+
+					resultFeature.setGeometry(new ol.geom.Point(coord));
+					resultFeature.setProperties({});
+			 
+					var source = new ol.source.Vector({
+						features: [resultFeature]
+					});
+
+					var chartLayer = new ol.layer.Vector({
+						source: source,
+						zIndex:10000,
+						name:chartModeOnePoint,
+						style:function(feature){
+							return new ol.style.Style({
+					    		image: new ol.style.Icon(({
+					    			src: '../images/pin2.png',
+					    			scale:1.0
+					    		})) 
+					    	});
+						}
+					});
+			 
+					_MapEventBus.trigger(_MapEvents.map_addLayer, chartLayer);
+					_CoreMap.getMap().getView().setZoom(17);
+					
+					$('#foreCastOccurrencePopupDiv').hide();
+				});
+		}
+	};
+	
+	var clearLayerByName = function(layerNm){
+		_MapEventBus.trigger(_MapEvents.map_removeLayerByName, layerNm);
+	}; 
 	
 	return {
+		init:function(){
+			init();
+		},
+		stopPlay:function(){
+			stopPlay();
+		},
+		setProcMsg:function(msg){
+			setProcMsg(msg);
+		}
     };
 }();
