@@ -172,15 +172,19 @@ var _ComplaintStatusInsert = function () {
 							}else{
 								$("#operate").html("<img src='/images/operate_on.png' alt='가동' />가동");
 							} 
-							 
-							$('#bsmlCtrlBtn').off('click').on('click', function(){
-								$.ajax({
-							        url : '/insertOnOff.do',
-							        data: JSON.stringify(bplcInfo)
-								}).done(function(result){
-									  _MapEventBus.trigger(_MapEvents.alertShow, {text:'저감시설원격제어가 완료되었습니다.'});
-								});
-							});
+							
+							if(bplcInfo.bplcId){
+								$('#bsmlCtrlBtn').off('click').on('click', function(){
+									if(confirm('원격제어를 하시겠습니까?')){
+										$.ajax({
+									        url : '/insertOnOff.do',
+									        data: JSON.stringify(bplcInfo)
+										}).done(function(result){
+											  _MapEventBus.trigger(_MapEvents.alertShow, {text:'저감시설원격제어가 완료되었습니다.'});
+										});
+									}
+								});	
+							}
 						});
 				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003'){
 					bsmlPopup.hide();
@@ -196,7 +200,6 @@ var _ComplaintStatusInsert = function () {
 					changeMode(5);
 					$('#smsPopupCloseBtn').trigger('click');
 				}); 
-				
 
 				$('.sms_btn').off('click').on('click', function(){
 					if(_SmellMapBiz.taskMode != 1){
