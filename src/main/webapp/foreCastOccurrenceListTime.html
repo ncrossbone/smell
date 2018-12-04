@@ -23,12 +23,15 @@
 <script type="text/javascript">
 var gridId = '';
 var optionArr;
+var date = '';
+
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 	
 })
 
 function setValue(data){
 	gridId = data.id;
+	date = data.date;
 	
 	var sum = data.optionArr;
     var sumArr = sum.split(",");
@@ -43,7 +46,7 @@ function goSearch(){
 	var time = $("#time").val();
 	
 	if(parent){
-		parent._MessagePipe.send({type:'odorSelected', gridId:gridId, time:time});	
+		parent._MessagePipe.send({type:'odorSelected', gridId:gridId, time:time, date:date});	
 	}
 }
 </script>

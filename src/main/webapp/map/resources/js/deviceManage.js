@@ -154,12 +154,10 @@ var _DeviceManage = function () {
 								});	
 							}*/
 						});
-				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003'){
+				} else {
 					bsmlPopup.hide();
 					bsmlPopup2.show(); 
 					$('#bsmlName2').html(featureInfo.CMPNY_NM);
-				}else{
-					return;
 				}
 				
 				$('.bsmlPopupClose').on('click', function(){

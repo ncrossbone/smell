@@ -154,12 +154,10 @@ var _OdorForeCast = function () {
 								});	
 							}*/
 						});
-				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003'){
+				} else{
 					bsmlPopup.hide();
 					bsmlPopup2.show(); 
 					$('#bsmlName2').html(featureInfo.CMPNY_NM);
-				}else{
-					return;
 				}
 				
 				$('.bsmlPopupClose').on('click', function(){
@@ -359,11 +357,8 @@ var _OdorForeCast = function () {
 	
 	var setProcMsg = function(msg){
 		if(msg.type == 'odorSelected'){
-//			var datetime =  msg.datetime.replace(regExp, '');
-			datetime = '2018120111';
-			
-			currentDate.date = datetime.substring(0,8);
-			currentDate.time = datetime.substring(8,10);
+			currentDate.date = msg.date.replace(regExp, '');
+			currentDate.time = msg.time;
 			
 			$.ajax({
 				url:'/getOdorForecastXY.do', 
