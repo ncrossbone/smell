@@ -260,4 +260,4 @@ ul[role="tablist"]{
     font-size: 20px;
 }
 
-#bufferRadius{position: absolute; z-index: 3; display: none; top: 50%; color: white; background: black; left: 45%; padding: 10px 15px; letter-spacing: -1px; opacity: 0.8; font-size: 20px;}
+#bufferRadius{position: absolute; z-index: 3; display: none; top: 10%; color: white; background: black; left: 65%; padding: 10px 15px; letter-spacing: -1px; opacity: 0.8; font-size: 20px;}
