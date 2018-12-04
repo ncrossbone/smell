@@ -252,6 +252,11 @@ var _DeviceManage = function () {
 			
 			$(this).parent().parent().fadeOut();
 		});
+		
+		$('#deviceClose').off('click').on('click',function(){
+			$(this).parent().parent().hide();
+			changeMode(deviceStepMode - 1);
+    	});
 	}; 
 	
 	
@@ -317,19 +322,24 @@ var _DeviceManage = function () {
 		}
 	}
 	var setProcessBtn = function(mode){
-		$('.workStep[mode='+mode+']').addClass('on');
-		$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
-		
-		if(deviceStepMode < mode){
-			for(var i = 1; i<=mode; i++){
-				$('.workStep[mode='+i+']').addClass('on');
-				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+		if(mode != 0){
+			$('.workStep[mode='+mode+']').addClass('on');
+			$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
+			
+			if(deviceStepMode < mode){
+				for(var i = 1; i<=mode; i++){
+					$('.workStep[mode='+i+']').addClass('on');
+					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+				}
+			}else{
+				for(var i = 6; i>mode; i--){
+					$('.workStep[mode='+i+']').removeClass('on');
+					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
+				}  
 			}
 		}else{
-			for(var i = 6; i>mode; i--){
-				$('.workStep[mode='+i+']').removeClass('on');
-				$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
-			}  
+			$('.workStep[mode="1"]').removeClass('on');
+			$('.workStep[mode="1"]').css('background-image', 'url("../images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
 		}
 	}
 	
