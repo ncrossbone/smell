@@ -160,7 +160,9 @@ var _ComplaintStatusInsert = function () {
 							bplcInfo.ctrlCnCode = data.CTRL_CN_CODE;
 							
 							$("#bsmlName").html(data.BSML_TRGNPT_NM);
-							$("#reducEqpNm").html(data.REDUC_EQP_NM);
+							var reduc = data.REDUC_EQP_NM?data.REDUC_EQP_NM:'분무식';
+							$("#reducEqpNm").html(reduc);
+							
 							if(data.BPLC_ID){
 								$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");	
 							}else{
@@ -173,7 +175,12 @@ var _ComplaintStatusInsert = function () {
 								$("#operate").html("<img src='/images/operate_on.png' alt='가동' />가동");
 							} 
 							
-							if(bplcInfo.bplcId){
+							$('#bsmlCtrlBtn').off('click').on('click', function(){
+								if(confirm('원격제어를 하시겠습니까?')){
+									_MapEventBus.trigger(_MapEvents.alertShow, {text:'저감시설원격제어가 완료되었습니다.'});
+								} 
+							});	
+							/*if(bplcInfo.bplcId){
 								$('#bsmlCtrlBtn').off('click').on('click', function(){
 									if(confirm('원격제어를 하시겠습니까?')){
 										$.ajax({
@@ -184,7 +191,7 @@ var _ComplaintStatusInsert = function () {
 										});
 									}
 								});	
-							}
+							}*/
 						});
 				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003'){
 					bsmlPopup.hide();
