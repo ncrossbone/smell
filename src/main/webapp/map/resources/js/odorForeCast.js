@@ -10,6 +10,8 @@ var _OdorForeCast = function () {
 	
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~ `!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
+	var smsText = '[악취발생 예보 알림]\n#date#\n악취확산이 예상되오니\n설비가동을 해주시면\n감사하겠습니다.';
+	
 	var odorForeCastPopup, bsmlPopup, bsmlPopup2, legendDiv, smsPopup, process, odorForeCastPopupTime;
 
 	var locationLayer;
@@ -174,13 +176,13 @@ var _OdorForeCast = function () {
 						return;
 					}
 					smsPopup.show();
+					$('#smsContent').val(smsText.replace('#date#',currentDate.date.substr(0,4) + '년 ' + currentDate.date.substr(4,2) + '월 ' + currentDate.date.substr(6,2) + '일 ' + currentDate.time + '시'));
 				});
 				$('#smsPopupCloseBtn').on('click', function(){
 					if(_SmellMapBiz.taskMode != 3){
 						return;
 					}
 					smsPopup.hide(); 
-					$('#smsContent').val('[악취발생 예보 알림]');
 				});
 			}
 		});
@@ -217,6 +219,7 @@ var _OdorForeCast = function () {
 				resetPreMode(1);
 				odorForeCastPopup.hide();
 				odorForeCastPopupTime.hide();
+				smsPopup.hide();
 			}
 		});
 		

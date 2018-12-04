@@ -79,7 +79,7 @@ var _ChartMode = function () {
 			}else{
 				playIndex = 0;
 			}
-		}, 3000);
+		}, 5000);
 		
 	};
 	
