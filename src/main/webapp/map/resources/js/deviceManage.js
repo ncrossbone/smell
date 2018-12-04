@@ -208,7 +208,6 @@ var _DeviceManage = function () {
 				resetPreMode(1);
 				process.hide();
 				setProcessBtn(1);
-				resetPreMode(1);
 				deviceManagePopup.hide();
 			}
 		});
@@ -296,6 +295,10 @@ var _DeviceManage = function () {
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
 		    	clearLayerByName('odorOrigin');
+		    	clearLayerByName('odorMovementLayer');
+		    	clearLayerByName('bufferOriginLayer');
+		    	clearLayerByName('originLayer');
+		    			    	 
 		    case 5:  // 저감시설 및 악취원점 팝업 닫기
 		    	bsmlPopup.hide(); 
 		    	bsmlPopup2.hide();
@@ -381,23 +384,25 @@ var _DeviceManage = function () {
 		
 		
 		if(msg.type == 'deviceChartSelected'){
-			if(confirm('해당 위치로 이동하시겠습니까?')){
-				var datetime =  msg.datetime.replace(regExp, '');
-				console.log(datetime);
-				 
-				currentDate.date = datetime.substring(0,8);
-				currentDate.time = datetime.substring(8,10);
-				
-				_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
-				
-				selectedDeviceChart = msg;
-				selectedDeviceChart.x = parseFloat(selectedDeviceChart.x);
-				selectedDeviceChart.y = parseFloat(selectedDeviceChart.y);
-				
-				_MapEventBus.trigger(_MapEvents.map_move, selectedDeviceChart);
-				
-				changeMode(2);
-			}
+//			if(confirm('해당 위치로 이동하시겠습니까?')){
+			var datetime =  msg.datetime.replace(regExp, '');
+			 
+			currentDate.date = datetime.substring(0,8);
+			currentDate.time = datetime.substring(8,10);
+			
+			_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
+			
+			selectedDeviceChart = msg;
+			selectedDeviceChart.x = parseFloat(selectedDeviceChart.x);
+			selectedDeviceChart.y = parseFloat(selectedDeviceChart.y);
+			
+			_MapEventBus.trigger(_MapEvents.map_move, selectedDeviceChart);
+			
+			changeMode(2);
+			
+			_MapEventBus.trigger(_MapEvents.alertShow, {text:'해당위치로 이동합니다.'});
+			
+//			}
 		}
 	};
 	

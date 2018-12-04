@@ -246,12 +246,14 @@ var _SmellMapBiz = function () {
 		_MapEventBus.on(_MapEvents.hide_odorMovement_layer, function(event, data){
 			if(odorMovementLayer){
 				_MapEventBus.trigger(_MapEvents.map_removeLayer, odorMovementLayer);
+				
 				if(originLayer){
 					_MapEventBus.trigger(_MapEvents.map_removeLayer, originLayer);	
 				}
 				if(bufferOriginLayer){
 					_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);	
 				}
+				
 				odorMovementLayer = null;
 				originLayer = null;
 				bufferOriginLayer = null;
@@ -914,12 +916,6 @@ var _SmellMapBiz = function () {
 			
 			_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:0});
 			
-//			if(_SmellMapBiz.taskMode == 0){
-//					
-//			}else{
-//				_MapEventBus.trigger(_MapEvents.addWriteLayerForUseGeoserver, {type:2});
-//			}
-			
 			if(trackingFeatures == null || trackingFeatures.length <= 0){
 				return;
 			}
@@ -958,23 +954,23 @@ var _SmellMapBiz = function () {
 				
 				if(interFeatures.length <= 0){
 					_MapEventBus.trigger(_MapEvents.alertShow, {text:'오염원점이 없습니다.'});
-					return;
+				}else{
+					var source = new ol.source.Vector();
+					source.addFeatures(interFeatures);
+					originLayer = new ol.layer.Vector({
+						source: source,
+						zIndex:1000,
+						name:'originLayer',
+						style: bufferVectorStyle
+					});
+					_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
 				}
 				
-				var source = new ol.source.Vector();
-				source.addFeatures(interFeatures);
-				originLayer = new ol.layer.Vector({
-					source: source,
-					zIndex:1000,
-					name:'originLayer',
-					style: bufferVectorStyle
-				});
-				_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
-				
-				$('#bufferOnOffBtn').attr('value', 'on');
-				$('#bufferOnOffBtn').trigger('click');
-				
 				if(isTask){
+					$('#bufferOnOffBtn').attr('value', 'off');
+					$('#bufferOnOffBtn').trigger('click');
+				}else{
+					$('#bufferOnOffBtn').attr('value', 'on');
 					$('#bufferOnOffBtn').trigger('click');
 				}
 			});
