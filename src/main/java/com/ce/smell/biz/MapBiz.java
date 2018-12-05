@@ -200,6 +200,19 @@ public class MapBiz {
 		return mapMapper.insertCvplData(param);
 	}
 	
+	//민원수정
+	@SuppressWarnings("unchecked")
+	public int updateCvplData(HashMap param) {
+		return mapMapper.updateCvplData(param);
+	}
+	
+	//민원상세
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getCvplDataDetail(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getCvplDataDetail(param);
+	}
+	
 	//악취저감설비 정보
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getBsmlReduceqpInfo(HashMap param) {

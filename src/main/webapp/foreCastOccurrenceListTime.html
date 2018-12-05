@@ -54,14 +54,16 @@ function goSearch(){
 <body>
 <form name="dataSearch" id="dataSearch" method="post">
 <!-- 검색 영역 시작 -->
- <div class="search_box">
-     <div class="searchLine">
+ <div class="search_box" style="width:169px;">
+     <div class="searchLine" style="margin-left:-4px">
      	<span class="s_tit MgL20">시간</span>
          <select title="시간" name="time" id="time">
 			<option value="">선택</option>
 		</select>
-		<span class="btnCnt"><a href="" class="btn_1" onclick="goSearch();return false;">선택</a></span>
      </div>
+     <div class="searchLine" style="margin-top:40px;">
+		<span class="btnCnt" style="left:48px;right:53px;"><a href="" class="btn_1" onclick="goSearch();return false;">선택</a></span>
+	</div>
  </div>
 </form>
 </body>

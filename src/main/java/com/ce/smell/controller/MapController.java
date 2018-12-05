@@ -148,6 +148,18 @@ public class MapController {
 		return mapBiz.insertCvplData(param);
 	}
 	
+	//민원수정
+	@RequestMapping(value = "/updateCvplData" , method = RequestMethod.POST)
+	public int updateCvplData(@RequestBody HashMap param) {
+		return mapBiz.updateCvplData(param);
+	}
+	
+	//민원상세
+	@RequestMapping(value = "/getCvplDataDetail", method = RequestMethod.POST)
+	public Map<String, Object> getCvplDataDetail(@RequestBody HashMap param){
+		return mapBiz.getCvplDataDetail(param);
+	}
+
 	//악취저감설비 정보
 	@RequestMapping(value = "/getBsmlReduceqpInfo", method = RequestMethod.POST)
 	public Map<String, Object> getBsmlReduceqpInfo(@RequestBody HashMap param){
