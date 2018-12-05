@@ -265,22 +265,25 @@ var _SmellMapBiz = function () {
 			}
 		});
 		_MapEventBus.on(_MapEvents.show_odorMovement_layer, function(event, data){
-			var analsAreaId = data.analsAreaId;
-			$.ajax({
-	            url: '/getAnalsAreaId.do',
-	            data:JSON.stringify({analsAreaId:analsAreaId})
-	        }).done(function(result){
-	        	if(result==null || result.length <= 0){
-	        		_MapEventBus.trigger(_MapEvents.alertShow, {text:'관심지역 등록정보가 없습니다.'});
-	        		return;
-	        	}
-	        	var analsId = result[0].analsAreaId;
-	        	var gridAreaId = result[0].gridAreaId;
-//	        	analsId = '2930'
-	        	isTask = true;
-	        	 
-	        	startTracking(analsId);
-	        });
+        	isTask = true;
+        	startTracking(data.analsAreaId);
+        	
+			
+//			$.ajax({
+//	            url: '/getAnalsAreaId.do',
+//	            data:JSON.stringify({analsAreaId:analsAreaId})
+//	        }).done(function(result){
+//	        	if(result==null || result.length <= 0){
+//	        		_MapEventBus.trigger(_MapEvents.alertShow, {text:'관심지역 등록정보가 없습니다.'});
+//	        		return;
+//	        	}
+//	        	var analsId = result[0].analsAreaId;
+//	        	var gridAreaId = result[0].gridAreaId;
+////	        	analsId = '2930'
+//	        	isTask = true;
+//	        	 
+//	        	startTracking(analsId);
+//	        });
 		});
 		
 		_MapEventBus.on(_MapEvents.clickLayerOnOff, function(event, data){
@@ -937,20 +940,20 @@ var _SmellMapBiz = function () {
 				var bufferedGeometry = parser.write(buffered);
 
 				var interFeatures = [];
-				var gridData = [];
 				
 				for(var i=0; i<result.features.length; i++){
 					var bplcFeature = new ol.Feature({geometry:new ol.geom.Polygon(result.features[i].geometry.coordinates), properties:result.features[i].properties});
+					bplcFeature.getProperties().properties.type == 'buffer';
+						
 					var target = parser.read(bplcFeature.getGeometry())
 					var interFeature = buffered.intersection(target);
 					var interGeometry = parser.write(interFeature);
 					if(interGeometry.getCoordinates()[0].length > 0){
 						interFeatures.push(bplcFeature);
-						gridData.push(result.features[i].properties);
 					}
 				}
 				
-				bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{}});
+				bufferOriginFeature = new ol.Feature({geometry:new ol.geom.Polygon(bufferedGeometry.getCoordinates()), properties:{type:'buffer'}});
 				
 				if(interFeatures.length <= 0){
 					_MapEventBus.trigger(_MapEvents.alertShow, {text:'오염원점이 없습니다.'});
@@ -1014,6 +1017,7 @@ var _SmellMapBiz = function () {
 		}
 		
 		var params = {"type":layerNm, "analsAreaId":odorMovementItem, "dtaDt":odorMovementStartDate+odorMovementStartTime};
+
 		$.ajax({
             url: '/getCoursModel.do',
             data:JSON.stringify(params)
