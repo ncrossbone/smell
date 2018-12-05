@@ -57,6 +57,7 @@ public interface MapMapper {
 	public List<Map<String, Object>> iotSensorInfoFeature(HashMap param);
 	public List<Map<String, Object>> complaintStatusFeature(HashMap param);
 	public List<Map<String, Object>> reductionMonitoringFeature(HashMap param);
+	public List<Map<String, Object>> fixedBasicFeature(HashMap param);
 	
 	public List<Map<String, Object>> getIntrstList(HashMap param);
 	public List<Map<String, Object>> getSensorList(HashMap param);

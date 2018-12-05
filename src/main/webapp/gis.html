@@ -668,14 +668,6 @@
                 <ul>
                     <li>
                         <dl>
-                            <dt>측정항목</dt>
-                            <dd>
-                            	<select id="environmentCorporationItem" class="W95p">
-                            		<option>CO2</option>
-                            	</select>
-                            </dd>
-                        </dl>
-                        <dl>
                             <dt>조회일시</dt>
                              <dd>
                                 <input type="text" id="environmentCorporationStartDate" class="W105" style="width: 145px !important"/>
@@ -872,7 +864,7 @@
 				<h3>악취확산 분석</h3>
 				<ul class="btn_radio">
                 	<li class="W150"><a class="on" style="padding-left: 60px !important;" name="odorSpreadLayerType" value="anals_area_now" href="javascript:void(0)">실시간</a></li>
-                    <li class="W150"><a            style="padding-left: 60px !important;" name="odorSpreadLayerType" value="anals_area_forecast" href="javascript:void(0)">예보</a></li>
+                    <li class="W150"><a            style="padding-left: 60px !important;" name="odorSpreadLayerType" value="anals_area_forecast" href="javascript:void(0)">예측</a></li>
                 </ul>
 <!--                 <ul class="btn_radio"> -->
 <!--                 	<li class="W150"><a class="on" style="padding-left: 60px !important;" name="odorSpreadMapType" value="cell" href="javascript:void(0)">격자</a></li> -->
@@ -933,7 +925,7 @@
 				 <ul class="btn_radio">
                 	<li class="W100"><a class="on" style="padding-left: 35px !important;" name="odorMovementType" value="cours_now" href="javascript:void(0)">실시간 관심</a></li>
                     <li class="W100"><a            style="padding-left: 35px !important;" name="odorMovementType" value="cours_sensor" href="javascript:void(0)">실시간 센서</a></li>
-                    <li class="W100"><a            style="padding-left: 35px !important;" name="odorMovementType" value="cours_forecast" href="javascript:void(0)">예보</a></li>
+                    <li class="W100"><a            style="padding-left: 35px !important;" name="odorMovementType" value="cours_forecast" href="javascript:void(0)">예측</a></li>
                 </ul>
                 <ul>
                     <li>
@@ -986,7 +978,7 @@
         </li>
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
-     	<div id="foreCastOccurrenceDiv" style="position: absolute; z-index: 1000; top: 300px; right: 20px; width:220px; height: 500px; display: none;">
+     	<div id="foreCastOccurrenceDiv" style="position: absolute; z-index: 1000; top: 45px; right: 20px; width:220px; height: 500px; display: none;">
      		<iframe src="./foreCastOccurrence.html" style="border: solid 0px; width:100%; height:100%; border: none;"></iframe>
      	</div>
      	<div id="foreCastOccurrencePopupDiv" style="position: absolute; z-index: 1000; top: 300px; right: 400px; display: none;">
@@ -1166,7 +1158,7 @@
 	        	<iframe src="./cvplDataStatistics.html" style="border: solid 0px; width:100%; height:100%;"></iframe>
 			</div>
         </div>     
-        <div id="complaintStatusRegPopup" style="right: 150px; top: 250px; display: none; width: 700px; height:500px; position: absolute; z-index: 999;">
+        <div id="complaintStatusRegPopup" style="left: 35%; top: 15%; display: none; width: 700px; height:500px; position: absolute; z-index: 999;">
         	<p class="pop_tit"><span class="pop_tit_text">민원 등록</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
             <div class="pop_conts" style="background: #fff; height: 475px !important; overflow: hidden;">
             	<iframe src="./cvplDataStatisticsPopup.html" style="border: solid 0px; width:100%; height:100%;"></iframe>
@@ -1225,6 +1217,5 @@
      	</div>
      </div>
 </div>
-
 </body>
 </html>
