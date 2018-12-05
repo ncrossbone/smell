@@ -887,19 +887,20 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
     <update id="updateCvplData" parameterType="java.util.HashMap">
         UPDATE CVPL_MANAGE
         <set> 
-        CVPL_DT         = STR_TO_DATE(CONCAT(#{CVPL_DT},#{CVPL_HOUR}),'%Y-%m-%d%H'),
-        CPTTR           = #{CPTTR},
-        CPTTR_CTTPC    = #{CPTTR_CTTPC},
-        LEGALDONG_CODE = #{LEGALDONG_CODE},
-        CVPL_LC           = #{CVPL_LC},
-        LA         			 = #{LA},
-    	LO        			 = #{LO}, 
-        CVPL_TY_CODE = #{CVPL_TY_CODE},
-        CVPL_CN         = #{CVPL_CN},
+        CVPL_DT         = #{date},
+        CPTTR           = #{man},
+        CPTTR_CTTPC    = #{phone},
+        LEGALDONG_CODE = #{addr},
+        CVPL_LC           = #{direct},
+        LA         			 = #{la},
+    	LO        			 = #{lo}, 
+        CVPL_TY_CODE = #{flag},
+        CVPL_CN         = #{contents},
         CHANGE_DT       = SYSDATE(),
-        CHANGER_ID      = #{gUserId},
+        CHANGER_ID      = 'cetech'
         </set>
-        WHERE CVPL_NO = #{CVPL_NO}
+
+        WHERE CVPL_NO = #{code}
     </update>
     
     <!-- 민원데이터 상세보기 -->

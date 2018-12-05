@@ -60,11 +60,17 @@ $(document).ready(function(){
 	}
 	
 	$('select[name="CVPL_TIME"]').html(timeOptions);
-	
-	Common.getData({url:'/getCvplDataDetail.do', contentType: 'application/json', params: {CVPL_NO: '494'} }).done(function(data){
+});
+
+
+var cvplId = '';
+function setValue(id){
+	Common.getData({url:'/getCvplDataDetail.do', contentType: 'application/json', params: {CVPL_NO: id} }).done(function(data){
 		if(data.length == 0){
 			return;
 		}
+		
+		cvplId = id;
 		//수정창 불러오기
 		$("#CPTTR").val(data.CPTTR);
 		$("#CPTTR_CTTPC").val(data.CPTTR_CTTPC);
@@ -75,8 +81,11 @@ $(document).ready(function(){
 		$("#CVPL_LC").val(data.CVPL_LC);
 		$("#CPTTR").val(data.CPTTR);
 		$("#CVPL_CN").html(data.CVPL_CN);
+		
+		$("#LA").val(data.LA);
+		$("#LO").val(data.LO);
 	});	
-});
+}
 
 //등록 및 수정
 function goAction(){
@@ -95,16 +104,20 @@ function goAction(){
 				'CPTTR':'man',
 				'CPTTR_CTTPC':'phone',
 				'LEGALDONG_CODE':'addr',
-				'CVPL_TIME':'time'
+				'CVPL_TIME':'time',
+				'LA':'la',
+				'LO':'lo'
 	};
 	
-	var paramObj = {type:'putCvpl'};
+	var paramObj = {type:'updateCvpl',code:cvplId};
 	for(var i = 0; i<formArr.length; i++){
 		paramObj[keyConfig[formArr[i].name]] = formArr[i].value;
 	}
 	
+	
 	//url- /insertCvplData.do
 	parent.$('#complaintStatusRegPopup').hide();
+	parent.$('#complaintStatusRegPopup2').hide();
 	parent.$('#complaintStatusPopup').hide();
 	parent._MessagePipe.send(paramObj);
 }
@@ -113,6 +126,8 @@ function goAction(){
 <body>
 <div id="wrap" class="sty02">
 		<form name="dataSearch" id="dataSearch"method="post">
+			<input type="hidden" id="LO" name="LO" />
+			<input type="hidden" id="LA" name="LA"/>
 	    	<!-- 팝업 사이즈 w:630px, h:250px -->
 	    	<div class="pop_senser">
 	        	<h4 class="tit">

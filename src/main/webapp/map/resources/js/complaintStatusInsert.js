@@ -94,7 +94,7 @@ var _ComplaintStatusInsert = function () {
 			if(complaintStatusMode < (parseInt(mode)-1)){
 				return;
 			}
-			if(mode == 3  && selectedObj.type == 'putCvpl'){
+			if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
 				_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
 				return;
 			}
@@ -150,7 +150,7 @@ var _ComplaintStatusInsert = function () {
 			if(complaintStatusMode == 1){
 				
 			}else if(complaintStatusMode == 2){
-				if(selectedObj.type=="putCvpl"){
+				if(selectedObj.type=="putCvpl" || selectedObj.type=="updateCvpl"){
 					var trans = new ol.proj.transform(data.result.coordinate, 'EPSG:3857','EPSG:4326');
 					selectedObj.x = trans[0];
 					selectedObj.y = trans[1];
@@ -287,6 +287,7 @@ var _ComplaintStatusInsert = function () {
 				setProcessBtn(1);
 				resetPreMode(1);
 				complaintStatusPopup.hide();
+				$('#complaintStatusRegPopup2').hide();
 				smsPopup.hide();
 				clearLayerByName(fixedMeasurement);
 //				clearLayer();
@@ -442,6 +443,16 @@ var _ComplaintStatusInsert = function () {
 			writePopup();
 			_MapEventBus.trigger(_MapEvents.map_move, msg);
 		}else if(msg.type == 'putCvpl'){
+			selectedObj = msg;
+			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
+		}else if(msg.type == 'updateCvpl'){
+			selectedObj = msg;
+			selectedObj.x = parseFloat(msg.lo); 
+			selectedObj.y = parseFloat(msg.la); 
+			
+			writePopup(true);
+			_MapEventBus.trigger(_MapEvents.map_move, msg);
+			
 			selectedObj = msg;
 			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
 		}
@@ -611,8 +622,10 @@ var _ComplaintStatusInsert = function () {
 		var cvplHtml = '<div class="tooltip2">';
 		cvplHtml += '<p class="tt_tit2">';
 		cvplHtml += '<span>'+title+'</span>';
-		if(isInsert){
+		if(selectedObj.type=='putCvpl'){
 			cvplHtml += '<a href="javascript:void(0)" class="plus_btn" id="putCvpl"></a>';
+		}else if(selectedObj.type=='updateCvpl'){
+			cvplHtml += '<a href="javascript:void(0)" class="plus_btn" id="updateCvpl"></a>';
 		}
 		cvplHtml += '<a href="javascript:void(0)" class="btn06 pop_close" id="popClose"></a>';
 		cvplHtml += '</p>';
@@ -644,6 +657,19 @@ var _ComplaintStatusInsert = function () {
 				  selectedObj.type = 'selectedCvpl';
 				  process.find('li[mode="3"]').trigger('click');
 				  _MapEventBus.trigger(_MapEvents.alertShow, {text:'지점이 등록 되었습니다.'});
+			});
+		})
+		
+		$('#updateCvpl').off().on('click',function(){
+			$.ajax({
+		        url : '/updateCvplData.do',
+		        data: JSON.stringify(selectedObj),
+		        type:'POST',
+		        contentType: 'application/json'
+			}).done(function(result){
+				  selectedObj.type = 'selectedCvpl';
+				  process.find('li[mode="3"]').trigger('click');
+				  _MapEventBus.trigger(_MapEvents.alertShow, {text:'수정이 되었습니다.'});
 			});
 		})
 	};

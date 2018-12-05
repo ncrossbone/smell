@@ -120,12 +120,21 @@ function toDateCheck() {
 
 //등록 팝업창
 function cvplDataInsert(){
+	parent.$('#complaintStatusRegPopup2').hide();
 	parent.$('#complaintStatusRegPopup').show();
 }
 
 //등록 수정창
 function cvplDataUpdate(){
-	//parent.$('#complaintStatusRegPopup').show();
+	var val = $(":input:radio[name=cvplSel]:checked").val();
+	if(!val){
+		alert('선택된 민원이 없습니다.');
+		return;
+	}
+	parent.$('#complaintStatusRegPopup2').show();
+	parent.$('#complaintStatusRegPopup').hide();
+	
+	parent.$('#complaintStatusRegPopup2').find('iframe').get(0).contentWindow.setValue(val);	
 }
 
 //민원 선택
