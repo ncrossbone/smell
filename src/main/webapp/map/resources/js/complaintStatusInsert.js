@@ -452,8 +452,6 @@ var _ComplaintStatusInsert = function () {
 			
 			writePopup(true);
 			_MapEventBus.trigger(_MapEvents.map_move, msg);
-			
-			selectedObj = msg;
 			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
 		}
 	};
@@ -603,7 +601,7 @@ var _ComplaintStatusInsert = function () {
 		var resultFeature = new ol.Feature();
 
 		resultFeature.setGeometry(new ol.geom.Point(centerPoint));
-		resultFeature.setProperties({CVPL_TY_CODE:isInsert?selectedObj.flag:typeConfig[selectedObj.flag],CVPL_LC:title});
+		resultFeature.setProperties({CVPL_TY_CODE:selectedObj.flag.indexOf('CVP')>-1?selectedObj.flag:typeConfig[selectedObj.flag],CVPL_LC:title});
 
 		var source = new ol.source.Vector({
 			features: [resultFeature]
