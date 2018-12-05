@@ -776,11 +776,13 @@ var _WestCondition = function () {
     			$('#tabOpeners').addClass('off');
     			$('#tabOpeners').removeClass('on');
     			tabCloseOpen($('#tabOpeners'));
+    			$('#around_info').show();
     		}else{
     			$('.gisTaskMenu').hide();
     			$('#tabOpeners').addClass('on');
     			$('#tabOpeners').removeClass('off');
     			tabCloseOpen($('#tabOpeners'));
+    			$('#around_info').hide();
     		}
 		});
     	_MapEventBus.on(_MapEvents.hide_cvplPopup, function(event, data){
@@ -860,12 +862,14 @@ var _WestCondition = function () {
     };
     
     var gridBtnClickEvent = function(id){
+    	$('#clock').css('bottom','120px');
     	switch (id) {
 		case 'gridMinimize':
 			$('#gridArea').css('height', '40px');
 			$('#gridMinimize').hide();
 			$('#gridMaximize').hide();
 			$('#gridRestore').show();
+			$('#clock').css('bottom','165px');
 			break;
 		case 'gridMaximize':
 			$('#gridArea').css('height', maxHeight);

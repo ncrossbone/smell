@@ -307,6 +307,10 @@ var _ComplaintStatusInsert = function () {
 		}
 		complaintStatusMode = parseInt(mode);
 		
+		if(mode != 3){
+			$('#clock').css('bottom','120px');
+		}
+		
 		if(mode == 1){
 			complaintStatusPopup.show();
 		}else if(mode == 2){
@@ -522,6 +526,12 @@ var _ComplaintStatusInsert = function () {
 			}
 			
 			Common.getData({url:'/getGrid.do', contentType: 'application/json', params: {contentsId:'complaintStatus',flag:1, code:cvplNo.substr(0,cvplNo.length-1)} }).done(function(data){
+				
+				if($('#gridArea').height()==40){
+					$('#clock').css('bottom','165px');
+				}else{
+					$('#clock').css('bottom','120px');
+				}
 				_WestCondition.writeGrid('complaintStatus',data);
 	    	});
 			

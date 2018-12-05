@@ -22,6 +22,7 @@ var _ChartMode = function () {
     			getChartFeature();
     			$('#foreCastOccurrenceDiv').show();
     			playArr = [];
+    			$('#mapNavBar').hide();
     		}else{
     			$('#chartDiv').hide();
     			$('#chartSpotId').text('');
@@ -29,7 +30,7 @@ var _ChartMode = function () {
 				$('#chartArea').html('');
 				$('#foreCastOccurrenceDiv').hide();
 				$('#foreCastOccurrencePopupDiv').hide();
-				
+				$('#mapNavBar').show();
 				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, chartFeatureLayerName);
 				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, odorReductionForSvg);
 				playIndex = 0;
@@ -203,7 +204,8 @@ var _ChartMode = function () {
 				     {name:'PM2_5',title:'미세먼지2.5'},
 				     {name:'PM10',title:'미세먼지10'},
 				     {name:'SO2',title:'이산화황'},
-				     {name:'NO2',title:'이산화질소'}]
+				     {name:'NO2',title:'이산화질소'},
+			     {name:'MESURE_DT',title:'날짜'}]
 		$('#chartArea').html('');
 		
 		if(!data){
