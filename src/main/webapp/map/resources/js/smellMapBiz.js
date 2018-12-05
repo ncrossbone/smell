@@ -1022,6 +1022,7 @@ var _SmellMapBiz = function () {
             url: '/getCoursModel.do',
             data:JSON.stringify(params)
         }).done(function(result){
+        	
         	if(result == null || result.length <= 0){
 				_MapEventBus.trigger(_MapEvents.alertShow, {text:'모델링 데이터가 없습니다.'});
 				return;
