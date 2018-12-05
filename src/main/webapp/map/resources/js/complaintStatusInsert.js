@@ -124,9 +124,21 @@ var _ComplaintStatusInsert = function () {
 				changeMode(6);
 			}
 			
-			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
-				return feature;
+			var features = [];
+			_CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
+				features.push(feature);
 			});
+			
+			var feature;
+			
+			if(features != null){
+				for(var i=0; i<features.length; i++){
+					if(features[i].getProperties().properties && features[i].getProperties().properties.type && features[i].getProperties().properties.type == 'buffer'){
+						continue;
+					}
+					feature = features[i];
+				}	
+			}
 			
 			if(complaintStatusMode == 1){
 				
@@ -199,11 +211,13 @@ var _ComplaintStatusInsert = function () {
 								});	
 							}*/
 						});
-				} else {
+				} else if(featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01001' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01003' || featureInfo.BSML_TRGNPT_SE_CODE == 'BSL01004') {
 					bsmlPopup.hide();
 					bsmlPopup2.show(); 
 					$('#bsmlName2').html(featureInfo.CMPNY_NM);
-				} 
+				} else{
+					return;
+				}
 				$('.bsmlPopupClose').off('click').on('click', function(){
 					if(_SmellMapBiz.taskMode != 1){
 						return;
@@ -379,21 +393,21 @@ var _ComplaintStatusInsert = function () {
 				}
 				var analsAreaInfo = result.features[0].properties;
 					
-				if(analsAreaInfo.REG == '0'){
-					var regFlag = confirm('해당지역은 관심저점 등록이 되어있지 않습니다. 등록하시겠습니까?');
-					if(regFlag){
-						$.ajax({
-				            url : bizUrl+'/insertAnals.do',
-				            data: JSON.stringify({indexId:analsAreaInfo.ANALS_AREA_ID, predictAl:'0'})
-				    	}).done(function(result){
-				    		_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {analsAreaId:analsAreaInfo.ANALS_AREA_ID});
-				    	});
-					}else{
-						return;
-					}
-				}else{
-					_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {analsAreaId:analsAreaInfo.ANALS_AREA_ID});
-				}
+//				if(analsAreaInfo.REG == '0'){
+//					var regFlag = confirm('해당지역은 관심저점 등록이 되어있지 않습니다. 등록하시겠습니까?');
+//					if(regFlag){
+//						$.ajax({
+//				            url : bizUrl+'/insertAnals.do',
+//				            data: JSON.stringify({indexId:analsAreaInfo.ANALS_AREA_ID, predictAl:'0'})
+//				    	}).done(function(result){
+//				    		_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {analsAreaId:analsAreaInfo.ANALS_AREA_ID});
+//				    	});
+//					}else{
+//						return;
+//					}
+//				}else{
+				_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {analsAreaId:analsAreaInfo.ANALS_AREA_ID});
+//				}
 			});
 	}
 	var setProcMsg = function(msg){

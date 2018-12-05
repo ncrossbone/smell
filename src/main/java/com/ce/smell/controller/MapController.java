@@ -106,7 +106,7 @@ public class MapController {
 		return mapBiz.getSensorList(null);
 	}
 	@RequestMapping(value = "/getCoursModel", method = RequestMethod.POST)
-	public List<Map<String, Object>> getCoursModel(@RequestBody HashMap param){
+	public List<Map<String, Object>> getCoursModel(@RequestBody HashMap param) throws Exception{
 		return mapBiz.getCoursModel(param);
 	}
 	@RequestMapping("/updateSensor")
