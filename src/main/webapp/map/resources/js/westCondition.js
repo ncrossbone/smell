@@ -449,14 +449,8 @@ var _WestCondition = function () {
     };
     
     var addWriteLayerForBiz = function(event, options){
-    	
     	var layerId = options.layerId;
     	
-    	var getLayerForName = _CoreMap.getMap().getLayerForName(layerId);
-		if(getLayerForName){
-			return;
-		}
-		
 		var paramObj = {
 				contentsId:'fixedBasic'
 		};

@@ -279,9 +279,7 @@ var _ComplaintStatusInsert = function () {
 				}, 100);
 				
 				_MapEventBus.trigger(_MapEvents.addWriteLayerForBiz, {
-					layerId:fixedMeasurement,
-					date:currentDate.date,
-					time:currentDate.time
+					layerId:fixedMeasurement
 				});
 			}else{
 				// 초기화
