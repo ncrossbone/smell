@@ -21,6 +21,7 @@ import com.ce.smell.model.MapVO;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @Service
 @Repository
@@ -177,12 +178,19 @@ public class MapBiz {
 			response.append(inputLine); 
 		} 
 		in.close();  
+		
+		List result = new ArrayList<Map<String, Object>>();
+		
 		if(responseCode == 200){
-			com.google.gson.JsonParser jsonparse = new com.google.gson.JsonParser();
+			JsonParser jsonparse = new JsonParser();
 			JsonObject restResult = (JsonObject)jsonparse.parse(response.toString());
-			JsonArray resultList = (JsonArray)restResult.get("resultList");
+			JsonArray resultList = null;
 			
-			List result = new ArrayList<Map<String, Object>>();
+			try{
+				resultList = (JsonArray)restResult.get("resultList");	
+			}catch(java.lang.ClassCastException e){
+				return result;
+			}
 			
 			if (resultList != null) { 
 			   for (int i=0;i<resultList.size();i++){
@@ -204,7 +212,7 @@ public class MapBiz {
 			
 			return result;
 		}else{
-			return new ArrayList<Map<String,Object>>();
+			return result;
 		}
 //		if("cours_now".equals(type)){
 //			param.put("tableNm", "RLTM_MVMN_COURS_MODEL");
