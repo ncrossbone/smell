@@ -276,9 +276,9 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 
 /*181127*/
 .process { position:absolute; z-index:999; left:45%; transform:translateX(-30%);  top:0; width:870px; cursor: pointer;}
-.p_f { background:url(../images/p_bg_first_off.png) no-repeat left center;  width:158px;}
-.p_l { background:url(../images/p_bg_last_off.png) no-repeat left center;  width:158px; }
-.p_a { background:url(../images/p_bg_off.png) no-repeat left center;  width:140px; }
+.p_f { background:url(../images/cvplProcess_off.png) no-repeat left center;  width:158px;}
+.p_l { background:url(../images/cvplProcess_last_off.png) no-repeat left center;  width:158px; }
+.p_a { background:url(../images/cvplProcess_mid_off.png) no-repeat left center;  width:140px; }
 .process> li { float:left; text-align:center; margin-left:-1px; padding:10px 0; min-height:30px; }
 .process:after { display:block; clear:both; content:""; }
 .process> li> span { display:block; }
@@ -287,7 +287,6 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .p_f> span { margin-left:20px;}
 .p_l> span { margin-right:20px;}
 .process> .on> span { color:#ffffff !important;  }
-
 
 .sms { background:url(../images/sms_bg.png) no-repeat left center; width:206px; height:431px; position:absolute; right:20px; bottom:150px; }
 .smsbox { position:relative; margin-top:52px; margin-left:6px; width:193px;  }
@@ -303,10 +302,10 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .day { font-size:15px; font-family:Verdana, Geneva, sans-serif; }
 .time { font-family:'RussellSquare'; font-size:20px; margin-top:2px; }
 
-.topmenu { position:absolute; right:10px; border:1px solid #dbdbdb; top:50%; transform:translateY(-50%);}
-.topmenu> li { border-left:1px solid #dbdbdb; float:left; width:80px; text-align:center; padding:8px 0; }
-.topmenu> li > a { font-family: 'Dotum'; font-weight:bold; letter-spacing:-1px; font-size:12px;  display:block; padding-top: 25px;}
-.topmenu> li:first-child { border-left:none !important; }
+.topmenu { position:absolute; right:10px; top:50%; transform:translateY(-50%);} /*181205수정*/
+.topmenu> li {  border:1px solid #dbdbdb;  float:left; width:80px; text-align:center; padding:6px 0; margin-left: -1px; background:#f4f4f4; } /*181205수정*/
+.topmenu> li > a { font-family: 'Dotum'; font-weight:bold; letter-spacing:-1px; font-size:12px;  display:block; padding-top: 28px; color:#37588e;} /*181205수정*/
+.topmenu> li:first-child { } /*181205수정*/
 
 .tm01 { background:url(../images/tm01.png) no-repeat center top;}
 .tm02 { background:url(../images/tm02.png) no-repeat center top;}
@@ -368,4 +367,6 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .station_id> span { color:#ed145b; }
 .c_tit { font-family: 'Dotum'; font-weight:bold; color:#fff; background:url(../images/g_tit_bg.png) no-repeat left center; padding:3px 0 3px 30px; margin-top:5px; letter-spacing:-1px;}
 
-
+.topmenu> li.on { color:#153159; background:#ffffff; }/*181205추가*/
+.topmenu> li.on { background:#ffffff; }/*181205추가*/
+.topmenu> li.on a { color:#153159; }/*181205추가*/

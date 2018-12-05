@@ -347,6 +347,7 @@ var _DeviceManage = function () {
 		    case 6: 
 		}
 	}
+	
 	var setProcessBtn = function(mode){
 		if(mode != 0){
 			$('.workStep[mode='+mode+']').addClass('on');

@@ -766,6 +766,8 @@ var _WestCondition = function () {
     	
     	_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
 			// GIS 모드
+			$('.topmenu').find('li').removeClass('on');
+    		$('a[mode="' + data.mode + '"]').parent().addClass('on');
     		if(data.mode == 0){
     			$('.gisTaskMenu').show();
     			$('#tabOpeners').addClass('off');
