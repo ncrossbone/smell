@@ -363,7 +363,8 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
              CMPNY_NM,
              LEGALDONG_ETC,
              TELNO,INDUTY,
-             ERTHSF_AL
+             ERTHSF_AL,
+             EXHST_QY
   		FROM bdsm.BPLC_INFO
  	   WHERE LEGALDONG_CODE LIKE  CONCAT(#{town}, '%')
  	   <if test="branchName != ''">

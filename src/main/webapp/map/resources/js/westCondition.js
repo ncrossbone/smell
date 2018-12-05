@@ -191,7 +191,8 @@ var _WestCondition = function () {
     			           {name:'LEGALDONG_ETC',title:'주소'},
     			           {name:'TELNO',title:'전화번호'},
     			           {name:'INDUTY',title:'업종'},
-    			           {name:'ERTHSF_AL',title:'지표 고도'}]
+    			           {name:'ERTHSF_AL',title:'지표 고도'},
+    			           {name:'EXHST_QY',title:'배출량'}]
     	},
     	'odorReduction':{
     		cqlForMappingObj:{'cityDistrict':'LEGALDONG_CODE',
@@ -423,7 +424,7 @@ var _WestCondition = function () {
         
         var portableMeasurementItemHtml = '';
         var iotItemHtml = '';
-        for(var i=3; i<contentsConfig['portableMeasurement'].columnArr.length - 1; i++){
+        for(var i=3; i<contentsConfig['portableMeasurement'].columnArr.length; i++){
         	portableMeasurementItemHtml += '<option value=\''+contentsConfig['portableMeasurement'].columnArr[i].name+'\'>'+contentsConfig['portableMeasurement'].columnArr[i].title+'</option>';
            	var checked = i==3?'checked="checked"':'';
         	iotItemHtml += '<li><input type="checkbox" value="'+contentsConfig['portableMeasurement'].columnArr[i].name+'" id="iotSensorInfoCheckBox'+(i-2)+'" name="iotSensorInfoCheckBox" ' + checked + ' />';
