@@ -47,6 +47,9 @@ _MapEvents.alertShow = 'alertShow';
 _MapEvents.show_cvplPopup = 'show_cvplPopup';
 _MapEvents.hide_cvplPopup = 'hide_cvplPopup';
 
+_MapEvents.write_bottom_grid_tab = 'write_bottom_grid_tab';
+_MapEvents.clear_bottom_grid_tab = 'clear_bottom_grid_tab';
+
 _MapEvents.addWriteLayerForBiz = 'addWriteLayerForBiz';
 
 var _MapEventBus = $({});
