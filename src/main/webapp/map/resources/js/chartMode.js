@@ -197,14 +197,6 @@ var _ChartMode = function () {
 				     {name:'H2S',title:'황화수소'},
 				     {name:'NH3',title:'암모니아'},
 				     {name:'VOCS',title:'휘발성유기물'},
-				     {name:'ETHANOL',title:'에탄올'},
-				     {name:'TMA',title:'트리메틸아민'},
-				     {name:'CH3SH',title:'메틸메르캅탄'},
-				     {name:'CFC',title:'염소'},
-				     {name:'PM2_5',title:'미세먼지2.5'},
-				     {name:'PM10',title:'미세먼지10'},
-				     {name:'SO2',title:'이산화황'},
-				     {name:'NO2',title:'이산화질소'},
 			     {name:'MESURE_DT',title:'날짜'}]
 		$('#chartArea').html('');
 		
