@@ -65,7 +65,7 @@ var _SmellMapBiz = function () {
 	var trackingIdx = 0;
 	var trackingInterval = null;
 	var trackingPlayType = 0; // 0 = 정지  1 = 재생  2 = 일시정지
-	var trackingIntervalTime = 1000;
+	var trackingIntervalTime = 400;
 	var isTask = false;
 	
 	var originLayer  = null; 
@@ -219,8 +219,13 @@ var _SmellMapBiz = function () {
 		_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
 			// GIS 모드
 			_SmellMapBiz.taskMode = data.mode;
+			
 			layerCloseAll();
+			
 			$('#legendDiv').hide();
+			
+			_MapEventBus.trigger(_MapEvents.clear_bottom_grid_tab, {placeId:'odorOrigin'});
+			
 		});
 		
 		_MapEventBus.on(_MapEvents.setCurrentDate, function(event, data){
@@ -262,6 +267,8 @@ var _SmellMapBiz = function () {
 					clearInterval(trackingInterval);	
 					trackingInterval = null;
 				}
+				 
+				_MapEventBus.trigger(_MapEvents.clear_bottom_grid_tab, {placeId:'odorOrigin'});
 			}
 		});
 		_MapEventBus.on(_MapEvents.show_odorMovement_layer, function(event, data){
@@ -874,7 +881,7 @@ var _SmellMapBiz = function () {
 			if(odorMovementLayer){
 				clearInterval(trackingInterval);
 				trackingInterval = null;
-				trackingIntervalTime = 100;
+				trackingIntervalTime = 10;
 				tracking();
 			}
 		});
@@ -922,7 +929,7 @@ var _SmellMapBiz = function () {
 			if(trackingFeatures == null || trackingFeatures.length <= 0){
 				return;
 			}
-			_MapService.getWfs(':BPLC', '*','1=1', null).then(function(result){
+			_MapService.getWfs(':shp_bplc_for_westcondition', '*','1=1', null).then(function(result){
 				
 				var parser = new jsts.io.OL3Parser();
 				
@@ -941,6 +948,8 @@ var _SmellMapBiz = function () {
 
 				var interFeatures = [];
 				
+				var gridData = [];
+				
 				for(var i=0; i<result.features.length; i++){
 					var bplcFeature = new ol.Feature({geometry:new ol.geom.Polygon(result.features[i].geometry.coordinates), properties:result.features[i].properties});
 					bplcFeature.getProperties().properties.type == 'buffer';
@@ -950,6 +959,7 @@ var _SmellMapBiz = function () {
 					var interGeometry = parser.write(interFeature);
 					if(interGeometry.getCoordinates()[0].length > 0){
 						interFeatures.push(bplcFeature);
+						gridData.push(result.features[i].properties);
 					}
 				}
 				
@@ -958,6 +968,9 @@ var _SmellMapBiz = function () {
 				if(interFeatures.length <= 0){
 					_MapEventBus.trigger(_MapEvents.alertShow, {text:'오염원점이 없습니다.'});
 				}else{
+					
+					_MapEventBus.trigger(_MapEvents.write_bottom_grid_tab, {placeId:'odorOrigin', gridData:gridData});
+					
 					var source = new ol.source.Vector();
 					source.addFeatures(interFeatures);
 					originLayer = new ol.layer.Vector({
@@ -1059,8 +1072,9 @@ var _SmellMapBiz = function () {
 			if(isTask){
 				trackingIntervalTime = 10;
 			}else{
-				trackingIntervalTime = 1000;
+				trackingIntervalTime = 400;
 			}
+			
 			tracking();
 			trackingPlayType = 1;
 			setControlButton('odorMovementPlay', trackingPlayType);

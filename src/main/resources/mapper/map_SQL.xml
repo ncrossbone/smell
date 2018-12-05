@@ -4,13 +4,6 @@
 
 <mapper namespace="com.ce.smell.mapper.MapMapper">
 
-	<select id="getCMAQ9KM" resultType="com.ce.smell.model.MapVO">
-		SELECT OGR_FID, 
-		       INDEXID, 
-		       NVL(FLAG, 0) AS FLAG 
-		  FROM CMAQ_9KM_WGS84_2
-	</select>
-
 	<update id="putFlag" parameterType="java.util.HashMap">
 		UPDATE ANALS_AREA_MANAGE SET GRID_INTRST_SE_CODE = #{flag} WHERE ANALS_AREA_ID = #{indexId}
 	</update>

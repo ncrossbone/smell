@@ -764,6 +764,13 @@ var _WestCondition = function () {
     		}
     	});*/
     	
+    	_MapEventBus.on(_MapEvents.write_bottom_grid_tab, function(event, data){
+    		writeGrid(data.placeId, data.gridData);
+		});
+    	_MapEventBus.on(_MapEvents.clear_bottom_grid_tab, function(event, data){
+    		clearOnlyTab('place'+data.placeId);
+		});
+    	
     	_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
 			// GIS 모드
 			$('.topmenu').find('li').removeClass('on');
@@ -1624,6 +1631,20 @@ var _WestCondition = function () {
     	clearFocusLayer();
     };
     
+    var clearOnlyTab = function(tabId){
+    	$('li[aria-controls="'+tabId+'"]').remove();
+    	$('#' + tabId ).remove();
+    	try {
+    		$('#tabs').tabs('refresh');
+		} catch (e) {
+			// TODO: handle exception
+		}
+    	
+    	if($('ul[role="tablist"]').find('li').length==0){
+    		$('#gridArea').hide();
+    	}
+    };
+    
     var writeGrid = function(id, data){
     	$('#gridArea').show();
     	var tabTitle = $('#tab_title');
@@ -2040,11 +2061,9 @@ var _WestCondition = function () {
         popupOverlayData: function(areaId, reg){
         	popupOverlayData(areaId, reg);
         },
-        
         excelDwonLoad: function(){
         	excelDwonLoad();
         },
-        
         tabCloseOpen: function(value){
         	tabCloseOpen(value);
         },
