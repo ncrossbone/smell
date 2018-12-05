@@ -197,6 +197,8 @@ var _ChartMode = function () {
 				     {name:'H2S',title:'황화수소'},
 				     {name:'NH3',title:'암모니아'},
 				     {name:'VOCS',title:'휘발성유기물'},
+				     {name:'SO2',title:'이산화황'},
+				     {name:'NO2',title:'이산화질소'},
 			     {name:'MESURE_DT',title:'날짜'}]
 		$('#chartArea').html('');
 		
@@ -207,8 +209,8 @@ var _ChartMode = function () {
 		var chartObj = {
 				chart: {
 					backgroundColor: '#00ff0000',
-					height: 220,
-					width:450
+					height:180,
+					width:350
 				},
 				title: {
 					text: '',
