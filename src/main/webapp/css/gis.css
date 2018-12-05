@@ -221,13 +221,13 @@ ul[role="tablist"]{
 
 #chartArea{
 	position: absolute; 
-	width: 490px;
+	width: 380px;
     z-index: 3;
     height: 500px;
     border-right: 1px solid #fff;
     background: #0c2641;
     opacity:0.7;
-    overflow-y:auto;
+    overflow-y: scroll;
     margin-top: 80px;
 }
 

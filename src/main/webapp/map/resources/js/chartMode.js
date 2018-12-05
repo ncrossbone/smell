@@ -207,8 +207,8 @@ var _ChartMode = function () {
 		var chartObj = {
 				chart: {
 					backgroundColor: '#00ff0000',
-					height: 220,
-					width:450
+					height:180,
+					width:350
 				},
 				title: {
 					text: '',

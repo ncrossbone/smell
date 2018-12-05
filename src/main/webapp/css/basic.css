@@ -347,7 +347,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .r1> table> tbody> tr> th> img { vertical-align:top; margin-left:5px; }
 
 /*181130*/
-#chart { position: absolute; width:453px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; z-index: 100;}
+#chart { position: absolute; width:344px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; z-index: 100;}
 .topwrap { width:100%; position:relative; }
 .topbtn{ position:absolute; right:0; top:50%; transform:translateY(-50%); }
 .station_id { width:80%; border:1px solid #0c0d0d; font-weight:bold; padding:6px 20px;
