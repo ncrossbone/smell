@@ -160,9 +160,9 @@ var _SmellMapBiz = function () {
         }).done(function(result){
         	var intrstOptions = '';
         	for(var i=0; i<result.length; i++){
-        		intrstOptions += '<option  value="'+result[i].analsAreaId+'">'+result[i].intrstAreaNm+'('+result[i].analsAreaId+')</option>';
+        		intrstOptions += '<option  value="'+result[i].gridAreaId+'">'+result[i].intrstAreaNm+'('+result[i].gridAreaId+')</option>';
     		}
-        	$('#odorMovementItem').html(intrstOptions); 
+        	$('#odorMovementItem').html(intrstOptions);  
         });	
 	}
 	var setSensorCombo = function(){
