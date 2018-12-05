@@ -11,6 +11,8 @@ var _ComplaintStatusInsert = function () {
 	var smsText = '[악취발생 예보 알림]\n#date#\n악취확산이 예상되오니\n설비가동을 해주시면\n감사하겠습니다.';
 	
 	var layerName = ['cvplOnePoint','complaintStatusBuffer','bufferTarget'];
+	var fixedMeasurement = 'fixedMeasurement';
+	
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
 	
@@ -125,6 +127,10 @@ var _ComplaintStatusInsert = function () {
 			}
 			
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
+				var lyrNm = layer.get('name');
+				if(lyrNm == fixedMeasurement){
+						_WestCondition.onClickLayer(feature,lyrNm);
+				}
 				return feature;
 			});
 			
@@ -256,6 +262,12 @@ var _ComplaintStatusInsert = function () {
 				setTimeout(function(){
 					process.show();
 				}, 100);
+				
+				_MapEventBus.trigger(_MapEvents.addWriteLayerForBiz, {
+					layerId:fixedMeasurement,
+					date:currentDate.date,
+					time:currentDate.time
+				});
 			}else{
 				// 초기화
 				process.hide();
@@ -263,6 +275,7 @@ var _ComplaintStatusInsert = function () {
 				resetPreMode(1);
 				complaintStatusPopup.hide();
 				smsPopup.hide();
+				clearLayerByName(fixedMeasurement);
 //				clearLayer();
 			}
 		});

@@ -16,6 +16,8 @@ var _OdorForeCast = function () {
 
 	var locationLayer;
 	
+	var fixedMeasurement = 'fixedMeasurement';
+	
 	var init = function(){
 		odorForeCastPopup = $('#odorForeCastPopup');
 		process = $('.process');
@@ -92,6 +94,10 @@ var _OdorForeCast = function () {
 			}
 			
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel, function(feature, layer){
+				var lyrNm = layer.get('name');
+				if(lyrNm == fixedMeasurement){
+						_WestCondition.onClickLayer(feature,lyrNm);
+				}
 				return feature;
 			});
 			
@@ -213,6 +219,10 @@ var _OdorForeCast = function () {
 				setTimeout(function(){
 					process.show();
 				}, 100);
+				
+				_MapEventBus.trigger(_MapEvents.addWriteLayerForBiz, {
+					layerId:fixedMeasurement
+				});
 			}else{
 				// 초기화
 				resetPreMode(1);
@@ -222,6 +232,7 @@ var _OdorForeCast = function () {
 				odorForeCastPopup.hide();
 				odorForeCastPopupTime.hide();
 				smsPopup.hide();
+				clearLayerByName(fixedMeasurement);
 			}
 		});
 		

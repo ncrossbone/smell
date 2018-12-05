@@ -59,26 +59,18 @@ var _WestCondition = function () {
 						columnArr:[{name:'CODE',title:'센서 ID'},
 						     {name:'MESURE_DT',title:'검측 일시',width:170},
 						     {name:'OPR_STTUS_CODE',title:'가동 상태 코드'},
-						     {name:'VOCS',title:'휘발성유기물'},
-						     {name:'CCNT',title:'접점센서'},
-						     {name:'NH3',title:'암모니아'},
-						     {name:'ERCRT',title:'전류센서'},
-						     {name:'H2S',title:'황화수소'},
-						     {name:'ARCSR',title:'기압'},
 						     {name:'OU',title:'복합 악취'},
-						     {name:'SOLRAD',title:'일사'},
-						     {name:'HD',title:'습도'},
-						     {name:'TMPRT',title:'기온'},
-						     {name:'WD',title:'풍향'},
-						     {name:'WS',title:'풍속'},
-						     {name:'NO2',title:'이산화질소'},
-						     {name:'SO2',title:'이산화황'},
-						     {name:'PM10',title:'미세먼지10'},
-						     {name:'PM2_5',title:'미세먼지2.5'},
-						     {name:'CFC',title:'염소'},
-						     {name:'CH3SH',title:'메틸메르캅탄'},
+						     {name:'H2S',title:'황화수소'},
+						     {name:'NH3',title:'암모니아'},
+						     {name:'VOCS',title:'휘발성유기물'},
+						     {name:'ETHANOL',title:'에탄올'},
 						     {name:'TMA',title:'트리메틸아민'},
-						     {name:'ETHANOL',title:'에탄올'}]
+						     {name:'CH3SH',title:'메틸메르캅탄'},
+						     {name:'CFC',title:'염소'},
+						     {name:'PM2_5',title:'미세먼지2.5'},
+						     {name:'PM10',title:'미세먼지10'},
+						     {name:'SO2',title:'이산화황'},
+						     {name:'NO2',title:'이산화질소'}]
     	},
     	'fixedMeasurement':{
 			layerType:'base',
@@ -93,26 +85,18 @@ var _WestCondition = function () {
 			           {name:'SENSOR_NM',title:'센서 명'},
 			     {name:'MESURE_DT',title:'검측 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'가동 상태 코드'},
-			     {name:'VOCS',title:'휘발성유기물'},
-			     {name:'CCNT',title:'접점센서'},
-			     {name:'NH3',title:'암모니아'},
-			     {name:'ERCRT',title:'전류센서'},
-			     {name:'H2S',title:'황화수소'},
-			     {name:'ARCSR',title:'기압'},
 			     {name:'OU',title:'복합 악취'},
-			     {name:'SOLRAD',title:'일사'},
-			     {name:'HD',title:'습도'},
-			     {name:'TMPRT',title:'기온'},
-			     {name:'WD',title:'풍향'},
-			     {name:'WS',title:'풍속'},
-			     {name:'NO2',title:'이산화질소'},
-			     {name:'SO2',title:'이산화황'},
-			     {name:'PM10',title:'미세먼지10'},
-			     {name:'PM2_5',title:'미세먼지2.5'},
-			     {name:'CFC',title:'염소'},
-			     {name:'CH3SH',title:'메틸메르캅탄'},
-			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'H2S',title:'황화수소'},
+			     {name:'NH3',title:'암모니아'},
+			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'ETHANOL',title:'에탄올'},
+			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'CH3SH',title:'메틸메르캅탄'},
+			     {name:'CFC',title:'염소'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
+			     {name:'PM10',title:'미세먼지10'},
+			     {name:'SO2',title:'이산화황'},
+			     {name:'NO2',title:'이산화질소'},
 			     {name:'DATE',title:'날짜',visible:false}]
     	},
     	'sensoryEvaluation':{
@@ -173,26 +157,18 @@ var _WestCondition = function () {
 			           {name:'SENSOR_NM',title:'센서 명'},
 			     {name:'MESURE_DT',title:'검측 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
-			     {name:'VOCS',title:'휘발성유기물'},
-			     {name:'CCNT',title:'접점센서'},
-			     {name:'NH3',title:'암모니아'},
-			     {name:'ERCRT',title:'전류센서'},
-			     {name:'H2S',title:'황화수소'},
-			     {name:'ARCSR',title:'기압'},
 			     {name:'OU',title:'복합 악취'},
-			     {name:'SOLRAD',title:'일사'},
-			     {name:'HD',title:'습도'},
-			     {name:'TMPRT',title:'기온'},
-			     {name:'WD',title:'풍향'},
-			     {name:'WS',title:'풍속'},
-			     {name:'NO2',title:'이산화질소'},
-			     {name:'SO2',title:'이산화황'},
-			     {name:'PM10',title:'미세먼지10'},
-			     {name:'PM2_5',title:'미세먼지2.5'},
-			     {name:'CFC',title:'염소'},
-			     {name:'CH3SH',title:'메틸메르캅탄'},
-			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'H2S',title:'황화수소'},
+			     {name:'NH3',title:'암모니아'},
+			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'ETHANOL',title:'에탄올'},
+			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'CH3SH',title:'메틸메르캅탄'},
+			     {name:'CFC',title:'염소'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
+			     {name:'PM10',title:'미세먼지10'},
+			     {name:'SO2',title:'이산화황'},
+			     {name:'NO2',title:'이산화질소'},
 			     {name:'DATE',title:'날짜',visible:false}]
     	},
     	'odorOrigin':{
@@ -281,26 +257,18 @@ var _WestCondition = function () {
 			           {name:'SENSOR_NM',title:'센서 명'},
 			     {name:'MESURE_DT',title:'검측 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'센서명'},
-			     {name:'VOCS',title:'휘발성유기물'},
-			     {name:'CCNT',title:'접점센서'},
-			     {name:'NH3',title:'암모니아'},
-			     {name:'ERCRT',title:'전류센서'},
-			     {name:'H2S',title:'황화수소'},
-			     {name:'ARCSR',title:'기압'},
 			     {name:'OU',title:'복합 악취'},
-			     {name:'SOLRAD',title:'일사'},
-			     {name:'HD',title:'습도'},
-			     {name:'TMPRT',title:'기온'},
-			     {name:'WD',title:'풍향'},
-			     {name:'WS',title:'풍속'},
-			     {name:'NO2',title:'이산화질소'},
-			     {name:'SO2',title:'이산화황'},
-			     {name:'PM10',title:'미세먼지10'},
-			     {name:'PM2_5',title:'미세먼지2.5'},
-			     {name:'CFC',title:'염소'},
-			     {name:'CH3SH',title:'메틸메르캅탄'},
-			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'H2S',title:'황화수소'},
+			     {name:'NH3',title:'암모니아'},
+			     {name:'VOCS',title:'휘발성유기물'},
 			     {name:'ETHANOL',title:'에탄올'},
+			     {name:'TMA',title:'트리메틸아민'},
+			     {name:'CH3SH',title:'메틸메르캅탄'},
+			     {name:'CFC',title:'염소'},
+			     {name:'PM2_5',title:'미세먼지2.5'},
+			     {name:'PM10',title:'미세먼지10'},
+			     {name:'SO2',title:'이산화황'},
+			     {name:'NO2',title:'이산화질소'},
 			     {name:'DATE',title:'날짜',visible:false}]
     	}
     };
@@ -357,6 +325,8 @@ var _WestCondition = function () {
 		});
     	
     	_MapEventBus.on(_MapEvents.addWriteLayerForUseGeoserver, addWriteLayerForUseGeoserver);
+    	
+    	_MapEventBus.on(_MapEvents.addWriteLayerForBiz, addWriteLayerForBiz);
     	
     	_MapService.getWfs(westLayerObj.SHP_BDONG,'*',undefined,'cty_nm, dong_nm').done(function(data){
     		if(data.features.length == 0){
@@ -476,6 +446,24 @@ var _WestCondition = function () {
     
     var setDefaultHeight = function(){
     	defaultHeight = $('#gridArea').height(); 
+    };
+    
+    var addWriteLayerForBiz = function(event, options){
+    	
+    	var layerId = options.layerId;
+    	
+    	var getLayerForName = _CoreMap.getMap().getLayerForName(layerId);
+		if(getLayerForName){
+			return;
+		}
+		
+		var paramObj = {
+				contentsId:'fixedBasic'
+		};
+		
+		Common.getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
+			writeLayer(layerId,featureData,contentsConfig[layerId].isUseGeoserver);
+		});
     };
     
     var addWriteLayerForUseGeoserver = function(event, options){
@@ -1492,7 +1480,7 @@ var _WestCondition = function () {
     };
     
     var fixedMeasurementStyleFunction = function(feature){
-    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
+    	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'';
     	
     	var offsetY = 0;
     	if(_CoreMap.getMap().getView().getZoom() >= labelViewLevel){
