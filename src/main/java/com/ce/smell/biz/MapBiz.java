@@ -164,56 +164,61 @@ public class MapBiz {
 	public List<Map<String, Object>> getCoursModel(HashMap param) throws Exception {
 		String type = (String)param.get("type");
 		
-		URL url = new URL("http://112.217.167.123:60001/web/latticeAjax?lattice="+param.get("analsAreaId")+"&dt="+param.get("dtaDt")+"00&paramSeCode=ANL02001");
-		
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("GET"); // optional default is GET 
-		con.setRequestProperty("User-Agent", USER_AGENT); // add request header 
-		int responseCode = con.getResponseCode(); 
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream())); 
-		
-		String inputLine; StringBuffer response = new StringBuffer();
-		
-		while ((inputLine = in.readLine()) != null) { 
-			response.append(inputLine); 
-		} 
-		in.close();  
-		
-		List result = new ArrayList<Map<String, Object>>();
-		
-		if(responseCode == 200){
-			JsonParser jsonparse = new JsonParser();
-			JsonObject restResult = (JsonObject)jsonparse.parse(response.toString());
-			JsonArray resultList = null;
+		if("cours_sensor".equals(type)){
+			return mapMapper.getCoursModelBySensor(param); 
+		}else{
+			URL url = new URL("http://112.217.167.123:60001/web/latticeAjax?lattice="+param.get("analsAreaId")+"&dt="+param.get("dtaDt")+"00&paramSeCode=ANL02001");
 			
-			try{
-				resultList = (JsonArray)restResult.get("resultList");	
-			}catch(java.lang.ClassCastException e){
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET"); // optional default is GET 
+			con.setRequestProperty("User-Agent", USER_AGENT); // add request header 
+			int responseCode = con.getResponseCode(); 
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream())); 
+			
+			String inputLine; StringBuffer response = new StringBuffer();
+			
+			while ((inputLine = in.readLine()) != null) { 
+				response.append(inputLine); 
+			} 
+			in.close();  
+			
+			List result = new ArrayList<Map<String, Object>>();
+			
+			if(responseCode == 200){
+				JsonParser jsonparse = new JsonParser();
+				JsonObject restResult = (JsonObject)jsonparse.parse(response.toString());
+				JsonArray resultList = null;
+				
+				try{
+					resultList = (JsonArray)restResult.get("resultList");	
+				}catch(java.lang.ClassCastException e){
+					return result;
+				}
+				
+				if (resultList != null) { 
+				   for (int i=0;i<resultList.size();i++){
+					   JsonObject piece =  (JsonObject)resultList.get(i);
+					   HashMap<String, Object> item = new HashMap<String, Object>();
+					   for (Map.Entry<String, JsonElement> entry : piece.entrySet()) {
+							String key = entry.getKey();
+							if("latitude".equals(key)){
+								key = "utmx";
+							}
+							if("longitude".equals(key)){
+								key = "utmy";
+							}
+							item.put(key,String.valueOf(entry.getValue()).replaceAll("\"", ""));
+						}
+					   result.add(item);
+				   }
+				}
+				
+				return result;
+			}else{
 				return result;
 			}
-			
-			if (resultList != null) { 
-			   for (int i=0;i<resultList.size();i++){
-				   JsonObject piece =  (JsonObject)resultList.get(i);
-				   HashMap<String, Object> item = new HashMap<String, Object>();
-				   for (Map.Entry<String, JsonElement> entry : piece.entrySet()) {
-						String key = entry.getKey();
-						if("latitude".equals(key)){
-							key = "utmx";
-						}
-						if("longitude".equals(key)){
-							key = "utmy";
-						}
-						item.put(key,String.valueOf(entry.getValue()).replaceAll("\"", ""));
-					}
-				   result.add(item);
-			   }
-			}
-			
-			return result;
-		}else{
-			return result;
 		}
+		
 //		if("cours_now".equals(type)){
 //			param.put("tableNm", "RLTM_MVMN_COURS_MODEL");
 //		}else if("cours_forecast".equals(type)){
