@@ -94,9 +94,12 @@ var _ComplaintStatusInsert = function () {
 			if(complaintStatusMode < (parseInt(mode)-1)){
 				return;
 			}
-			if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
-				_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
-				return;
+			
+			if(selectedObj){
+				if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
+					_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
+					return;
+				}
 			}
 			
 			if(complaintStatusMode == mode){
