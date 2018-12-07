@@ -1294,16 +1294,9 @@ var _WestCondition = function () {
     var observatoryFunction= function(feature){
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 10,
-    			fill: new ol.style.Fill({
-    				color: '#118575'
-    			}),
-    			stroke: new ol.style.Stroke({
-    				color: '#AFABAB',
-    				width: 3
-    			})
-    		}),
+    		image: new ol.style.Icon(({
+    			src: '/map/images/obsrIcon.png'
+    		})),
     		text: new ol.style.Text({
     			text: feature.getProperties().NAME,
     			fill: new ol.style.Fill({
@@ -1370,18 +1363,12 @@ var _WestCondition = function () {
     	return style;
     };
     var unmannedOdorStyleFunction = function(feature){
+    	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 10,
-    			fill: new ol.style.Fill({
-    		        color: '#70AD47'
-    		    }),
-    		    stroke: new ol.style.Stroke({
-    		    	color: '#AFABAB',
-    		    	width: 3
-    		    })
-    		}),
+    		image: new ol.style.Icon(({
+    			src: '/map/images/unmanIcon.png'
+    		})),
     		text: new ol.style.Text({
     			text: feature.getProperties().SENSOR_NM,
     			fill: new ol.style.Fill({
@@ -1399,18 +1386,12 @@ var _WestCondition = function () {
     	return style;
     };
     var environmentCorporationStyleFunction = function(feature){
+    	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 10,
-    			fill: new ol.style.Fill({
-    		        color: '#ED7D31'
-    		    }),
-    		    stroke: new ol.style.Stroke({
-    		    	color: '#AFABAB',
-    		    	width: 3
-    		    })
-    		}),
+    		image: new ol.style.Icon(({
+    			src: '/map/images/environIcon.png'
+    		})),
     		text: new ol.style.Text({
     			text: feature.getProperties().NAME,
     			fill: new ol.style.Fill({
