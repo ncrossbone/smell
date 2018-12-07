@@ -465,7 +465,7 @@ var _OdorForeCast = function () {
 			style:function(feature){
 				return new ol.style.Style({
 		    		image: new ol.style.Icon(({
-		    			src: '/map/images/pin2.png',
+		    			src: '/map/images/pinIcon.png',
 		    			scale:1.0
 		    		})) 
 		    	}); 

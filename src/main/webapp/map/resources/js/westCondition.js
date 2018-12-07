@@ -678,16 +678,9 @@ var _WestCondition = function () {
             	    						features : [new ol.Feature(new ol.geom.Point(data.features[0].geometry.coordinates))]
             	    					}),
             	    					style : new ol.style.Style({
-            	    		    			image: new ol.style.Circle({
-            	    		    				radius: 15,
-            	    		    				stroke: new ol.style.Stroke({
-            	    		    			    	color: '#313942',
-            	    		    			    	width: 5
-            	    		    			    }),
-            	    		    				fill: new ol.style.Fill({
-            	    		        		        color: '#f56ee9'
-            	    		        		    })
-            	    		    			})
+            	    						image: new ol.style.Icon(({
+            	    			    			src: '/map/images/pinIcon.png'
+            	    			    		})),
             	    		    		}),
             	    					visible: true,
             	    					zIndex:1,
@@ -1207,24 +1200,17 @@ var _WestCondition = function () {
     };
     var reductionMonitoringStyleFunction = function(feature){
     	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
-    	var offsetY = 0;
+    	var offsetY = 20;
     	if(_CoreMap.getMap().getView().getZoom() >= labelViewLevel){
-    		text += "\n\n" + feature.getProperties().SENSOR_NM;
-    		offsetY = 15;
+    		text += "\n" + feature.getProperties().SENSOR_NM;
+    		offsetY = 26;
     	}
     	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
-    		image: new ol.style.Circle({
-    			radius: 20,
-    			fill: new ol.style.Fill({
-    				color: '#792BFF'
-    			}),
-    			stroke: new ol.style.Stroke({
-    				color: '#AFABAB',
-    				width: 3
-    			})
-    		}),
+    		image: new ol.style.Icon(({
+    			src: '/map/images/monitoringIcon.png'
+    		})),
 			text: new ol.style.Text({
 				text: text,
 				fill: new ol.style.Fill({
@@ -1440,16 +1426,16 @@ var _WestCondition = function () {
     
     var portableMeasurementStyleFunction = function(feature){
     	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
-    	var offsetY = 0;
+    	var offsetY = 20;
     	if(_CoreMap.getMap().getView().getZoom() >= labelViewLevel){
-    		text += "\n\n" + feature.getProperties().LABEL;
-    		offsetY = 13;
+    		text += "\n" + feature.getProperties().LABEL;
+    		offsetY = 26;
     	}
     	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/map/images/portable.png'
+    			src: '/map/images/portableIcon.png'
     		})),
 			text: new ol.style.Text({
 				text: text,
@@ -1471,15 +1457,15 @@ var _WestCondition = function () {
     var fixedMeasurementStyleFunction = function(feature){
     	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'';
     	
-    	var offsetY = 0;
+    	var offsetY = 20;
     	if(_CoreMap.getMap().getView().getZoom() >= labelViewLevel){
-    		text += "\n\n" + feature.getProperties().SENSOR_NM;
-    		offsetY = 15;
+    		text += "\n" + feature.getProperties().SENSOR_NM;
+    		offsetY = 26;
     	}
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/map/images/fixed.png'
+    			src: '/map/images/fixIcon.png'
     		})),
 			text: new ol.style.Text({
 				text: text,
@@ -1501,7 +1487,7 @@ var _WestCondition = function () {
     var checkPointStyleFunction = function(feature){
     	var style = new ol.style.Style({
 			image: new ol.style.Icon(({
-		          src: '/map/images/pin.png',
+		          src: '/map/images/pinIcon.png',
 		          anchor: [0.5,1]
 		        }))
   		});
