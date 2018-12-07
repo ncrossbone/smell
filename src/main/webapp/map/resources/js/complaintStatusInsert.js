@@ -94,9 +94,12 @@ var _ComplaintStatusInsert = function () {
 			if(complaintStatusMode < (parseInt(mode)-1)){
 				return;
 			}
-			if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
-				_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
-				return;
+			
+			if(selectedObj){
+				if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
+					_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
+					return;
+				}
 			}
 			
 			if(complaintStatusMode == mode){
@@ -268,9 +271,19 @@ var _ComplaintStatusInsert = function () {
 				
 				process.find('li').removeClass('on');
 				
+				var flagProcess = 'cvplProcess';
+				
 				for(var i = 0; i<process.find('li').length; i++){
+					var lc = '';
 					var li = $(process.find('li')[i]);
-					li.css('background-image', 'url("/map/images'+li.css('background-image').split('images')[1].replace('_on','_off'));
+					
+					if(li.attr('class').indexOf('p_a') > -1){
+						lc = '_mid';
+					}else if(li.attr('class').indexOf('p_l') > -1){
+						lc = '_last';
+					}
+					
+					li.css('background-image','url("/map/images/' + flagProcess + lc + '_off.png")');
 				}
 				changeMode(1);
 				

@@ -221,10 +221,21 @@ var _DeviceManage = function () {
 				
 				process.find('li').removeClass('on');
 				
+				var flagProcess = 'deviceProcess';
+				
 				for(var i = 0; i<process.find('li').length; i++){
+					var lc = '';
 					var li = $(process.find('li')[i]);
-					li.css('background-image', 'url("/map/images'+li.css('background-image').split('images')[1].replace('_on','_off'));
+					
+					if(li.attr('class').indexOf('p_a') > -1){
+						lc = '_mid';
+					}else if(li.attr('class').indexOf('p_l') > -1){
+						lc = '_last';
+					}
+					
+					li.css('background-image','url("/map/images/' + flagProcess + lc + '_off.png")');
 				}
+				
 				changeMode(1);
 				
 				setTimeout(function(){

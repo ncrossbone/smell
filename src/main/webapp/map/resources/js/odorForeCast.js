@@ -225,9 +225,19 @@ var _OdorForeCast = function () {
 				
 				process.find('li').removeClass('on');
 				
+				var flagProcess = 'forecast';
+				
 				for(var i = 0; i<process.find('li').length; i++){
+					var lc = '';
 					var li = $(process.find('li')[i]);
-					li.css('background-image', 'url("/map/images'+li.css('background-image').split('images')[1].replace('_on','_off'));
+					
+					if(li.attr('class').indexOf('p_a') > -1){
+						lc = '_mid';
+					}else if(li.attr('class').indexOf('p_l') > -1){
+						lc = '_last';
+					}
+					
+					li.css('background-image','url("/map/images/' + flagProcess + lc + '_off.png")');
 				}
 				changeMode(1); 
 				
@@ -455,7 +465,7 @@ var _OdorForeCast = function () {
 			style:function(feature){
 				return new ol.style.Style({
 		    		image: new ol.style.Icon(({
-		    			src: '/map/images/pin2.png',
+		    			src: '/map/images/pinIcon.png',
 		    			scale:1.0
 		    		})) 
 		    	}); 

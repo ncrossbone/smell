@@ -113,23 +113,16 @@ var _ChartMode = function () {
 					var text = prop.SENSOR_NM;
 					var typeConfig = {
 						'SEN01001':{icon:new ol.style.Icon(({
-			    					src: '/map/images/fixed.png'
+			    					src: '/map/images/fixIcon.png'
 			    				   })),
 			    				   offset:30},
     				    'SEN01002':{icon:new ol.style.Icon(({
-    				    			src: '/map/images/portable.png'
+    				    			src: '/map/images/portableIcon.png'
     				    		   })),
     				    		   offset:30},
-    				    'SEN01003':{icon:new ol.style.Circle({
-    		    			radius: 15, 
-    		    			fill: new ol.style.Fill({
-    		    		        color: '#70AD47'
-    		    		    }),
-    		    		    stroke: new ol.style.Stroke({
-    		    		    	color: '#AFABAB',
-    		    		    	width: 3
-    		    		    })
-    		    		}),
+    				    'SEN01003':{icon:new ol.style.Icon(({
+			    			src: '/map/images/unmanIcon.png'
+			    		   })),
     				   			   offset:30},
     				   	 'SEN01004':{icon:new ol.style.Circle({
     			    			radius: 15,
@@ -333,7 +326,7 @@ var _ChartMode = function () {
 						style:function(feature){
 							return new ol.style.Style({
 					    		image: new ol.style.Icon(({
-					    			src: '/map/images/pin2.png',
+					    			src: '/map/images/pinIcon.png',
 					    			scale:1.0
 					    		})) 
 					    	});
