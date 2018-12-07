@@ -376,7 +376,7 @@ var _WestCondition = function () {
     		$('#sensoryEvaluationCityDistrict').val(sensoryInitTownCode);
     	});
     	
-    	Common.getData({url:'/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
+    	Common.getData({url:'/map/getItem.do', contentType: 'application/json', params: {contentsId:'environmentCorporation'} }).done(function(data){
     		if(data.length == 0){
     			return;
     		}
@@ -456,7 +456,7 @@ var _WestCondition = function () {
 				contentsId:'fixedBasic'
 		};
 		
-		Common.getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
+		Common.getData({url: '/map/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
 			writeLayer(layerId,featureData,contentsConfig[layerId].isUseGeoserver);
 		});
     };
@@ -559,7 +559,7 @@ var _WestCondition = function () {
             	});
     		}
     	}else{
-    		Common.getData({url:'/getPOISelect.do', contentType: 'application/json', params: {} }).done(function(data){
+    		Common.getData({url:'/map/getPOISelect.do', contentType: 'application/json', params: {} }).done(function(data){
             	$('#poiPopup').show();
             	$('#poiGrid').jsGrid({
             		width: '565px',
@@ -648,7 +648,7 @@ var _WestCondition = function () {
             			return;
             		}
             		
-            		Common.getData({url:'/getPOISearch.do', contentType: 'application/json', params: paramObj }).done(function(data){
+            		Common.getData({url:'/map/getPOISearch.do', contentType: 'application/json', params: paramObj }).done(function(data){
             			$('#poiGrid').jsGrid({
             	    		width: '565px',
             	    		height: '220px',
@@ -841,11 +841,11 @@ var _WestCondition = function () {
     		clearFocusLayer();
     		try{
     			if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
-        			$(this).css('background','url(../images/btn_off.png)');
+        			$(this).css('background','url(/map/images/btn_off.png)');
         			contentsConfig[contentsId].isVisible = false;
         		}else{
         			isShow = true;
-        			$(this).css('background','url(../images/btn_on.png)');
+        			$(this).css('background','url(/map/images/btn_on.png)');
         			contentsConfig[contentsId].isVisible = true;
         		}
     		}catch(e){}
@@ -990,15 +990,15 @@ var _WestCondition = function () {
 
 
     	if(contentsConfig[placeId].isUseGeoserver){
-    		$.when(Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }),
+    		$.when(Common.getData({url: '/map/getGrid.do', contentType: 'application/json', params: paramObj }),
     				_MapService.getWfs(contentsConfig[placeId].layerName,'*',encodeURIComponent(cqlString.substr(0,cqlString.length-5)), '')).then(function (gridData, pointData) {
     					writeGrid(placeId,gridData[0]);
     					writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
     				});
     	}else{
-    		Common.getData({url: '/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
+    		Common.getData({url: '/map/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
     			if(contentsConfig[placeId].isWriteGrid && !chartMode){
-    				Common.getData({url: '/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
+    				Common.getData({url: '/map/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
     					writeGrid(placeId,gridData);
     				})
     			}
@@ -1191,7 +1191,7 @@ var _WestCondition = function () {
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/images/' + imageConfig[prop.STTUS_NM] + '.png'
+    			src: '/map/images/' + imageConfig[prop.STTUS_NM] + '.png'
     		})),
     		text: new ol.style.Text({
     			text: prop.BPLC_ID,
@@ -1468,7 +1468,7 @@ var _WestCondition = function () {
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '../images/portable.png'
+    			src: '/map/images/portable.png'
     		})),
 			text: new ol.style.Text({
 				text: text,
@@ -1498,7 +1498,7 @@ var _WestCondition = function () {
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '../images/fixed.png'
+    			src: '/map/images/fixed.png'
     		})),
 			text: new ol.style.Text({
 				text: text,
@@ -1520,7 +1520,7 @@ var _WestCondition = function () {
     var checkPointStyleFunction = function(feature){
     	var style = new ol.style.Style({
 			image: new ol.style.Icon(({
-		          src: '/images/pin.png',
+		          src: '/map/images/pin.png',
 		          anchor: [0.5,1]
 		        }))
   		});
@@ -1567,7 +1567,7 @@ var _WestCondition = function () {
     	if (size > 1) {
     		style = new ol.style.Style({
     			image: new ol.style.Icon(({
-		          src: '/images/maker.png'
+		          src: '/map/images/maker.png'
 		        })),
     			text: new ol.style.Text({
     				text: size.toString(),
@@ -1590,7 +1590,7 @@ var _WestCondition = function () {
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '../images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
+    			src: '/map/images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
     			scale:1.5
     		})),
     		text: new ol.style.Text({
@@ -1649,7 +1649,7 @@ var _WestCondition = function () {
     	$('#gridArea').show();
     	var tabTitle = $('#tab_title');
     	var tabContent = $('#tab_content');
-    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(../images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
+    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(/map/images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
     		
     	tabs.off('click').on('click','span.ui-icon-close', function() {
@@ -1723,7 +1723,7 @@ var _WestCondition = function () {
     		});
     	}else{
     		Common.getData({
-    			url: '/getClick.do',
+    			url: '/map/getClick.do',
     			contentType: 'application/json',
     			params: paramObj
     		}).done(function(data){

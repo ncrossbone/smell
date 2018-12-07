@@ -131,7 +131,7 @@ var _DeviceManage = function () {
 					bsmlPopup.show(); 
 					bsmlPopup2.hide();
 					$.ajax({
-						url:'/getBsmlReduceqpInfo.do', 
+						url:'/map/getBsmlReduceqpInfo.do', 
 						data: JSON.stringify({
 							bplcId:featureInfo.BPLC_ID
 						})}).done(function(data){
@@ -144,15 +144,15 @@ var _DeviceManage = function () {
 							var reduc = data.REDUC_EQP_NM?data.REDUC_EQP_NM:'분무식';
 							$("#reducEqpNm").html(reduc);
 							if(data.BPLC_ID){
-								$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");	
+								$("#bsmlImg").attr("src","/map/images/"+data.BPLC_ID+".png");	
 							}else{
-								$("#bsmlImg").attr("src","/images/"+featureInfo.BPLC_ID+".png");
+								$("#bsmlImg").attr("src","/map/images/"+featureInfo.BPLC_ID+".png");
 							}
 							
 							if(data.OPR_STTUS_NM != "ON"){
-								$("#operate").html("<img src='/images/operate_off.png' alt='비가동' />비가동");
+								$("#operate").html("<img src='/map/images/operate_off.png' alt='비가동' />비가동");
 							}else{
-								$("#operate").html("<img src='/images/operate_on.png' alt='가동' />가동");
+								$("#operate").html("<img src='/map/images/operate_on.png' alt='가동' />가동");
 							} 
 							 
 							$('#bsmlCtrlBtn').off('click').on('click', function(){
@@ -223,7 +223,7 @@ var _DeviceManage = function () {
 				
 				for(var i = 0; i<process.find('li').length; i++){
 					var li = $(process.find('li')[i]);
-					li.css('background-image', 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
+					li.css('background-image', 'url("/map/images'+li.css('background-image').split('images')[1].replace('_on','_off'));
 				}
 				changeMode(1);
 				
@@ -351,22 +351,22 @@ var _DeviceManage = function () {
 	var setProcessBtn = function(mode){
 		if(mode != 0){
 			$('.workStep[mode='+mode+']').addClass('on');
-			$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
+			$('.workStep[mode='+mode+']').css('background-image', 'url("/map/images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
 			
 			if(deviceStepMode < mode){
 				for(var i = 1; i<=mode; i++){
 					$('.workStep[mode='+i+']').addClass('on');
-					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+					$('.workStep[mode='+i+']').css('background-image', 'url("/map/images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
 				}
 			}else{
 				for(var i = 6; i>mode; i--){
 					$('.workStep[mode='+i+']').removeClass('on');
-					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
+					$('.workStep[mode='+i+']').css('background-image', 'url("/map/images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
 				}  
 			}
 		}else{
 			$('.workStep[mode="1"]').removeClass('on');
-			$('.workStep[mode="1"]').css('background-image', 'url("../images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
+			$('.workStep[mode="1"]').css('background-image', 'url("/map/images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
 		}
 	}
 	
@@ -483,7 +483,7 @@ var _DeviceManage = function () {
 			style:function(feature){
 				return new ol.style.Style({
 		    		image: new ol.style.Icon(({
-		    			src: '../images/portable.png',
+		    			src: '/map/images/portable.png',
 		    			scale:1.0
 		    		})) 
 		    	});

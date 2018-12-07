@@ -135,7 +135,7 @@ var _OdorForeCast = function () {
 					bsmlPopup.show(); 
 					bsmlPopup2.hide();
 					$.ajax({
-						url:'/getBsmlReduceqpInfo.do', 
+						url:'/map/getBsmlReduceqpInfo.do', 
 						data: JSON.stringify({
 							bplcId:featureInfo.BPLC_ID
 						})}).done(function(data){
@@ -148,15 +148,15 @@ var _OdorForeCast = function () {
 							var reduc = data.REDUC_EQP_NM?data.REDUC_EQP_NM:'분무식';
 							$("#reducEqpNm").html(reduc);
 							if(data.BPLC_ID){
-								$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");	
+								$("#bsmlImg").attr("src","/map/images/"+data.BPLC_ID+".png");	
 							}else{
-								$("#bsmlImg").attr("src","/images/"+featureInfo.BPLC_ID+".png");
+								$("#bsmlImg").attr("src","/map/images/"+featureInfo.BPLC_ID+".png");
 							}
 							
 							if(data.OPR_STTUS_NM != "ON"){
-								$("#operate").html("<img src='/images/operate_off.png' alt='비가동' />비가동");
+								$("#operate").html("<img src='/map/images/operate_off.png' alt='비가동' />비가동");
 							}else{
-								$("#operate").html("<img src='/images/operate_on.png' alt='가동' />가동");
+								$("#operate").html("<img src='/map/images/operate_on.png' alt='가동' />가동");
 							} 
 							
 							$('#bsmlCtrlBtn').off('click').on('click', function(){
@@ -227,7 +227,7 @@ var _OdorForeCast = function () {
 				
 				for(var i = 0; i<process.find('li').length; i++){
 					var li = $(process.find('li')[i]);
-					li.css('background-image', 'url("../images'+li.css('background-image').split('images')[1].replace('_on','_off'));
+					li.css('background-image', 'url("/map/images'+li.css('background-image').split('images')[1].replace('_on','_off'));
 				}
 				changeMode(1); 
 				
@@ -330,22 +330,22 @@ var _OdorForeCast = function () {
 	var setProcessBtn = function(mode){
 		if(mode != 0){
 			$('.workStep[mode='+mode+']').addClass('on');
-			$('.workStep[mode='+mode+']').css('background-image', 'url("../images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
+			$('.workStep[mode='+mode+']').css('background-image', 'url("/map/images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
 			
 			if(odorForeCastStepMode < mode){
 				for(var i = 1; i<=mode; i++){
 					$('.workStep[mode='+i+']').addClass('on');
-					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
+					$('.workStep[mode='+i+']').css('background-image', 'url("/map/images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_off','_on'));
 				}
 			}else{
 				for(var i = 6; i>mode; i--){
 					$('.workStep[mode='+i+']').removeClass('on');
-					$('.workStep[mode='+i+']').css('background-image', 'url("../images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
+					$('.workStep[mode='+i+']').css('background-image', 'url("/map/images'+$('.workStep[mode='+i+']').css('background-image').split('images')[1].replace('_on','_off'));
 				}  
 			}
 		}else{
 			$('.workStep[mode="1"]').removeClass('on');
-			$('.workStep[mode="1"]').css('background-image', 'url("../images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
+			$('.workStep[mode="1"]').css('background-image', 'url("/map/images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
 		}
 	}
 	
@@ -396,7 +396,7 @@ var _OdorForeCast = function () {
 			currentDate.time = msg.time;
 			
 			$.ajax({
-				url:'/getOdorForecastXY.do', 
+				url:'/map/getOdorForecastXY.do', 
 				data: JSON.stringify({
 					gridId:msg.gridId
 				})}).done(function(data){
@@ -455,12 +455,12 @@ var _OdorForeCast = function () {
 			style:function(feature){
 				return new ol.style.Style({
 		    		image: new ol.style.Icon(({
-		    			src: '../images/pin2.png',
+		    			src: '/map/images/pin2.png',
 		    			scale:1.0
 		    		})) 
 		    	}); 
 			}
-		}); 
+		});  
  
 		_MapEventBus.trigger(_MapEvents.map_addLayer, locationLayer);
 	};

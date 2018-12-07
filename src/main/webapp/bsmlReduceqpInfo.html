@@ -5,10 +5,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 <title>청주시 지능형 도농복합도시 악취관리시스템(개발)</title>
 
-<link href="/css/BasicSet.css" rel="stylesheet" type="text/css" />
-<link href="/css/basic.css" rel="stylesheet" type="text/css" />
-<script src="/js/jquery.min-1.8.3.js"></script>
-<script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
+<link href="/map/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/map/css/basic.css" rel="stylesheet" type="text/css" />
+<script src="/map/js/jquery.min-1.8.3.js"></script>
+<script type="text/javascript" src="/map/map/resources/js/lib/common.js"></script>
 
 <script type="text/javascript">
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
@@ -19,7 +19,7 @@ $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 //민원데이터관리 조회
 function initInfo() {
 	Common.getData({
-		url:'/getBsmlReduceqpInfo.do', 
+		url:'/map/getBsmlReduceqpInfo.do', 
 		contentType: 'application/json', 
 		params: {
 			bplcId: 'B32'
@@ -29,7 +29,7 @@ function initInfo() {
 		$("#ctrlCnCode").val(data.CTRL_CN_CODE);
 		$(".info_tit").html(data.BSML_TRGNPT_NM);
 		$("#reducEqpNm").html(data.REDUC_EQP_NM);
-		$("#bsmlImg").attr("src","/images/"+data.BPLC_ID+".png");
+		$("#bsmlImg").attr("src","/map/images/"+data.BPLC_ID+".png");
 		if(data.OPR_STTUS_NM != "ON"){
 			$("#operate").html("<img src='/images/operate_off.png' alt='비가동' />비가동");
 		}else{
@@ -44,7 +44,7 @@ function bsmlCtrl(){
 	var ctrlCnCode = $("#ctrlCnCode").val();
 	
 	$.ajax({
-        url : '/insertOnOff.do',
+        url : '/map/insertOnOff.do',
         data: JSON.stringify({bplcId:bplcId, reducEqpNo:reducEqpNo,ctrlCnCode:ctrlCnCode}),
         type:'POST',
         contentType: 'application/json'

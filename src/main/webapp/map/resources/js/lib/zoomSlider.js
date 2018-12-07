@@ -15,18 +15,18 @@ var _ZoomSlider = function () {
 		zoomOptions.preLevel = options.preLevel;
 		
 		var html = "<div class='zoomText'>" +
-						"<div style='top:39px; background: url(/map/resources/images/zoom.png) -216px 0px;'></div>" +
-						"<div style='top:83px; background: url(/map/resources/images/zoom.png) -245px 0px;'></div>" +
-						"<div style='top:127px; background: url(/map/resources/images/zoom.png) -274px 0px;'></div>" +
-						"<div style='top:159px; background: url(/map/resources/images/zoom.png) -303px 0px;'></div>" +
+						"<div style='top:39px; background: url(/map/map/resources/images/zoom.png) -216px 0px;'></div>" +
+						"<div style='top:83px; background: url(/map/map/resources/images/zoom.png) -245px 0px;'></div>" +
+						"<div style='top:127px; background: url(/map/map/resources/images/zoom.png) -274px 0px;'></div>" +
+						"<div style='top:159px; background: url(/map/map/resources/images/zoom.png) -303px 0px;'></div>" +
 				   "</div>" +
-				   "<div class='plus' style='cursor:pointer; position:absolute; top:0px; left:30px; width: 20px; height: 20px; background: url(/map/resources/images/zoom.png) -80px 0px no-repeat;'></div>" +
-	  			   "<div class='zoomBar' style='top:20px; left:31px; border: solid 1px; position: absolute; width: 16px; background: url(/map/resources/images/zoom.png) -140px 0px repeat-y; transition: height 0.1s;'>" +
-	  					"<div class='zoomPointer' style='cursor: pointer; z-index:1; left: -1px; overflow: hidden; position: absolute; width: 18px; height: 11px; background: url(/map/resources/images/zoom.png) -157px 0px;'></div>" +
-	  					"<div class='zoomBar2' style=' position: absolute; width: 16px; height: 11px; background: url(/map/resources/images/zoom.png) -122px 0px repeat-y;'></div>" +
+				   "<div class='plus' style='cursor:pointer; position:absolute; top:0px; left:30px; width: 20px; height: 20px; background: url(/map/map/resources/images/zoom.png) -80px 0px no-repeat;'></div>" +
+	  			   "<div class='zoomBar' style='top:20px; left:31px; border: solid 1px; position: absolute; width: 16px; background: url(/map/map/resources/images/zoom.png) -140px 0px repeat-y; transition: height 0.1s;'>" +
+	  					"<div class='zoomPointer' style='cursor: pointer; z-index:1; left: -1px; overflow: hidden; position: absolute; width: 18px; height: 11px; background: url(/map/map/resources/images/zoom.png) -157px 0px;'></div>" +
+	  					"<div class='zoomBar2' style=' position: absolute; width: 16px; height: 11px; background: url(/map/map/resources/images/zoom.png) -122px 0px repeat-y;'></div>" +
 	  					"<div class='zoomPart'></div>" +
 	  			   "</div>" +
-				   "<div class='minus' style='cursor:pointer; top:141px; left:30px; position: absolute; width: 20px; height: 20px; background: url(/map/resources/images/zoom.png) -100px 0px no-repeat;'></div>";
+				   "<div class='minus' style='cursor:pointer; top:141px; left:30px; position: absolute; width: 20px; height: 20px; background: url(/map/map/resources/images/zoom.png) -100px 0px no-repeat;'></div>";
 		
 		$('#'+options.id).css('position','absolute');
 		$('#'+options.id).css('z-index','1');

@@ -59,7 +59,7 @@ var _ChartMode = function () {
 				stopPlay();
 			}else{
 				autoPlay();
-				$('#chartPlay').find('img').attr('src','images/pause_b.png');
+				$('#chartPlay').find('img').attr('src','/map/images/pause_b.png');
 			}
     	});
 	};
@@ -85,7 +85,7 @@ var _ChartMode = function () {
 	};
 	
 	var getChartFeature = function(){
-		Common.getData({url: '/getFeature.do', contentType: 'application/json', params:{contentsId:'chart'}}).done(function(featureData){
+		Common.getData({url: '/map/getFeature.do', contentType: 'application/json', params:{contentsId:'chart'}}).done(function(featureData){
 			
 			var pointArr = [];
 			
@@ -113,15 +113,15 @@ var _ChartMode = function () {
 					var text = prop.SENSOR_NM;
 					var typeConfig = {
 						'SEN01001':{icon:new ol.style.Icon(({
-			    					src: '../images/fixed.png'
+			    					src: '/map/images/fixed.png'
 			    				   })),
 			    				   offset:30},
     				    'SEN01002':{icon:new ol.style.Icon(({
-    				    			src: '../images/portable.png'
+    				    			src: '/map/images/portable.png'
     				    		   })),
     				    		   offset:30},
     				    'SEN01003':{icon:new ol.style.Circle({
-    		    			radius: 15,
+    		    			radius: 15, 
     		    			fill: new ol.style.Fill({
     		    		        color: '#70AD47'
     		    		    }),
@@ -173,7 +173,7 @@ var _ChartMode = function () {
 	
 	var getChartData = function(param){
 		Common.getData({
-			url: '/getChart.do',
+			url: '/map/getChart.do',
 			contentType: 'application/json',
 			params: param
 		}).done(function(data){
@@ -181,7 +181,7 @@ var _ChartMode = function () {
 			writeChart({data:data});
 			
 			Common.getData({
-    			url: '/getClick.do',
+    			url: '/map/getClick.do',
     			contentType: 'application/json',
     			params: {contentsId:'chart',code:param.code}
 			}).done(function(data){
@@ -284,7 +284,7 @@ var _ChartMode = function () {
 	};
 	
 	var stopPlay = function(){
-		$('#chartPlay').find('img').attr('src','images/reset.png');
+		$('#chartPlay').find('img').attr('src','/map/images/reset.png');
 		if(chartInterval){
 			clearInterval(chartInterval);
 			chartInterval = null;	
@@ -296,7 +296,7 @@ var _ChartMode = function () {
 			datetime = '2018120111';
 			
 			$.ajax({
-				url:'/getOdorForecastXY.do', 
+				url:'/map/getOdorForecastXY.do', 
 				data: JSON.stringify({
 					gridId:msg.id
 				})}).done(function(data){
@@ -333,7 +333,7 @@ var _ChartMode = function () {
 						style:function(feature){
 							return new ol.style.Style({
 					    		image: new ol.style.Icon(({
-					    			src: '../images/pin2.png',
+					    			src: '/map/images/pin2.png',
 					    			scale:1.0
 					    		})) 
 					    	});

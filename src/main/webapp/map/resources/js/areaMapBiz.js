@@ -42,7 +42,7 @@ var _AreaMapBiz = function () {
 			_MapEventBus.trigger(_MapEvents.map_removeLayer, garbageLayer);
 		} 
 		$.ajax({
-            url: '/getSensorList.do'
+            url: '/map/getSensorList.do'
         }).done(function(result){
         	var sensorFeatures = [];
         	
@@ -113,7 +113,7 @@ var _AreaMapBiz = function () {
 				
 				if(flag == "0"){
 					$.ajax({
-			            url : bizUrl+'/insertAnals.do',
+			            url : bizUrl+'/map/insertAnals.do',
 			            data: JSON.stringify({indexId:indexId, predictAl:predictAl})
 			    	}).done(function(result){
 			    		  
@@ -124,7 +124,7 @@ var _AreaMapBiz = function () {
 			    	});
 				}else{
 					$.ajax({
-			            url : bizUrl+'/deleteAnals.do?indexId='+indexId,
+			            url : bizUrl+'/map/deleteAnals.do?indexId='+indexId,
 			            type : 'GET',
 			            contentType : 'application/json'
 			    	}).done(function(result){
@@ -176,7 +176,7 @@ var _AreaMapBiz = function () {
 				}
 				var coord = ol.proj.transform([data.result.coordinate[0], data.result.coordinate[1]], 'EPSG:3857', 'EPSG:4326');
 				$.ajax({
-		            url : bizUrl+'/updateSensor.do',
+		            url : bizUrl+'/map/updateSensor.do',
 		            data:JSON.stringify({spotCode:selectedSpotCode, la:coord[1], lo:coord[0]})
 		    	}).done(function(result){
 		    		alert('이동된 위치로 저장되었습니다.');
@@ -229,7 +229,7 @@ var _AreaMapBiz = function () {
 						
 						if(popupOverlay){
 							popupOverlay.setPosition(featureCenter);
-							$.ajax({url: '/getArea.do', data: JSON.stringify({"analsAreaId": result.features[0].properties.ANALS_AREA_ID }) }).done(function(data){
+							$.ajax({url: '/map/getArea.do', data: JSON.stringify({"analsAreaId": result.features[0].properties.ANALS_AREA_ID }) }).done(function(data){
 								
 								if(data.length > 0){
 									$('#popupOverlay').show();
@@ -366,10 +366,10 @@ var _AreaMapBiz = function () {
 	        })
 	};
 	var sensorPointStyle = function(feature){
-		var src = '/images/sensor_blue.png';
+		var src = '/map/images/sensor_blue.png';
 		
 		if(feature.getProperties().properties.isEdit){
-			src = '/images/sensor_red.png';
+			src = '/map/images/sensor_red.png';
 		}
     	
     	return new ol.style.Style({
