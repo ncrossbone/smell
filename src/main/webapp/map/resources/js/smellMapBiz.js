@@ -156,18 +156,18 @@ var _SmellMapBiz = function () {
 	
 	var setIntrstCombo = function(){
 		$.ajax({
-            url: '/getIntrstList.do',
+            url: '/map/getIntrstList.do',
         }).done(function(result){
         	var intrstOptions = '';
         	for(var i=0; i<result.length; i++){
         		intrstOptions += '<option  value="'+result[i].gridAreaId+'">'+result[i].intrstAreaNm+'('+result[i].gridAreaId+')</option>';
     		}
         	$('#odorMovementItem').html(intrstOptions);  
-        });	
+        });
 	}
 	var setSensorCombo = function(){
 		$.ajax({
-            url: '/getSensorList.do',
+            url: '/map/getSensorList.do',
         }).done(function(result){
         	var intrstOptions = '';
         	for(var i=0; i<result.length; i++){
@@ -277,7 +277,7 @@ var _SmellMapBiz = function () {
         	
 			
 //			$.ajax({
-//	            url: '/getAnalsAreaId.do',
+//	            url: '/map/getAnalsAreaId.do',
 //	            data:JSON.stringify({analsAreaId:analsAreaId})
 //	        }).done(function(result){
 //	        	if(result==null || result.length <= 0){
@@ -899,13 +899,13 @@ var _SmellMapBiz = function () {
 			$('#bufferOnOffBtn').off('click').on('click', function(){
 				if($(this).attr('value')=='on'){
 					$(this).attr('value','off');
-					$(this).prop('src','../images/wd_btn_off.png');
+					$(this).prop('src','/map/images/wd_btn_off.png');
 					if(bufferOriginLayer){
 						_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);
 					}
 				}else{
 					$(this).attr('value', 'on'); 
-					$(this).prop('src','../images/wd_btn_on.png');
+					$(this).prop('src','/map/images/wd_btn_on.png');
 					if(bufferOriginLayer){
 						_MapEventBus.trigger(_MapEvents.map_removeLayer, bufferOriginLayer);
 					}
@@ -1032,7 +1032,7 @@ var _SmellMapBiz = function () {
 		var params = {"type":layerNm, "analsAreaId":odorMovementItem, "dtaDt":odorMovementStartDate+odorMovementStartTime};
 
 		$.ajax({
-            url: '/getCoursModel.do',
+            url: '/map/getCoursModel.do',
             data:JSON.stringify(params)
         }).done(function(result){
         	
@@ -1168,7 +1168,7 @@ var _SmellMapBiz = function () {
 		$('#gridArea').show();
     	var tabTitle = $('#tab_title');
     	var tabContent = $('#tab_content');
-    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(../images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
+    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(/map/images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
     	
     	tabs.off('click').on('click','span.ui-icon-close', function() {
@@ -1187,7 +1187,6 @@ var _SmellMapBiz = function () {
     		tabs.find('.ui-tabs-nav').append( li );
         	tabs.append('<div id="grid' + id + '" style="padding: 10px 3px !important;"></div>');
     	}
-    	
     	tabs.tabs('refresh');
 
     	tabs.tabs({
@@ -1371,7 +1370,7 @@ var _SmellMapBiz = function () {
 		return new ol.style.Style({
 	        image: new ol.style.Icon({
 	        	opacity: 1.0,
-	            src: '/map/resources/images/icon/c1.png'
+	            src: '/map/map/resources/images/icon/c1.png'
 	        })
 		});
 	}
@@ -1414,7 +1413,7 @@ var _SmellMapBiz = function () {
 	var pointBufferStyle = function(){
 		return new ol.style.Style({
 	        image: new ol.style.Icon(/** @type {module:ol/style/Icon~Options} */ ({
-	            src: '/map/resources/images/icon/c2.png'
+	            src: '/map/map/resources/images/icon/c2.png'
 	        }))
 		});
 	}

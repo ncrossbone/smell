@@ -5,21 +5,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 <title>청주시 지능형 도농복합도시 악취관리시스템(개발)</title>
 
-<link href="/cms/css/BasicSet.css" rel="stylesheet" type="text/css" />
-<link href="/cms/css/common.css" rel="stylesheet" type="text/css" />
-<link href="/cms/css/sub.css" rel="stylesheet" type="text/css" />
-<link href="/cms/css/st.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="/cms/js/jquery.min.js"></script>
-<script type="text/javascript" src="/cms/js/common.js"></script>
-<script type="text/javascript" src="/cms/js/jquery-1.11.3.min.js"></script>
-<script type="text/javascript" src="/cms/js/frm.js"></script>
+<link href="/map/cms/css/BasicSet.css" rel="stylesheet" type="text/css" />
+<link href="/map/cms/css/common.css" rel="stylesheet" type="text/css" />
+<link href="/map/cms/css/sub.css" rel="stylesheet" type="text/css" />
+<link href="/map/cms/css/st.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/map/cms/js/jquery.min.js"></script>
+<script type="text/javascript" src="/map/cms/js/common.js"></script>
+<script type="text/javascript" src="/map/cms/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/map/cms/js/frm.js"></script>
 
-<script type="text/javascript" src="/map/resources/js/lib/common.js"></script>
+<script type="text/javascript" src="/map/map/resources/js/lib/common.js"></script>
 
 <!-- 달력 -->
-<link href="/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
-<script src="/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
-<script src="/cms/js/cal/ui/jquery.ui.core.js"></script>
+<link href="/map/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+<script src="/map/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
+<script src="/map/cms/js/cal/ui/jquery.ui.core.js"></script>
 
 <script type="text/javascript">
 //날짜변수 선언
@@ -32,7 +32,7 @@ tTime.setTime(getDiffTime1);
 $(document).ready(function(){
 	addDatePicker('#CVPL_DT');
 	
-	Common.getData({url:'/getCvplTyCode.do', contentType: 'application/json', params: {} }).done(function(data){
+	Common.getData({url:'/map/getCvplTyCode.do', contentType: 'application/json', params: {} }).done(function(data){
 		if(data.length == 0){
 			return;
 		}
@@ -43,7 +43,7 @@ $(document).ready(function(){
 		$("#CVPL_TY_CODE").html(selectTag);
 	});
 
-	Common.getData({url:'/getSigunguCode.do', contentType: 'application/json', params: {} }).done(function(data){
+	Common.getData({url:'/map/getSigunguCode.do', contentType: 'application/json', params: {} }).done(function(data){
 		if(data.length == 0){
 			return;
 		}

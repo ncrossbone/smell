@@ -305,7 +305,7 @@ function addDatePicker(obj, dateformat, changeFun) {
 		showOn: 'both',    // 엘리먼트와 이미지 동시사용 (both, button)
 		buttonImageOnly: true,   // 이미지 표시
 		buttonText: '달력',   // 버튼 텍스트 표시
-		buttonImage: '/cms/images/calendar.png',  // 이미지 주소
+		buttonImage: '/map/cms/images/calendar.png',  // 이미지 주소
 		showMonthAfterYear: true,
 		showButtonPanel: true,
 		onSelect: function(){ //날짜 선택시 호출되는 함수
@@ -345,7 +345,7 @@ function addMonthPicker(obj, dateformat, changeFun) {
 		showOn: 'both',    // 엘리먼트와 이미지 동시사용 (both, button)
 		buttonImageOnly: true,   // 이미지 표시
 		buttonText: '달력',   // 버튼 텍스트 표시
-		buttonImage: '/cms/images/calendar.png',  // 이미지 주소
+		buttonImage: '/map/cms/images/calendar.png',  // 이미지 주소
 		showMonthAfterYear: true,
 		showButtonPanel: true,
 		onSelect: function(){ //날짜 선택시 호출되는 함수

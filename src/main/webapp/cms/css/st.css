@@ -16,7 +16,7 @@
 .sty01 .btn_1 { background:#003c84; }
 .sty01 .btn_2 { background:#373946; }
 .sty01 .btn_3 { background:#8e8e8e; }
-.sty01 .tit { background:url(../__images/bullet.gif) no-repeat left center; color:#1a498f; }
+.sty01 .tit { background:url(/map/images/bullet.gif) no-repeat left center; color:#1a498f; }
 .sty01 .table03 ,.sty01 table, .sty01 .table02 { border-top: 2px solid #1a498f }
 .sty01 .cont_top:before { background:#003c84; }
 .sty01 .pagebtn> .select { border:1px solid #002a72; background:#002a72; }
@@ -25,7 +25,7 @@
 .sty02 .btn_1 { background:#213152; }
 .sty02 .btn_2 { background:#555555; }
 .sty02 .btn_3 { background:#949db2; }
-.sty02 .tit { background:url(../_images/bullet.png) no-repeat left center; color:#1a498f; }
+.sty02 .tit { background:url(../images/bullet.png) no-repeat left center; color:#1a498f; }
 .sty02 .table03 ,.sty02 table, .sty02 .table02 { border-top: 2px solid #1a498f }
 .sty02 .cont_top:before { background:#003c84; }
 .sty02 .pagebtn> .select { border:1px solid #002a72; background:#002a72; }
