@@ -780,6 +780,8 @@ var _WestCondition = function () {
     			$('#tabOpeners').removeClass('off');
     			tabCloseOpen($('#tabOpeners'));
     			$('#around_info').hide();
+    			
+    			_MapEventBus.trigger(_MapEvents.init,{});
     		}
 		});
     	_MapEventBus.on(_MapEvents.hide_cvplPopup, function(event, data){
