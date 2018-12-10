@@ -268,6 +268,10 @@ var _ChartMode = function () {
 				chartObj.xAxis.categories = dataObj.MESURE_DT;
 				chartObj.title.text = item[i].title + ' (' + item[i].name + ')';
 				chartObj.yAxis.plotLines = [{ value: plotData[item[i].name], color: 'red', width: 2, zIndex: 4}];
+				chartObj.yAxis.min = 0;
+				
+				var max = Math.max.apply(null,dataObj[item[i].name]);
+				chartObj.yAxis.max = plotData[item[i].name] > max ? plotData[item[i].name] + 0.1 : max + 0.1;
 				Highcharts.chart('chart'+ i,chartObj);
 			}
 		}
