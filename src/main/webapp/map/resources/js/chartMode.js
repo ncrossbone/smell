@@ -202,13 +202,15 @@ var _ChartMode = function () {
 		var chartObj = {
 				chart: {
 					backgroundColor: '#00ff0000',
-					height:180,
+					height:165,
 					width:350
 				},
 				title: {
 					text: '',
 					style: {
-						color: '#fff'
+						color: '#fff',
+						fontSize: '15px',
+						margin: 0
 					}
 				},
 				subtitle: {
@@ -286,8 +288,6 @@ var _ChartMode = function () {
 	
 	var setProcMsg = function(msg){
 		if(msg.type == 'chartMode'){
-			datetime = '2018120111';
-			
 			$.ajax({
 				url:'/map/getOdorForecastXY.do', 
 				data: JSON.stringify({

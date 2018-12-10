@@ -1553,12 +1553,12 @@ var _WestCondition = function () {
     
     var createLastPoint = function(feature) {
     	
-    	var tyCode = {'CVP02001':'chung','CVP02002':'naver','CVP02003':'five'};
+    	var tyCode = {'CVP02001':'minwon_11','CVP02002':'minwon_33','CVP02003':'minwon_22'};
     	return new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
     			src: '/map/images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
-    			scale:1.5
+    			scale:1.0
     		})),
     		text: new ol.style.Text({
 				text: feature.getProperties().CVPL_LC,
@@ -1569,7 +1569,7 @@ var _WestCondition = function () {
 					color : '#fff',
 					width : 3
 				}),
-				offsetY: 30,
+				offsetY: 40,
 				font: 'bold 13px Arial'
 			})
     	});
