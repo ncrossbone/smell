@@ -109,4 +109,6 @@ public interface MapMapper {
 	public List<Map<String, Object>> getOccurrenceForecastList(HashMap param);
 
 	public List<Map<String, Object>> getOdorForecastXY(HashMap param);
+
+	public List<Map<String, Object>> getPlotLine(HashMap param);
 }

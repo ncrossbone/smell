@@ -165,33 +165,27 @@ var _ChartMode = function () {
 	};
 	
 	var getChartData = function(param){
-		Common.getData({
-			url: '/map/getChart.do',
-			contentType: 'application/json',
-			params: param
-		}).done(function(data){
 
-			writeChart({data:data});
-			
-			Common.getData({
-    			url: '/map/getClick.do',
-    			contentType: 'application/json',
-    			params: {contentsId:'chart',code:param.code}
-			}).done(function(data){
-				$('#chartSpotId').text(data[0].CODE);
-				$('#chartSpotNm').text(data[0].SENSOR_NM);
-			});
-		});
+		$.when(Common.getData({ url: '/map/getChart.do', contentType: 'application/json', params: param }),
+				Common.getData({ url: '/map/getClick.do', contentType: 'application/json', params: {contentsId:'chart',code:param.code} }),
+				Common.getData({ url: '/map/getPlotLine.do', contentType: 'application/json', params: {contentsId:'chart',code:param.code} })).then(function (chartData, clickData, plotData) {
+
+					writeChart({data:chartData,plotData:plotData});
+
+					$('#chartSpotId').text(clickData[0][0].CODE);
+					$('#chartSpotNm').text(clickData[0][0].SENSOR_NM);
+				});
+
 	};
 	
 	var writeChart = function(param){
-		var data = param.data;
+		var data = param.data[0];
+		var plotData = param.plotData[0][0];
+		
 		var item =[{name:'OU',title:'복합 악취'},
 				     {name:'H2S',title:'황화수소'},
 				     {name:'NH3',title:'암모니아'},
 				     {name:'VOCS',title:'휘발성유기물'},
-				     {name:'SO2',title:'이산화황'},
-				     {name:'NO2',title:'이산화질소'},
 			     {name:'MESURE_DT',title:'날짜'}]
 		$('#chartArea').html('');
 		
@@ -273,6 +267,7 @@ var _ChartMode = function () {
 				chartObj.series[0].name = item[i].title;
 				chartObj.xAxis.categories = dataObj.MESURE_DT;
 				chartObj.title.text = item[i].title + ' (' + item[i].name + ')';
+				chartObj.yAxis.plotLines = [{ value: plotData[item[i].name], color: 'red', width: 2, zIndex: 4}];
 				Highcharts.chart('chart'+ i,chartObj);
 			}
 		}

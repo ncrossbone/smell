@@ -358,4 +358,9 @@ public class MapBiz {
 		// TODO Auto-generated method stub
 		return mapMapper.getOdorForecastXY(param);
 	}
+
+	public List<Map<String, Object>> getPlotLine(HashMap param) {
+		// TODO Auto-generated method stub
+		return mapMapper.getPlotLine(param);
+	}
 }

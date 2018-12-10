@@ -52,6 +52,11 @@ public class MapController {
 		return mapBiz.getChart(param);
 	}
 	
+	@RequestMapping(value = "/getPlotLine", method = RequestMethod.POST)
+	public List<Map<String, Object>> getPlotLine(@RequestBody HashMap param){
+		return mapBiz.getPlotLine(param);
+	}
+	
 	@RequestMapping(value = "/getCity", method = RequestMethod.POST)
 	public List<Map<String, Object>> getCity(){
 		return mapBiz.getCity();
