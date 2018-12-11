@@ -633,17 +633,19 @@ WHERE TAB.POINT_X IS NOT NULL
 	</select>
 	
 	<select id="odorReductionGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT A.BPLC_ID,
-               A.REDUC_EQP_NM,
-               A.REGISTER_ID,
+  			SELECT C.BPLC_ID,
+               C.REDUC_EQP_NM,
+               C.REGISTER_ID,
                CMPNY_NM,
-               LEGALDONG_ETC,
+               CONCAT(SIGNGU_NM,' ',EMD_NM,' ',LEGALDONG_ETC) AS LEGALDONG_ETC,
 			   TELNO
-          FROM bdsm.BSML_REDUC_EQP_INFO A,
-               bdsm.BPLC_INFO C
-		 WHERE A.BPLC_ID = C.bplc_id
-		   AND C.LEGALDONG_CODE LIKE CONCAT(#{town},'%')
-		   <if test="branchName != ''">
+           FROM BPLC_INFO A,
+                LEGALDONG_CODE B,
+                BSML_REDUC_EQP_INFO C
+		WHERE A.LEGALDONG_CODE = B.LEGALDONG_CODE
+          AND A.BPLC_ID = C.BPLC_ID
+          AND A.LEGALDONG_CODE LIKE CONCAT(#{town},'%')
+          <if test="branchName != ''">
     			AND CMPNY_NM LIKE CONCAT('%', #{branchName}, '%')
   			</if>
 	</select>

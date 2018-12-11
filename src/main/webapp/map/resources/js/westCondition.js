@@ -757,6 +757,71 @@ var _WestCondition = function () {
     		}
     	});*/
     	
+    	$('#searchAddrBtn').off('click').on('click',function(){
+    		
+    		var cityNm = $('#cityDistrictToolbar').find('option:selected').text();
+    		var townNm = $('#townToolbar').find('option:selected').text();
+    		var addrNumber = $('#addrNumber').val();
+    		
+    		if(!addrNumber){
+    			alert('지번을 입력하세요.');
+    			return; 
+    		}
+    		
+    		$.ajax({
+    			 url :'http://www.juso.go.kr/addrlink/addrLinkApiJsonp.do'
+    			,type:'POST'
+    			,data:{
+    				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
+    				confmKey:'U01TX0FVVEgyMDE4MTIxMTE2MzYyNDEwODM2MTE=',
+    				currentPage:1,
+    				countPerPage:1,
+    				keyword:cityNm + townNm + addrNumber,
+    				resultType:'json'
+    			}
+    			,dataType:"jsonp"
+    			,crossDomain:true
+    			,success:function(jsonStr){
+    				if(jsonStr.results.juso.length==0){
+    					return alert('지번주소가 존재하지 않습니다.');
+    				}
+    				
+    				var jusoObj = jsonStr.results.juso[0];
+    				$.ajax({
+    	    			 url :'http://www.juso.go.kr/addrlink/addrCoordApiJsonp.do'
+    	    			,type:'POST'
+    	    			,data:{
+    	    				confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
+    	    				admCd:jusoObj.admCd,
+    	    				rnMgtSn:jusoObj.rnMgtSn,
+    	    				udrtYn:jusoObj.udrtYn,
+    	    				buldMnnm:jusoObj.buldMnnm,
+    	    				buldSlno:jusoObj.buldSlno,
+    	    				resultType:'json'
+    	    			}
+    	    			,dataType:"jsonp"
+    	    			,crossDomain:true
+    	    			,success:function(jsonStr){
+    	    				if(jsonStr.results.juso.length==0){
+    	    					return alert('지번주소가 존재하지 않습니다.');
+    	    				}
+    	    				
+    	    				var coord = [parseFloat(jsonStr.results.juso[0].entX),parseFloat(jsonStr.results.juso[0].entY)];
+    	    				
+    	    			}
+    	    		    ,error: function(xhr,status, error){
+    	    		    	alert("에러발생");
+    	    		    }
+    	    		});
+    				
+    			}
+    		    ,error: function(xhr,status, error){
+    		    	alert("에러발생");
+    		    }
+    		});
+    		
+    	});
+    	
     	_MapEventBus.on(_MapEvents.write_bottom_grid_tab, function(event, data){
     		writeGrid(data.placeId, data.gridData);
 		});
