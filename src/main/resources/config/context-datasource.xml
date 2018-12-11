@@ -1,13 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="org.mariadb.jdbc.Driver"/>
-		<property name="url" value="jdbc:mariadb://112.217.167.123:61000/bdsm"/>
-		<!-- <property name="url" value="jdbc:mysql://10.10.30.183:3306/bdsm"/> -->
-		<property name="username" value="bdsmmanage"/>
-		<property name="password" value="bdsmmanage"/>
-	</bean>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                http://www.springframework.org/schema/tx
+                http://www.springframework.org/schema/tx/spring-tx.xsd
+                http://www.springframework.org/schema/jee
+                http://www.springframework.org/schema/jee/spring-jee.xsd">
+    <!-- multiple data source & sqlSessionFactory -->
+    <bean id="ds-one" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="org.mariadb.jdbc.Driver" />
+        <property name="url" value="jdbc:mariadb://112.217.167.123:61000/bdsm" />
+        <property name="username" value="bdsmmanage" />
+        <property name="password" value="bdsmmanage" />
+    </bean>
+    <bean id="ds-two" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="org.mariadb.jdbc.Driver" />
+        <property name="url" value="jdbc:mariadb://112.217.167.123:61000/bdsm" />
+        <property name="username" value="bdsmmanage" />
+        <property name="password" value="bdsmmanage" />
+    </bean>
+ 
+    <bean id="dsOneSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+        p:mapperLocations="classpath:/mapper/*_SQL.xml"
+        p:dataSource-ref="ds-one" />
+ 
+    <bean id="dsTwoSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+        p:mapperLocations="classpath:/mapper/model/*_SQL.xml"
+        p:dataSource-ref="ds-two" />
+     
+    <bean id="dsOneScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+        p:basePackage="com.ce.smell.mapper"
+        p:sqlSessionFactoryBeanName="dsOneSqlSessionFactory" />
+  
+    <bean id="dsTwoScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+        p:basePackage="com.ce.smell.model.mapper"
+        p:sqlSessionFactoryBeanName="dsTwoSqlSessionFactory" />
+ 
+    <bean id="dsOnetransactionManager"   class="org.springframework.jdbc.datasource.DataSourceTransactionManager"    p:dataSource-ref="ds-one" />
+    <bean id="dsTwotransactionManager"   class="org.springframework.jdbc.datasource.DataSourceTransactionManager"    p:dataSource-ref="ds-two" />
+ 
+    <context:component-scan base-package="com.ce.smell">
+    </context:component-scan>
 </beans>
