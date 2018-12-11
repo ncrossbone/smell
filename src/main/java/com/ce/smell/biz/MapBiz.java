@@ -63,8 +63,10 @@ public class MapBiz {
 			Method method = mapMapper.getClass().getDeclaredMethod(
 					param.get("contentsId") + "Grid", param.getClass());
 			resultList = (List) method.invoke(mapMapper, param);
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch(NullPointerException e){
+			System.out.println("ERROR-1");
+		}catch(Exception e) {
+			System.out.println("ERROR-2");
 		}
 
 		return resultList;
@@ -94,8 +96,10 @@ public class MapBiz {
 			Method method = mapMapper.getClass().getDeclaredMethod(
 					param.get("contentsId") + "Click", param.getClass());
 			resultList = (List) method.invoke(mapMapper, param);
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch(NullPointerException e){
+			System.out.println("ERROR-1");
+		}catch(Exception e) {
+			System.out.println("ERROR-2");
 		}
 
 		return resultList;
@@ -125,8 +129,10 @@ public class MapBiz {
 			Method method = mapMapper.getClass().getDeclaredMethod(
 					param.get("contentsId") + "Item", param.getClass());
 			resultList = (List) method.invoke(mapMapper, param);
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch(NullPointerException e){
+			System.out.println("ERROR-1");
+		}catch(Exception e) {
+			System.out.println("ERROR-2");
 		}
 
 		return resultList;
@@ -141,8 +147,10 @@ public class MapBiz {
 			Method method = mapMapper.getClass().getDeclaredMethod(
 					param.get("contentsId") + "Feature", param.getClass());
 			resultList = (List) method.invoke(mapMapper, param);
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch(NullPointerException e){
+			System.out.println("ERROR-1");
+		}catch(Exception e) {
+			System.out.println("ERROR-2");
 		}
 
 		return resultList;
