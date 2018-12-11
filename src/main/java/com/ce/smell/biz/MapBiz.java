@@ -13,11 +13,14 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.ce.smell.mapper.MapMapper;
 import com.ce.smell.model.MapVO;
+import com.ce.smell.model.mapper.ModelMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,14 +28,21 @@ import com.google.gson.JsonParser;
 
 @Service
 @Repository
+@PropertySource("classpath:application.properties")
 public class MapBiz {
 	protected Log log = LogFactory.getLog(MapBiz.class);
 
-	private final String USER_AGENT = "Mozilla/5.0";
+	private final String USER_AGENT = "Mozilla/5.0"; 
 
+	@Value("${coursRestAPI}")
+	private String coursRestAPI;
+	
 	@Autowired
 	private MapMapper mapMapper;
 
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	@SuppressWarnings("unchecked")
 	public List<MapVO> getCMAQ9KM() {
 		return mapMapper.getCMAQ9KM();
@@ -173,9 +183,9 @@ public class MapBiz {
 		String type = (String)param.get("type");
 		
 		if("cours_sensor".equals(type)){
-			return mapMapper.getCoursModelBySensor(param); 
+			return modelMapper.getCoursModelBySensor(param); 
 		}else{
-			URL url = new URL("http://112.217.167.123:60001/web/latticeAjax?lattice="+param.get("analsAreaId")+"&dt="+param.get("dtaDt")+"00&paramSeCode=ANL02001");
+			URL url = new URL(coursRestAPI+"?lattice="+param.get("analsAreaId")+"&dt="+param.get("dtaDt")+"00&paramSeCode=ANL02001");
 			
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET"); // optional default is GET 

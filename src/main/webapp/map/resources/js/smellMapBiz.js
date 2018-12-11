@@ -77,7 +77,8 @@ var _SmellMapBiz = function () {
 	var init = function(){
 		proj4.defs('EPSG:32652','+proj=utm +zone=52 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
 		proj4.defs('EPSG:5179','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
-		
+		proj4.defs("EPSG:4919","+proj=geocent +ellps=GRS80 +units=m +no_defs");
+		 
 		ol.proj.proj4.register(proj4);
 			
 		setEvent();
