@@ -113,17 +113,17 @@ var _ChartMode = function () {
 					var text = prop.SENSOR_NM;
 					var typeConfig = {
 						'SEN01001':{icon:new ol.style.Icon(({
-			    					src: '/map/images/fixIcon.png'
+			    					src: '/map/images/IoT_fix.png'
 			    				   })),
-			    				   offset:30},
+			    				   offset:35},
     				    'SEN01002':{icon:new ol.style.Icon(({
-    				    			src: '/map/images/portableIcon.png'
+    				    			src: '/map/images/IoT_portable.png'
     				    		   })),
-    				    		   offset:30},
+    				    		   offset:35},
     				    'SEN01003':{icon:new ol.style.Icon(({
-			    			src: '/map/images/unmanIcon.png'
+			    			src: '/map/images/IoT_unman.png'
 			    		   })),
-    				   			   offset:30},
+    				   			   offset:35},
     				   	 'SEN01004':{icon:new ol.style.Circle({
     			    			radius: 15,
     			    			fill: new ol.style.Fill({
@@ -134,7 +134,7 @@ var _ChartMode = function () {
     			    				width: 3
     			    			})
     			    		}),
-    				   	 		   offset:30}
+    				   	 		   offset:35}
 					};
 					
 					var style = new ol.style.Style({
@@ -182,10 +182,10 @@ var _ChartMode = function () {
 		var data = param.data[0];
 		var plotData = param.plotData[0][0];
 		
-		var item =[{name:'OU',title:'복합 악취'},
-				     {name:'H2S',title:'황화수소'},
-				     {name:'NH3',title:'암모니아'},
-				     {name:'VOCS',title:'휘발성유기물'},
+		var item =[{name:'OU',title:'복합 악취',con:'ou'},
+				     {name:'H2S',title:'황화수소',con:'ppm'},
+				     {name:'NH3',title:'암모니아',con:'ppm'},
+				     {name:'VOCS',title:'휘발성유기물',con:'ppm'},
 			     {name:'MESURE_DT',title:'날짜'}]
 		$('#chartArea').html('');
 		
@@ -208,7 +208,12 @@ var _ChartMode = function () {
 					}
 				},
 				subtitle: {
-					text: ''
+					text: '',
+					style: {
+						color: '#fff',
+						fontSize: '15px'
+					},
+					x: 150
 				},
 				yAxis: {
 					title: {
@@ -272,6 +277,8 @@ var _ChartMode = function () {
 				
 				var max = Math.max.apply(null,dataObj[item[i].name]);
 				chartObj.yAxis.max = plotData[item[i].name] > max ? plotData[item[i].name] + 0.1 : max + 0.1;
+				chartObj.subtitle.text = item[i].con;
+				
 				Highcharts.chart('chart'+ i,chartObj);
 			}
 		}

@@ -805,9 +805,40 @@ var _WestCondition = function () {
     	    				if(jsonStr.results.juso.length==0){
     	    					return alert('지번주소가 존재하지 않습니다.');
     	    				}
+    	    				var ep1 = new proj4.Proj('EPSG:5179');
+    	    				var ep2 = new proj4.Proj('EPSG:3857')
+    	    				var p = new proj4.Point(parseFloat(jsonStr.results.juso[0].entX),parseFloat(jsonStr.results.juso[0].entY));
     	    				
-    	    				var coord = [parseFloat(jsonStr.results.juso[0].entX),parseFloat(jsonStr.results.juso[0].entY)];
+    	    				var trans = proj4.transform(ep1,ep2,p);
     	    				
+    	    				deferredForSetCenter([trans.x,trans.y]).then(function(){
+    	    					_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
+    	    					
+    	    					var resultFeature = new ol.Feature();
+
+        	    				resultFeature.setGeometry(new ol.geom.Point([trans.x,trans.y]));
+        	    				resultFeature.setProperties({});
+        	    		 
+        	    				var source = new ol.source.Vector({
+        	    					features: [resultFeature]
+        	    				});
+
+        	    				locationLayer = new ol.layer.Vector({
+        	    					source: source,
+        	    					zIndex:10000,
+        	    					name:'addrPin',
+        	    					style:function(feature){
+        	    						return new ol.style.Style({
+        	    				    		image: new ol.style.Icon(({
+        	    				    			src: '/map/images/pinIcon.png',
+        	    				    			scale:1.0
+        	    				    		})) 
+        	    				    	}); 
+        	    					}
+        	    				});  
+        	    				
+        	    				_MapEventBus.trigger(_MapEvents.map_addLayer, locationLayer);
+    	    		    	});
     	    			}
     	    		    ,error: function(xhr,status, error){
     	    		    	alert("에러발생");
@@ -1420,7 +1451,7 @@ var _WestCondition = function () {
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/map/images/unmanIcon.png'
+    			src: '/map/images/IoT_unman.png'
     		})),
     		text: new ol.style.Text({
     			text: feature.getProperties().SENSOR_NM,
@@ -1431,7 +1462,7 @@ var _WestCondition = function () {
     				color : '#fff',
     				width : 3
     			}),
-    			offsetY: 30,
+    			offsetY: 35,
     			font: 'bold 12px Arial'
     		})
   		});
@@ -1493,16 +1524,16 @@ var _WestCondition = function () {
     
     var portableMeasurementStyleFunction = function(feature){
     	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'-';
-    	var offsetY = 20;
+    	var offsetY = 35;
     	if(_CoreMap.getMap().getView().getZoom() >= labelViewLevel){
     		text += "\n" + feature.getProperties().LABEL;
-    		offsetY = 26;
+    		offsetY = 40;
     	}
     	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/map/images/portableIcon.png'
+    			src: '/map/images/IoT_portable.png'
     		})),
 			text: new ol.style.Text({
 				text: text,
@@ -1524,15 +1555,15 @@ var _WestCondition = function () {
     var fixedMeasurementStyleFunction = function(feature){
     	var text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2) + '':'';
     	
-    	var offsetY = 20;
+    	var offsetY = 35;
     	if(_CoreMap.getMap().getView().getZoom() >= labelViewLevel){
     		text += "\n" + feature.getProperties().SENSOR_NM;
-    		offsetY = 26;
+    		offsetY = 40;
     	}
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/map/images/fixIcon.png'
+    			src: '/map/images/IoT_fix.png'
     		})),
 			text: new ol.style.Text({
 				text: text,

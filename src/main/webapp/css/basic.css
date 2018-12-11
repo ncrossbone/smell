@@ -341,7 +341,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .r1 { position:absolute; width:220px; }
 .r1> table { width:100%; border-top:2px solid #000; }
 .r1> table> tbody> tr> th { background-color: rgba( 0, 0, 0, 0.7 ); color:#fff; border-bottom:1px solid #d6d6d6; text-align:center; font-size:13px; padding:7px 0; }
-.r1> table> tbody> tr> td { background-color: rgba( 0, 0, 0, 0.7 ); color:#FF0; border-left:1px solid #d6d6d6; border-bottom:1px solid #d6d6d6; text-align:center;  font-size:13px; padding:7px 0; }
+.r1> table> tbody> tr> td { background-color: rgba( 0, 0, 0, 0.7 ); color:#FF0; border-left:1px solid #d6d6d6; border-bottom:1px solid #d6d6d6; text-align:center;  font-size:13px; padding:25px; }
 .pt1 { color:#9ee3ff; display:block; }
 .r1> table> tbody> tr> th> img { vertical-align:top; margin-left:5px; }
 

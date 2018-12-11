@@ -110,6 +110,7 @@ var _ZoomSlider = function () {
 			if(preZoomLevel != getZoom){
 				preZoomLevel = getZoom;
 				_WestCondition.clearFocusLayer();
+				_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
 			}
 			
 			var clusterLayer = _CoreMap.getMap().getLayerForName('complaintStatus');
