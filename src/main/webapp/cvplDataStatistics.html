@@ -141,6 +141,7 @@ function cvplDataUpdate(){
 function cvplDataSel(){
 	var val = $(":input:radio[name=cvplSel]:checked").val();
 	if(!val){
+		alert('선택된 민원이 없습니다.');
 		return;
 	}
 	var tdArr = $($(":input:radio[name=cvplSel]:checked").parent().parent()).find('td');
@@ -161,8 +162,16 @@ function cvplDataSel(){
 			}	
 		}
 	}
-	parent.$('#complaintStatusPopup').hide();
-	parent._MessagePipe.send(paramObj);
+	
+	if(paramObj.x=='undefined' || paramObj.y == 'undefined'){
+		var r = confirm("좌표가 없습니다. 좌표를 수정 하시겠습니까?");
+		if(r){
+			cvplDataUpdate();
+		}
+	}else{
+		parent.$('#complaintStatusPopup').hide();
+		parent._MessagePipe.send(paramObj);	
+	}
 }
 
 //위치좌표gis

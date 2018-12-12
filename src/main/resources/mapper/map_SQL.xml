@@ -1333,4 +1333,23 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
   		  FROM SMS_STDRVALUE_MANAGE A
   		 WHERE SMS_SE_CODE = 'COM03003'
     </select>
+    
+    
+    <!-- SMS insert -->
+	<insert id="insertSMS" parameterType="Map">
+		INSERT INTO nuri_msg_data (CUR_STATE, REQ_DATE, CALL_TO, CALL_FROM, SMS_TXT, MSG_TYPE)
+		VALUES(0, NOW(), #{toPhone}, #{formPhone}, #{contents}, 4);
+	</insert>
+
+	<!-- MMS content insert -->
+	<insert id="insertMMSCont" parameterType="Map">
+		INSERT INTO nuri_mms_contents_info (FILE_CNT, MMS_SUBJECT, MMS_BODY, SERVICE_DEP1 )
+		VALUES (0, '', #{contents}, 'ALL')
+	</insert>
+	
+	<!-- MMS insert -->
+	<insert id="insertMMS" parameterType="Map">
+		INSERT INTO nuri_msg_data (CUR_STATE, REQ_DATE, CALL_TO, CALL_FROM, MSG_TYPE, CONT_SEQ)
+		VALUES(0, NOW(), #{toPhone}, #{formPhone},  6, (select max(cont_seq) from nuri_mms_contents_info))
+	</insert>
 </mapper>

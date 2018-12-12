@@ -147,6 +147,23 @@ public class MapBiz {
 
 		return resultList;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public int sendMsg(HashMap param) {
+		
+		int result = 0;
+		try {
+			Method method = mapMapper.getClass().getDeclaredMethod("insert" + param.get("flag"), param.getClass());
+			result = (int) method.invoke(mapMapper, param);
+			
+		}catch(NullPointerException e){
+			System.out.println("ERROR-1");
+		}catch(Exception e) {
+			System.out.println("ERROR-2");
+		}
+
+		return result;
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getFeature(HashMap param) {

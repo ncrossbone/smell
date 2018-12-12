@@ -224,4 +224,9 @@ public class MapController {
 		return mapBiz.getOdorForecastXY(param);
 	}
 	
+	@RequestMapping(value = "/sendMsg", method = RequestMethod.POST)
+	public int sendMsg(@RequestBody HashMap param){
+		return mapBiz.sendMsg(param);
+	}
+	
 }

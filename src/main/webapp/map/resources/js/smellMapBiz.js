@@ -1417,7 +1417,56 @@ var _SmellMapBiz = function () {
 	            src: '/map/map/resources/images/icon/c2.png'
 	        }))
 		});
-	}
+	};
+	
+	var sendMessage = function(){
+		var contents = $('#smsContent').val();
+		var flag = 'SMS';
+		
+		if(contents.byteLength() >= 90){
+			flag = 'MMS'; 
+		};
+		
+		var toPhone = '01012341234';
+		var fromPhone = '01012341234';
+		
+		if(flag=='MMS'){
+			$.ajax({
+				url: '/map/sendMsg.do',
+	            data:  JSON.stringify({
+	            	flag : 'MMSCont',
+                	contents: contents
+	            }),
+	            type: 'POST',
+	            contentType: 'application/json'
+	        }).done(function(){
+	        	$.ajax({
+	    			url: '/map/sendMsg.do',
+	                data:  JSON.stringify({
+	                	flag : flag,
+	                	toPhone:toPhone,
+	                	fromPhone:fromPhone
+	                }),
+	                type: 'POST',
+	                contentType: 'application/json'
+	            })
+	        })
+		}else{
+			$.ajax({
+				url: '/map/sendMsg.do',
+	            data:  JSON.stringify({
+	            	flag : flag,
+	            	contents: contents,
+	            	phone:phone,
+	            	fromPhone:fromPhone
+	            }),
+	            type: 'POST',
+	            contentType: 'application/json'
+	        })
+		}
+	};
+	
+	
     // public functions
     return {
     	taskMode : 0,
@@ -1425,6 +1474,9 @@ var _SmellMapBiz = function () {
         	var me = this;
         	init();
         	return me;
+        },
+        sendMessage:function(){
+        	sendMessage();
         }
     };
 }();

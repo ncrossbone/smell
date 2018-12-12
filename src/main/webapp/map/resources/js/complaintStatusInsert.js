@@ -303,6 +303,7 @@ var _ComplaintStatusInsert = function () {
 				$('#complaintStatusRegPopup2').hide();
 				smsPopup.hide();
 				clearLayerByName(fixedMeasurement);
+				$('#bufferRadiusSelect').val(200);
 //				clearLayer();
 			}
 		});
@@ -460,11 +461,16 @@ var _ComplaintStatusInsert = function () {
 			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
 		}else if(msg.type == 'updateCvpl'){
 			selectedObj = msg;
-			selectedObj.x = parseFloat(msg.lo); 
-			selectedObj.y = parseFloat(msg.la); 
 			
-			writePopup(true);
-			_MapEventBus.trigger(_MapEvents.map_move, msg);
+			if(msg.lo!='' && msg.la != ''){
+				selectedObj.x = parseFloat(msg.lo); 
+				selectedObj.y = parseFloat(msg.la);
+				
+				_MapEventBus.trigger(_MapEvents.map_move, msg);
+				
+				writePopup(true);
+			}
+			
 			_MapEventBus.trigger(_MapEvents.alertShow, {text:'지점을 클릭 하세요.'});
 		}
 	};

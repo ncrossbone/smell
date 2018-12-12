@@ -328,6 +328,24 @@ String.prototype.comma = function() {
 	return re;
 };
 
+/**
+ * 문자열의 바이트수 리턴
+ * @returns {Number}
+ */
+String.prototype.byteLength = function() {
+    var l= 0;
+     
+    for(var idx=0; idx < this.length; idx++) {
+        var c = escape(this.charAt(idx));
+         
+        if( c.length==1 ) l ++;
+        else if( c.indexOf("%u")!=-1 ) l += 2;
+        else if( c.indexOf("%")!=-1 ) l += c.length/3;
+    }
+     
+    return l;
+};
+
 // 숫자 타입에서 쓸 수 있도록 format() 함수 추가
 Number.prototype.format = function() {
 	if (this == 0)

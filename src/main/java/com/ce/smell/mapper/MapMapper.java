@@ -111,4 +111,9 @@ public interface MapMapper {
 	public List<Map<String, Object>> getOdorForecastXY(HashMap param);
 
 	public List<Map<String, Object>> getPlotLine(HashMap param);
+	
+	
+	public int insertSMS(HashMap param);
+	public int insertMMSCont(HashMap param);
+	public int insertMMS(HashMap param);
 }

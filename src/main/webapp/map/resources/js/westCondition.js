@@ -900,14 +900,8 @@ var _WestCondition = function () {
     		initPOI();
     	});
     	
-    	$('#cityDistrictToolbar, #townToolbar').off('change').on('change',function(){
-    		var shapeName = $(this).attr('id')=='cityDistrictToolbar'?westLayerObj.SHP_SGG_PT:westLayerObj.SHP_BDONG_PT;
-    		_MapService.getWfs(shapeName, '*',encodeURIComponent('ADM_CD LIKE \''+$(this).val()+'%\''), '').then(function(result){
-    			if(result.features.length == 0){
-    				return;
-    			}
-    			_CoreMap.centerMap(result.features[0].geometry.coordinates[0], result.features[0].geometry.coordinates[1],13);
-    		});
+    	$('#cityDistrictToolbar').off('change').on('change',function(){
+    		setToolbarCity({adm_cd:$(this).val() + 0});
     	});
     	
     	$('a[id$="Views"]').off('click').on('click',function(){
