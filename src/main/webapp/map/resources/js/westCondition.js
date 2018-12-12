@@ -806,10 +806,15 @@ var _WestCondition = function () {
 			,dataType:"jsonp"
 			,crossDomain:true
 			,success:function(jsonStr){
+				if(!jsonStr.results.juso){
+					_MapEventBus.trigger(_MapEvents.alertShow, {text:jsonStr.results.common.errorMessage});
+					return;
+				}
 				if(jsonStr.results.juso.length==0){
 					$('#addrPopup').hide();
 					_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
-					return alert('지번주소가 존재하지 않습니다.');
+					_MapEventBus.trigger(_MapEvents.alertShow, {text:'지번주소가 존재하지 않습니다.'});
+					return;
 				}
 				writeAddrNumLayer(jsonStr);
 			}
@@ -859,10 +864,15 @@ var _WestCondition = function () {
     			,dataType:"jsonp"
     			,crossDomain:true
     			,success:function(jsonStr){
+    				if(!jsonStr.results.juso){
+    					_MapEventBus.trigger(_MapEvents.alertShow, {text:jsonStr.results.common.errorMessage});
+    					return;
+    				}
     				if(jsonStr.results.juso.length==0){
     					$('#addrPopup').hide();
     					_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
-    					return alert('지번주소가 존재하지 않습니다.');
+    					_MapEventBus.trigger(_MapEvents.alertShow, {text:'지번주소가 존재하지 않습니다.'});
+    					return;
     				}else if(jsonStr.results.juso.length == 1){
     					var paramObj = jsonStr.results.juso[0];
     					callCoord({admCd:paramObj.admCd,

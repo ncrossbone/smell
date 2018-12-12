@@ -295,13 +295,6 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .smscont textarea { height:100%; border:1px solid #d8d8d8; width:100%; font-size:13px; font-family: 'Dotum'; padding:5px; box-sizing:border-box; } 
 .btn08 { padding:3px 15px; letter-spacing:-1px; font-size: 14px; display:inline-block; background:#494949; color:#fff; position:absolute; left:50%; bottom:12px; transform:translateX(-50%); border-radius: 6px;}
 
-#clock { background:#272e38; padding:5px; position:absolute; right: 10px; bottom: 120px; z-index: 1000; display: none;}
-    
-.c_cont { background:#0f1620; padding:5px 20px; border-radius: 6px; }
-.c_cont> span { display:block; color:#cacaca; text-align:center;}
-.day { font-size:15px; font-family:Verdana, Geneva, sans-serif; }
-.time { font-family:'RussellSquare'; font-size:20px; margin-top:2px; }
-
 .topmenu { position:absolute; right:10px; top:50%; transform:translateY(-50%);} /*181205수정*/
 .topmenu> li {  border:1px solid #dbdbdb;  float:left; width:80px; text-align:center; padding:6px 0; margin-left: -1px; background:#f4f4f4; } /*181205수정*/
 .topmenu> li > a { font-family: 'Dotum'; font-weight:bold; letter-spacing:-1px; font-size:12px;  display:block; padding-top: 28px; color:#37588e;} /*181205수정*/
@@ -370,3 +363,17 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .topmenu> li.on { color:#153159; background:#ffffff; }/*181205추가*/
 .topmenu> li.on { background:#ffffff; }/*181205추가*/
 .topmenu> li.on a { color:#153159; }/*181205추가*/
+
+
+/*시계4*/
+.clock4 { background:#484848; padding:5px 15px; position:absolute; right:10px; bottom:120px; z-index: 1000; display: none;}
+.clock4> .c_cont> span { color:#ffffff; margin-bottom:5px; display:block; }
+.clock4 .day { font-size:13px; font-family:Verdana, Geneva, sans-serif; padding:3px 5px; text-align: center; }
+.clock4 .time { display:block;}
+.clock4 .time> em { font-family:'RussellSquare'; font-size:20px; margin-top:2px; background:#7dbe24; padding:5px 7px; display:inline-block; color:#ffffff; border-radius:5px; 
+	box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.5)  ; 
+	-webkit-box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.5)  ; 
+	-moz-box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.5)  ; }
+.clock4 .time> img { margin:0 6px; vertical-align:middle; }
+
+

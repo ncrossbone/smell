@@ -70,8 +70,23 @@ var _ComplaintStatusInsert = function () {
 			},
 			set: function(date) {
 		    	this._date = date;
-		    	clock.find('.day').text(currentDate.date.substring(0,4)+'년 '+parseInt(currentDate.date.substring(4,6))+'월 '+parseInt(currentDate.date.substring(6,8))+'일');
-		    	clock.find('.time').text(parseInt(currentDate.time) + '시');
+		    	clock.find('.day').text(currentDate.date.substring(0,4)+'-'+currentDate.date.substring(4,6)+'-'+currentDate.date.substring(6,8));
+		    	
+		    	if(currentDate.time){
+		    		
+		    		var timeStrArr = [0,0,0,0];
+		    		
+		    		if(parseInt(currentDate.time) > 9){
+			    		timeStrArr[0] = currentDate.time.substr(0,1); 
+			    		timeStrArr[1] = currentDate.time.substr(1,1); 
+			    	}else{
+			    		timeStrArr[1] = currentDate.time.substr(1,1);
+			    	}
+			    	
+			    	for(var i = 0; i<timeStrArr.length; i++){
+			    		$(clock.find('.time').find('em')[i]).text(timeStrArr[i]);
+			    	}
+		    	}
 		    }
 		});
 		Object.defineProperty(currentDate, 'time', {
@@ -80,8 +95,19 @@ var _ComplaintStatusInsert = function () {
 			},
 			set: function(time) {
 		    	this._time = time;
-		    	clock.find('.day').text(currentDate.date.substring(0,4)+'년 '+parseInt(currentDate.date.substring(4,6))+'월 '+parseInt(currentDate.date.substring(6,8))+'일');
-		    	clock.find('.time').text(parseInt(currentDate.time) + '시');
+		    	clock.find('.day').text(currentDate.date.substring(0,4)+'-'+currentDate.date.substring(4,6)+'-'+currentDate.date.substring(6,8));
+		    	var timeStrArr = [0,0,0,0];
+		    	
+		    	if(parseInt(currentDate.time) > 9){
+		    		timeStrArr[0] = currentDate.time.substr(0,1); 
+		    		timeStrArr[1] = currentDate.time.substr(1,1); 
+		    	}else{
+		    		timeStrArr[1] = currentDate.time.substr(1,1);
+		    	}
+		    	
+		    	for(var i = 0; i<timeStrArr.length; i++){
+		    		$(clock.find('.time').find('em')[i]).text(timeStrArr[i]);
+		    	}
 		    }
 		});
 		
