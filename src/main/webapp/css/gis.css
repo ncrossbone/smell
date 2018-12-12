@@ -227,7 +227,7 @@ ul[role="tablist"]{
     border-right: 1px solid #fff;
     background: #0c2641;
     opacity:0.7;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-top: 80px;
 }
 

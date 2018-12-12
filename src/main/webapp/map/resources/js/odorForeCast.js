@@ -327,7 +327,7 @@ var _OdorForeCast = function () {
 			odorForeCastPopup.show();
 		}else if(mode == 2){
 			odorForeCastPopup.hide();
-			odorForeCastPopupTime.hide();
+			//odorForeCastPopupTime.hide();
 			
 			_MapEventBus.trigger(_MapEvents.map_move, selectedObj);	
 			writePopup();

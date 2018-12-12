@@ -307,7 +307,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .tm05 { background:url(../images/tm05.png) no-repeat center top;}
 
 /*181130 차트*/
-#chart { width:380px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; }
+#chart { width:360px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; }
 .topwrap { width:100%; position:relative; }
 .topbtn{ position:absolute; right:0; top:50%; transform:translateY(-50%); }
 .station_id { width:80%; border:1px solid #0c0d0d; font-weight:bold; padding:6px 20px;
@@ -334,12 +334,12 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .r1 { position:absolute; width:300px; }
 .r1> table { width:100%; border-top:2px solid #000; }
 .r1> table> tbody> tr> th { background-color: rgba( 0, 0, 0, 0.7 ); color:#fff; border-bottom:1px solid #d6d6d6; text-align:center; font-size:13px; padding:7px 0; }
-.r1> table> tbody> tr> td { background-color: rgba( 0, 0, 0, 0.7 ); color:#FF0; border-left:1px solid #d6d6d6; border-bottom:1px solid #d6d6d6; text-align:center;  font-size:13px; padding:25px; }
+.r1> table> tbody> tr> td { background-color: rgba( 0, 0, 0, 0.7 ); color:#FF0; border-left:1px solid #d6d6d6; border-bottom:1px solid #d6d6d6; text-align:center;  font-size:13px; padding:15px; }
 .pt1 { color:#9ee3ff; display:block; }
 .r1> table> tbody> tr> th> img { vertical-align:top; margin-left:5px; }
 
 /*181130*/
-#chart { position: absolute; width:344px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; z-index: 100;}
+#chart { position: absolute; width:360px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; z-index: 100;}
 .topwrap { width:100%; position:relative; }
 .topbtn{ position:absolute; right:0; top:50%; transform:translateY(-50%); }
 .station_id { width:80%; border:1px solid #0c0d0d; font-weight:bold; padding:6px 20px;
