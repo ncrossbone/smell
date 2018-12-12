@@ -638,11 +638,6 @@ var _WestCondition = function () {
             			paramObj[poiSearchArr[i]] = $('#'+poiSearchArr[i]).find('option:selected').text();
             		}
             		
-            		if(paramObj[poiSearchArr[0]] == "전체"){
-            			_MapEventBus.trigger(_MapEvents.alertShow, {text:'대분류를 선택하세요.'});
-            			return;
-            		}
-            		
             		if(paramObj.poiText == ""){
             			_MapEventBus.trigger(_MapEvents.alertShow, {text:'명칭을 입력하세요.'});
             			return;
@@ -749,6 +744,81 @@ var _WestCondition = function () {
 		}
     };
     
+    
+    var writeAddrNumLayer = function(jsonStr){
+    	var ep1 = new proj4.Proj('EPSG:5179');
+		var ep2 = new proj4.Proj('EPSG:3857')
+		var p = new proj4.Point(parseFloat(jsonStr.results.juso[0].entX),parseFloat(jsonStr.results.juso[0].entY));
+		
+		var trans = proj4.transform(ep1,ep2,p);
+		
+		deferredForSetCenter([trans.x,trans.y]).then(function(){
+			_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
+			
+			var resultFeature = new ol.Feature();
+
+			resultFeature.setGeometry(new ol.geom.Point([trans.x,trans.y]));
+			resultFeature.setProperties({});
+	 
+			var source = new ol.source.Vector({
+				features: [resultFeature]
+			});
+
+			locationLayer = new ol.layer.Vector({
+				source: source,
+				zIndex:10000,
+				name:'addrPin',
+				style:function(feature){
+					return new ol.style.Style({
+			    		image: new ol.style.Icon(({
+			    			src: '/map/images/pinIcon.png',
+			    			scale:1.0
+			    		})) 
+			    	}); 
+				}
+			});  
+			
+			_MapEventBus.trigger(_MapEvents.map_addLayer, locationLayer);
+			
+		});
+    };
+    
+    var callCoord = function(admCd, rnMgtSn, udrtYn, buldMnnm, buldSlno){
+		$.ajax({
+			 url :'http://www.juso.go.kr/addrlink/addrCoordApiJsonp.do'
+			,type:'POST'
+			,data:{
+				//textServer key
+				//confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MTg0NjEwODM2MjI=',
+				
+				//localhost:8080 key
+				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
+				
+				//real http://27.101.139.181:8080/map/
+				confmKey:'U01TX0FVVEgyMDE4MTIxMjExNDExMDEwODM2Mjk=',
+				admCd:admCd,
+				rnMgtSn:rnMgtSn,
+				udrtYn:udrtYn,
+				buldMnnm:buldMnnm,
+				buldSlno:buldSlno,
+				resultType:'json'
+			}
+			,dataType:"jsonp"
+			,crossDomain:true
+			,success:function(jsonStr){
+				if(jsonStr.results.juso.length==0){
+					$('#addrPopup').hide();
+					_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
+					return alert('지번주소가 존재하지 않습니다.');
+				}
+				writeAddrNumLayer(jsonStr);
+			}
+		    ,error: function(xhr,status, error){
+		    	alert("에러발생");
+		    }
+		});
+    };
+    
     var setEvent = function(){
     	/*$('input[name$="CheckBox"]').off('change').on('change',function(){
     		var id = $(this).attr('id');
@@ -773,16 +843,16 @@ var _WestCondition = function () {
     			,type:'POST'
     			,data:{
     				//textServer key
-    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MjAzMzEwODM2MjM=',
+    				//confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MjAzMzEwODM2MjM=',
     				
     				//localhost:8080 key
     				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE2MzYyNDEwODM2MTE=',
     				
     				//real http://27.101.139.181:8080/map/
-    				//confmKey:'U01TX0FVVEgyMDE4MTIxMjExMzg0NzEwODM2Mjg=',
+    				confmKey:'U01TX0FVVEgyMDE4MTIxMjExMzg0NzEwODM2Mjg=',
     				
     				currentPage:1,
-    				countPerPage:1,
+    				countPerPage:10,
     				keyword:cityNm + townNm + addrNumber,
     				resultType:'json'
     			}
@@ -790,76 +860,28 @@ var _WestCondition = function () {
     			,crossDomain:true
     			,success:function(jsonStr){
     				if(jsonStr.results.juso.length==0){
+    					$('#addrPopup').hide();
+    					_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
     					return alert('지번주소가 존재하지 않습니다.');
+    				}else if(jsonStr.results.juso.length == 1){
+    					var paramObj = jsonStr.results.juso[0];
+    					callCoord({admCd:paramObj.admCd,
+    						rnMgtSn:paramObj.rnMgtSn,
+    						udrtYn:paramObj.udrtYn,
+    						buldMnnm:paramObj.buldMnnm,
+    						buldSlno:paramObj.buldSlno})
+    				}else{
+    					
+    					var juso = jsonStr.results.juso;
+    					var html = '';
+    					
+    					for(var i = 0; i<juso.length; i++){
+    						html+= '<div style="margin-bottom: 5px;"><a style="font-size: 12px; letter-spacing: -1px; color:#fff;" href="javascript:void(0)" onclick="_WestCondition.callCoord(\'' + juso[i].admCd + '\',\'' + juso[i].rnMgtSn + '\',\'' + juso[i].udrtYn + '\',\'' + juso[i].buldMnnm + '\',\'' + juso[i].buldSlno +'\')" >' + juso[i].jibunAddr + '</a></div>';
+    					}
+    					
+    					$('#addrPopup').show();
+    					$('#addrContents').html(html);
     				}
-    				
-    				var jusoObj = jsonStr.results.juso[0];
-    				$.ajax({
-    	    			 url :'http://www.juso.go.kr/addrlink/addrCoordApiJsonp.do'
-    	    			,type:'POST'
-    	    			,data:{
-    	    				//textServer key
-    	    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MTg0NjEwODM2MjI=',
-    	    				
-    	    				//localhost:8080 key
-    	    				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
-    	    				
-    	    				//real http://27.101.139.181:8080/map/
-    	    				//confmKey:'U01TX0FVVEgyMDE4MTIxMjExNDExMDEwODM2Mjk=',
-    	    				
-    	    				admCd:jusoObj.admCd,
-    	    				rnMgtSn:jusoObj.rnMgtSn,
-    	    				udrtYn:jusoObj.udrtYn,
-    	    				buldMnnm:jusoObj.buldMnnm,
-    	    				buldSlno:jusoObj.buldSlno,
-    	    				resultType:'json'
-    	    			}
-    	    			,dataType:"jsonp"
-    	    			,crossDomain:true
-    	    			,success:function(jsonStr){
-    	    				if(jsonStr.results.juso.length==0){
-    	    					return alert('지번주소가 존재하지 않습니다.');
-    	    				}
-    	    				var ep1 = new proj4.Proj('EPSG:5179');
-    	    				var ep2 = new proj4.Proj('EPSG:3857')
-    	    				var p = new proj4.Point(parseFloat(jsonStr.results.juso[0].entX),parseFloat(jsonStr.results.juso[0].entY));
-    	    				
-    	    				var trans = proj4.transform(ep1,ep2,p);
-    	    				
-    	    				deferredForSetCenter([trans.x,trans.y]).then(function(){
-    	    					_MapEventBus.trigger(_MapEvents.map_removeLayerByName, 'addrPin');
-    	    					
-    	    					var resultFeature = new ol.Feature();
-
-        	    				resultFeature.setGeometry(new ol.geom.Point([trans.x,trans.y]));
-        	    				resultFeature.setProperties({});
-        	    		 
-        	    				var source = new ol.source.Vector({
-        	    					features: [resultFeature]
-        	    				});
-
-        	    				locationLayer = new ol.layer.Vector({
-        	    					source: source,
-        	    					zIndex:10000,
-        	    					name:'addrPin',
-        	    					style:function(feature){
-        	    						return new ol.style.Style({
-        	    				    		image: new ol.style.Icon(({
-        	    				    			src: '/map/images/pinIcon.png',
-        	    				    			scale:1.0
-        	    				    		})) 
-        	    				    	}); 
-        	    					}
-        	    				});  
-        	    				
-        	    				_MapEventBus.trigger(_MapEvents.map_addLayer, locationLayer);
-    	    		    	});
-    	    			}
-    	    		    ,error: function(xhr,status, error){
-    	    		    	alert("에러발생");
-    	    		    }
-    	    		});
-    				
     			}
     		    ,error: function(xhr,status, error){
     		    	alert("에러발생");
@@ -891,6 +913,7 @@ var _WestCondition = function () {
     			$('#tabOpeners').removeClass('off');
     			tabCloseOpen($('#tabOpeners'));
     			$('#around_info').hide();
+    			$('#addrPopup').hide();
     			
     			_MapEventBus.trigger(_MapEvents.init,{});
     		}
@@ -1723,7 +1746,7 @@ var _WestCondition = function () {
     	$('#gridArea').show();
     	var tabTitle = $('#tab_title');
     	var tabContent = $('#tab_content');
-    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(/map/images/btn_close2.png) 2px 4px no-repeat; background-size: 8px;">Remove Tab</span></li>';
+    	var tabTemplate = '<li><a id=#{id} href="#{href}" style="cursor: pointer;">#{label}</a> <span class="ui-icon ui-icon-close" role="presentation" style="cursor: pointer; background: url(/map/images/btn_close2.png) 2px 4px no-repeat; background-size: 11px; margin-top: 6px; margin-right: 5px;">Remove Tab</span></li>';
     	var tabs = $('#tabs').tabs();
     		
     	tabs.off('click').on('click','span.ui-icon-close', function() {
@@ -2155,6 +2178,9 @@ var _WestCondition = function () {
         },
         writeGrid:function(id, data){
         	writeGrid(id, data);
-        }
+        },
+        callCoord:function(admCd, rnMgtSn, udrtYn, buldMnnm, buldSlno){
+        	callCoord(admCd, rnMgtSn, udrtYn, buldMnnm, buldSlno);
+        },
     };
 }();
