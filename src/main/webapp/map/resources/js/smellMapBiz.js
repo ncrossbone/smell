@@ -1427,7 +1427,7 @@ var _SmellMapBiz = function () {
 			flag = 'MMS'; 
 		};
 		
-		var toPhone = '01012341234';
+		var toPhone = '01100000200';
 		var fromPhone = '01012341234';
 		
 		if(flag=='MMS'){
@@ -1449,7 +1449,9 @@ var _SmellMapBiz = function () {
 	                }),
 	                type: 'POST',
 	                contentType: 'application/json'
-	            })
+	            }).done(function(){
+	            	_MapEventBus.trigger(_MapEvents.alertShow, {text:'메세지 전송이 완료되었습니다.'});
+		        })
 	        })
 		}else{
 			$.ajax({
@@ -1457,11 +1459,13 @@ var _SmellMapBiz = function () {
 	            data:  JSON.stringify({
 	            	flag : flag,
 	            	contents: contents,
-	            	phone:phone,
+	            	toPhone:toPhone,
 	            	fromPhone:fromPhone
 	            }),
 	            type: 'POST',
 	            contentType: 'application/json'
+	        }).done(function(){
+	        	_MapEventBus.trigger(_MapEvents.alertShow, {text:'메세지 전송이 완료되었습니다.'});
 	        })
 		}
 	};

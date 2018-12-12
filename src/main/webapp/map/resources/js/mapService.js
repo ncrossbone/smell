@@ -6,7 +6,11 @@ var _MapServiceInfo = {
 	serviceUrl: 'http://112.218.1.243:44002'
 }
 
+//test
 var _proxyUrl = 'http://112.218.1.243:44002';
+
+//real
+//var _proxyUrl = 'http://27.101.139.181:8088';
 
 var _MapService = function () {
 	

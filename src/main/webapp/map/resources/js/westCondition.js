@@ -772,8 +772,15 @@ var _WestCondition = function () {
     			 url :'http://www.juso.go.kr/addrlink/addrLinkApiJsonp.do'
     			,type:'POST'
     			,data:{
-    				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
-    				confmKey:'U01TX0FVVEgyMDE4MTIxMTE2MzYyNDEwODM2MTE=',
+    				//textServer key
+    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MjAzMzEwODM2MjM=',
+    				
+    				//localhost:8080 key
+    				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE2MzYyNDEwODM2MTE=',
+    				
+    				//real http://27.101.139.181:8080/map/
+    				//confmKey:'U01TX0FVVEgyMDE4MTIxMjExMzg0NzEwODM2Mjg=',
+    				
     				currentPage:1,
     				countPerPage:1,
     				keyword:cityNm + townNm + addrNumber,
@@ -791,7 +798,15 @@ var _WestCondition = function () {
     	    			 url :'http://www.juso.go.kr/addrlink/addrCoordApiJsonp.do'
     	    			,type:'POST'
     	    			,data:{
-    	    				confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
+    	    				//textServer key
+    	    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MTg0NjEwODM2MjI=',
+    	    				
+    	    				//localhost:8080 key
+    	    				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
+    	    				
+    	    				//real http://27.101.139.181:8080/map/
+    	    				//confmKey:'U01TX0FVVEgyMDE4MTIxMjExNDExMDEwODM2Mjk=',
+    	    				
     	    				admCd:jusoObj.admCd,
     	    				rnMgtSn:jusoObj.rnMgtSn,
     	    				udrtYn:jusoObj.udrtYn,
