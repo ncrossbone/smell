@@ -969,7 +969,7 @@ var _WestCondition = function () {
     	$('#clock').css('bottom','120px');
     	switch (id) {
 		case 'gridMinimize':
-			$('#gridArea').css('height', '40px');
+			$('#gridArea').css('height', '34px');
 			$('#gridMinimize').hide();
 			$('#gridMaximize').hide();
 			$('#gridRestore').show();
