@@ -202,10 +202,8 @@ public class MapBiz {
 		if("cours_sensor".equals(type)){
 			return modelMapper.getCoursModelBySensor(param); 
 		}else{
-			System.out.println(coursRestAPI);
 			
 			URL url = new URL(coursRestAPI+"?lattice="+param.get("analsAreaId")+"&dt="+param.get("dtaDt")+"00&paramSeCode=ANL02001");
-			System.out.println(url.getQuery());
 			
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET"); // optional default is GET
