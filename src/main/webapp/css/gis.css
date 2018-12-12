@@ -39,13 +39,13 @@
 }
 
 .ui-tabs-tab.ui-tabs-active{
-	background: #1fc700 !important;
+	background: #768274 !important;
     font-family: 'Dotum';
     font-size: 14px;
     font-weight: bold !important;
     letter-spacing: -1px;
     color: #fff !important;
-    border: 1px solid #19a600 !important;	
+    border: 1px solid #768274 !important;	
 }
 
 .ui-tabs-tab{
