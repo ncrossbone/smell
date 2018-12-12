@@ -184,7 +184,7 @@
         </div>
         <input type="text" style="width: 75px; margin-top: 2px; border: none; position: absolute; font-size: 12px; padding: 0px 5px;" id="addrNumber" value="" placeholder="지번 입력"/>
         <a class="btn02 fl" style="margin-left:85px; padding: 2px 0px; margin-top: 2px; height: 13px; background: #006ecf; width: 53px;" href="javascript:void(0)" id="searchAddrBtn">지번이동</a>
-        <a class="btn02 fl" style="margin-left:30px;" href="javascript:void(0)" id="poiView">POI 보기</a>
+        <a class="btn02 fl" style="margin-left:30px;" href="javascript:void(0)" id="poiView"><span style="letter-spacing: 0px;">POI</span> 보기</a>
     </div>
     <div id="container">
     	<ul id="tabOpener" class="gisTaskMenu">
@@ -312,9 +312,9 @@
                     <li>
                     	<dl>
                             <dd>
-                                <input style="margin-left: 83px;margin-right: 20px;" id="portableMeasurementRadio1" type="radio" name="portableMeasurementRadio" value="0401" checked="checked" class="contents"/>
+                                <input style="margin-left: 83px;" id="portableMeasurementRadio1" type="radio" name="portableMeasurementRadio" value="0401" checked="checked" class="contents"/>
                                 <label class="W60 dis_ib" for="portableMeasurementRadio1" style="width: 100px !important; margin-bottom: 8px;">이동형 측정기 1호</label>
-                    			<input style="margin-left: 83px;margin-right: 20px;" id="portableMeasurementRadio2" type="radio" name="portableMeasurementRadio" value="0402" class="contents"/>
+                    			<input style="margin-left: 83px;" id="portableMeasurementRadio2" type="radio" name="portableMeasurementRadio" value="0402" class="contents"/>
                     			<label class="W60 dis_ib" for="portableMeasurementRadio2" style="width: 100px !important; margin-bottom: 8px;">이동형 측정기 2호</label>
                             </dd>
                         </dl>
@@ -988,6 +988,12 @@
 	        	<iframe src="./foreCastOccurrencePopup.html" style="border: solid 0px; width:100%; height:100%; border: none;"></iframe>
 			</div>
      	</div>
+     	
+     	<div id="addrPopup" style="position: absolute; z-index: 1000; top: 0px; left: 54px; height: 845px; display: none; overflow-y: auto; height: 300px; ">
+     		<div id="addrContents" style="background: #313942; padding: 5px 9px; border: 1px solid #212121; padding-right: 25px;"></div>
+     		<span><a href="javascript:void(0)" class="btn03 pop_close"></a></span>
+     	</div>
+     	
      	<div id="alertDiv">메세지를 입력 하세요.</div>
      	<div id="bufferRadius">
      		<label for="bufferRadiusSelect" />반경 선택 :
@@ -1188,7 +1194,7 @@
 		        <a href="javascript:void(0);" class="btn07"><span class="sms_btn">악취계도문자전송</span></a>
 		    </div>
         </div>  
-        <div id="legendDiv" style="display:none; right: 0px; top: 40px; position: absolute; z-index: 999;">
+        <div id="legendDiv" style="display:none; right: 0px; top: 40px; position: absolute; z-index: 2;">
         	<img src="/map/images/legend.png" />
         </div>
         <div id="smsPopup" class="sms" style="z-index: 9000; display:none; left: 610px;   top: 140px;">
