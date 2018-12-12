@@ -773,13 +773,13 @@ var _WestCondition = function () {
     			,type:'POST'
     			,data:{
     				//textServer key
-    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MjAzMzEwODM2MjM=',
+//    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MjAzMzEwODM2MjM=',
     				
     				//localhost:8080 key
     				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE2MzYyNDEwODM2MTE=',
     				
     				//real http://27.101.139.181:8080/map/
-    				//confmKey:'U01TX0FVVEgyMDE4MTIxMjExMzg0NzEwODM2Mjg=',
+    				confmKey:'U01TX0FVVEgyMDE4MTIxMjExMzg0NzEwODM2Mjg=',
     				
     				currentPage:1,
     				countPerPage:1,
@@ -799,13 +799,13 @@ var _WestCondition = function () {
     	    			,type:'POST'
     	    			,data:{
     	    				//textServer key
-    	    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MTg0NjEwODM2MjI=',
+//    	    				confmKey:'U01TX0FVVEgyMDE4MTIxMjA5MTg0NjEwODM2MjI=',
     	    				
     	    				//localhost:8080 key
     	    				//confmKey:'U01TX0FVVEgyMDE4MTIxMTE1MjAwMjEwODM2MDY=',
     	    				
     	    				//real http://27.101.139.181:8080/map/
-    	    				//confmKey:'U01TX0FVVEgyMDE4MTIxMjExNDExMDEwODM2Mjk=',
+    	    				confmKey:'U01TX0FVVEgyMDE4MTIxMjExNDExMDEwODM2Mjk=',
     	    				
     	    				admCd:jusoObj.admCd,
     	    				rnMgtSn:jusoObj.rnMgtSn,
