@@ -3,14 +3,14 @@ var _MapServiceInfo = {
 	type : "&typeName=CE-TECH",
 	property : "&PROPERTYNAME=",
 	sort : "&SORTBY=",
-	serviceUrl: 'http://112.218.1.243:44002'
+	serviceUrl: 'http://27.101.139.181:8088'
 }
-
+ 
 //test
-var _proxyUrl = 'http://112.218.1.243:44002';
+//var _proxyUrl = 'http://112.218.1.243:44002';
 
 //real
-//var _proxyUrl = 'http://27.101.139.181:8088';
+var _proxyUrl = 'http://27.101.139.181:8088';
 
 var _MapService = function () {
 	
