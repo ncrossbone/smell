@@ -169,7 +169,11 @@
     </div>
     	
     <div id="nav">
-    	<div class="fl">
+    	<div style="position: absolute; left: 10px; top: 4px; cursor: pointer;" id="allLayerOff">
+            <img src="/map/images/reset1_on.png" />
+        </div>
+
+    	<div class="fl MgL80">
             <em class="here">청주시</em>
             <span class="arrow"></span>
             <span class="comm_sel">
@@ -182,10 +186,10 @@
                 <select id="townToolbar"></select>
             </span>
         </div>
-        <input type="text" style="width: 75px; margin-top: 2px; border: none; position: absolute; font-size: 12px; padding: 0px 5px;" id="addrNumber" value="" placeholder="지번 입력"/>
-        <a class="btn02 fl" style="margin-left:85px; padding: 2px 0px; margin-top: 2px; height: 13px; background: #006ecf; width: 53px;" href="javascript:void(0)" id="searchAddrBtn">지번이동</a>
-        <a class="btn02 fl" style="margin-left:30px;" href="javascript:void(0)" id="poiView"><span style="letter-spacing: 0px;">POI</span> 보기</a>
-        <a class="btn02 fl" style="margin-left:50px; width: 80px; background: #006ecf;" href="javascript:void(0)" id="allLayerOff">모든 레이어 off</a>
+        <input type="text" style="left: 630px; width: 100px; margin-top: -4px; border: 1px solid #000; position: absolute; font-size: 12px; padding: 5px; font-family:'Dotum';" id="addrNumber" value="" placeholder="지번 입력"/>
+        <img src="/map/images/addrNumMoveBtn.gif" style="margin-left: 121px; margin-top: -3px; cursor: pointer;" id="searchAddrBtn"/>
+        <!-- <a class="btn02 fl" style="margin-left:85px; padding: 2px 0px; margin-top: 2px; height: 13px; background: #006ecf; width: 53px;" href="javascript:void(0)" >지번이동</a> -->
+        <a class="btn02 fl" style="margin-left: -22px;" href="javascript:void(0)" id="poiView"><span style="letter-spacing: 0px;">POI</span> 보기</a>
     </div>
     <div id="container">
     	<ul id="tabOpener" class="gisTaskMenu">
@@ -982,7 +986,7 @@
 			</div>
      	</div>
      	
-     	<div id="addrPopup" style="position: absolute; z-index: 1000; top: 0px; left: 54px; height: 845px; display: none; overflow-y: auto; height: 300px; ">
+     	<div id="addrPopup" style="position: absolute; z-index: 1000; top: 0px; left: 278px; height: 845px; display: none; overflow-y: auto; height: 300px; ">
      		<div id="addrContents" style="background: #313942; padding: 5px 9px; border: 1px solid #212121; padding-right: 25px;"></div>
      		<span><a href="javascript:void(0)" class="btn03 pop_close"></a></span>
      	</div>

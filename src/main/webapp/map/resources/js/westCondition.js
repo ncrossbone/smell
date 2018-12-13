@@ -815,14 +815,14 @@ var _WestCondition = function () {
     	
     	$('#allLayerOff').off('click').on('click',function(){
     		var lyrOnOff = $('.layerOnOff');
-    		if($(this).text().indexOf('off') > -1){
+    		if($($(this).find('img')).attr('src').indexOf('on') > -1){
     			for(var i = 0; i<lyrOnOff.length; i++){
         			if($(lyrOnOff[i]).css('background').indexOf('btn_on') > -1){
         				$(lyrOnOff[i]).trigger('click');
         			}
         		}
     			
-    			$(this).text($(this).text().replace('off','on'));
+    			$($(this).find('img')).attr('src',$($(this).find('img')).attr('src').replace('on','off'));
     		}else{
     			for(var i = 0; i<lyrOnOff.length; i++){
         			if($(lyrOnOff[i]).css('background').indexOf('btn_off') > -1){
@@ -830,7 +830,7 @@ var _WestCondition = function () {
         			}
         		}
     			
-    			$(this).text($(this).text().replace('on','off'));
+    			$($(this).find('img')).attr('src',$($(this).find('img')).attr('src').replace('off','on'));
     		}
     		
     	});
@@ -1620,7 +1620,7 @@ var _WestCondition = function () {
     	var fillColor = '#000';
     	
     	if(_SmellMapBiz.taskMode=='0'){
-    		text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2):'-';
+    		text = feature.getProperties()[feature.getProperties().itemType]?feature.getProperties()[feature.getProperties().itemType].toFixed(2):'';
     		offsetY = 40;
     		font = 'bold 18px Arial';
     		storkeWidth = 5;
@@ -1722,14 +1722,20 @@ var _WestCondition = function () {
     var createLastPoint = function(feature) {
     	
     	var tyCode = {'CVP02001':'minwon_11','CVP02002':'minwon_33','CVP02003':'minwon_22'};
-    	return new ol.style.Style({
+    	
+    	var text = '';
+    	if(_SmellMapBiz.taskMode=='0'){
+    		text = feature.getProperties().CVPL_LC;
+    	}
+    	
+    	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
     			src: '/map/images/' + tyCode[feature.getProperties().CVPL_TY_CODE] + '.png',
     			scale:1.0
     		})),
     		text: new ol.style.Text({
-				text: feature.getProperties().CVPL_LC,
+				text: text,
 				fill: new ol.style.Fill({
 					color: '#000'
 				}),
@@ -1741,6 +1747,8 @@ var _WestCondition = function () {
 				font: 'bold 13px Arial'
 			})
     	});
+    	
+    	return style;
     };
     
     var clearTab = function(tabId){
@@ -1764,6 +1772,11 @@ var _WestCondition = function () {
     		_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
     	}
     	clearFocusLayer();
+    	
+    	
+    	if(_SmellMapBiz.taskMode=='1' && tabId == 'placecomplaintStatus'){
+    		_ComplaintStatusInsert.clickCloseBtn();
+    	}
     };
     
     var clearOnlyTab = function(tabId){

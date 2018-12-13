@@ -15,6 +15,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
+	var instSource;
 	
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
@@ -390,6 +391,7 @@ var _ComplaintStatusInsert = function () {
 		    case 2:
 		    	clearLayerByName(layerName[2]);
 		    	clearLayerByName(layerName[1]);
+		    	clearLayerByName('focusForCvpl');
 		    	bufferRadius.hide();
 		    	gridArea.hide();
 		    	_MapEventBus.trigger(_MapEvents.hide_cvplPopup, {});
@@ -534,6 +536,27 @@ var _ComplaintStatusInsert = function () {
 			var originCoord = _CoreMap.convertLonLatCoord([x,y],true);
 			var originFeature = new ol.Feature({geometry:new ol.geom.Point(originCoord), properties:null});
 			
+			var newFocusLayer = new ol.layer.Vector({
+				source : new ol.source.Vector({
+					features : [originFeature]
+				}),
+				style : new ol.style.Style({
+					image: new ol.style.Circle({
+						radius: 35,
+						stroke: new ol.style.Stroke({
+							color: '#f00',
+							width: 6
+						})
+					})
+				}),
+				visible: true,
+				zIndex:1,
+				name:'focusForCvpl'
+			});
+			
+			_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
+			
+			
 			var jstsGeom = parser.read(originFeature.getGeometry());
 			var buffered = jstsGeom.buffer(bufferMeter);
 			var bufferedGeometry = parser.write(buffered);
@@ -651,6 +674,8 @@ var _ComplaintStatusInsert = function () {
 		var source = new ol.source.Vector({
 			features: [resultFeature]
 		});
+		
+		instSource = source;
 
 		var originLayer = new ol.layer.Vector({
 			source: source,
@@ -662,6 +687,7 @@ var _ComplaintStatusInsert = function () {
 		});
 
 		_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
+		
 		var cvplHtml = '<div class="tooltip2">';
 		cvplHtml += '<p class="tt_tit2">';
 		cvplHtml += '<span>'+title+'</span>';
@@ -716,6 +742,22 @@ var _ComplaintStatusInsert = function () {
 			});
 		})
 	};
+	var clickCloseBtn = function(){
+		clearLayerByName('focusForCvpl');
+		clearLayerByName(layerName[1]);
+		clearLayerByName(layerName[0]);
+		
+		var originLayer = new ol.layer.Vector({
+			source: instSource,
+			zIndex:1000,
+			name:layerName[0],
+			style:function(feature){
+				return _WestCondition.createLastPoint(feature);
+			}
+		});
+
+		_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
+	};
 	
 	return {
 		init: function(){
@@ -743,6 +785,9 @@ var _ComplaintStatusInsert = function () {
 		
 		getMode: function(){
 			return complaintStatusMode;
+		},
+		clickCloseBtn:function(){
+			clickCloseBtn();
 		}
     };
 }();

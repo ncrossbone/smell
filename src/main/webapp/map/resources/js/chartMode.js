@@ -141,7 +141,7 @@ var _ChartMode = function () {
 			    		geometry: feature.getGeometry(),
 			    		image: typeConfig[prop.SENSOR_TY_CODE].icon,
 						text: new ol.style.Text({
-							text: prop.SENSOR_NM,
+							text: _CoreMap.getMap().getView().getZoom() > 15?prop.SENSOR_NM:'',
 							fill: new ol.style.Fill({
 								color: '#000'
 							}),
