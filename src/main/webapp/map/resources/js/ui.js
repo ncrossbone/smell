@@ -45,11 +45,8 @@ var _ui = (function () {
                 			isDisplay = 'block';
                 			$($('.accordion')[i]).addClass('ov');
                 		}
-                	}else{
-                		isDisplay = 'none';
-                		$($('.accordion')[i]).removeClass('ov');
+                		$($('.accordion')[i].nextElementSibling).css('display', isDisplay);
                 	}
-                    $($('.accordion')[i].nextElementSibling).css('display', isDisplay);
                 }
 
             }

@@ -109,14 +109,19 @@
 			var wh = $(window).height();
 
 			var map = _CoreMap.getMap();
-
-			$('#map').width(ww - 340);
+			var westWidth = 0;
+			if($('#tabOpener').find('li').attr('class').indexOf('on') > - 1){
+				westWidth = 340;
+			}
+			$('.lnb').height(wh - 111);
+			
+			$('#map').width(ww - westWidth);
 			$('#map').height(wh - 92);
 			$('#chartArea').height(wh - 191);
 			$('#foreCastOccurrenceDiv').height(wh - 263);
 			
 			if (map) {
-				map.setSize([ ww - 340, wh - 92 ]);
+				map.setSize([ ww - westWidth, wh - 92 ]);
 			}
 			
 			$('#gridArea').width(100-(($($('.lnb')[0]).width()+6) / ww * 100)+'%');
@@ -981,7 +986,7 @@
         		<span class="pop_tit_text">악취 발생예보</span>
         		<a href="javascript:void(0)" class="btn03 pop_close"></a>
         	</p> 
-        	<div class="pop_conts" style="background: #fff; width: 700px; height: 300px;"> 
+        	<div class="pop_conts" style="background: #fff; width: 700px; height: 300px; overflow: hidden;"> 
 	        	<iframe src="./foreCastOccurrencePopup.html" style="border: solid 0px; width:100%; height:100%; border: none;"></iframe>
 			</div>
      	</div>
@@ -1105,7 +1110,7 @@
 			<div id="chart">
 		    	<div class="chart_info" style="margin-bottom: -3px;">
 		        	<div class="topwrap">
-		                <div class="station_id">Station ID : <span id="chartSpotId" ></span></div>
+		                <div class="station_id">센서명 : <span id="chartSpotId" ></span></div>
 		            	<a href="javascript:void(0)" class="topbtn" id="chartPlay"><img src="/map/images/reset.png" /></a>
 		            </div>
 		            <p class="c_tit" id="chartSpotNm"></p>

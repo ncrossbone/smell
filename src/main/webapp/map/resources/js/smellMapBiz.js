@@ -959,6 +959,32 @@ var _SmellMapBiz = function () {
 					var interFeature = buffered.intersection(target);
 					var interGeometry = parser.write(interFeature);
 					if(interGeometry.getCoordinates()[0].length > 0){
+						
+						var polygonCenter = ol.extent.getCenter(bplcFeature.getGeometry().getExtent());
+						var ep1 = new proj4.Proj('EPSG:5179');
+						var ep2 = new proj4.Proj('EPSG:3857');
+						var p = new proj4.Point(polygonCenter[0],polygonCenter[1]);
+						
+						var trans = proj4.transform(ep2,ep1,p);
+						var originCenterPoint = 0;
+						
+						if(_SmellMapBiz.taskMode == '1'){
+							originCenterPoint = new proj4.Point(_ComplaintStatusInsert.getInstFeature().getGeometry().getCoordinates()[0],_ComplaintStatusInsert.getInstFeature().getGeometry().getCoordinates()[1]);
+						}else if(_SmellMapBiz.taskMode == '2'){
+							originCenterPoint = new proj4.Point(_DeviceManage.getInstFeature().getGeometry().getCoordinates()[0],_DeviceManage.getInstFeature().getGeometry().getCoordinates()[1]);
+						}else if(_SmellMapBiz.taskMode == '3'){
+							originCenterPoint = new proj4.Point(_OdorForeCast.getInstFeature().getGeometry().getCoordinates()[0],_OdorForeCast.getInstFeature().getGeometry().getCoordinates()[1]);
+						}
+						
+						if(originCenterPoint != 0){
+							var trans1 = proj4.transform(ep2,ep1,originCenterPoint);
+							
+							var powX = Math.pow((trans.x - trans1.x),2);
+							var powY = Math.pow((trans.y - trans1.y),2);
+							
+							result.features[i].properties.distance = parseInt(Math.sqrt(powX+powY)) + 'm';
+						}
+						
 						interFeatures.push(bplcFeature);
 						gridData.push(result.features[i].properties);
 					}

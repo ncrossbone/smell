@@ -17,6 +17,8 @@ var _DeviceManage = function () {
 	
 	var fixedMeasurement = 'fixedMeasurement';
 	
+	var instFeature;
+	
 	var init = function(){
 		deviceManagePopup = $('#deviceManagePopup');
 		deviceManageChartPopup = $('#deviceManageChartPopup'); 
@@ -508,7 +510,9 @@ var _DeviceManage = function () {
 
 		resultFeature.setGeometry(new ol.geom.Point(centerPoint));
 		resultFeature.setProperties({});
- 
+		
+		instFeature = resultFeature;
+		
 		var source = new ol.source.Vector({
 			features: [resultFeature]
 		});
@@ -556,6 +560,9 @@ var _DeviceManage = function () {
 		
 		getMode: function(){
 			return deviceStepMode;
+		},
+		getInstFeature:function(){
+			return instFeature;
 		}
     };
 }();

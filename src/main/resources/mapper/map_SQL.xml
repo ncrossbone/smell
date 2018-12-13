@@ -1332,7 +1332,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
     <!-- SMS insert -->
 	<insert id="insertSMS" parameterType="Map">
 		INSERT INTO NURI_MSG_DATA (CUR_STATE, REQ_DATE, CALL_TO, CALL_FROM, SMS_TXT, MSG_TYPE)
-		VALUES(0, NOW(), #{toPhone}, #{formPhone}, #{contents}, 4);
+		VALUES(0, NOW(), #{toPhone}, #{fromPhone}, #{contents}, 4);
 	</insert>
 
 	<!-- MMS content insert -->
@@ -1344,6 +1344,6 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	<!-- MMS insert -->
 	<insert id="insertMMS" parameterType="Map">
 		INSERT INTO NURI_MSG_DATA (CUR_STATE, REQ_DATE, CALL_TO, CALL_FROM, MSG_TYPE, CONT_SEQ)
-		VALUES(0, NOW(), #{toPhone}, #{formPhone},  6, (select max(cont_seq) from nuri_mms_contents_info))
+		VALUES(0, NOW(), #{toPhone}, #{fromPhone},  6, (select max(cont_seq) from nuri_mms_contents_info))
 	</insert>
 </mapper>

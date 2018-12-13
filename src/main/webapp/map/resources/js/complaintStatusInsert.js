@@ -15,7 +15,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
-	var instSource;
+	var instFeature;
 	
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
@@ -134,7 +134,7 @@ var _ComplaintStatusInsert = function () {
 			}
 			if(mode > 1 && !selectedObj){
 				return;
-			} 
+			}
 			changeMode(mode);
 		});
 		
@@ -359,7 +359,9 @@ var _ComplaintStatusInsert = function () {
 			if(preFlag){
 				setBuffer();	
 			}else{
-				gridArea.show();
+				if(_CoreMap.getMap().getLayerForName(layerName[1])){
+					gridArea.show();
+				}
 				bufferRadius.show();
 			}
 		}else if(mode == 4 && preFlag){ 
@@ -394,6 +396,7 @@ var _ComplaintStatusInsert = function () {
 		    	clearLayerByName('focusForCvpl');
 		    	bufferRadius.hide();
 		    	gridArea.hide();
+		    	$('#bufferRadiusSelect').val(200);
 		    	_MapEventBus.trigger(_MapEvents.hide_cvplPopup, {});
 		    case 3: // 악취 확산 격자
 		    	_MapEventBus.trigger(_MapEvents.hide_odorSpread_layer, {});
@@ -554,6 +557,7 @@ var _ComplaintStatusInsert = function () {
 				name:'focusForCvpl'
 			});
 			
+			clearLayerByName('focusForCvpl');
 			_MapEventBus.trigger(_MapEvents.map_addLayer, newFocusLayer);
 			
 			
@@ -675,7 +679,7 @@ var _ComplaintStatusInsert = function () {
 			features: [resultFeature]
 		});
 		
-		instSource = source;
+		instFeature = resultFeature;
 
 		var originLayer = new ol.layer.Vector({
 			source: source,
@@ -747,8 +751,13 @@ var _ComplaintStatusInsert = function () {
 		clearLayerByName(layerName[1]);
 		clearLayerByName(layerName[0]);
 		
+		
+		var source = new ol.source.Vector({
+			features: [instFeature]
+		});
+		
 		var originLayer = new ol.layer.Vector({
-			source: instSource,
+			source: source,
 			zIndex:1000,
 			name:layerName[0],
 			style:function(feature){
@@ -788,6 +797,9 @@ var _ComplaintStatusInsert = function () {
 		},
 		clickCloseBtn:function(){
 			clickCloseBtn();
+		},
+		getInstFeature:function(){
+			return instFeature;
 		}
     };
 }();

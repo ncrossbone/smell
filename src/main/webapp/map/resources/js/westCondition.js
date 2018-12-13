@@ -817,7 +817,7 @@ var _WestCondition = function () {
     		var lyrOnOff = $('.layerOnOff');
     		if($($(this).find('img')).attr('src').indexOf('on') > -1){
     			for(var i = 0; i<lyrOnOff.length; i++){
-        			if($(lyrOnOff[i]).css('background').indexOf('btn_on') > -1){
+        			if($(lyrOnOff[i]).attr('class').indexOf('ov') == -1){
         				$(lyrOnOff[i]).trigger('click');
         			}
         		}
@@ -825,7 +825,7 @@ var _WestCondition = function () {
     			$($(this).find('img')).attr('src',$($(this).find('img')).attr('src').replace('on','off'));
     		}else{
     			for(var i = 0; i<lyrOnOff.length; i++){
-        			if($(lyrOnOff[i]).css('background').indexOf('btn_off') > -1){
+        			if($(lyrOnOff[i]).attr('class').indexOf('ov') > -1){
         				$(lyrOnOff[i]).trigger('click');
         			}
         		}
@@ -944,6 +944,9 @@ var _WestCondition = function () {
     			
     			_MapEventBus.trigger(_MapEvents.init,{});
     		}
+    		
+    		_CoreMap.getMap().getView().setCenter([14186292.046073116, 4399581.583295255]);
+    		_CoreMap.getMap().getView().setZoom(14);
 		});
     	_MapEventBus.on(_MapEvents.hide_cvplPopup, function(event, data){
     		$('#popup').hide();
@@ -990,13 +993,13 @@ var _WestCondition = function () {
     		var isShow = false;
     		clearFocusLayer();
     		try{
-    			if($(this)[0].style.background.indexOf('on') > -1 || !$(this)[0].style.background){
-        			$(this).css('background','url(/map/images/btn_off.png)');
-        			contentsConfig[contentsId].isVisible = false;
-        		}else{
-        			isShow = true;
-        			$(this).css('background','url(/map/images/btn_on.png)');
+    			if($(this).attr('class').indexOf('ov') > -1){
+    				isShow = true;
+        			$(this).removeClass('ov');
         			contentsConfig[contentsId].isVisible = true;
+        		}else{
+        			$(this).addClass('ov');
+        			contentsConfig[contentsId].isVisible = false;
         		}
     		}catch(e){}
     		
@@ -1225,7 +1228,10 @@ var _WestCondition = function () {
 					features: pointArray
 				});
 				if(!isNaN(source.getExtent()[0])){
-					_CoreMap.getMap().getView().fit(source.getExtent(),_CoreMap.getMap().getSize());
+					
+					if(_SmellMapBiz.taskMode=='0'){
+						_CoreMap.getMap().getView().fit(source.getExtent(),_CoreMap.getMap().getSize());
+					}
 				}
 			}
 		}else{
@@ -1831,7 +1837,18 @@ var _WestCondition = function () {
     	var clients = [];
     	
     	for(var i = 0; i < data.length; i++){
-    		clients.push(data[i]);
+    			clients.push(data[i]);
+    	}
+    	
+    	var colArr = contentsConfig[id].columnArr;
+    	if(id=='odorOrigin'){
+    		if(_SmellMapBiz.taskMode != '0'){
+    			colArr = [];
+    			for(var i = 0; i<contentsConfig[id].columnArr.length; i++){
+    				colArr.push(contentsConfig[id].columnArr[i]);
+    	    	}
+    			colArr.push({name: "distance", title: "거리"});
+    		}
     	}
     	
     	$('#grid' + id).jsGrid({
@@ -1843,7 +1860,7 @@ var _WestCondition = function () {
     		paging: false,	
     		noDataContent: noDataContent,
     		data: clients,
-    		fields: contentsConfig[id].columnArr,
+    		fields: colArr,
     		rowClick:function(data){
     			var paramObj = {contentsId:id};
     			for(var i = 0; i < contentsConfig[id].keyColumn.length; i++){
@@ -1928,10 +1945,10 @@ var _WestCondition = function () {
 			popupHtml +=   '<tr>';
 			popupHtml +=      '<th scope="row">'+config.popupColumnArr[i].text+'</th>';
 			parseInt(Math.random()*5)
-			if(attr[config.popupColumnArr[i].id]){
-				popupHtml += '<td>'+attr[config.popupColumnArr[i].id]+'</td>';
-			}else{
+			if(config.popupColumnArr[i].id == 'AI'){
 				popupHtml += '<td>'+testTxt[parseInt((Math.random() * 10)/5)]+'</td>';
+			}else{
+				popupHtml += '<td>'+attr[config.popupColumnArr[i].id]+'</td>';
 			}
 			
 			popupHtml +=   '</tr>';
@@ -2134,7 +2151,7 @@ var _WestCondition = function () {
 	var tabCloseOpen = function(value){
 		
 		var ww = $(window).width();
-		if(value.attr('class') == "on"){
+		if(value.attr('class').indexOf('on') >- 1){
 			//$('.instanceArea').hide();
 			$('.lnb').css('display', 'none');
 			$('#tab').css('left',0);
@@ -2148,6 +2165,11 @@ var _WestCondition = function () {
 						
 			$('#gridArea').css('left','0');
 			$('#gridArea').css('width', ww );
+			
+			if(parseInt($('#addrPopup')[0].style.left) < 630){
+				$('#addrPopup')[0].style.left = (parseInt($('#addrPopup')[0].style.left) + 352) + 'px';
+			}
+			
 		}else{
 			//$('.instanceArea').show();
 			//$('#tab').find('.on')
@@ -2171,6 +2193,9 @@ var _WestCondition = function () {
 			$('#gridArea').css('left','361px');
 			$('#gridArea').css('width', ww - 360 );
 			
+			if(parseInt($('#addrPopup')[0].style.left) >= 278){
+				$('#addrPopup')[0].style.left = (parseInt($('#addrPopup')[0].style.left) - 352) + 'px';
+			}
 		}
 		reSizeMap(reW,reH);
 	}
