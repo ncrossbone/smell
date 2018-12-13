@@ -58,7 +58,8 @@ function initInfo() {
 					hday = Number(data[i].ON_TIME.substring(0,2))+"."+(Number(data[i].ON_TIME.substring(5,7))/60).toString().substring(2,4);
 				}
 			    html += "<tr>";
-			    html += "<th>"+data[i].BSML_TRGNPT_NM+"<img src='/map/images/"+imgNm+"' /><br />("+data[i].BPLC_ID+")</td>";
+			    html += "<th>"+data[i].BSML_TRGNPT_NM+"<br />("+data[i].BPLC_ID+")</td>";
+			    html += "<td><img src='/map/images/"+imgNm+"' /></td>";
 			    html += "<td>"+hday+" h/day</td>";
 			    html += "</tr>";
 			}
@@ -112,8 +113,9 @@ function foreCastList(val){
             <table>
             	<caption>악취발생 예보</caption>
                 <colgroup>
-                    <col width="40%"/>
-                    <col width="60%"/>
+                    <col width="45%"/>
+                    <col width="5%"/>
+                    <col width="50%"/>
                 </colgroup>
                 <tbody id="tList">
                 	<tr>
