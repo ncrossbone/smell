@@ -13,7 +13,14 @@
 <script src="/map/js/jquery.min-1.8.3.js"></script>
 <script type="text/javascript" src="/map/map/resources/js/lib/common.js"></script>
 
+<!-- 달력 -->
+<link href="/map/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+<script src="/map/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
+<script src="/map/cms/js/cal/ui/jquery.ui.core.js"></script>
 <script type="text/javascript">
+var tTime = new Date();
+var nowTime = $.datepicker.formatDate('yymmdd', tTime);
+
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 	//초기 조회
 	initInfo();
@@ -25,7 +32,7 @@ function initInfo() {
 		url:'/map/getForeCastOccurrence.do', 
 		contentType: 'application/json', 
 		params: {
-			nDate: '20181201'
+			nDate: nowTime
 		}}).done(function(data){
 		$("#dta_01").html("<a href='' onclick='foreCastList(1);return false;'>"+data.DTA_01_SUM+"</a>");
 		$("#dta_02").html("<a href='' onclick='foreCastList(2);return false;'>"+data.DTA_02_SUM+"</a>");
@@ -37,7 +44,7 @@ function initInfo() {
 		url:'/map/getReductionFacil.do', 
 		contentType: 'application/json', 
 		params: {
-			nDate: '20181201'
+			nDate: nowTime
 		}}).done(function(data){
 			var html = "";
 			var imgNm = "";
@@ -51,7 +58,7 @@ function initInfo() {
 					hday = Number(data[i].ON_TIME.substring(0,2))+"."+(Number(data[i].ON_TIME.substring(5,7))/60).toString().substring(2,4);
 				}
 			    html += "<tr>";
-			    html += "<th>"+data[i].BSML_TRGNPT_NM+"<img src='/map/images/"+imgNm+"' /></td>";
+			    html += "<th>"+data[i].BSML_TRGNPT_NM+"<img src='/map/images/"+imgNm+"' /><br />("+data[i].BPLC_ID+")</td>";
 			    html += "<td>"+hday+" h/day</td>";
 			    html += "</tr>";
 			}

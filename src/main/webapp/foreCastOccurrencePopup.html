@@ -13,8 +13,13 @@
 <script src="/map/js/jquery.min-1.8.3.js"></script>
 <script type="text/javascript" src="/map/map/resources/js/lib/common.js"></script>
 
+<!-- 달력 -->
+<link href="/map/cms/js/cal/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+<script src="/map/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
+<script src="/map/cms/js/cal/ui/jquery.ui.core.js"></script>
 <script type="text/javascript">
-
+var tTime = new Date();
+var nowTime = $.datepicker.formatDate('yy-mm-dd', tTime).replace(/-/gi,'');
 var _MessagePipe = {};
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 	//초기 조회
@@ -28,7 +33,7 @@ function foreCastList(val){
 		url:'/map/getForeCastOccurrenceSel.do', 
 		contentType: 'application/json', 
 		params: {
-			nDate: '20181201' ,gubun: val
+			nDate: nowTime ,gubun: val
 		}}).done(function(data){
 			var html = "";
 			var blank = "<tr><td colspan='7' style='text-align:center;'>조회된 데이터가 없습니다.</td></tr>";
