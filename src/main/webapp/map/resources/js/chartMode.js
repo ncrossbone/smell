@@ -9,6 +9,8 @@ var _ChartMode = function () {
 	
 	var chartModeOnePoint = 'chartModeOnePoint';
 	
+	var instCode = '';
+	
 	var init = function(){
 		setEvent();
 	};
@@ -75,8 +77,6 @@ var _ChartMode = function () {
 			
 			if(playArr[playIndex]){
 				getChartData({code:playArr[playIndex].id,mesureDt:1});
-				_CoreMap.getMap().getView().setCenter(playArr[playIndex].point);
-				_CoreMap.getMap().getView().setZoom(17);
 			}else{
 				playIndex = 0;
 			}
@@ -111,35 +111,35 @@ var _ChartMode = function () {
 				style:function(feature){
 					var prop = feature.getProperties();
 					var text = prop.SENSOR_NM;
-					var typeConfig = {
-						'SEN01001':{icon:new ol.style.Icon(({
-			    					src: '/map/images/IoT_fix.png'
-			    				   })),
-			    				   offset:35},
-    				    'SEN01002':{icon:new ol.style.Icon(({
-    				    			src: '/map/images/IoT_portable.png'
-    				    		   })),
-    				    		   offset:35},
-    				    'SEN01003':{icon:new ol.style.Icon(({
-			    			src: '/map/images/IoT_unman.png'
-			    		   })),
-    				   			   offset:35},
-    				   	 'SEN01004':{icon:new ol.style.Circle({
-    			    			radius: 15,
-    			    			fill: new ol.style.Fill({
-    			    				color: '#792BFF'
-    			    			}),
-    			    			stroke: new ol.style.Stroke({
-    			    				color: '#AFABAB',
-    			    				width: 3
-    			    			})
-    			    		}),
-    				   	 		   offset:35}
-					};
 					
+					var imgSrc = '/map/images/symbol/';
+					var textOffset = 35;
+					
+					var intMesure = parseInt(prop.MESURE_DNSTY);
+					
+					var detailSrc = '';
+					
+					if(intMesure >= 2){
+						detailSrc = '1';
+					}else if(intMesure >= 1.8  && intMesure < 2){
+						detailSrc = '2';
+					}else if(intMesure >= 1.7 && intMesure < 1.8){
+						detailSrc = '3';
+					}else{
+						detailSrc = '4';
+					}
+					
+					if(prop.SENSOR_TY_CODE=='SEN01001'){
+						prop.CODE == instCode?imgSrc += 'item2_' + detailSrc + '_ov':imgSrc += 'item2_' + detailSrc;
+					}else if(prop.SENSOR_TY_CODE=='SEN01003'){
+						imgSrc += 'item1_' + detailSrc;
+					}
+			    
 					var style = new ol.style.Style({
 			    		geometry: feature.getGeometry(),
-			    		image: typeConfig[prop.SENSOR_TY_CODE].icon,
+		    			image: new ol.style.Icon(({
+		    				src: imgSrc + '.png'
+		        		})),
 						text: new ol.style.Text({
 							text: _CoreMap.getMap().getView().getZoom() > 15?prop.SENSOR_NM:'',
 							fill: new ol.style.Fill({
@@ -150,7 +150,7 @@ var _ChartMode = function () {
 								width : 3
 							}),
 							font: 'bold 12px Arial',
-							offsetY: typeConfig[prop.SENSOR_TY_CODE].offset
+							offsetY: textOffset
 						})
 			  		});
 			    	
@@ -165,15 +165,20 @@ var _ChartMode = function () {
 	};
 	
 	var getChartData = function(param){
-
+		
 		$.when(Common.getData({ url: '/map/getChart.do', contentType: 'application/json', params: param }),
 				Common.getData({ url: '/map/getClick.do', contentType: 'application/json', params: {contentsId:'chart',code:param.code} }),
 				Common.getData({ url: '/map/getPlotLine.do', contentType: 'application/json', params: {contentsId:'chart',code:param.code} })).then(function (chartData, clickData, plotData) {
 
 					writeChart({data:chartData,plotData:plotData});
-
-					$('#chartSpotId').text(clickData[0][0].CODE);
-					$('#chartSpotNm').text(clickData[0][0].SENSOR_NM);
+					
+					var coord = ol.proj.transform([parseFloat(clickData[0][0].LO), parseFloat(clickData[0][0].LA)], 'EPSG:4326', 'EPSG:3857');
+					_MapEventBus.trigger(_MapEvents.map_move, {x:coord[0],y:coord[1]});
+					
+					instCode = param.code;
+					
+					$('#chartSpotId').text(clickData[0][0].SENSOR_NM);
+					$('#chartSpotNm').text(clickData[0][0].CODE);
 				});
 
 	};

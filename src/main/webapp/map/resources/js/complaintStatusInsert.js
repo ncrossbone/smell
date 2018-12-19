@@ -751,6 +751,9 @@ var _ComplaintStatusInsert = function () {
 		clearLayerByName(layerName[1]);
 		clearLayerByName(layerName[0]);
 		
+		if(!instFeature){
+			return
+		}
 		
 		var source = new ol.source.Vector({
 			features: [instFeature]

@@ -1339,22 +1339,23 @@ var _WestCondition = function () {
     	var prop = feature.getProperties();
     	//sttus_nm 1 : 가동중, 4 : 중지 x : 통신장애
     	var imageConfig = {
-    			'4':'chart_feature_off',
-    			'1':'chart_feature_on',
-    			'X':'chart_feature_x',
+    			'4':'icon_pig_1',
+    			'1':'icon_pig_2',
+    			'X':'icon_pig_3',
     	};
     	
     	var style = new ol.style.Style({
     		geometry: feature.getGeometry(),
     		image: new ol.style.Icon(({
-    			src: '/map/images/' + imageConfig[prop.STTUS_NM] + '.png'
+    			src: '/map/images/symbol/' + imageConfig[prop.STTUS_NM] + '.png'
     		})),
     		text: new ol.style.Text({
     			text: prop.BPLC_ID,
     			fill: new ol.style.Fill({
-    				color: '#000'
+    				color: '#fff'
     			}),
-    			offsetX: -11,
+    			offsetX: 0,
+    			offsetY:-20,
     			font: 'bold 13px Arial'
     		})
     	});
@@ -1933,25 +1934,11 @@ var _WestCondition = function () {
     		attr = data;
     	}
     	
-    	var testTxt = [];
-    	var testDate = new Date();
-    	if((testDate.getDate()+2)%2){
-    		testTxt = ['환경시설','양계장'];
-    	}else{
-    		testTxt = ['산업시설','양돈장'];
-    	}
-    	
     	for(var i=0; i < config.popupColumnArr.length; i++){
-			popupHtml +=   '<tr>';
-			popupHtml +=      '<th scope="row">'+config.popupColumnArr[i].text+'</th>';
-			parseInt(Math.random()*5)
-			if(config.popupColumnArr[i].id == 'AI'){
-				popupHtml += '<td>'+testTxt[parseInt((Math.random() * 10)/5)]+'</td>';
-			}else{
-				popupHtml += '<td>'+attr[config.popupColumnArr[i].id]+'</td>';
-			}
-			
-			popupHtml +=   '</tr>';
+			popupHtml += '<tr>';
+			popupHtml +=	'<th scope="row">'+config.popupColumnArr[i].text+'</th>';
+			popupHtml +=	'<td>'+attr[config.popupColumnArr[i].id]+'</td>';
+			popupHtml += '</tr>';
 		}
     	
     	popupHtml +=	'</tbody></table>';

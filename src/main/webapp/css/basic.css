@@ -306,6 +306,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .tm03 { background:url(../images/tm03.png) no-repeat center top;}
 .tm04 { background:url(../images/tm04.png) no-repeat center top;}
 .tm05 { background:url(../images/tm05.png) no-repeat center top;}
+.tm06 { background:url(../images/tm06.png) no-repeat center top;}
 
 /*181130 차트*/
 #chart { width:360px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; }

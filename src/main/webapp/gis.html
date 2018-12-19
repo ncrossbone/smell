@@ -165,7 +165,8 @@
     <div id="top">
         <h1></h1>
         <ul class="topmenu">
-			<li class="MgR5 on"><a href="javascript:void(0)" class="tm05 taskTypeBtn" mode="0">GIS 업무</a></li>      	
+			<li class="MgR5 on"><a href="javascript:void(0)" class="tm05 taskTypeBtn" mode="0">GIS 업무</a></li>
+			<li class="MgR5" style="display: none;"><a href="javascript:void(0)" class="tm06 taskTypeBtn" mode="5">관심지역 설정</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm01 taskTypeBtn" mode="1">민원처리</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm02 taskTypeBtn" mode="2">현장민원</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm03 taskTypeBtn" mode="3">악취예보처리</a></li>      	
@@ -473,9 +474,9 @@
 
         <li>
         	<div class="layerOnOff"></div>
-            <h2 class="accordion">악취저감설비 관리<span></span></h2>
+            <h2 class="accordion">악취저감설비<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorReduction">
-				<h3>악취저감설비 관리</h3>
+				<h3>악취저감설비</h3>
                 <ul>
                     <li>
                         <dl>
@@ -512,9 +513,9 @@
         
         <li>
         	<div class="layerOnOff"></div>
-            <h2 class="accordion">악취원점 관리<span></span></h2>
+            <h2 class="accordion">악취원점<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorOrigin">
-				<h3>악취원점 관리</h3>
+				<h3>악취원점</h3>
 				<ul class="box grid term" style="margin-bottom: 10px;">
             		<li>
                     	<dl>
@@ -913,6 +914,17 @@
                             <a href="javascript:void(0)" class="ctrl_left" id="odorSpreadPrevious"></a>
                             <a href="javascript:void(0)" class="ctrl_right" id="odorSpreadNext"></a>
                         </div>
+                        
+                       <div style="display: none;" id="odorSpreadRangeDiv">
+                       		
+                        	<div id="odorSpreadRange" style="width: 260px;">
+                        	</div>
+                        	<div style="margin-top: 5px; font-size:12px;" id="odorSpreadRangeTxt">
+                        		<span style="margin-left: -10px;"></span>
+                        		<span style="margin-left: 80px;"></span>
+                        		<span style="margin-left: 75px;"></span>
+                        	</div>
+                       </div>
                     </li>
                 </ul>
             </div>
@@ -1127,7 +1139,6 @@
             	<a href="javascript:void(0)" class="btn04">닫기</a>
             </div>
         </div>
-        
          <div id="poiPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;">
         	<p class="pop_tit"><span class="pop_tit_text">POI 정보</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
             <div class="pop_conts" style="background: #fff;">
