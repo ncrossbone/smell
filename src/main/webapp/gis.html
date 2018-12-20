@@ -36,6 +36,7 @@
 <script type="text/javascript" src="/map/map/resources/js/chartMode.js"></script>
 <script type="text/javascript" src="/map/map/resources/js/deviceManage.js"></script>
 <script type="text/javascript" src="/map/map/resources/js/odorForeCast.js"></script>
+<script type="text/javascript" src="/map/map/resources/js/interestAreaManage.js"></script>
 
 
 <script src="/map/map/resources/js/lib/highcharts-6.2.js"></script>
@@ -103,6 +104,7 @@
 		_DeviceManage.init();
 		_OdorForeCast.init();
 		_ChartMode.init();
+		_InterestAreaManage.init();
 		
 		$(window).on('resize', function() {
 			var ww = $(window).width();
@@ -166,7 +168,7 @@
         <h1></h1>
         <ul class="topmenu">
 			<li class="MgR5 on"><a href="javascript:void(0)" class="tm05 taskTypeBtn" mode="0">GIS 업무</a></li>
-			<li class="MgR5" style="display: none;"><a href="javascript:void(0)" class="tm06 taskTypeBtn" mode="5">관심지역 설정</a></li>      	
+			<li class="MgR5"><a href="javascript:void(0)" class="tm06 taskTypeBtn" mode="5">관심지역 설정</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm01 taskTypeBtn" mode="1">민원처리</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm02 taskTypeBtn" mode="2">현장민원</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm03 taskTypeBtn" mode="3">악취예보처리</a></li>      	
@@ -196,6 +198,14 @@
         <img src="/map/images/addrNumMoveBtn.gif" style="margin-left: 121px; margin-top: -3px; cursor: pointer;" id="searchAddrBtn"/>
         <!-- <a class="btn02 fl" style="margin-left:85px; padding: 2px 0px; margin-top: 2px; height: 13px; background: #006ecf; width: 53px;" href="javascript:void(0)" >지번이동</a> -->
         <a class="btn02 fl" style="margin-left: -22px;" href="javascript:void(0)" id="poiView"><span style="letter-spacing: 0px;">POI</span> 보기</a>
+        
+        <span id="interestBtn" style="position: relative; top: -6px; left: 11px; display: none;">
+	        <input type="radio" class="dis_ib" value="sensor" id="sensor" name="mapType" checked="checked"/>
+			<label class="contents" for="sensor" style="margin-right: 20px;">AI 학습위치(센서위치)</label>
+	                                
+			<input type="radio" class="dis_ib" value="cell" id="cell" name="mapType"/>
+	        <label class="contents" for="cell" style="margin-right: 20px;">악취 예보지역</label>
+        </span>
     </div>
     <div id="container">
     	<ul id="tabOpener" class="gisTaskMenu">
@@ -300,7 +310,7 @@
                         </dl>
                         <dl>
                             <dt style="width: 82px; margin-right: 15px;">복합악취 발생률</dt>
-                            <dd style="width: 200px;">
+                            <dd style="width: 199px;">
                                 <input id="sensoryEvaluationStartOU" class="W105" style="width: 80px !important;" type="text" value="0"/>
                                 ~
 								<input id="sensoryEvaluationEndOU" class="W105" style="width: 80px !important;" type="text" value="100"/>
@@ -1105,6 +1115,48 @@
 				<div id="originTel"></div>
 			</div>
 	    </div>
+	    
+	     <div id="interestPopupOverlay" class="ol-popup" style="width: 300px;">
+				<a href="javascript:;" id="interestPopup-closer" class="ol-popup-closer"></a>
+				<div id="interestPopup-content">
+					<ul>
+	                    <li id="cellReg">
+	                    	<dl>
+	                            <dt style="float: left;    padding-top: 5px; padding-right: 4px;">관심지역명 :</dt>
+	                            <dd style="">
+	                            	<input type="text" value="" style="height:35px; width:210px; border: solid 1px #cccccc;" id="intrstAreaNm" />
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:5px;">
+	                            <dt style="float: left; padding-top: 5px;padding-right: 4px;">지형고도(El.m) : </dt>
+	                            <dd style="">
+	                            	<input type="text" value="" id="tpgrphAl" style="height:35px; width:183px; border: solid 1px #cccccc;" />
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:5px; ">
+	                            <dt style="float: left; padding-top: 5px;padding-right: 4px;">예측높이(m) : </dt>
+	                            <dd style="">
+	                            	<input type="text" value="" id="predictAl" style="height:35px; width:200px; border: solid 1px #cccccc;" />
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:17px;">
+	                        	<a href="javascript:void(0)" class="btn01" id="cellRemeveBtn" style="height:40px; margin-left: 80px;">추가</a>
+	                        </dl>
+						</li>
+						<li id="sensorMove" style="display:none;">
+							<dl style="margin-top:5px;">
+	                            <dt style="float: left; padding-top: 0px;padding-right: 18px;">센서명 : </dt>
+	                            <dd id="sensorNm" style="height:35px; width:210px;">
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:10px;">
+	                        	<a href="javascript:void(0)" class="btn01"  id="sensorMoveBtn" style="margin-left: 10px;">위치변경</a>
+	                        </dl>
+						</li>
+					</ul>
+		      	</div>
+		    </div>
+	    
 	    
 	    <div id="cvplPopupOverlay"></div>
 	    

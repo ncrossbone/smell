@@ -75,7 +75,7 @@ var _WestCondition = function () {
     	'fixedMeasurement':{
 			layerType:'base',
 			title:'고정식 측정 데이터',
-			keyColumn:['CODE'],
+			keyColumn:['CODE','DATE'],
 			isVisible:true,
 			isUseGeoserver:false,
 			isWriteGrid:true,
@@ -943,6 +943,10 @@ var _WestCondition = function () {
     			$('#allLayerOff').hide();
     			
     			_MapEventBus.trigger(_MapEvents.init,{});
+    			
+    			if($('#allLayerOff').find('img').attr('src').indexOf('off') > -1){
+    				$('#allLayerOff').trigger('click');
+    			}
     		}
     		
     		_CoreMap.getMap().getView().setCenter([14186292.046073116, 4399581.583295255]);
