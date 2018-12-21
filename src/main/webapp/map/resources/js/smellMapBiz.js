@@ -630,6 +630,72 @@ var _SmellMapBiz = function () {
 					
 					$('#legendDiv').show();
 					
+					$('#odorSpreadRangeDiv').show();
+					
+					if($('#odorSpreadRange').slider('instance')){
+						$('#odorSpreadRange').slider('destroy');
+					}
+					
+					$('#odorSpreadRange').html('<div id="custom-handle" class="ui-slider-handle"></div>');
+					var handle = $('#custom-handle');
+					
+					
+					$($('#odorSpreadRangeTxt').find('span')[0]).text(odorSpreadTimeSeries[0].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[0].time + '시');
+					$($('#odorSpreadRangeTxt').find('span')[1]).text(parseInt((odorSpreadTimeSeries.length-1)/2)>0?odorSpreadTimeSeries[parseInt((odorSpreadTimeSeries.length-1)/2.3)].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[parseInt((odorSpreadTimeSeries.length-1)/2)].time + '시':'');
+					$($('#odorSpreadRangeTxt').find('span')[2]).text(parseInt((odorSpreadTimeSeries.length-1)/2)>0?odorSpreadTimeSeries[odorSpreadTimeSeries.length - 1].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[odorSpreadTimeSeries.length - 1].time + '시':'');
+					
+					var slider = $('#odorSpreadRange').slider({
+						min: 0,
+						max: odorSpreadTimeSeries.length - 1,
+						step: 1,
+						create: function() {
+							handle.text(odorSpreadTimeSeries[0].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[0].time + '시');
+						},
+						change: function( event, ui ) {
+							if(!event.handleObj){
+								handle.text(odorSpreadTimeSeries[ui.value].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[ui.value].time + '시');
+							}
+						},
+						slide: function( event, ui ) {
+							handle.text(odorSpreadTimeSeries[ui.value].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[ui.value].time + '시');
+
+							var mapType = $('input[name="odorSpreadMapType"]:checked').val();
+							
+							if(odorSpreadInterval){
+								clearInterval(odorSpreadInterval);
+								odorSpreadInterval = null;
+							}
+							
+							if(odorSpreadPlayType == 1){
+								odorSpreadPlayType = 2;	
+							}
+							
+							setControlButton('odorSpreadPlay', odorSpreadPlayType);
+							
+							odorSpreadIndex = ui.value;
+							
+							if(mapType == 'cell'){
+								if(odorSpreadLayer){
+									updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
+									setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+								}
+							}else{
+								var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
+								if(layerNm.indexOf('now') >= 0){
+									layerNm = bizLayers.ANALS_POINT_NOW;
+								}else{
+									layerNm = bizLayers.ANALS_POINT_FORECAST
+								}
+								
+								if(odorSpreadHeatMapLayer){
+									_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadHeatMapLayer);
+									odorSpreadHeatMapLayer = null;
+								}
+								
+								drawHeatMapLayer(layerNm);
+							}
+						}
+					});
 				}else{
 					if(layerNm.indexOf('now') >= 0){
 						layerNm = bizLayers.ANALS_POINT_NOW;
@@ -674,6 +740,8 @@ var _SmellMapBiz = function () {
 				if(odorSpreadLayer){
 					updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
 					setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+					
+					$('#odorSpreadRange').slider('value',odorSpreadIndex);
 				}
 			}else{
 				var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
@@ -716,6 +784,8 @@ var _SmellMapBiz = function () {
 				if(odorSpreadLayer){
 					updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
 					setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+					
+					$('#odorSpreadRange').slider('value',odorSpreadIndex);
 				}
 			}else{
 				var layerNm = $('a[name="odorSpreadLayerType"][class="on"]').attr('value');
@@ -959,6 +1029,32 @@ var _SmellMapBiz = function () {
 					var interFeature = buffered.intersection(target);
 					var interGeometry = parser.write(interFeature);
 					if(interGeometry.getCoordinates()[0].length > 0){
+						
+						var polygonCenter = ol.extent.getCenter(bplcFeature.getGeometry().getExtent());
+						var ep1 = new proj4.Proj('EPSG:5179');
+						var ep2 = new proj4.Proj('EPSG:3857');
+						var p = new proj4.Point(polygonCenter[0],polygonCenter[1]);
+						
+						var trans = proj4.transform(ep2,ep1,p);
+						var originCenterPoint = 0;
+						
+						if(_SmellMapBiz.taskMode == '1'){
+							originCenterPoint = new proj4.Point(_ComplaintStatusInsert.getInstFeature().getGeometry().getCoordinates()[0],_ComplaintStatusInsert.getInstFeature().getGeometry().getCoordinates()[1]);
+						}else if(_SmellMapBiz.taskMode == '2'){
+							originCenterPoint = new proj4.Point(_DeviceManage.getInstFeature().getGeometry().getCoordinates()[0],_DeviceManage.getInstFeature().getGeometry().getCoordinates()[1]);
+						}else if(_SmellMapBiz.taskMode == '3'){
+							originCenterPoint = new proj4.Point(_OdorForeCast.getInstFeature().getGeometry().getCoordinates()[0],_OdorForeCast.getInstFeature().getGeometry().getCoordinates()[1]);
+						}
+						
+						if(originCenterPoint != 0){
+							var trans1 = proj4.transform(ep2,ep1,originCenterPoint);
+							
+							var powX = Math.pow((trans.x - trans1.x),2);
+							var powY = Math.pow((trans.y - trans1.y),2);
+							
+							result.features[i].properties.distance = parseInt(Math.sqrt(powX+powY)) + 'm';
+						}
+						
 						interFeatures.push(bplcFeature);
 						gridData.push(result.features[i].properties);
 					}
@@ -1278,7 +1374,8 @@ var _SmellMapBiz = function () {
 			
 			if(odorSpreadTimeSeries[odorSpreadIndex]){
 				updateLayer(odorSpreadLayer, odorSpreadTimeSeries[odorSpreadIndex]);
-				setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');	
+				setCurrentDate(odorSpreadTimeSeries[odorSpreadIndex], 'odorSpreadDate');
+				$('#odorSpreadRange').slider('value',odorSpreadIndex);
 			}else{
 				odorSpreadIndex--;
 				clearInterval(odorSpreadInterval);
@@ -1300,6 +1397,8 @@ var _SmellMapBiz = function () {
 	
 	var setTimeSeries = function(sdate, edate, stime, etime, layerNm, styleNm){
 		var timeSeriesArr = [];
+		sliderTimeArr = [];
+		
 		var syear = sdate.substring(0,4);
 		var smonth = sdate.substring(4,6);
 		var sday = sdate.substring(6,8);
@@ -1328,6 +1427,7 @@ var _SmellMapBiz = function () {
 			}else{
 				stime++;
 			}
+			
 			timeSeriesArr.push(timeSeries);
 		}
 		return timeSeriesArr;

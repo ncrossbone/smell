@@ -21,6 +21,8 @@
 var tTime = new Date();
 var nowTime = $.datepicker.formatDate('yymmdd', tTime);
 
+//var dateStr = tTime.getFullYear() + '-' + (tTime.getMonth() +1) + '-' + tTime.getDate();
+
 $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 	//초기 조회
 	initInfo();
@@ -38,6 +40,10 @@ function initInfo() {
 		$("#dta_02").html("<a href='' onclick='foreCastList(2);return false;'>"+data.DTA_02_SUM+"</a>");
 		$("#dta_03").html("<a href='' onclick='foreCastList(3);return false;'>"+data.DTA_03_SUM+"</a>");
 		$("#dta_04").html("<a href='' onclick='foreCastList(4);return false;'>"+data.DTA_04_SUM+"</a>");
+		$("#dta_de_01").html(data.DTA_DE_01+"<br />새벽<br />(00~05)");
+		$("#dta_de_02").html(data.DTA_DE_02+"<br />오전<br />(06~11)");
+		$("#dta_de_03").html(data.DTA_DE_03+"<br />오후<br />(12~17)");
+		$("#dta_de_04").html(data.DTA_DE_04+"<br />저녁<br />(18~23)");
 	});
 
 	Common.getData({
@@ -89,26 +95,26 @@ function foreCastList(val){
                 </colgroup>
                 <tbody>
                 	<tr>
-                    	<th>새벽<br />(00~05)</th>
+                    	<th id="dta_de_01">새벽<br />(00~05)</th>
                         <td id="dta_01">-</td>
                     </tr>
                 	<tr>
-                    	<th>오전<br />(06~11)</th>
+                    	<th id="dta_de_02">오전<br />(06~11)</th>
                         <td id="dta_02">-</td>
                     </tr>
                 	<tr>
-                    	<th>오후<br />(12~17)</th>
+                    	<th id="dta_de_03">오후<br />(12~17)</th>
                         <td id="dta_03">-</td>
                     </tr>
                 	<tr>
-                    	<th>저녁<br />(18~23)</th>
+                    	<th id="dta_de_04">저녁<br />(18~23)</th>
                         <td id="dta_04">-</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <!--저감장치가동현황--> 
-        <div class="r1"  style="top:244px;">
+        <div class="r1"  style="top:317px;">
         	<p class="r1_tit">저감장치가동현황</p>
             <table>
             	<caption>악취발생 예보</caption>

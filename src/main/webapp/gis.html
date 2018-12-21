@@ -36,6 +36,7 @@
 <script type="text/javascript" src="/map/map/resources/js/chartMode.js"></script>
 <script type="text/javascript" src="/map/map/resources/js/deviceManage.js"></script>
 <script type="text/javascript" src="/map/map/resources/js/odorForeCast.js"></script>
+<script type="text/javascript" src="/map/map/resources/js/interestAreaManage.js"></script>
 
 
 <script src="/map/map/resources/js/lib/highcharts-6.2.js"></script>
@@ -103,20 +104,26 @@
 		_DeviceManage.init();
 		_OdorForeCast.init();
 		_ChartMode.init();
+		_InterestAreaManage.init();
 		
 		$(window).on('resize', function() {
 			var ww = $(window).width();
 			var wh = $(window).height();
 
 			var map = _CoreMap.getMap();
-
-			$('#map').width(ww - 340);
+			var westWidth = 0;
+			if($('#tabOpener').find('li').attr('class').indexOf('on') > - 1){
+				westWidth = 340;
+			}
+			$('.lnb').height(wh - 111);
+			
+			$('#map').width(ww - westWidth);
 			$('#map').height(wh - 92);
 			$('#chartArea').height(wh - 191);
-			$('#foreCastOccurrenceDiv').height(wh - 263);
+			//$('#foreCastOccurrenceDiv').height(wh - 263);
 			
 			if (map) {
-				map.setSize([ ww - 340, wh - 92 ]);
+				map.setSize([ ww - westWidth, wh - 92 ]);
 			}
 			
 			$('#gridArea').width(100-(($($('.lnb')[0]).width()+6) / ww * 100)+'%');
@@ -160,7 +167,8 @@
     <div id="top">
         <h1></h1>
         <ul class="topmenu">
-			<li class="MgR5 on"><a href="javascript:void(0)" class="tm05 taskTypeBtn" mode="0">GIS 업무</a></li>      	
+			<li class="MgR5 on"><a href="javascript:void(0)" class="tm05 taskTypeBtn" mode="0">GIS 업무</a></li>
+			<li class="MgR5"><a href="javascript:void(0)" class="tm06 taskTypeBtn" mode="5">관심지역 설정</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm01 taskTypeBtn" mode="1">민원처리</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm02 taskTypeBtn" mode="2">현장민원</a></li>      	
 			<li class="comp"><a href="javascript:void(0)" class="tm03 taskTypeBtn" mode="3">악취예보처리</a></li>      	
@@ -190,6 +198,14 @@
         <img src="/map/images/addrNumMoveBtn.gif" style="margin-left: 121px; margin-top: -3px; cursor: pointer;" id="searchAddrBtn"/>
         <!-- <a class="btn02 fl" style="margin-left:85px; padding: 2px 0px; margin-top: 2px; height: 13px; background: #006ecf; width: 53px;" href="javascript:void(0)" >지번이동</a> -->
         <a class="btn02 fl" style="margin-left: -22px;" href="javascript:void(0)" id="poiView"><span style="letter-spacing: 0px;">POI</span> 보기</a>
+        
+        <span id="interestBtn" style="position: relative; top: -6px; left: 11px; display: none;">
+	        <input type="radio" class="dis_ib" value="sensor" id="sensor" name="mapType" checked="checked"/>
+			<label class="contents" for="sensor" style="margin-right: 20px;">AI 학습위치(센서위치)</label>
+	                                
+			<input type="radio" class="dis_ib" value="cell" id="cell" name="mapType"/>
+	        <label class="contents" for="cell" style="margin-right: 20px;">악취 예보지역</label>
+        </span>
     </div>
     <div id="container">
     	<ul id="tabOpener" class="gisTaskMenu">
@@ -294,7 +310,7 @@
                         </dl>
                         <dl>
                             <dt style="width: 82px; margin-right: 15px;">복합악취 발생률</dt>
-                            <dd style="width: 200px;">
+                            <dd style="width: 199px;">
                                 <input id="sensoryEvaluationStartOU" class="W105" style="width: 80px !important;" type="text" value="0"/>
                                 ~
 								<input id="sensoryEvaluationEndOU" class="W105" style="width: 80px !important;" type="text" value="100"/>
@@ -468,9 +484,9 @@
 
         <li>
         	<div class="layerOnOff"></div>
-            <h2 class="accordion">악취저감설비 관리<span></span></h2>
+            <h2 class="accordion">악취저감설비<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorReduction">
-				<h3>악취저감설비 관리</h3>
+				<h3>악취저감설비</h3>
                 <ul>
                     <li>
                         <dl>
@@ -507,9 +523,9 @@
         
         <li>
         	<div class="layerOnOff"></div>
-            <h2 class="accordion">악취원점 관리<span></span></h2>
+            <h2 class="accordion">악취원점<span></span></h2>
             <div class="lnb_conts" style="display: none;" id="odorOrigin">
-				<h3>악취원점 관리</h3>
+				<h3>악취원점</h3>
 				<ul class="box grid term" style="margin-bottom: 10px;">
             		<li>
                     	<dl>
@@ -908,6 +924,17 @@
                             <a href="javascript:void(0)" class="ctrl_left" id="odorSpreadPrevious"></a>
                             <a href="javascript:void(0)" class="ctrl_right" id="odorSpreadNext"></a>
                         </div>
+                        
+                       <div style="display: none;" id="odorSpreadRangeDiv">
+                       		
+                        	<div id="odorSpreadRange" style="width: 260px;">
+                        	</div>
+                        	<div style="margin-top: 5px; font-size:12px;" id="odorSpreadRangeTxt">
+                        		<span style="margin-left: -10px;"></span>
+                        		<span style="margin-left: 80px;"></span>
+                        		<span style="margin-left: 75px;"></span>
+                        	</div>
+                       </div>
                     </li>
                 </ul>
             </div>
@@ -973,15 +1000,15 @@
         </li>
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
-     	<div id="foreCastOccurrenceDiv" style="position: absolute; z-index: 1000; bottom: 150px; right: 20px; height: 845px; display: none; overflow-y: auto; height: 701px; width: 300px; overflow-x: hidden;">
-     		<iframe src="./foreCastOccurrence.html" style="border: solid 0px; height:701px; border: none;"></iframe>
+     	<div id="foreCastOccurrenceDiv" style="position: absolute; z-index: 1000; top: 50px; right: 20px; height: 845px; display: none; overflow-y: auto; height: 770px; width: 300px; overflow-x: hidden;">
+     		<iframe src="./foreCastOccurrence.html" style="border: solid 0px; height:770px; border: none;"></iframe>
      	</div>
      	<div id="foreCastOccurrencePopupDiv" style="position: absolute; z-index: 1000; top: 300px; right: 400px; display: none;">
      		<p class="pop_tit">
         		<span class="pop_tit_text">악취 발생예보</span>
         		<a href="javascript:void(0)" class="btn03 pop_close"></a>
         	</p> 
-        	<div class="pop_conts" style="background: #fff; width: 700px; height: 300px;"> 
+        	<div class="pop_conts" style="background: #fff; width: 700px; height: 300px; overflow: hidden;"> 
 	        	<iframe src="./foreCastOccurrencePopup.html" style="border: solid 0px; width:100%; height:100%; border: none;"></iframe>
 			</div>
      	</div>
@@ -1089,6 +1116,48 @@
 			</div>
 	    </div>
 	    
+	     <div id="interestPopupOverlay" class="ol-popup" style="width: 300px;">
+				<a href="javascript:;" id="interestPopup-closer" class="ol-popup-closer"></a>
+				<div id="interestPopup-content">
+					<ul>
+	                    <li id="cellReg">
+	                    	<dl>
+	                            <dt style="float: left;    padding-top: 5px; padding-right: 4px;">관심지역명 :</dt>
+	                            <dd style="">
+	                            	<input type="text" value="" style="height:35px; width:210px; border: solid 1px #cccccc;" id="intrstAreaNm" />
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:5px;">
+	                            <dt style="float: left; padding-top: 5px;padding-right: 4px;">지형고도(El.m) : </dt>
+	                            <dd style="">
+	                            	<input type="text" value="" id="tpgrphAl" style="height:35px; width:183px; border: solid 1px #cccccc;" />
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:5px; ">
+	                            <dt style="float: left; padding-top: 5px;padding-right: 4px;">예측높이(m) : </dt>
+	                            <dd style="">
+	                            	<input type="text" value="" id="predictAl" style="height:35px; width:200px; border: solid 1px #cccccc;" />
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:17px;">
+	                        	<a href="javascript:void(0)" class="btn01" id="cellRemeveBtn" style="height:40px; margin-left: 80px;">추가</a>
+	                        </dl>
+						</li>
+						<li id="sensorMove" style="display:none;">
+							<dl style="margin-top:5px;">
+	                            <dt style="float: left; padding-top: 0px;padding-right: 18px;">센서명 : </dt>
+	                            <dd id="sensorNm" style="height:35px; width:210px;">
+	                            </dd>
+	                        </dl>
+	                        <dl style="margin-top:10px;">
+	                        	<a href="javascript:void(0)" class="btn01"  id="sensorMoveBtn" style="margin-left: 10px;">위치변경</a>
+	                        </dl>
+						</li>
+					</ul>
+		      	</div>
+		    </div>
+	    
+	    
 	    <div id="cvplPopupOverlay"></div>
 	    
 	    
@@ -1105,7 +1174,7 @@
 			<div id="chart">
 		    	<div class="chart_info" style="margin-bottom: -3px;">
 		        	<div class="topwrap">
-		                <div class="station_id">Station ID : <span id="chartSpotId" ></span></div>
+		                <div class="station_id">센서명 : <span id="chartSpotId" ></span></div>
 		            	<a href="javascript:void(0)" class="topbtn" id="chartPlay"><img src="/map/images/reset.png" /></a>
 		            </div>
 		            <p class="c_tit" id="chartSpotNm"></p>
@@ -1122,7 +1191,6 @@
             	<a href="javascript:void(0)" class="btn04">닫기</a>
             </div>
         </div>
-        
          <div id="poiPopup" style="right: 150px; top: 250px; display: none; width: 600px; position: absolute; z-index: 999;">
         	<p class="pop_tit"><span class="pop_tit_text">POI 정보</span><a href="javascript:void(0)" class="btn03 pop_close"></a></p>
             <div class="pop_conts" style="background: #fff;">

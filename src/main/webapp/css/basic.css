@@ -61,6 +61,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .lnb h2.ov span { background: url(../images/btn_hide.png) no-repeat; }
 
 .lnb li> .layerOnOff { width: 67px; height: 31px; position: absolute; background: url(../images/btn_on.png) no-repeat; z-index: 1; cursor: pointer; margin-left: 8px; margin-top: 4px;}
+.lnb li> .layerOnOff.ov { width: 67px; height: 31px; position: absolute; background: url(../images/btn_off.png) no-repeat; z-index: 1; cursor: pointer; margin-left: 8px; margin-top: 4px;}
 
 .lnb_conts { padding: 15px 20px; border-bottom: 1px solid #d9d9d9; }
 .lnb_conts h3 { border-bottom: 2px solid #464c5a; margin-bottom: 15px; font-family: 'Dotum'; padding-bottom: 5px; font-weight: bold; }
@@ -305,6 +306,7 @@ caption, .hidden { visibility: hidden; width: 0; height: 0; overflow: hidden; po
 .tm03 { background:url(../images/tm03.png) no-repeat center top;}
 .tm04 { background:url(../images/tm04.png) no-repeat center top;}
 .tm05 { background:url(../images/tm05.png) no-repeat center top;}
+.tm06 { background:url(../images/tm06.png) no-repeat center top;}
 
 /*181130 차트*/
 #chart { width:360px; background-color: rgba( 0, 0, 0, 0.7 ); padding:10px; }

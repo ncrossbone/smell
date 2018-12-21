@@ -176,20 +176,23 @@
   	  GROUP BY CODE,B.SENSOR_NM,OPR_STTUS_CODE,DATE,MESURE_DT
 	</select>
 	<select id="chartFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		 SELECT CODE,SENSOR_NM,SENSOR_TY_CODE,LO,LA,MESURE_DT
-                FROM ( 
-                 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
+		  SELECT CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE) AS CODE,
                         SENSOR_NM,
                         SENSOR_TY_CODE,
-						CASE WHEN A.LO IS NULL THEN B.LO ELSE A.LO END AS LO,
-						CASE WHEN A.LA IS NULL THEN B.LA ELSE A.LA END AS LA,
-                        DATE_FORMAT(DTA_DT,'%Y%m%d%H%i') AS MESURE_DT
-				   FROM bdsm.IOT_SENSOR_INFO A
-		LEFT OUTER JOIN bdsm.IOT_SENSOR_MVMN_INFO B
-                     ON CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(B.LEGALDONG_CODE,B.SPOT_CODE)
-				  WHERE SENSOR_TY_CODE != 'SEN01004' 
-				    AND SENSOR_TY_CODE != 'SEN01002') AA
-				WHERE LO IS NOT NULL
+                        LO,
+                        LA,
+					IFNULL(
+                   (SELECT MESURE_DT
+				  FROM IOT_SENSOR_MESURE_INFO A
+				 WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = (SELECT DATE_FORMAT(MAX(MESURE_DT),'%Y%m%d%H%i') 
+																FROM IOT_SENSOR_MESURE_INFO 
+															   WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = DATE_FORMAT(SYSDATE(),'%Y%m%d%H'))
+                   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE)
+                   AND IEM_CODE= 'S0001'),'-') AS MESURE_DNSTY
+				   FROM bdsm.IOT_SENSOR_INFO AA
+				  WHERE SENSOR_TY_CODE NOT IN ('SEN01004','SEN01002')
+					AND LO IS NOT NULL 
+					AND LA IS NOT NULL
 	</select>
 	<select id="fixedMeasurementFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
@@ -257,13 +260,30 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	</select>
 	
 	<select id="fixedMeasurementClick" parameterType="String" resultType="java.util.HashMap">
-				 SELECT CONCAT(CTPRVN_NM,' ',SIGNGU_NM,' ',EMD_NM,' ',DONGLI_NM) AS ADDR, SENSOR_NM, CONCAT(A.LEGALDONG_CODE,SPOT_CODE) AS CODE, LA AS POINT_Y, LO AS POINT_X
-				   FROM bdsm.IOT_SENSOR_INFO A,
-                        bdsm.LEGALDONG_CODE B
-		          WHERE A.LEGALDONG_CODE = B.LEGALDONG_CODE
-                    AND SENSOR_TY_CODE = 'SEN01001'
-                    AND SPOT_CODE NOT IN ('0003')
-                    AND CONCAT(A.LEGALDONG_CODE,SPOT_CODE) = #{CODE}
+SELECT CONCAT(CTPRVN_NM,' ',SIGNGU_NM,' ',EMD_NM,' ',DONGLI_NM) AS ADDR, 
+       SENSOR_NM, 
+       CONCAT(AA.LEGALDONG_CODE,SPOT_CODE) AS CODE, 
+       LA AS POINT_Y, 
+       LO AS POINT_X,
+       IFNULL(
+			   (SELECT CODE_NM
+				  FROM LRN_PTTRN_AI A,
+					   COM_CODE B
+				 WHERE A.BSML_TRGNPT_SE_CODE = B.CODE
+				   AND CONCAT(LEGALDONG_CODE,SPOT_CODE) = CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE)
+				   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = #{DATE}),
+				IFNULL(
+					   (SELECT CODE_NM
+						  FROM LRN_PTTRN_AI A,
+							   COM_CODE B
+						 WHERE A.BSML_TRGNPT_SE_CODE = B.CODE
+						   AND CONCAT(LEGALDONG_CODE,SPOT_CODE) = CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE)
+						   AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = (SELECT DATE_FORMAT(MAX(MESURE_DT),'%Y%m%d%H%i') FROM LRN_PTTRN_AI WHERE CONCAT(LEGALDONG_CODE,SPOT_CODE) = CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE))),'-')) AS AI
+  FROM bdsm.IOT_SENSOR_INFO AA,
+       bdsm.LEGALDONG_CODE BB
+ WHERE AA.LEGALDONG_CODE = BB.LEGALDONG_CODE
+   AND SENSOR_TY_CODE = 'SEN01001'
+   AND CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE) = #{CODE}
 	</select>
 	
 	<select id="getCity" parameterType="String" resultType="java.util.HashMap">
@@ -669,7 +689,7 @@ WHERE TAB.POINT_X IS NOT NULL
     			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = #{mesureDt}
   			</if>
   			<if test="mesureDt == 1">
-    			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = ( SELECT DATE_FORMAT(MAX(MESURE_DT),'%Y%m%d%H') - 1 FROM bdsm.IOT_SENSOR_MESURE_INFO WHERE CONCAT(LEGALDONG_CODE,SPOT_CODE) = #{code})
+    			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = DATE_FORMAT(SYSDATE(),'%Y%m%d%H')
   			</if>
    		   
      	   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = #{code}
@@ -704,7 +724,7 @@ WHERE TAB.POINT_X IS NOT NULL
 	</select>
 	
 	<select id="chartClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		 SELECT CONCAT(SUBSTR(LEGALDONG_CODE,1,6),SPOT_CODE) AS CODE,SENSOR_NM 
+		 SELECT CONCAT(SUBSTR(LEGALDONG_CODE,1,6),SPOT_CODE) AS CODE,SENSOR_NM,LO,LA
                FROM bdsm.IOT_SENSOR_INFO
 			 WHERE CONCAT(LEGALDONG_CODE,SPOT_CODE) = #{code}
 	</select>
@@ -1055,6 +1075,10 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 		     , SUM(CASE WHEN DTA_02 LIKE 'O%' THEN 1 ELSE 0 END) AS DTA_02_SUM
 		     , SUM(CASE WHEN DTA_03 LIKE 'O%' THEN 1 ELSE 0 END) AS DTA_03_SUM
 		     , SUM(CASE WHEN DTA_04 LIKE 'O%' THEN 1 ELSE 0 END) AS DTA_04_SUM
+		     , DATE_FORMAT(MAX(DTA_DT),'%Y-%m-%d') AS DTA_DE_01
+		     , DATE_FORMAT(DATE_ADD(MAX(DTA_DT),INTERVAL 6 HOUR),'%Y-%m-%d') AS DTA_DE_02
+		     , DATE_FORMAT(DATE_ADD(MAX(DTA_DT),INTERVAL 12 HOUR),'%Y-%m-%d') AS DTA_DE_03
+		     , DATE_FORMAT(DATE_ADD(MAX(DTA_DT),INTERVAL 18 HOUR),'%Y-%m-%d') AS DTA_DE_04
 		  FROM (
 		        SELECT ANALS_AREA_ID
 		             , MAX(INTRST_AREA_NM) AS INTRST_AREA_NM
@@ -1063,62 +1087,93 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 		             , MAX(IF(NO=2,EX_AT,NULL)) AS DTA_02
 		             , MAX(IF(NO=3,EX_AT,NULL)) AS DTA_03
 		             , MAX(IF(NO=4,EX_AT,NULL)) AS DTA_04
+		             , MAX(DTA_DT) AS DTA_DT
 		          FROM (SELECT A.ANALS_AREA_ID, A.INTRST_AREA_NM, A.NO, A.PREDICT_AL,
 		                       A.STDRVALUE, B.BSML_DNSTY,
 		                       CASE WHEN B.BSML_DNSTY IS NULL THEN '-'
 		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY > A.STDRVALUE THEN CONCAT('O(',B.BSML_DNSTY,')')
 		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY &lt;= A.STDRVALUE THEN 'X'
-		                        END AS EX_AT
+		                        END AS EX_AT,
+		                       A.DTA_DT
 		                  FROM (
 		                        SELECT ANALS_AREA_ID, INTRST_AREA_NM, PREDICT_AL
-		                             , CASE WHEN C.NO=1 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'000000'),'%Y-%m-%d %T')
-		                                    WHEN C.NO=2 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'060000'),'%Y-%m-%d %T')
-		                                    WHEN C.NO=3 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'120000'),'%Y-%m-%d %T')
-		                                    WHEN C.NO=4 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'180000'),'%Y-%m-%d %T')
-		                                END AS DTA_DT
+		                             , START_DT, END_DT
 		                             , STDRVALUE, NO
+		                             , CASE WHEN DATE_FORMAT(NOW_DT,'%H') BETWEEN '00' AND '05' THEN DATE_FORMAT(CONCAT(DATE_FORMAT(NOW_DT,'%Y%m%d'),'000000'),'%Y-%m-%d %T')
+		                                    WHEN DATE_FORMAT(NOW_DT,'%H') BETWEEN '06' AND '11' THEN DATE_FORMAT(CONCAT(DATE_FORMAT(NOW_DT,'%Y%m%d'),'060000'),'%Y-%m-%d %T')
+		                                    WHEN DATE_FORMAT(NOW_DT,'%H') BETWEEN '12' AND '17' THEN DATE_FORMAT(CONCAT(DATE_FORMAT(NOW_DT,'%Y%m%d'),'120000'),'%Y-%m-%d %T')
+		                                    WHEN DATE_FORMAT(NOW_DT,'%H') BETWEEN '18' AND '23' THEN DATE_FORMAT(CONCAT(DATE_FORMAT(NOW_DT,'%Y%m%d'),'180000'),'%Y-%m-%d %T')
+		                                END AS DTA_DT
 		                          FROM (
-		                                SELECT #{nDate} AS PARAMETER_1, -- 예보일
-		                                       '' AS PARAMETER_2, -- 시 (사용안함)
-		                                       '' AS PARAMETER_3  -- 관심지역코드
-		                               ) A,
-		                               ANALS_AREA_MANAGE B,
-		                               ROW_CREAT C,
-		                               SMS_STDRVALUE_MANAGE D
+		                                SELECT CASE WHEN B.NO=1 THEN DATE_ADD(NOW_DT,INTERVAL -5 HOUR)
+		                                            WHEN B.NO=2 THEN DATE_ADD(NOW_DT,INTERVAL 1 HOUR)
+		                                            WHEN B.NO=3 THEN DATE_ADD(NOW_DT,INTERVAL 6 HOUR)
+		                                            WHEN B.NO=4 THEN DATE_ADD(NOW_DT,INTERVAL 11 HOUR)
+		                                        END AS START_DT
+		                                     , CASE WHEN B.NO=1 THEN NOW_DT
+		                                            WHEN B.NO=2 THEN DATE_ADD(NOW_DT,INTERVAL 6 HOUR)
+		                                            WHEN B.NO=3 THEN DATE_ADD(NOW_DT,INTERVAL 12 HOUR)
+		                                            WHEN B.NO=4 THEN DATE_ADD(NOW_DT,INTERVAL 18 HOUR)
+		                                        END AS END_DT
+		                                     , PARAMETER_3
+		                                     , NO, NOW_DT
+		                                  FROM (
+		                                        SELECT DATE_FORMAT(DATE_FORMAT(PARAMETER_1,'%Y%m%d%H0000'),'%Y-%m-%d %T') AS NOW_DT
+		                                             , PARAMETER_3
+		                                          FROM (
+		                                                SELECT SYSDATE() AS PARAMETER_1, -- SYSDATE고정
+		                                                       '' AS PARAMETER_2, -- 시 (사용안함)
+		                                                       '' AS PARAMETER_3  -- 관심지역코드
+		                                               ) A
+		                                       ) A
+		                                     , ROW_CREAT B
+		                                 WHERE B.NO &lt;= 4
+		                               ) A
+		                             , ANALS_AREA_MANAGE B
+		                             , SMS_STDRVALUE_MANAGE C
 		                         WHERE B.GRID_INTRST_SE_CODE='ANL01002'
 		                           AND B.ANALS_AREA_ID=IF(A.PARAMETER_3='',B.ANALS_AREA_ID,A.PARAMETER_3)
-		                           AND C.NO &lt;= 4
-		                           AND D.SMS_SE_CODE='COM03002'
-		                           AND D.IEM_CODE='S0001'
+		                           AND C.SMS_SE_CODE='COM03002'
+		                           AND C.IEM_CODE='S0001'
 		                       ) A
 		                       LEFT JOIN
 		                       LRN_FRCST_AI B
 		                       ON (B.ANALS_AREA_ID=A.ANALS_AREA_ID
-		                       AND B.DTA_DT=A.DTA_DT
+		                       AND B.DTA_DT BETWEEN A.START_DT AND A.END_DT
 		                          )
 		               ) A
 		         GROUP BY ANALS_AREA_ID
+		         ORDER BY NULL
 		       ) A
 	</select>
 	
 	<!-- 악취발생예보 - 건수선택 -->
 	<select id="getForeCastOccurrenceSel" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT ANALS_AREA_ID, INTRST_AREA_NM, INTRST_AREA_AL, DTA_01, DTA_02, DTA_03, DTA_04, GRID_AREA_ID
+		SELECT ANALS_AREA_ID, INTRST_AREA_NM
+		     , IF(INTRST_AREA_AL IS NULL,'',INTRST_AREA_AL) AS INTRST_AREA_AL, GRID_AREA_ID
+		     , DTA_01, DTA_02, DTA_03, DTA_04
+		     , DATE_FORMAT(DTA_DT,'%Y-%m-%d') AS DTA_DE_01
+		     , DATE_FORMAT(DATE_ADD(DTA_DT,INTERVAL 6 HOUR),'%Y-%m-%d') AS DTA_DE_02
+		     , DATE_FORMAT(DATE_ADD(DTA_DT,INTERVAL 12 HOUR),'%Y-%m-%d') AS DTA_DE_03
+		     , DATE_FORMAT(DATE_ADD(DTA_DT,INTERVAL 18 HOUR),'%Y-%m-%d') AS DTA_DE_04
+		     , GRID_AREA_ID
 		  FROM (
 		        SELECT ANALS_AREA_ID
 		             , MAX(INTRST_AREA_NM) AS INTRST_AREA_NM
-		             , IFNULL(MAX(PREDICT_AL),'') AS INTRST_AREA_AL
+		             , MAX(PREDICT_AL) AS INTRST_AREA_AL
 		             , MAX(IF(NO=1,EX_AT,NULL)) AS DTA_01
 		             , MAX(IF(NO=2,EX_AT,NULL)) AS DTA_02
 		             , MAX(IF(NO=3,EX_AT,NULL)) AS DTA_03
 		             , MAX(IF(NO=4,EX_AT,NULL)) AS DTA_04
-		             , GRID_AREA_ID
+		             , MAX(DTA_DT) AS DTA_DT
+                     , MAX(A.GRID_AREA_ID) AS GRID_AREA_ID
 		          FROM (SELECT A.ANALS_AREA_ID, A.INTRST_AREA_NM, A.NO, A.PREDICT_AL,
 		                       A.STDRVALUE, B.BSML_DNSTY,
 		                       CASE WHEN B.BSML_DNSTY IS NULL THEN '-'
 		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY > A.STDRVALUE THEN CONCAT('O(',B.BSML_DNSTY,')')
 		                            WHEN B.BSML_DNSTY IS NOT NULL AND B.BSML_DNSTY &lt;= A.STDRVALUE THEN 'X'
-		                        END AS EX_AT, A.GRID_AREA_ID
+		                        END AS EX_AT,
+		                       A.DTA_DT, A.GRID_AREA_ID
 		                  FROM (
 		                        SELECT ANALS_AREA_ID, INTRST_AREA_NM, PREDICT_AL
 		                             , CASE WHEN C.NO=1 THEN DATE_FORMAT(CONCAT(PARAMETER_1,'000000'),'%Y-%m-%d %T')
@@ -1128,7 +1183,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 		                                END AS DTA_DT
 		                             , STDRVALUE, NO, B.GRID_AREA_ID
 		                          FROM (
-		                                SELECT #{nDate} AS PARAMETER_1, -- 예보일
+		                                SELECT SYSDATE() AS PARAMETER_1, -- 예보일
 		                                       '' AS PARAMETER_2, -- 시 (사용안함)
 		                                       '' AS PARAMETER_3  -- 관심지역코드
 		                               ) A,
@@ -1148,6 +1203,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 		                          )
 		               ) A
 		         GROUP BY ANALS_AREA_ID
+		         ORDER BY NULL
 		       ) A
 		  <if test="gubun == 1">
 		  WHERE DTA_01 LIKE 'O%'  -- 필요에 따라(00-05)
@@ -1161,7 +1217,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 		  <if test="gubun == 4">
 		  WHERE DTA_04 LIKE 'O%'  -- 필요에 따라(18-23)
 		  </if>
-		 ORDER BY INTRST_AREA_NM, ANALS_AREA_ID
+		  ORDER BY INTRST_AREA_NM, ANALS_AREA_ID
 	</select>
 	
 	<!-- 저감장치가동현황 -->
@@ -1332,7 +1388,7 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
     <!-- SMS insert -->
 	<insert id="insertSMS" parameterType="Map">
 		INSERT INTO NURI_MSG_DATA (CUR_STATE, REQ_DATE, CALL_TO, CALL_FROM, SMS_TXT, MSG_TYPE)
-		VALUES(0, NOW(), #{toPhone}, #{formPhone}, #{contents}, 4);
+		VALUES(0, NOW(), #{toPhone}, #{fromPhone}, #{contents}, 4);
 	</insert>
 
 	<!-- MMS content insert -->
@@ -1344,6 +1400,6 @@ GROUP BY A.SPOT_CODE,A.LEGALDONG_CODE,DATE,MESURE_DT) AS B
 	<!-- MMS insert -->
 	<insert id="insertMMS" parameterType="Map">
 		INSERT INTO NURI_MSG_DATA (CUR_STATE, REQ_DATE, CALL_TO, CALL_FROM, MSG_TYPE, CONT_SEQ)
-		VALUES(0, NOW(), #{toPhone}, #{formPhone},  6, (select max(cont_seq) from nuri_mms_contents_info))
+		VALUES(0, NOW(), #{toPhone}, #{fromPhone},  6, (select max(cont_seq) from nuri_mms_contents_info))
 	</insert>
 </mapper>

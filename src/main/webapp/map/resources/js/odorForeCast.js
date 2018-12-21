@@ -18,6 +18,8 @@ var _OdorForeCast = function () {
 	
 	var fixedMeasurement = 'fixedMeasurement';
 	
+	var instFeature;
+	
 	var init = function(){
 		odorForeCastPopup = $('#odorForeCastPopup');
 		process = $('.process');
@@ -479,7 +481,7 @@ var _OdorForeCast = function () {
 
 		resultFeature.setGeometry(new ol.geom.Point(centerPoint));
 		resultFeature.setProperties({});
- 
+		instFeature = resultFeature;
 		var source = new ol.source.Vector({
 			features: [resultFeature]
 		});
@@ -507,6 +509,9 @@ var _OdorForeCast = function () {
 		},
 		setProcMsg: function(msg){
 			setProcMsg(msg);
+		},
+		getInstFeature:function(){
+			return instFeature;
 		}
     };
 }();
