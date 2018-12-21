@@ -12,9 +12,9 @@ var _InterestAreaManage = function () {
 	
 	var popupOverlay;
 	
-	var editMode = true;
+	var editMode = false;
 	
-	var sensorEditMode = true;
+	var sensorEditMode = false;
 	
 	var selectedSpotCode;
 	
@@ -23,10 +23,10 @@ var _InterestAreaManage = function () {
 	};
 	
 	var sensorPointStyle = function(feature){
-		var src = '/map/images/sensor_blue.png';
+		var src = '/map/images/sensor_blue_gis.png';
 		
 		if(feature.getProperties().properties.isEdit){
-			src = '/map/images/sensor_red.png';
+			src = '/map/images/sensor_red_gis.png';
 		}
     	
     	return new ol.style.Style({

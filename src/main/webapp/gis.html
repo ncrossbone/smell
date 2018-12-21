@@ -120,7 +120,7 @@
 			$('#map').width(ww - westWidth);
 			$('#map').height(wh - 92);
 			$('#chartArea').height(wh - 191);
-			$('#foreCastOccurrenceDiv').height(wh - 263);
+			//$('#foreCastOccurrenceDiv').height(wh - 263);
 			
 			if (map) {
 				map.setSize([ ww - westWidth, wh - 92 ]);
@@ -1000,8 +1000,8 @@
         </li>
 	</ul>
      <div id="map" style="left: 351px; position: absolute;">
-     	<div id="foreCastOccurrenceDiv" style="position: absolute; z-index: 1000; bottom: 150px; right: 20px; height: 845px; display: none; overflow-y: auto; height: 701px; width: 300px; overflow-x: hidden;">
-     		<iframe src="./foreCastOccurrence.html" style="border: solid 0px; height:701px; border: none;"></iframe>
+     	<div id="foreCastOccurrenceDiv" style="position: absolute; z-index: 1000; top: 50px; right: 20px; height: 845px; display: none; overflow-y: auto; height: 770px; width: 300px; overflow-x: hidden;">
+     		<iframe src="./foreCastOccurrence.html" style="border: solid 0px; height:770px; border: none;"></iframe>
      	</div>
      	<div id="foreCastOccurrencePopupDiv" style="position: absolute; z-index: 1000; top: 300px; right: 400px; display: none;">
      		<p class="pop_tit">

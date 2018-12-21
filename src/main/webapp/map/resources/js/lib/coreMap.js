@@ -149,7 +149,7 @@ var _CoreMap = function() {
 		}); 
 
 		// 행정구역
-//		layerInfos.push({layerNm:'GIS_SDO',isVisible:false,isTiled:true,cql:null,opacity:1});
+		layerInfos.push({layerNm:'SHP_BDONG',isVisible:false,isTiled:true,cql:null,opacity:0,layerId:'SHP_BDONG'});
 //		layerInfos.push({layerNm:'GIS_SGG',isVisible:false,isTiled:true,cql:null,opacity:1});
 //		layerInfos.push({layerNm:'GIS_BDONG',isVisible:false,isTiled:true,cql:null,opacity:0.2});
 //		

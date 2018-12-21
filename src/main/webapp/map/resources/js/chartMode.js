@@ -80,7 +80,7 @@ var _ChartMode = function () {
 			}else{
 				playIndex = 0;
 			}
-		}, 5000);
+		}, 7000);
 		
 	};
 	
@@ -201,7 +201,7 @@ var _ChartMode = function () {
 		var chartObj = {
 				chart: {
 					backgroundColor: '#00ff0000',
-					height:165,
+					height:210,
 					width:350
 				},
 				title: {
@@ -276,13 +276,13 @@ var _ChartMode = function () {
 				chartObj.series[0].data = dataObj[item[i].name];
 				chartObj.series[0].name = item[i].title;
 				chartObj.xAxis.categories = dataObj.MESURE_DT;
-				chartObj.title.text = item[i].title + ' (' + item[i].name + ')';
+				chartObj.title.text = '<span>' + item[i].title + '</span>' + ' (' + item[i].name + ') ' + item[i].con;
 				chartObj.yAxis.plotLines = [{ value: plotData[item[i].name], color: 'red', width: 2, zIndex: 4}];
 				chartObj.yAxis.min = 0;
 				
 				var max = Math.max.apply(null,dataObj[item[i].name]);
 				chartObj.yAxis.max = plotData[item[i].name] > max ? plotData[item[i].name] + 0.1 : max + 0.1;
-				chartObj.subtitle.text = item[i].con;
+				//chartObj.subtitle.text = item[i].con;
 				
 				Highcharts.chart('chart'+ i,chartObj);
 			}
