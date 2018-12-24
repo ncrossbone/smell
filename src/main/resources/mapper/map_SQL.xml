@@ -52,14 +52,14 @@
 	
 	<select id="complaintStatusGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT CVPL_NO,
-	           DATE_FORMAT(CVPL_DT,'%Y-%m-%d %h:%i') AS CVPL_DT,
+	           DATE_FORMAT(CVPL_DT,'%Y-%m-%d %H:%i') AS CVPL_DT,
 			   CPTTR,
 			   CPTTR_CTTPC,
 			   CVPL_LC,
 			   CVPL_CN,
-			   DATE_FORMAT(REGIST_DT,'%Y-%m-%d %h:%i') AS REGIST_DT,
+			   DATE_FORMAT(REGIST_DT,'%Y-%m-%d %H:%i') AS REGIST_DT,
 			   REGISTER_ID,
-               DATE_FORMAT(CHANGE_DT,'%Y-%m-%d %h:%i') AS CHANGE_DT,
+               DATE_FORMAT(CHANGE_DT,'%Y-%m-%d %H:%i') AS CHANGE_DT,
 			   CHANGER_ID
   		  FROM CVPL_MANAGE
   		  <if test="flag == 1">
@@ -81,7 +81,7 @@
 	</select>
 	
 	<select id="complaintStatusClick" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT DATE_FORMAT(CVPL_DT,'%Y-%m-%d %h:%i') AS CVPL_DT,
+		SELECT DATE_FORMAT(CVPL_DT,'%Y-%m-%d %H:%i') AS CVPL_DT,
 			   LO AS POINT_X,
 			   LA AS POINT_Y,
 			   CVPL_LC,
@@ -93,7 +93,7 @@
 	<select id="portableMeasurementGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 			   B.OPR_STTUS_CODE,
-	   		   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %h:%i') AS MESURE_DT,
+	   		   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %H:%i') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0001' THEN MESURE_DNSTY END),3) AS 'OU',
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0002' THEN MESURE_DNSTY END),3) AS 'H2S',
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0004' THEN MESURE_DNSTY END),3) AS 'VOCS',
@@ -120,7 +120,7 @@
 	<select id="portableMeasurementFeature" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	    SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 	   		   DATE_FORMAT(MESURE_DT,'%m/%d %H:%i') AS LABEL,
-	   		   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %h:%i') AS MESURE_DT,
+	   		   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %H:%i') AS MESURE_DT,
                B.LA AS POINT_Y,
                B.LO AS POINT_X,
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0001' THEN MESURE_DNSTY END),3) AS 'OU',
@@ -151,7 +151,7 @@
 			   B.SENSOR_NM,
                OPR_STTUS_CODE,
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
-			   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %h:%i') AS MESURE_DT,
+			   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %H:%i') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0001' THEN MESURE_DNSTY END),3) AS 'OU',
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0002' THEN MESURE_DNSTY END),3) AS 'H2S',
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0004' THEN MESURE_DNSTY END),3) AS 'VOCS',
@@ -416,7 +416,7 @@ SELECT CONCAT(CTPRVN_NM,' ',SIGNGU_NM,' ',EMD_NM,' ',DONGLI_NM) AS ADDR,
 	<select id="environmentCorporationGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	  	   SELECT CODE,
 		          NAME,
-			      DATE_FORMAT(MESURE_DT,'%Y-%m-%d %h:%i') AS MESURE_DT,
+			      DATE_FORMAT(MESURE_DT,'%Y-%m-%d %H:%i') AS MESURE_DT,
 				  SO2_DNSTY,
 				  CMO_DNSTY,
 				  OZ_DNSTY,
@@ -482,7 +482,7 @@ SELECT CONCAT(CTPRVN_NM,' ',SIGNGU_NM,' ',EMD_NM,' ',DONGLI_NM) AS ADDR,
 			   C.OPR_STTUS_CODE,
 			   B.SENSOR_NM,
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
-			   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %h:%i') AS MESURE_DT,
+			   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %H:%i') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0001' THEN MESURE_DNSTY END),3) AS 'OU',
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0002' THEN MESURE_DNSTY END),3) AS 'H2S',
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0004' THEN MESURE_DNSTY END),3) AS 'VOCS',
@@ -700,7 +700,7 @@ WHERE TAB.POINT_X IS NOT NULL
 			   B.SENSOR_NM,
                OPR_STTUS_CODE,
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE,
-			   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %h:%i') AS MESURE_DT,
+			   DATE_FORMAT(MESURE_DT,'%Y-%m-%d %H:%i') AS MESURE_DT,
 			   TRUNCATE(SUM(CASE WHEN A.IEM_CODE='S0001' THEN MESURE_DNSTY END),3) AS 'OU'
   		  FROM bdsm.IOT_SENSOR_MESURE_INFO A,
 	   		   bdsm.IOT_SENSOR_INFO B

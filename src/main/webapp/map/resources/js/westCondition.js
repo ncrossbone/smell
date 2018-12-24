@@ -2206,7 +2206,6 @@ var _WestCondition = function () {
 		}
 		
 	};
-	
 
     return {
         init: init,
