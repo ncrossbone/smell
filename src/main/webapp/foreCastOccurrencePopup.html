@@ -35,7 +35,9 @@ function foreCastList(val){
 		params: {
 			nDate: nowTime ,gubun: val
 		}}).done(function(data){
+			var hHtml = "";
 			var html = "";
+			var blank0 = "<tr><th>관심지역코드</th><th>관심지역명</th><th>예측고도</th><th>새벽<br />(00~05)</th><th>오전<br />(06~11)</th><th>오후<br />(12~17)</th><th>저녁<br />(18~23)</th></tr>";
 			var blank = "<tr><td colspan='7' style='text-align:center;'>조회된 데이터가 없습니다.</td></tr>";
 			for (var i = 0; i < data.length; i++) {
 				html += "<tr>";
@@ -46,24 +48,42 @@ function foreCastList(val){
 			    html += "<td>"+data[i].DTA_02+"</td>";
 			    html += "<td>"+data[i].DTA_03+"</td>";
 			    html += "<td>"+data[i].DTA_04+"</td>";
-			    
-			   /*  if(val == 1){
-			    	html += "<td>" + data[i].DTA_DE_01 + "</td>";
-			    }else if(val == 2){
-			    	html += "<td>" + data[i].DTA_DE_02 + "</td>";
-			    }else if(val == 3){
-			    	html += "<td>" + data[i].DTA_DE_03 + "</td>";
-			    }else if(val == 4){
-			    	html += "<td>" + data[i].DTA_DE_04 + "</td>";
-			    }else{
-			    	html += "<td>-</td>";
-			    } */
 			    html += "</tr>";
 			}
 			
+			var colObj = {
+					"DTA_TIME_01":{val:"DTA_TIME_01"},
+					"DTA_TIME_02":{val:"DTA_TIME_02"},
+					"DTA_TIME_03":{val:"DTA_TIME_03"},
+					"DTA_TIME_04":{val:"DTA_TIME_04"},
+			}
+			for(key in colObj){
+				if(data[0][colObj[key]]=='새벽'){
+					data[0][colObj[key]].val = '(00~05)';
+				}else if(data[0][colObj[key]]=='오전'){
+					data[0][colObj[key]].val = '(06~12)';
+				}else if(data[0][colObj[key]]=='오후'){
+					data[0][colObj[key]].val = '(13~17)';
+				}else if(data[0][colObj[key]]=='저녁'){
+					data[0][colObj[key]].val = '(18~23)';
+				}
+			}
+			
+			hHtml += "<tr>";
+			hHtml += "<th>관심지역코드</th>";
+			hHtml += "<th>관심지역명</th>";
+			hHtml += "<th>예측고도</th>";
+			hHtml += "<th>관심지역코드</th>";
+			hHtml += "<th>"+data[0].DTA_DE_01+"<br />"+data[0].DTA_TIME_01+"<br />"+colObj.['DTA_TIME_01'].val+"</th>";
+			hHtml += "<th>"+data[0].DTA_DE_02+"<br />"+data[0].DTA_TIME_02+"<br />"+colObj.['DTA_TIME_02'].val+"</th>";
+			hHtml += "<th>"+data[0].DTA_DE_03+"<br />"+data[0].DTA_TIME_03+"<br />"+colObj.['DTA_TIME_03'].val+"</th>";
+			hHtml += "<th>"+data[0].DTA_DE_04+"<br />"+data[0].DTA_TIME_04+"<br />"+colObj.['DTA_TIME_04'].val+"</th>";
+			hHtml += "</tr>";
 			if(data.length!=0){
+				$("#tList").html(hHtml);
 				$("#tblist").html(html);
 			}else{
+				$("#tList").html(blank0);
 				$("#tblist").html(blank);
 			}
 			
@@ -89,7 +109,7 @@ function analSel(val){
 	        <col width="80px" />
 	        <col width="80px" />
 	    </colgroup>
-	    <thead>
+	    <thead id="tList">
 	        <tr>
 	            <th>관심지역코드</th>
 	            <th>관심지역명</th>
