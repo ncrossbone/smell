@@ -207,7 +207,7 @@ var _ChartMode = function () {
 				title: {
 					text: '',
 					style: {
-						color: '#fff',
+						color: '#FFFF00',
 						fontSize: '15px',
 						margin: 0
 					}

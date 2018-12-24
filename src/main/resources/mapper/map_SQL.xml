@@ -186,7 +186,7 @@
 				  FROM IOT_SENSOR_MESURE_INFO A
 				 WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = (SELECT DATE_FORMAT(MAX(MESURE_DT),'%Y%m%d%H%i') 
 																FROM IOT_SENSOR_MESURE_INFO 
-															   WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = DATE_FORMAT(SYSDATE(),'%Y%m%d%H'))
+															   WHERE DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL - 1 HOUR),'%Y%m%d%H'))
                    AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = CONCAT(AA.LEGALDONG_CODE,AA.SPOT_CODE)
                    AND IEM_CODE= 'S0001'),'-') AS MESURE_DNSTY
 				   FROM bdsm.IOT_SENSOR_INFO AA
@@ -689,7 +689,7 @@ WHERE TAB.POINT_X IS NOT NULL
     			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') = #{mesureDt}
   			</if>
   			<if test="mesureDt == 1">
-    			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = DATE_FORMAT(SYSDATE(),'%Y%m%d%H')
+    			AND DATE_FORMAT(MESURE_DT,'%Y%m%d%H') = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL - 1 HOUR),'%Y%m%d%H')
   			</if>
    		   
      	   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = #{code}
