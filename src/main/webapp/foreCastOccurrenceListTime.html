@@ -20,6 +20,9 @@
 <script src="/map/cms/js/cal/ui/jquery.ui.datepicker.js"></script>
 <script src="/map/cms/js/cal/ui/jquery.ui.core.js"></script>
 
+<script type="text/javascript" src="/map/map/resources/js/lib/jquery-ui.js"></script>
+<link rel="stylesheet" href="/map/css/jquery-ui-1.12.1.css"></link>
+
 <script type="text/javascript">
 var gridId = '';
 var optionArr;
@@ -30,41 +33,62 @@ $(function() {$.ajaxSetup({ type: 'POST', contentType: 'application/json' });
 })
 
 function setValue(data){
-	gridId = data.id;
-	date = data.date;
+	if(data == null || data.optionArr == null){
+		return;
+		}
+	var times = data.optionArr.split(',');
+	if(times.length <= 0){
+		return;
+	}
 	
-	var sum = data.optionArr;
-    var sumArr = sum.split(",");
-    var selectHtml = "<option value=''>선택</option>";
-    for (var i = 0; i < sumArr.length; i++) {
-		selectHtml += "<option value='"+sumArr[i]+"'>"+sumArr[i]+" 시</option>";
-    }
-    $("#time").html(selectHtml);
+	if($('#forecastTimeRange').slider('instance')){
+		$('#forecastTimeRange').slider('destroy');
+	}
+	
+	$('#forecastTimeRange').html('<div id="custom-handle" class="ui-slider-handle" style="border: 2px solid #0000ff; background-color:#ffffff; width:30px; color: #000000;  padding: 2px 5px 2px 5px; top: -7px;"></div>');
+	 
+	var handle = $('#custom-handle');
+	
+	var slider = $('#forecastTimeRange').slider({
+			min: 0,
+			max: times.length - 1,
+			step: 1,
+			create: function() {
+				handle.text(times[0] + '시');
+			},
+			change: function( event, ui ) {
+				
+				goSearch(data.date, times[ui.value], data.id);
+				
+				if(!event.handleObj){
+					handle.text(times[ui.value] + '시');
+				}
+			},
+			slide: function( event, ui ) {
+				handle.text(times[ui.value] + '시');
+			}
+		});
+	goSearch(data.date, times[0], data.id);
+	
 }	
 
-function goSearch(){
-	var time = $("#time").val();
-	
+function goSearch(date, time, gridId){
+	if(time == null || time == ''){
+		return;
+	}
 	if(parent){
 		parent._MessagePipe.send({type:'odorSelected', gridId:gridId, time:time, date:date});	
 	}
 }
 </script>
 </head>
-<body style="overflow: hidden;">
-<form name="dataSearch" id="dataSearch" method="post">
+<body style="overflow: hidden; width:250px !important;">
 <!-- 검색 영역 시작 -->
- <div class="search_box" style="width:169px;">
-     <div class="searchLine" style="margin-left:-4px">
-     	<span class="s_tit MgL20">시간</span>
-         <select title="시간" name="time" id="time">
-			<option value="">선택</option>
-		</select>
-     </div>
-     <div class="searchLine" style="margin-top:40px;">
-		<span class="btnCnt" style="left:48px;right:53px;"><a href="" class="btn_1" onclick="goSearch();return false;">선택</a></span>
-	</div>
+<div class="search_box" style="padding-left:10px !important; min-height:0px !important;">
+	<div id="forecastTimeRange" style="width: 200px;"> </div>
+<!--      <div class="searchLine" style="margin-top:40px;"> -->
+<!-- 		<span class="btnCnt" style="left:48px;right:53px;"><a href="" class="btn_1" onclick="goSearch();return false;">선택</a></span> -->
+<!-- 	</div> -->
  </div>
-</form>
 </body>
 </html>

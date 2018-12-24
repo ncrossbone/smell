@@ -317,7 +317,7 @@ var _SmellMapBiz = function () {
 					}
 					
 					if(bufferOriginLayer){
-						originLayer.setVisible(data.isShow);
+						bufferOriginLayer.setVisible(data.isShow);
 					}
 				}
 			}
