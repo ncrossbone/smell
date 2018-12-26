@@ -40,10 +40,29 @@ function initInfo() {
 		$("#dta_02").html("<a href='' onclick='foreCastList(2);return false;'>"+data.DTA_02_SUM+"</a>");
 		$("#dta_03").html("<a href='' onclick='foreCastList(3);return false;'>"+data.DTA_03_SUM+"</a>");
 		$("#dta_04").html("<a href='' onclick='foreCastList(4);return false;'>"+data.DTA_04_SUM+"</a>");
-		$("#dta_de_01").html(data.DTA_DE_01+"<br />새벽<br />(00~05)");
-		$("#dta_de_02").html(data.DTA_DE_02+"<br />오전<br />(06~11)");
-		$("#dta_de_03").html(data.DTA_DE_03+"<br />오후<br />(12~17)");
-		$("#dta_de_04").html(data.DTA_DE_04+"<br />저녁<br />(18~23)");
+		
+		var colObj = {
+				"DTA_TIME_01":{val:"DTA_TIME_01"},
+				"DTA_TIME_02":{val:"DTA_TIME_02"},
+				"DTA_TIME_03":{val:"DTA_TIME_03"},
+				"DTA_TIME_04":{val:"DTA_TIME_04"},
+		}
+		for(key in colObj){
+			if(data[colObj[key]]=='새벽'){
+				data[colObj[key]].val = '(00~05)';
+			}else if(data[colObj[key]]=='오전'){
+				data[colObj[key]].val = '(06~12)';
+			}else if(data[colObj[key]]=='오후'){
+				data[colObj[key]].val = '(13~17)';
+			}else if(data[colObj[key]]=='저녁'){
+				data[colObj[key]].val = '(18~23)';
+			}
+		}
+		
+		$("#dta_de_01").html(data.DTA_DE_01+"<br />"+data.DTA_TIME_01+"<br />"+colObj['DTA_TIME_01'].val);
+		$("#dta_de_02").html(data.DTA_DE_02+"<br />"+data.DTA_TIME_02+"<br />"+colObj['DTA_TIME_02'].val);
+		$("#dta_de_03").html(data.DTA_DE_03+"<br />"+data.DTA_TIME_03+"<br />"+colObj['DTA_TIME_03'].val);
+		$("#dta_de_04").html(data.DTA_DE_04+"<br />"+data.DTA_TIME_04+"<br />"+colObj['DTA_TIME_04'].val);
 	});
 
 	Common.getData({
