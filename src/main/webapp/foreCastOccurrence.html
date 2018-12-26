@@ -48,14 +48,14 @@ function initInfo() {
 				"DTA_TIME_04":{val:"DTA_TIME_04"},
 		}
 		for(key in colObj){
-			if(data[colObj[key]]=='새벽'){
-				data[colObj[key]].val = '(00~05)';
-			}else if(data[colObj[key]]=='오전'){
-				data[colObj[key]].val = '(06~12)';
-			}else if(data[colObj[key]]=='오후'){
-				data[colObj[key]].val = '(13~17)';
-			}else if(data[colObj[key]]=='저녁'){
-				data[colObj[key]].val = '(18~23)';
+			if(data[key]=='새벽'){
+				colObj[key].val = '(00~05)';
+			}else if(data[key]=='오전'){
+				colObj[key].val = '(06~12)';
+			}else if(data[key]=='오후'){
+				colObj[key].val = '(13~17)';
+			}else if(data[key]=='저녁'){
+				colObj[key].val = '(18~23)';
 			}
 		}
 		
