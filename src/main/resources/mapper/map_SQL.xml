@@ -666,7 +666,7 @@ WHERE TAB.POINT_X IS NOT NULL
   			</if>
 	</select>
 	<select id="getChart" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
+		SELECT * FROM (SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
 			   B.SENSOR_NM, 
                OPR_STTUS_CODE,
 			   DATE_FORMAT(MESURE_DT,'%Y%m%d%H%i') AS DATE, 
@@ -689,7 +689,7 @@ WHERE TAB.POINT_X IS NOT NULL
      	   AND CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) = #{code}
   		   GROUP BY CODE,B.SENSOR_NM,OPR_STTUS_CODE,DATE,MESURE_DT
   		   ORDER BY DATE DESC
-           LIMIT 6
+           LIMIT 6 ) AA ORDER BY DATE
 	</select>
 	<select id="reductionMonitoringGrid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		 SELECT CONCAT(A.LEGALDONG_CODE,A.SPOT_CODE) AS CODE,
