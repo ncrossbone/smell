@@ -115,15 +115,15 @@ var _ChartMode = function () {
 					var imgSrc = '/map/images/symbol/';
 					var textOffset = 35;
 					
-					var intMesure = parseInt(prop.MESURE_DNSTY);
+					var intMesure = parseFloat(prop.MESURE_DNSTY);
 					
 					var detailSrc = '';
 					
-					if(intMesure >= 2){
+					if(intMesure >= 50.1){
 						detailSrc = '1';
-					}else if(intMesure >= 1.8  && intMesure < 2){
+					}else if(intMesure >= 20.1  && intMesure <= 50){
 						detailSrc = '2';
-					}else if(intMesure >= 1.7 && intMesure < 1.8){
+					}else if(intMesure >= 10.1 && intMesure <= 20.0){
 						detailSrc = '3';
 					}else{
 						detailSrc = '4';
@@ -187,7 +187,7 @@ var _ChartMode = function () {
 		var data = param.data[0];
 		var plotData = param.plotData[0][0];
 		
-		var item =[{name:'OU',title:'복합 악취',con:'ou'},
+		var item =[{name:'OU',title:'복합 악취',con:''},
 				     {name:'H2S',title:'황화수소',con:'ppm'},
 				     {name:'NH3',title:'암모니아',con:'ppm'},
 				     {name:'VOCS',title:'휘발성유기물',con:'ppm'},

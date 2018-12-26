@@ -375,7 +375,7 @@ var _InterestAreaManage = function () {
 	};
 	
 	var drawCell = function(){
-		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.7, cql:'1=1', zIndex:10, layerId:'cellLayer'}];
+		var layerInfos = [{layerNm:'CE-TECH:'+bizLayers.CELL9KM,style:'',isVisible:true,isTiled:true,opacity:0.8, cql:'1=1', zIndex:10, layerId:'cellLayer'}];
 		cellLayer = _CoreMap.createTileLayer(layerInfos)[0];
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, cellLayer);
