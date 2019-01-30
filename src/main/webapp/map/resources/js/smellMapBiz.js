@@ -1138,7 +1138,7 @@ var _SmellMapBiz = function () {
 	        }); 
 		}else{
 			$.ajax({
-	            url: '/web/latticeAjax?lattice='+odorMovementItem+'&dt='+odorMovementStartDate+odorMovementStartTime+'00&paramSeCode=ANL02001',
+	            url: '/web/latticeAjax?lattice='+odorMovementItem+'&dt='+odorMovementStartDate+odorMovementStartTime+'00&paramSeCode=ANL02002',
 	            data:JSON.stringify(params)
 	        }).done(function(result){
 	        	trackingDataCallback(result.resultList, 'web');

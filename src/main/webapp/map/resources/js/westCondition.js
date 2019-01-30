@@ -866,7 +866,7 @@ var _WestCondition = function () {
     				
     				currentPage:1,
     				countPerPage:10,
-    				keyword:cityNm + townNm + addrNumber,
+    				keyword:cityNm + ' ' + townNm + ' ' + addrNumber,
     				resultType:'json'
     			}
     			,dataType:"jsonp"
