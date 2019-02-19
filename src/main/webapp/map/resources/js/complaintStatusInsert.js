@@ -525,7 +525,7 @@ var _ComplaintStatusInsert = function () {
 		_MapEventBus.trigger(_MapEvents.map_move, {x:x,y:y});
 		
 		if(!bufferMeter){
-			bufferMeter = 200;
+			bufferMeter = 250;
 		}
     	
 		clearLayer();
