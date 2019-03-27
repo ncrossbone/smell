@@ -6,7 +6,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv, smsPopup;
 	
-	var selectedObj;
+	var selectedObj = {};
 	var popupOverlay;
 	var smsText = '[악취발생 예보 알림]\n#date#\n악취확산이 예상되오니\n설비가동을 해주시면\n감사하겠습니다.';
 	
@@ -16,6 +16,8 @@ var _ComplaintStatusInsert = function () {
 	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
 	
 	var instFeature;
+	
+	var mapClickFlag = false;
 	
 	var init = function(){
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
@@ -112,30 +114,32 @@ var _ComplaintStatusInsert = function () {
 		    }
 		});
 		
-		$('.workStep').on('click', function(){
-			if(_SmellMapBiz.taskMode != 1){
-				return;
-			}
-			
+		$('.workStep').on('click', function(event, obj){
 			var mode = $(this).attr('mode');
-			if(complaintStatusMode < (parseInt(mode)-1)){
-				return;
-			}
-			
-			if(selectedObj){
-				if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
-					_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
+			if(!obj){
+				if(_SmellMapBiz.taskMode != 1){
+					return;
+				}
+				
+				if(complaintStatusMode < (parseInt(mode)-1)){
+					return;
+				}
+				
+				if(selectedObj){
+					if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
+						_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
+						return;
+					}
+				}
+				
+				if(complaintStatusMode == mode){
+					return;
+				}
+				if(mode > 1 && !selectedObj){
 					return;
 				}
 			}
-			
-			if(complaintStatusMode == mode){
-				return;
-			}
-			if(mode > 1 && !selectedObj){
-				return;
-			}
-			changeMode(mode);
+			changeMode(mode, obj);
 		});
 		
 		$('#bufferRadiusSelect').off().on('change',function(){
@@ -276,6 +280,12 @@ var _ComplaintStatusInsert = function () {
 					}
 					smsPopup.hide();
 				});
+			}else if(complaintStatusMode == 0){
+				var trans = new ol.proj.transform(data.result.coordinate, 'EPSG:3857','EPSG:4326');
+				selectedObj = {};
+				selectedObj.x = trans[0];
+				selectedObj.y = trans[1];
+				process.find('li[mode="3"]').trigger('click',{mapClickFlag : true});
 			}
 		});
 		
@@ -336,7 +346,11 @@ var _ComplaintStatusInsert = function () {
 		});
 	}
 	
-	var changeMode = function(mode){
+	var changeMode = function(mode, obj){
+		if(mapClickFlag){
+			mode = 0;
+		}
+		
 		setProcessBtn(mode);
 		
 		var preFlag = true;
@@ -380,10 +394,19 @@ var _ComplaintStatusInsert = function () {
 			// 4. 저감시절 레이어 on
 			// 5. 저감 시설, 시설물 클릭시 팝업 처리
 //			_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {});
+		}else if(mode == 0){
+			_MapEventBus.trigger(_MapEvents.alertShow, {text:'화면을 클릭 하세요.'});
+		}
+		
+		if(obj){
+			mapClickFlag = true;
 		}
 	};
 	var resetPreMode = function(mode){
 		switch(mode) {
+		
+			case 0:
+				mapClickFlag = false;
 		    case 1:
 //		    	complaintStatusPopup.show();
 		    	clearLayerByName('cvplOnePoint');
@@ -428,8 +451,11 @@ var _ComplaintStatusInsert = function () {
 				}  
 			}
 		}else{
-			$('.workStep[mode="1"]').removeClass('on');
-			$('.workStep[mode="1"]').css('background-image', 'url("/map/images'+$('.workStep[mode="1"]').css('background-image').split('images')[1].replace('_on','_off'));
+			for(var i = 0; i < $('.workStep').length; i++){
+				$($('.workStep')[i]).removeClass('on');
+				$($('.workStep')[i]).css('background-image', 'url("/map/images'+$($('.workStep')[i]).css('background-image').split('images')[1].replace('_on','_off'));
+			}
+			
 		}
 	}
 	var checkAnalsArea = function(){
