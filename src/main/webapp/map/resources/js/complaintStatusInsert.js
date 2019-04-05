@@ -285,6 +285,12 @@ var _ComplaintStatusInsert = function () {
 				selectedObj = {};
 				selectedObj.x = trans[0];
 				selectedObj.y = trans[1];
+				
+				var resultFeature = new ol.Feature();
+
+				resultFeature.setGeometry(new ol.geom.Point(data.result.coordinate));
+				instFeature = resultFeature;
+				
 				process.find('li[mode="3"]').trigger('click',{mapClickFlag : true});
 			}
 		});
@@ -347,7 +353,7 @@ var _ComplaintStatusInsert = function () {
 	}
 	
 	var changeMode = function(mode, obj){
-		if(mapClickFlag){
+		if(mapClickFlag && mode < 4){
 			mode = 0;
 		}
 		
@@ -656,7 +662,6 @@ var _ComplaintStatusInsert = function () {
 			_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
 		});
 	};
-	
 
 	var writeBsmlPopup = function(){
 		
