@@ -262,6 +262,8 @@ ul[role="tablist"]{
 
 #bufferRadius{position: absolute; z-index: 3; display: none; top: 10%; color: white; background: black; left: 65%; padding: 10px 15px; letter-spacing: -1px; opacity: 0.8; font-size: 20px;}
 
+#bufferDateWindow{position: absolute; z-index: 3; display: none; top: 10%; color: white; background: black; left: 30%; padding: 10px 15px; letter-spacing: -1px; opacity: 0.8; font-size: 20px;}
+
 #custom-handle {
     width: 5em;
     height: 1.6em;

@@ -459,6 +459,7 @@ var _OdorForeCast = function () {
 					_MapEventBus.trigger(_MapEvents.map_move, selectedObj);
 					
 					changeMode(2);
+					changeMode(4);
 				});
 		}
 	};

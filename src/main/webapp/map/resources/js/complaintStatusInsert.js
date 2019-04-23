@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv, smsPopup;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv, smsPopup, bufferDateWindow;
 	
 	var selectedObj = {};
 	var popupOverlay;
@@ -19,7 +19,49 @@ var _ComplaintStatusInsert = function () {
 	
 	var mapClickFlag = false;
 	
+	var datePickerDefine = {
+		    dateFormat: 'yy.mm.dd',
+		    prevText: '이전 달',
+		    nextText: '다음 달',
+		    monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		    monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		    dayNames: ['일','월','화','수','목','금','토'],
+		    dayNamesShort: ['일','월','화','수','목','금','토'],
+		    dayNamesMin: ['일','월','화','수','목','금','토'],
+		    showMonthAfterYear: true,
+		    changeMonth: true,
+		    changeYear: true,
+		    yearSuffix: '년'
+    };
+	
 	var init = function(){
+		var toDay = new Date();
+		
+		$('#bufferDateStart').datepicker($.extend(datePickerDefine,{
+    		yearSuffix: '년',
+    		onSelect: function( selectedDate ) {
+    				instance = $( this ).data( 'datepicker' ),
+    				date = $.datepicker.parseDate(
+    						instance.settings.dateFormat ||
+    						$.datepicker._defaults.dateFormat,
+    						selectedDate, instance.settings );
+    				$('#bufferDateEnd').datepicker( 'option', 'minDate', date );
+    				
+    				setBuffer($('#bufferRadiusSelect').val());
+    		}
+    	}));
+    	
+    	$('#bufferDateEnd').datepicker($.extend(datePickerDefine,{
+    		yearSuffix: '년',
+    		onSelect: function( selectedDate ) {
+    			setBuffer($('#bufferRadiusSelect').val());
+    		}
+    	}));
+    	
+    	$('#bufferDateStart').datepicker('setDate', toDay);
+    	$('#bufferDateEnd').datepicker('setDate', toDay);
+    	
+    	
 		complaintStatusRegPopup = $('#complaintStatusRegPopup');
 		complaintStatusPopup = $('#complaintStatusPopup');
 		
@@ -31,6 +73,8 @@ var _ComplaintStatusInsert = function () {
 		bsmlPopup = $('#bsmlPopup');
 		bsmlPopup2 = $('#bsmlPopup2');
 		bufferRadius = $('#bufferRadius');
+		bufferDateWindow = $('#bufferDateWindow');
+		
 		gridArea = $('#gridArea');
 		legendDiv = $('#legendDiv');
 		
@@ -116,27 +160,30 @@ var _ComplaintStatusInsert = function () {
 		
 		$('.workStep').on('click', function(event, obj){
 			var mode = $(this).attr('mode');
-			if(!obj){
-				if(_SmellMapBiz.taskMode != 1){
-					return;
-				}
-				
-				if(complaintStatusMode < (parseInt(mode)-1)){
-					return;
-				}
-				
-				if(selectedObj){
-					if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
-						_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
+			
+			if(complaintStatusMode!=-1){
+				if(!obj){
+					if(_SmellMapBiz.taskMode != 1){
 						return;
 					}
-				}
-				
-				if(complaintStatusMode == mode){
-					return;
-				}
-				if(mode > 1 && !selectedObj){
-					return;
+
+					if(complaintStatusMode < (parseInt(mode)-1)){
+						return;
+					}
+
+//					if(selectedObj){
+//					if(selectedObj.type == 'putCvpl' || selectedObj.type == 'updateCvpl'){
+//					_MapEventBus.trigger(_MapEvents.alertShow, {text:'등록을 하셔야 합니다.'});
+//					return;
+//					}
+//					}
+
+					if(complaintStatusMode == mode){
+						return;
+					}
+					if(mode > 1 && !selectedObj){
+						return;
+					}
 				}
 			}
 			changeMode(mode, obj);
@@ -148,7 +195,7 @@ var _ComplaintStatusInsert = function () {
 		
 		$('#cvplClose').off('click').on('click',function(){
 			$(this).parent().parent().hide();
-			changeMode(complaintStatusMode - 1);
+			changeMode(complaintStatusMode - 2);
     	});
 		
 		_MapEventBus.on(_MapEvents.map_singleclick, function(event, data){
@@ -306,7 +353,7 @@ var _ComplaintStatusInsert = function () {
 				});
 				
 				$('#step3Li').show();
-				$('#step1Name').html('접수민원 선택');
+				$('#step1Name').html('민원접수');
 				
 				$('#step4Title').html('STEP.4');
 				$('#step5Title').html('STEP.5');
@@ -382,27 +429,34 @@ var _ComplaintStatusInsert = function () {
 				if(_CoreMap.getMap().getLayerForName(layerName[1])){
 					gridArea.show();
 				}
+				
 				bufferRadius.show();
+				bufferDateWindow.show();
+				
 			}
 		}else if(mode == 4 && preFlag){ 
 			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
 			gridArea.hide();
+			
 			bufferRadius.hide();
+			bufferDateWindow.hide();
+			
 			_MapEventBus.trigger(_MapEvents.hide_cvplPopup, {});
 		}else if(mode == 5 && preFlag){
 			
 			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
 			checkAnalsArea();
-			
+		}else if(mode == 0){
+			//_MapEventBus.trigger(_MapEvents.alertShow, {text:'화면을 클릭 하세요.'});
+		}	
 			// 2. 관심지역이 등록되어 있으면 이동경로 표시
 			// 2-1. 관심지역으로 등록되어 있지 않으면 등록할지 물어 보고 등록  후에 3번부터  등록 안하면  끝
 			// 3. 이동경로 표시 후 사업장 표시
 			// 4. 저감시절 레이어 on
 			// 5. 저감 시설, 시설물 클릭시 팝업 처리
 //			_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {});
-		}else if(mode == 0){
-			_MapEventBus.trigger(_MapEvents.alertShow, {text:'화면을 클릭 하세요.'});
-		}
+		
+		
 		
 		if(obj){
 			mapClickFlag = true;
@@ -423,7 +477,10 @@ var _ComplaintStatusInsert = function () {
 		    	clearLayerByName(layerName[2]);
 		    	clearLayerByName(layerName[1]);
 		    	clearLayerByName('focusForCvpl');
+		    	
 		    	bufferRadius.hide();
+		    	bufferDateWindow.hide();
+		    	
 		    	gridArea.hide();
 		    	$('#bufferRadiusSelect').val(200);
 		    	_MapEventBus.trigger(_MapEvents.hide_cvplPopup, {});
@@ -440,7 +497,9 @@ var _ComplaintStatusInsert = function () {
 		    case 6: 
 		}
 	}
-	var setProcessBtn = function(mode){
+	var setProcessBtn = function(m){
+		var mode = m==-1 ? 0 : m;
+		
 		if(mode != 0){
 			$('.workStep[mode='+mode+']').addClass('on');
 			$('.workStep[mode='+mode+']').css('background-image', 'url("/map/images'+$('.workStep[mode='+mode+']').css('background-image').split('images')[1].replace('_off','_on'));
@@ -550,6 +609,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var setBuffer = function(bufferMeter){
 		bufferRadius.show();
+		bufferDateWindow.show();
 		
 		var x = selectedObj.x;
 		var y = selectedObj.y;
@@ -563,7 +623,10 @@ var _ComplaintStatusInsert = function () {
 		clearLayer();
 		cvplPopupOverlay.hide();
 		
-		Common.getData({url: '/map/getFeature.do', contentType: 'application/json', params: {contentsId:'complaintStatus',flag:1} }).done(function(data){
+		var startDate = $('#bufferDateStart').val().split('.')[0] + $('#bufferDateStart').val().split('.')[1] + $('#bufferDateStart').val().split('.')[2];
+		var endDate = $('#bufferDateEnd').val().split('.')[0] + $('#bufferDateEnd').val().split('.')[1] + $('#bufferDateEnd').val().split('.')[2];
+		
+		Common.getData({url: '/map/getFeature.do', contentType: 'application/json', params: {contentsId:'complaintStatus', flag:1, startDate:startDate, endDate:endDate} }).done(function(data){
 			
 			var parser = new jsts.io.OL3Parser();
 			var interFeatures = [];
@@ -834,6 +897,10 @@ var _ComplaintStatusInsert = function () {
 		},
 		getInstFeature:function(){
 			return instFeature;
+		},
+		changeMode:function(p){
+			$('#cvplClose').parent().parent().hide();
+			changeMode(p);
 		}
     };
 }();

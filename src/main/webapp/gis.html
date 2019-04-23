@@ -146,6 +146,7 @@
 		$('#complaintStatusRegPopup').draggable({ containment: '#map' });
 		$('#complaintStatusRegPopup2').draggable({ containment: '#map' });
 		$('#bufferRadius').draggable({ containment: '#map' });
+		$('#bufferDateWindow').draggable({ containment: '#map' });
 		$('#odorForeCastPopupTime').draggable({ containment: '#map' });
 		
 		$(window).trigger('resize');
@@ -440,6 +441,13 @@
                             <dd>
                                 <label class="hidden">지점명 검색어</label>
                                 <input type="text" class="W95p" name="" value="" id="fixedMeasurementBranchName" title="지점명 검색어" />
+                            </dd>
+                            
+                        </dl>
+                        <dl>
+                            <dt>풍향</dt>
+                             <dd>
+                             	<img style="cursor:pointer" src="/map/images/wd_btn_on.png" id="fixedWeatherWsBtn" />
                             </dd>
                         </dl>
                         <p class="MgT35 MgB30 AC">
@@ -1039,6 +1047,14 @@
                 <option value="1250">1000m</option>
      		</select>
      	</div>
+     	<div id="bufferDateWindow">
+     		<label for="bufferDateStart" />기간 선택 :
+     		<input type="text" id="bufferDateStart" class="W105" style="width: 90px !important; margin-left: 10px;" />
+     		
+     		<label for="bufferDateEnd" style="margin-left: 10px;"/>~
+     		<input type="text" id="bufferDateEnd" class="W105" style="width: 90px !important; margin-left: 10px;" />
+     	</div>
+     	
      	<ul class="process" style="display: none;" id="cvplProcess">
         	<li class="p_f workStep" mode="1">
             	<span class="step" id="step1Title">STEP.1</span>

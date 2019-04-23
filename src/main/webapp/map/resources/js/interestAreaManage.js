@@ -107,7 +107,12 @@ var _InterestAreaManage = function () {
 				var indexId = $(this).attr('indexId');
 				var flag = $(this).attr('reg');
 				var predictAl = $('#predictAl').val();
-
+				
+				if(!predictAl){
+					alert('예측높이를 입력하세요.');
+					return;
+				}
+				
 				if(flag == "0"){
 					$.ajax({
 						url : bizUrl+'/map/insertAnals.do',
@@ -247,11 +252,8 @@ var _InterestAreaManage = function () {
 									}else{
 										$('#cellRemeveBtn').html('추가');
 									}
-									if(editMode){
-										$('#cellRemeveBtn').show();
-									}else{
-										$('#cellRemeveBtn').hide();
-									}
+									
+									$('#cellRemeveBtn').show();
 
 									$('#intrstAreaNm').val(data[0].INTRST_AREA_NM);
 									$('#tpgrphAl').val(data[0].TPGRPH_AL);

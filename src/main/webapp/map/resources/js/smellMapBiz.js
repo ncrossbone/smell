@@ -331,7 +331,7 @@ var _SmellMapBiz = function () {
 			var feature = _CoreMap.getMap().forEachFeatureAtPixel(data.result.pixel,function(feature, layer){
 				var lyrNm = layer.get('name');
 				
-				if(_WestCondition.getContentsConfig()[layer.get('name')] && layer.get('name') != 'iotSensorInfo'){
+				if(_WestCondition.getContentsConfig()[layer.get('name')] && layer.get('name') != 'iotSensorInfo' && layer.get('name') != 'fixedWindLayer'){
 					if(_CoreMap.getMap().getLayerForName(lyrNm)){
 						_WestCondition.onClickLayer(feature,lyrNm);
 					}
@@ -343,7 +343,7 @@ var _SmellMapBiz = function () {
 			var coreMap = _CoreMap.getMap();
 			var pixel = coreMap.getEventPixel(data.result.originalEvent);
 			var hit = coreMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
-				if(_WestCondition.getContentsConfig()[layer.get('name')] && layer.get('name') != 'iotSensorInfo'){
+				if(_WestCondition.getContentsConfig()[layer.get('name')] && layer.get('name') != 'iotSensorInfo' && layer.get('name') != 'fixedWindLayer'){
 					return true;
 				}else if(layer.get('name')=='chartModeLayer'){
 					return true;

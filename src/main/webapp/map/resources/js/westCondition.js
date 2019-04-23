@@ -70,7 +70,9 @@ var _WestCondition = function () {
 						     {name:'PM2_5',title:'미세먼지2.5'},
 						     {name:'PM10',title:'미세먼지10'},
 						     {name:'SO2',title:'이산화황'},
-						     {name:'NO2',title:'이산화질소'}]
+						     {name:'NO2',title:'이산화질소'},
+						     {name:'TMPRT',title:'온도'},
+						     {name:'HD',title:'습도'}]
     	},
     	'fixedMeasurement':{
 			layerType:'base',
@@ -97,6 +99,8 @@ var _WestCondition = function () {
 			     {name:'PM10',title:'미세먼지10'},
 			     {name:'SO2',title:'이산화황'},
 			     {name:'NO2',title:'이산화질소'},
+			     {name:'TMPRT',title:'온도'},
+			     {name:'HD',title:'습도'},
 			     {name:'DATE',title:'날짜',visible:false}]
     	},
     	'sensoryEvaluation':{
@@ -251,6 +255,14 @@ var _WestCondition = function () {
 			     {name:'MESURE_DT',title:'검측 일시',width:170},
 			     {name:'OPR_STTUS_CODE',title:'가동 상태 코드'},
 			     {name:'OU',title:'복합 악취'}]
+    	},
+    	'fixedWindLayer':{
+    		layerType:'base',
+			title:'고정식 풍향',
+			isVisible:true,
+			isUseGeoserver:false,
+			isWriteGrid:false,
+			isPopupShow:false,
     	}
     };
     
@@ -371,7 +383,7 @@ var _WestCondition = function () {
         });
         
         var toDay = new Date();
-		var hour = toDay.getHours()+1;
+		var hour = toDay.getHours();
 		var timeOptions = '';
 		for(var i=0; i<25; i++){
 			timeOptions += '<option '+(i==hour?'selected':'')+' value="'+(i<10 ? ('0'+i): i)+'">'+i+'시</option>';
@@ -702,7 +714,7 @@ var _WestCondition = function () {
 			$($('input[id$=BranchName]')[i]).val('');
 		}
 		
-		$('#portableMeasurementItem, #fixedMeasurementItem, #reductionMonitoringItem').val('VOCS');
+		$('#portableMeasurementItem, #fixedMeasurementItem, #reductionMonitoringItem').val('OU');
 		$('#environmentCorporationItem').val('대기중금속');
 		
 		for(var i = 0; i < $('.iotGrid').find('input').length; i++){
@@ -805,6 +817,22 @@ var _WestCondition = function () {
     };
     
     var setEvent = function(){
+    	$('#fixedWeatherWsBtn').off('click').on('click',function(){
+    		var me = this;
+
+    		if($(me).prop('src').indexOf('_on') > -1){
+    			$(me).prop('src','/map/images/wd_btn_off.png');
+    			contentsConfig['fixedWindLayer'].isVisible = false;
+    		}else{
+    			$(me).prop('src','/map/images/wd_btn_on.png');
+    			contentsConfig['fixedWindLayer'].isVisible = true;
+    		}
+
+    		var layerForName = _CoreMap.getMap().getLayerForName('fixedWindLayer');
+    		if(layerForName){
+    			layerForName.setVisible(contentsConfig['fixedWindLayer'].isVisible);
+    		}
+    	});
     	
     	$('#allLayerOff').off('click').on('click',function(){
     		var lyrOnOff = $('.layerOnOff');
@@ -1009,6 +1037,18 @@ var _WestCondition = function () {
         		if(layerForName){
         			layerForName.setVisible(contentsConfig[contentsId].isVisible);
         		}
+        		
+        		if(contentsId=='fixedMeasurement'){
+        			var layerForName = _CoreMap.getMap().getLayerForName('fixedWindLayer');
+            		if(layerForName){
+            			//wd
+            			if(contentsConfig[contentsId].isVisible){
+            				layerForName.setVisible(contentsConfig['fixedWindLayer'].isVisible);
+            			}else{
+            				layerForName.setVisible(false);
+            			}
+            		}
+        		}
     		}
     	});
     	
@@ -1146,6 +1186,7 @@ var _WestCondition = function () {
     					writeLayer(placeId,pointData[0].features,contentsConfig[placeId].isUseGeoserver);
     				});
     	}else{
+
     		Common.getData({url: '/map/getFeature.do', contentType: 'application/json', params: paramObj }).done(function(featureData){
     			if(contentsConfig[placeId].isWriteGrid && !chartMode){
     				Common.getData({url: '/map/getGrid.do', contentType: 'application/json', params: paramObj }).done(function(gridData){
@@ -1154,6 +1195,10 @@ var _WestCondition = function () {
     			}
 
     			writeLayer(placeId,featureData,contentsConfig[placeId].isUseGeoserver);
+    			
+    			if(placeId == 'fixedMeasurement'){
+    				writeLayer('fixedWindLayer',featureData,contentsConfig[placeId].isUseGeoserver);
+    			}
     		});
     	}
 
@@ -1239,13 +1284,25 @@ var _WestCondition = function () {
 		
 		var styleFunction = selectStyleFunction(id);
 		
+		var visible = true;
+		
+		if(id == 'fixedWindLayer'){
+			if(!contentsConfig['fixedMeasurement'].isVisible){
+				visible = contentsConfig['fixedMeasurement'].isVisible;
+			}else{
+				visible = contentsConfig['fixedWindLayer'].isVisible;
+			}
+		}else{contentsConfig[id].isVisible
+			visible = contentsConfig[id].isVisible
+		}
+		
 		var vectorLayer = new ol.layer.Vector({
 	        source: source,
 	        id:id,
 	        name:id,
 	        style:styleFunction,
 	        zIndex:2,
-	        visible:contentsConfig[id].isVisible
+	        visible:visible
 		});
 		
 		_MapEventBus.trigger(_MapEvents.map_addLayer, vectorLayer);
@@ -1326,12 +1383,43 @@ var _WestCondition = function () {
 		case 'reductionMonitoring':
 			styleFunction = reductionMonitoringStyleFunction;
 			break;
+		case 'fixedWindLayer':
+			styleFunction = fixedWindLayerStyleFunction;
+			break;
 		default:
 			break;
 		}
     	
     	return styleFunction;
     };
+    
+    var fixedWindLayerStyleFunction = function(feature){
+    	var prop = feature.getProperties();
+    	var value = prop.WD_CODE ? prop.WD_CODE :'0';
+    	var imgName = parseInt(value) < 10 ? ('0'+value) : value;
+
+    	var style = new ol.style.Style({
+    		geometry: feature.getGeometry(),
+    		image: new ol.style.Icon(({
+    			src: '/map/images/wind/wi' + imgName  + '.png',
+    			anchor: [-17, 24],
+    			anchorXUnits: 'pixels',
+    			anchorYUnits: 'pixels'
+    		})),
+    		text: new ol.style.Text({
+    			text: prop.WD ? prop.WD + '' : '',
+    			fill: new ol.style.Fill({
+    				color: '#007cf4'
+    			}),
+    			offsetX: 34,
+    			offsetY: 0,
+    			font: 'bold 13px Arial'
+    		})
+    	});
+
+    	return style;
+    };
+    
     var odorReductionForSvgFunction = function(feature){
     	var prop = feature.getProperties();
     	//sttus_nm 1 : 가동중, 4 : 중지 x : 통신장애
@@ -1774,6 +1862,10 @@ var _WestCondition = function () {
 
     	if(layerForName){
     		_MapEventBus.trigger(_MapEvents.map_removeLayer, layerForName);
+    	}
+    	
+    	if(id=='fixedMeasurement'){
+    		_MapEventBus.trigger(_MapEvents.map_removeLayer, _CoreMap.getMap().getLayerForName('fixedWindLayer'));
     	}
     	clearFocusLayer();
     	

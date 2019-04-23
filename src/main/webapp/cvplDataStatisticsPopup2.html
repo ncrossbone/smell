@@ -93,27 +93,34 @@ function goAction(){
 	if(!validate(frm)){
         return ;
     }
-		
-	var formArr = $('#dataSearch').serializeArray();
 	
 	var keyConfig = {
-				'CVPL_CN':'contents',
-				'CVPL_DT':'date',
-				'CVPL_LC':'direct',
-				'CVPL_TY_CODE':'flag',
-				'CPTTR':'man',
-				'CPTTR_CTTPC':'phone',
-				'LEGALDONG_CODE':'addr',
-				'CVPL_TIME':'time',
-				'LA':'la',
-				'LO':'lo'
+				'CPTTR':{id:'man',require:true},
+				'CPTTR_CTTPC':{id:'phone',require:true},
+				'CVPL_DT':{id:'date',require:true},
+				'CVPL_TIME':{id:'time',require:true},
+				'CVPL_LC':{id:'direct',require:true},
+				'CVPL_TY_CODE':{id:'flag',require:true},
+				'LEGALDONG_CODE':{id:'addr',require:true},
+				'CVPL_CN':{id:'contents',require:false},
+				'LA':{id:'la',require:false},
+				'LO':{id:'lo',require:false}
 	};
 	
 	var paramObj = {type:'updateCvpl',code:cvplId};
-	for(var i = 0; i<formArr.length; i++){
-		paramObj[keyConfig[formArr[i].name]] = formArr[i].value;
+	for(key in keyConfig){
+		var val = $('#'+ key).val();
+		
+		if(val){
+			paramObj[keyConfig[key].id] = val;	
+		}else{
+			if(keyConfig[key].require){
+				alert('필수 값이 입력되지 않았습니다.');
+				return; 
+			}
+			paramObj[keyConfig[key].id] = val;
+		}
 	}
-	
 	
 	//url- /insertCvplData.do
 	parent.$('#complaintStatusRegPopup').hide();
