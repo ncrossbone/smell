@@ -4,7 +4,7 @@ var _ComplaintStatusInsert = function () {
 	
 	var complaintStatusMode = 0; // 0 = 민원접수 선택 , 1 = 민원등록및 위치확인, 2 = 인근민원 확인, 3 = 악취분포 확인, 4 = 악취원점 분석, 5 = 악취 저감 조치
 	
-	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv, smsPopup, bufferDateWindow;
+	var complaintStatusRegPopup , complaintStatusPopup, cvplPopupOverlay, process, bsmlPopup, bsmlPopup2, bufferRadius, clock, gridArea, legendDiv, smsPopup, bufferDateWindow, testSpreadRangeDiv;
 	
 	var selectedObj = {};
 	var popupOverlay;
@@ -18,6 +18,11 @@ var _ComplaintStatusInsert = function () {
 	var instFeature;
 	
 	var mapClickFlag = false;
+	var testMode = false;
+	
+	var odorSpreadLayer = false;
+	
+	var preCurrentDate = {};
 	
 	var datePickerDefine = {
 		    dateFormat: 'yy.mm.dd',
@@ -74,6 +79,7 @@ var _ComplaintStatusInsert = function () {
 		bsmlPopup2 = $('#bsmlPopup2');
 		bufferRadius = $('#bufferRadius');
 		bufferDateWindow = $('#bufferDateWindow');
+		testSpreadRangeDiv = $('#testSpreadRangeDiv');
 		
 		gridArea = $('#gridArea');
 		legendDiv = $('#legendDiv');
@@ -338,13 +344,32 @@ var _ComplaintStatusInsert = function () {
 				resultFeature.setGeometry(new ol.geom.Point(data.result.coordinate));
 				instFeature = resultFeature;
 				
+				var todayDate = new Date();
+				var todayYear = todayDate.getFullYear() + '';
+				var todayMonth = (todayDate.getMonth() + 1) < 10 ? '0' + (todayDate.getMonth() + 1) : (todayDate.getMonth() + 1) + '';
+				var todayDay = todayDate.getDate() < 10? '0' + todayDate.getDate() : todayDate.getDate() + '';
+				
+				currentDate.date = todayYear + todayMonth + todayDay;
+				currentDate.time = todayDate.getHours() + '';
+				
+				preCurrentDate.date = todayYear + todayMonth + todayDay;
+				preCurrentDate.time = todayDate.getHours() + '';
+				
+				_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
+				
 				process.find('li[mode="3"]').trigger('click',{mapClickFlag : true});
+				clock.show();
+				
+				testMode = true;
 			}
 		});
+		
 		
 		_MapEventBus.on(_MapEvents.task_mode_changed, function(event, data){
 			if(data.mode == 1){
 				complaintStatusPopup.show();
+				refreshPopup(complaintStatusPopup);
+				
 				cvplPopupOverlay.hide();
 				process.show();
 				
@@ -399,12 +424,18 @@ var _ComplaintStatusInsert = function () {
 		});
 	}
 	
-	var changeMode = function(mode, obj){
-		if(mapClickFlag && mode < 4){
-			mode = 0;
+	var changeMode = function(mode){
+		if(mapClickFlag && mode < 3){
+			mode = 1;
+			mapClickFlag = false;
 		}
 		
-		setProcessBtn(mode);
+		if(mode==0){
+			setProcessBtn(2);
+		}else{
+			setProcessBtn(mode);
+		}
+		
 		
 		var preFlag = true;
 		
@@ -420,9 +451,15 @@ var _ComplaintStatusInsert = function () {
 		
 		if(mode == 1){
 			complaintStatusPopup.show();
+			refreshPopup(complaintStatusPopup);
 		}else if(mode == 2){
 			writePopup();
 		}else if(mode == 3){
+			
+			if(selectedObj.date){
+				$('#bufferDateStart').datepicker('setDate', new Date(selectedObj.date.split(' ')[0]));
+			}
+			
 			if(preFlag){
 				setBuffer();	
 			}else{
@@ -435,19 +472,26 @@ var _ComplaintStatusInsert = function () {
 				
 			}
 		}else if(mode == 4 && preFlag){ 
-			_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
+			//_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
+			
+			writeSpreadLayer();
 			gridArea.hide();
 			
 			bufferRadius.hide();
 			bufferDateWindow.hide();
 			
 			_MapEventBus.trigger(_MapEvents.hide_cvplPopup, {});
+			
+			if(testMode){
+				testSpreadRangeDiv.show();
+				createSlider();
+			}
 		}else if(mode == 5 && preFlag){
 			
 			// 1. 관심지역 등록 여부 확인 되있거나 안되있거나
 			checkAnalsArea();
 		}else if(mode == 0){
-			//_MapEventBus.trigger(_MapEvents.alertShow, {text:'화면을 클릭 하세요.'});
+			mapClickFlag = true;
 		}	
 			// 2. 관심지역이 등록되어 있으면 이동경로 표시
 			// 2-1. 관심지역으로 등록되어 있지 않으면 등록할지 물어 보고 등록  후에 3번부터  등록 안하면  끝
@@ -456,23 +500,30 @@ var _ComplaintStatusInsert = function () {
 			// 5. 저감 시설, 시설물 클릭시 팝업 처리
 //			_MapEventBus.trigger(_MapEvents.show_odorMovement_layer, {});
 		
-		
-		
-		if(obj){
-			mapClickFlag = true;
+	};
+	
+	var writeSpreadLayer = function(){
+		if(odorSpreadLayer){
+			_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadLayer);
 		}
+		
+		var layerInfos = [{layerNm:'anals_area_now',style:null,isVisible:true,isTiled:true,cql:null,opacity:0.5, cql:'DTA_DT=\''+currentDate._date+currentDate._time+'\'', zIndex:4}];
+		odorSpreadLayer = _CoreMap.createTileLayer(layerInfos)[0];
+		_MapEventBus.trigger(_MapEvents.map_addLayer, odorSpreadLayer);
 	};
 	var resetPreMode = function(mode){
 		switch(mode) {
 		
-			case 0:
-				mapClickFlag = false;
 		    case 1:
 //		    	complaintStatusPopup.show();
 		    	clearLayerByName('cvplOnePoint');
 				cvplPopupOverlay.hide();
 				clock.hide();
-				selectedObj = null; 
+				selectedObj = null;
+				
+				if(testMode){
+					testMode = false;
+				}
 		    case 2:
 		    	clearLayerByName(layerName[2]);
 		    	clearLayerByName(layerName[1]);
@@ -487,9 +538,19 @@ var _ComplaintStatusInsert = function () {
 		    case 3: // 악취 확산 격자
 		    	_MapEventBus.trigger(_MapEvents.hide_odorSpread_layer, {});
 		    	legendDiv.hide();
+
+		    	if(testMode){
+		    		currentDate.date = preCurrentDate.date;
+		    		currentDate.time = preCurrentDate.time;
+		    		_MapEventBus.trigger(_MapEvents.setCurrentDate, preCurrentDate);
+		    	}
 		    case 4: // 악취원점 저감시설, 이동경로 닫기
 		    	_MapEventBus.trigger(_MapEvents.hide_odorMovement_layer, {});
 		    	clearLayerByName('odorOrigin');
+		    	testSpreadRangeDiv.hide();
+		    	if(odorSpreadLayer){
+					_MapEventBus.trigger(_MapEvents.map_removeLayer, odorSpreadLayer);
+				}
 		    case 5:  // 저감시설 및 악취원점 팝업 닫기
 		    	bsmlPopup.hide(); 
 		    	bsmlPopup2.hide();
@@ -863,6 +924,57 @@ var _ComplaintStatusInsert = function () {
 		});
 
 		_MapEventBus.trigger(_MapEvents.map_addLayer, originLayer);
+	};
+	
+	var refreshPopup = function(obj){
+		$(obj).find('iframe').attr('src',$(obj).find('iframe').attr('src'));
+	};
+	
+	var createSlider = function(){
+		var dayDate = new Date(currentDate._date.substr(0,4), parseInt(currentDate._date.substr(4,2)) - 1,currentDate._date.substr(6,2),currentDate._time);
+		
+		var dayYear = dayDate.getFullYear() + '';
+		var dayMonth = (dayDate.getMonth() + 1) < 10 ? '0' + (dayDate.getMonth() + 1) : (dayDate.getMonth() + 1) + '';
+		var dayDay = dayDate.getDate() < 10? '0' + dayDate.getDate() : dayDate.getDate() + '';
+		
+		var odorSpreadTimeSeries = _SmellMapBiz.setTimeSeries(dayYear + dayMonth + dayDay, dayYear + dayMonth + dayDay, '00', dayDate.getHours() < 10 ? '0' + dayDate.getHours() : dayDate.getHours() +'', 'anals_area_now', null);
+		
+		if($('#testSpreadRange').slider('instance')){
+			$('#testSpreadRange').slider('destroy');
+		}
+		
+		$('#testSpreadRange').html('<div id="test-custom-handle" class="ui-slider-handle"></div>');
+		var handle = $('#test-custom-handle');
+		
+		var idx = 0;
+		for(var i = 0; i<odorSpreadTimeSeries.length; i++){
+			if(odorSpreadTimeSeries[i].date == currentDate._date && odorSpreadTimeSeries[i].time == currentDate.time){
+				idx = i;
+			}
+		}
+		
+		var slider = $('#testSpreadRange').slider({
+			min: 0,
+			max: odorSpreadTimeSeries.length - 1,
+			step: 1,
+			create: function() {
+				handle.text(odorSpreadTimeSeries[idx].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[idx].time + '시');
+			},
+			change: function( event, ui ) {
+				if(!event.handleObj){
+					handle.text(odorSpreadTimeSeries[ui.value].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[ui.value].time + '시');
+				}
+			},
+			slide: function( event, ui ) {
+				handle.text(odorSpreadTimeSeries[ui.value].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[ui.value].time + '시');
+				currentDate.date = odorSpreadTimeSeries[ui.value].date;
+				currentDate.time = odorSpreadTimeSeries[ui.value].time + '';
+				_MapEventBus.trigger(_MapEvents.setCurrentDate, currentDate);
+				writeSpreadLayer();
+			}
+		});
+		
+		$('#testSpreadRange').slider( 'value',idx);
 	};
 	
 	return {

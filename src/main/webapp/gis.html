@@ -148,6 +148,7 @@
 		$('#bufferRadius').draggable({ containment: '#map' });
 		$('#bufferDateWindow').draggable({ containment: '#map' });
 		$('#odorForeCastPopupTime').draggable({ containment: '#map' });
+		$('#testSpreadRangeDiv').draggable({ containment: '#map' });
 		
 		$(window).trigger('resize');
 		_CoreMap.centerMap(14189913.25028815, 4401138.987746553, 13);
@@ -1054,6 +1055,18 @@
      		<label for="bufferDateEnd" style="margin-left: 10px;"/>~
      		<input type="text" id="bufferDateEnd" class="W105" style="width: 90px !important; margin-left: 10px;" />
      	</div>
+     	
+     	
+     	<div id="testSpreadRangeDiv">
+        		
+         	<div id="testSpreadRange" style="width: 260px;">
+         	</div>
+         	<div style="margin-top: 5px; font-size:12px;" id="testSpreadRangeTxt">
+         		<span style="margin-left: -10px;"></span>
+         		<span style="margin-left: 80px;"></span>
+         		<span style="margin-left: 75px;"></span>
+         	</div>
+        </div>
      	
      	<ul class="process" style="display: none;" id="cvplProcess">
         	<li class="p_f workStep" mode="1">

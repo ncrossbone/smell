@@ -122,6 +122,7 @@ function toDateCheck() {
 function cvplDataInsert(){
 	parent.$('#complaintStatusRegPopup2').hide();
 	parent.$('#complaintStatusRegPopup').show();
+	$(parent.$('#complaintStatusRegPopup')).find('iframe').attr('src',$(parent.$('#complaintStatusRegPopup')).find('iframe').attr('src'));
 }
 
 //등록 수정창

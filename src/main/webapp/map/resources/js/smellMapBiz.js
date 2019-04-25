@@ -1602,6 +1602,9 @@ var _SmellMapBiz = function () {
         },
         sendMessage:function(){
         	sendMessage();
+        },
+        setTimeSeries:function(sdate, edate, stime, etime, layerNm, styleNm){
+        	return setTimeSeries(sdate, edate, stime, etime, layerNm, styleNm);
         }
     };
 }();
