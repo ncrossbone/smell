@@ -943,8 +943,8 @@ var _ComplaintStatusInsert = function () {
 			$('#testSpreadRange').slider('destroy');
 		}
 		
-		$('#testSpreadRange').html('<div id="test-custom-handle" class="ui-slider-handle"></div>');
-		var handle = $('#test-custom-handle');
+		$('#testSpreadRange').html('<div class="ui-slider-handle"></div>');
+		var handle = $('#testRangeText');
 		
 		var idx = 0;
 		for(var i = 0; i<odorSpreadTimeSeries.length; i++){
