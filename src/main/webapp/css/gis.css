@@ -264,7 +264,7 @@ ul[role="tablist"]{
 
 #bufferDateWindow{position: absolute; z-index: 3; display: none; top: 10%; color: white; background: black; left: 30%; padding: 10px 15px; letter-spacing: -1px; opacity: 0.8; font-size: 20px;}
 
-#testSpreadRangeDiv{position: absolute; z-index: 3; display: none; top: 0px; color: white; background: black; left: 0px; padding: 10px 25px; letter-spacing: -1px; opacity: 0.8; width: 320px; height: 15px;}
+#testSpreadRangeDiv{position: absolute; z-index: 3; display: none; top: 0px; color: white; background: black; left: 0px; padding: 10px 25px; letter-spacing: -1px; opacity: 0.8; width: 320px; height: 50px;}
 
 #custom-handle{
     width: 5em;

@@ -1407,7 +1407,7 @@ var _WestCondition = function () {
     			anchorYUnits: 'pixels'
     		})),
     		text: new ol.style.Text({
-    			text: prop.WD ? prop.WD + '' : '',
+    			text: prop.WS ? prop.WS + '' : '',
     			fill: new ol.style.Fill({
     				color: '#007cf4'
     			}),

@@ -474,7 +474,7 @@ var _ComplaintStatusInsert = function () {
 		}else if(mode == 4 && preFlag){ 
 			//_MapEventBus.trigger(_MapEvents.show_odorSpread_layer, {});
 			
-			writeSpreadLayer();
+			//writeSpreadLayer();
 			gridArea.hide();
 			
 			bufferRadius.hide();
@@ -484,7 +484,28 @@ var _ComplaintStatusInsert = function () {
 			
 			if(testMode){
 				testSpreadRangeDiv.show();
-				createSlider();
+				var dayDate = new Date(currentDate._date.substr(0,4), parseInt(currentDate._date.substr(4,2)) - 1,currentDate._date.substr(6,2),currentDate._time);
+				$('#testSpreadDate').datepicker($.extend(datePickerDefine,{
+					yearSuffix: '년',
+					onSelect: function( selectedDate ) {
+						var dd = null;
+						if(preCurrentDate.date == selectedDate.substr(0,4) + selectedDate.substr(5,2) + selectedDate.substr(8,2)){
+
+							dd = new Date(preCurrentDate.date.substr(0,4), parseInt(preCurrentDate.date.substr(4,2)) - 1,preCurrentDate.date.substr(6,2),preCurrentDate.time);
+							currentDate.date = preCurrentDate.date;
+							currentDate.time = preCurrentDate.time;
+						}else{
+							dd = new Date(selectedDate.substr(0,4), parseInt(selectedDate.substr(5,2)) - 1,selectedDate.substr(8,2),23);
+							currentDate.date = selectedDate.substr(0,4) + selectedDate.substr(5,2) + selectedDate.substr(8,2);
+							currentDate.time = '23';
+						}
+						createSlider(dd);
+					}
+				}));
+				$('#testSpreadDate').datepicker('setDate', dayDate);
+				$('#testSpreadDate').datepicker( 'option', 'maxDate', preCurrentDate.date.substr(0,4) +'.' +preCurrentDate.date.substr(4,2) + '.' +preCurrentDate.date.substr(6,2));
+				
+				createSlider(dayDate);
 			}
 		}else if(mode == 5 && preFlag){
 			
@@ -930,14 +951,13 @@ var _ComplaintStatusInsert = function () {
 		$(obj).find('iframe').attr('src',$(obj).find('iframe').attr('src'));
 	};
 	
-	var createSlider = function(){
-		var dayDate = new Date(currentDate._date.substr(0,4), parseInt(currentDate._date.substr(4,2)) - 1,currentDate._date.substr(6,2),currentDate._time);
+	var createSlider = function(date){
 		
-		var dayYear = dayDate.getFullYear() + '';
-		var dayMonth = (dayDate.getMonth() + 1) < 10 ? '0' + (dayDate.getMonth() + 1) : (dayDate.getMonth() + 1) + '';
-		var dayDay = dayDate.getDate() < 10? '0' + dayDate.getDate() : dayDate.getDate() + '';
+		var dayYear = date.getFullYear() + '';
+		var dayMonth = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1) + '';
+		var dayDay = date.getDate() < 10? '0' + date.getDate() : date.getDate() + '';
 		
-		var odorSpreadTimeSeries = _SmellMapBiz.setTimeSeries(dayYear + dayMonth + dayDay, dayYear + dayMonth + dayDay, '00', dayDate.getHours() < 10 ? '0' + dayDate.getHours() : dayDate.getHours() +'', 'anals_area_now', null);
+		var odorSpreadTimeSeries = _SmellMapBiz.setTimeSeries(dayYear + dayMonth + dayDay, dayYear + dayMonth + dayDay, '00', date.getHours() < 10 ? '0' + date.getHours() : date.getHours() +'', 'anals_area_now', null);
 		
 		if($('#testSpreadRange').slider('instance')){
 			$('#testSpreadRange').slider('destroy');
@@ -959,6 +979,7 @@ var _ComplaintStatusInsert = function () {
 			step: 1,
 			create: function() {
 				handle.text(odorSpreadTimeSeries[idx].date.substr(6,2)+ '일 ' + odorSpreadTimeSeries[idx].time + '시');
+				writeSpreadLayer();
 			},
 			change: function( event, ui ) {
 				if(!event.handleObj){
